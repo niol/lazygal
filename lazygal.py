@@ -62,7 +62,6 @@ class File:
         rel_root = ""
 
         while cur_path != self.album.source_dir:
-            print cur_path
             cur_path, tail = os.path.split(cur_path)
             rel_root = os.path.join('..', rel_root)
         return rel_root
