@@ -229,11 +229,11 @@ class Directory(File):
         self.img_proc = self.album.image_processor
 
     def find_prev(self, file, files, root):
-        index = files.index(file)
-        try:
-            return os.path.join(root, files[index-1])
-        except IndexError:
+        prev_index = files.index(file) - 1
+        if prev_index < 0:
             return None
+        else:
+            return os.path.join(root, files[prev_index])
 
     def find_next(self, file, files, root):
         index = files.index(file)
