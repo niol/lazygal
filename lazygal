@@ -21,7 +21,11 @@ if len(args) != 1:
     parser.print_help()
     sys.exit("Bad command line.")
 
-album = Album(args[0],
+source_dir = args[0]
+if not os.path.isdir(source_dir):
+    sys.exit("Directory " + source_dir + " does not exist.")
+
+album = Album(source_dir,
               (150, 113),
               [('small', (800, 600)), ('medium', (1024, 768))])
 album.set_theme(options.theme)
