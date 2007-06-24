@@ -5,7 +5,7 @@
 <head>
   <title>%(dir)s - %(image_name)s</title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link rel="alternate stylesheet" type="text/css" media="screen,projection" title="Original" href="%(rel_root)sshared/style.css" />
+  <link rel="stylesheet" type="text/css" media="screen,projection" title="Original" href="%(rel_root)sshared/style.css" />
 </head>
 
 <body>
