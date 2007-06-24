@@ -1,4 +1,4 @@
-import os, glob, shutil
+import os, glob, shutil, time, datetime
 import Image, EXIF
 
 
@@ -133,10 +133,26 @@ class ImageFile(File):
         im = Image.open(img)
         return im.size
 
-    def get_exif_date(self, img):
+    def get_date_taken(self, img, dir = None):
+        if dir:
+            img = os.path.join(dir, img)
         f = open(img, 'rb')
         tags = EXIF.process_file(f)
-        return tags['Image DateTime']
+        exif_date = str(tags['Image DateTime'])
+        date, time = exif_date.split(' ')
+        year, month, day = date.split(':')
+        hour, minute, second = time.split(':')
+        return datetime.datetime(int(year), int(month), int(day),
+                                 int(hour), int(minute), int(second))
+
+    def compare_date_taken(self, img1, img2, dir = None):
+        if dir:
+            img1 = os.path.join(dir, img1)
+            img2 = os.path.join(dir, img2)
+        date1 = time.mktime(self.get_date_taken(img1).timetuple())
+        date2 = time.mktime(self.get_date_taken(img2).timetuple())
+        delta = date1 - date2
+        return int(delta)
 
     def gen_other_img_link(self, img, dest_dir, size_name, template):
         if img:
@@ -175,7 +191,8 @@ class ImageFile(File):
             tpl_values['img_width'],\
                 tpl_values['img_height'] = self.get_size(browse_image)
 
-            tpl_values['image_date'] = self.get_exif_date(image)
+            tpl_values['image_date'] = self.get_date_taken(image)\
+                  .strftime("on %d/%m/%Y at %H:%M")
 
             tpl_values['prev_link'] = self.gen_other_img_link(prev, dest_dir,
                                          size_name,
@@ -248,6 +265,8 @@ class Directory(File):
                 self.album.log("\tIgnoring " + file +\
                                " : format not supported", 1)
 
+        supported_files.sort(lambda x, y:
+                                self.img_proc.compare_date_taken(x, y, root))
         for file in supported_files:
             file_path = os.path.join(root, file)
             prev = self.find_prev(file, supported_files, root)
