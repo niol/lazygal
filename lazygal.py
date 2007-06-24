@@ -210,7 +210,7 @@ class Directory(File):
 
     def __init__(self, album):
         File.__init__(self, album)
-        self.image_processor = self.album.image_processor
+        self.img_proc = self.album.image_processor
 
     def find_prev(self, file, files, root):
         index = files.index(file)
@@ -237,9 +237,9 @@ class Directory(File):
 
         for file in files:
             file_path = os.path.join(root, file)
-            if self.album.image_processor.is_ext_supported(file):
+            if self.img_proc.is_ext_supported(file):
                 self.album.log("\tProcessing " + file)
-                gen_files = self.image_processor.generate_other_sizes(file_path,
+                gen_files = self.img_proc.generate_other_sizes(file_path,
                                                                       dest_dir)
                 generated_files.extend(gen_files)
                 supported_files.append(file)
@@ -252,10 +252,9 @@ class Directory(File):
             file_path = os.path.join(root, file)
             prev = self.find_prev(file, supported_files, root)
             next = self.find_next(file, supported_files, root)
-            gen_files = self.image_processor.generate_browse_pages(file_path,
-                                                                   dest_dir,
-                                                                   prev,
-                                                                   next)
+            gen_files = self.img_proc.generate_browse_pages(file_path,
+                                                            dest_dir,
+                                                            prev, next)
             generated_files.extend(gen_files)
 
         page = self.generate_index_page(root, dirs, supported_files, dest_dir)
