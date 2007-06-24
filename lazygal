@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+import sys, os
+from optparse import OptionParser
+
+from lazygal import Album
+
+usage = "usage: %prog [options] albumdir"
+parser = OptionParser(usage=usage)
+parser.add_option("-o", "--output-directory",
+                  action="store", type="string",
+                  dest="dest_dir", default=".",
+                  help="Directory where web pages, slides and thumbs will be written (default is current directory).")
+parser.add_option("-t", "--theme",
+                  action="store", type="string",
+                  dest="theme", default="default",
+                  help="Theme name (looked up in them directory) or theme full path.")
+(options, args) = parser.parse_args()
+
+if len(args) != 1:
+    parser.print_help()
+    sys.exit("Bad command line.")
+
+album = Album(args[0],
+              (150, 113),
+              [('small', (800, 600)), ('medium', (1024, 768))])
+album.set_theme(options.theme)
+album.generate(options.dest_dir)
+
+
+# vim: ts=4 sw=4 expandtab
