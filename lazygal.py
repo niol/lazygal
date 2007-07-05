@@ -26,21 +26,22 @@ class Template:
 
 class File:
 
-    def __init__(self, album):
+    def __init__(self, source, album, album_dest_dir):
+        self.source = source
         self.album = album
+        self.album_dest_dir = album_dest_dir
+        self.dest = os.path.join(album_dest_dir, self.strip_root())
+        filename, self.extension = os.path.splitext(self.source)
+        self.filename = os.path.basename(filename)
 
-    def get_extension(self, file_path):
-        filename, ext = os.path.splitext(file_path)
-        return ext
-
-    def get_filename(self, file_path):
-        filename, ext = os.path.splitext(file_path)
-        return os.path.basename(filename)
-
-    def strip_root(self, path):
+    def strip_root(self, path=None):
         found = False
         album_path = ""
-        head = path
+
+        if not path:
+            head = self.source
+        else:
+            head = path
 
         while not found:
             if head == self.album.source_dir:
@@ -49,15 +50,18 @@ class File:
                 raise Exception("Root not found")
             else:
                 head, tail = os.path.split(head)
-                album_path = os.path.join(tail, album_path)
+                if album_path == "":
+                    album_path = tail
+                else:
+                    album_path = os.path.join(tail, album_path)
 
         return album_path
 
-    def rel_root(self, path):
-        if os.path.isdir(path):
-            cur_path = path
+    def rel_root(self):
+        if os.path.isdir(self.source):
+            cur_path = self.source
         else:
-            cur_path = os.path.dirname(path)
+            cur_path = os.path.dirname(self.source)
 
         rel_root = ""
 
@@ -66,63 +70,58 @@ class File:
             rel_root = os.path.join('..', rel_root)
         return rel_root
 
-    def get_dest_path(self, path, dest_dir):
-        return os.path.join(dest_dir, self.strip_root(path))
+    def get_album_dir(self):
+        if os.path.isdir(self.source):
+            return self.strip_root(self.source)
+        else:
+            return self.strip_root(os.path.dirname(self.source))
 
-    def get_album_dir(self, path):
-        return self.strip_root(os.path.dirname(path))
+    def get_source_mtime(self):
+        return os.path.getmtime(self.source)
 
-    def get_source_mtime(self, path):
-        return os.path.getmtime(path)
-
-    def get_dest_mtime(self, source_path, dest_dir, dest_file = None):
+    def get_dest_mtime(self, dest_file = None):
         if not dest_file:
-            dest_file = self.get_dest_path(source_path, dest_dir)
+            dest_file = self.dest
 
         try:
             return os.path.getmtime(dest_file)
-        except:
-            # Let's tell that the file is very old
+        except OSError:
+            # Let's tell that the file is very old if it does not exist
             return 0
 
-    def source_newer(self, source_path, dest_dir, dest_file = None):
-        return self.get_source_mtime(source_path) >\
-               self.get_dest_mtime(source_path, dest_dir, dest_file)
+    def source_newer(self, dest_file = None):
+        return self.get_source_mtime() > self.get_dest_mtime(dest_file)
 
 
 class ImageFile(File):
 
-    def __init__(self, album):
-        File.__init__(self, album)
+    def __init__(self, source, album, album_dest_dir):
+        File.__init__(self, source, album, album_dest_dir)
         self.generated_sizes = [('thumb', album.thumb_size)]\
                                + album.browse_sizes
+        self.date_taken = None
 
-    def is_ext_supported(self, file):
-        return self.get_extension(file) in ['.jpg']
-
-    def get_othersize_path_noext(self, file, dest_dir, size_name):
-        thumb_name = self.get_othersize_name_noext(file, size_name)
-        thumb_dir = self.get_dest_path(os.path.dirname(file), dest_dir)
+    def get_othersize_path_noext(self, size_name):
+        thumb_name = self.get_othersize_name_noext(size_name)
+        thumb_dir = os.path.dirname(self.dest)
         return os.path.join(thumb_dir, thumb_name)
 
-    def get_othersize_name_noext(self, img, size_name = None):
+    def get_othersize_name_noext(self, size_name = None):
         if not size_name:
             size_name = self.album.default_size_name
-        return '_'.join([self.get_filename(img), size_name])
+        return '_'.join([self.filename, size_name])
 
-    def get_othersize_bpage_name(self, img, size_name = None):
-        return self.get_othersize_name_noext(img, size_name) + '.html'
+    def get_othersize_bpage_name(self, size_name = None):
+        return self.get_othersize_name_noext(size_name) + '.html'
 
-    def get_othersize_img_link(self, img, size_name = None):
-        return self.get_othersize_name_noext(img, size_name)\
-               + self.get_extension(img)
+    def get_othersize_img_link(self, size_name = None):
+        return self.get_othersize_name_noext(size_name) + self.extension
 
-    def generate_size(self, source, dest_dir, size_name, size):
-        osize_path = self.get_othersize_path_noext(source, dest_dir, size_name)\
-                     + self.get_extension(source)
+    def generate_size(self, size_name, size):
+        osize_path = self.get_othersize_path_noext(size_name) + self.extension
 
-        if self.source_newer(source, dest_dir, osize_path):
-            im = Image.open(source)
+        if self.source_newer(osize_path):
+            im = Image.open(self.source)
             im.thumbnail(size, Image.ANTIALIAS)
             im.save(osize_path) 
             self.album.log("\t\tGenerated " + osize_path)
@@ -132,36 +131,32 @@ class ImageFile(File):
         im = Image.open(img)
         return im.size
 
-    def get_date_taken(self, img, dir = None):
-        if dir:
-            img = os.path.join(dir, img)
-        f = open(img, 'rb')
-        tags = EXIF.process_file(f)
-        exif_date = str(tags['Image DateTime'])
-        date, time = exif_date.split(' ')
-        year, month, day = date.split(':')
-        hour, minute, second = time.split(':')
-        return datetime.datetime(int(year), int(month), int(day),
-                                 int(hour), int(minute), int(second))
+    def get_date_taken(self):
+        if not self.date_taken:
+            f = open(self.source, 'rb')
+            tags = EXIF.process_file(f)
+            exif_date = str(tags['Image DateTime'])
+            date, time = exif_date.split(' ')
+            year, month, day = date.split(':')
+            hour, minute, second = time.split(':')
+            self.date_taken =\
+                         datetime.datetime(int(year), int(month), int(day),
+                                           int(hour), int(minute), int(second))
+        return self.date_taken
 
-    def compare_date_taken(self, img1, img2, dir = None):
-        if dir:
-            img1 = os.path.join(dir, img1)
-            img2 = os.path.join(dir, img2)
-        date1 = time.mktime(self.get_date_taken(img1).timetuple())
-        date2 = time.mktime(self.get_date_taken(img2).timetuple())
+    def compare_date_taken(self, other_img):
+        date1 = time.mktime(self.get_date_taken().timetuple())
+        date2 = time.mktime(other_img.get_date_taken().timetuple())
         delta = date1 - date2
         return int(delta)
 
-    def gen_other_img_link(self, img, dest_dir, size_name, template):
+    def gen_other_img_link(self, img, size_name, template):
         if img:
             link_vals = {}
-            link_vals['link'] = self.get_othersize_bpage_name(img, size_name)
+            link_vals['link'] = img.get_othersize_bpage_name(size_name)
+            link_vals['thumb'] = img.get_othersize_img_link('thumb')
 
-            link_vals['thumb'] = self.get_othersize_img_link(img, 'thumb')
-
-            thumb = self.get_othersize_path_noext(img, dest_dir, 'thumb') +\
-                    self.get_extension(img)
+            thumb = img.get_othersize_path_noext('thumb') + img.extension
             link_vals['thumb_width'],\
                 link_vals['thumb_height'] = self.get_size(thumb)
 
@@ -169,165 +164,149 @@ class ImageFile(File):
         else:
             return ''
 
-    def generate_browse_page(self, image, dest_dir, size_name, prev, next):
-        page_file = '.'.join([self.get_othersize_path_noext(image, dest_dir,
-                                                            size_name),
+    def generate_browse_page(self, size_name, prev, next):
+        page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
 
-        if self.source_newer(image, dest_dir, page_file):
+        if self.source_newer(page_file):
             page_template = self.album.templates['page-image']
 
             tpl_values = {}
-            tpl_values['img_src'] = self.get_othersize_img_link(image,
-                                                                size_name)
-            tpl_values['name'] = os.path.basename(image)
-            tpl_values['dir'] = self.get_album_dir(image)
-            tpl_values['image_name'] = self.get_filename(image)
+            tpl_values['img_src'] = self.get_othersize_img_link(size_name)
+            tpl_values['name'] = self.filename
+            tpl_values['dir'] = self.get_album_dir()
+            tpl_values['image_name'] = self.filename
 
-            browse_image = self.get_othersize_path_noext(image, dest_dir,
-                                                         size_name)\
-                           + self.get_extension(image)
+            browse_image = self.get_othersize_path_noext(size_name)\
+                           + self.extension
             tpl_values['img_width'],\
                 tpl_values['img_height'] = self.get_size(browse_image)
 
-            tpl_values['image_date'] = self.get_date_taken(image)\
-                  .strftime("on %d/%m/%Y at %H:%M")
+            img_date = self.get_date_taken()
+            tpl_values['image_date'] = img_date.strftime("on %d/%m/%Y at %H:%M")
 
-            tpl_values['prev_link'] = self.gen_other_img_link(prev, dest_dir,
+            tpl_values['prev_link'] = self.gen_other_img_link(prev,
                                          size_name,
                                          self.album.templates['prev_link'])
-            tpl_values['next_link'] = self.gen_other_img_link(next, dest_dir,
+            tpl_values['next_link'] = self.gen_other_img_link(next,
                                          size_name,
                                          self.album.templates['next_link'])
-            tpl_values['rel_root'] = self.rel_root(image)
+            tpl_values['rel_root'] = self.rel_root()
 
             page_template.dump(tpl_values, page_file)
             self.album.log("Generated HTML" + page_file)
 
         return os.path.basename(page_file)
 
-    def generate_other_sizes(self, file, dest_dir):
+    def generate_other_sizes(self):
         generated_files = []
         for size_name, size in self.generated_sizes:
-            osize_file = self.generate_size(file, dest_dir, size_name, size)
+            osize_file = self.generate_size(size_name, size)
             generated_files.append(osize_file)
         return generated_files
 
-    def generate_browse_pages(self, file, dest_dir, prev, next):
+    def generate_browse_pages(self, prev, next):
         generated_files = []
         for size_name, size in self.album.browse_sizes:
-            page = self.generate_browse_page(file, dest_dir,
-                                             size_name, prev, next)
+            page = self.generate_browse_page(size_name, prev, next)
             generated_files.append(page)
         return generated_files
 
 
 class Directory(File):
 
-    def __init__(self, album):
-        File.__init__(self, album)
-        self.img_proc = self.album.image_processor
+    def __init__(self, source, dirnames, filenames, album, album_dest_dir):
+        File.__init__(self, source, album, album_dest_dir)
+        self.dirnames = dirnames
+        self.filenames = filenames
+        self.supported_files = []
 
-    def find_prev(self, file, files, root):
-        prev_index = files.index(file) - 1
+    def find_prev(self, file):
+        prev_index = self.supported_files.index(file) - 1
         if prev_index < 0:
             return None
         else:
-            return os.path.join(root, files[prev_index])
+            return self.supported_files[prev_index]
 
-    def find_next(self, file, files, root):
-        index = files.index(file)
+    def find_next(self, file):
+        index = self.supported_files.index(file)
         try:
-            return os.path.join(root, files[index+1])
+            return self.supported_files[index+1]
         except IndexError:
             return None
 
-    def generate(self, root, dirs, files, dest_dir):
+    def generate(self):
         generated_files = []
-        supported_files = []
 
-        root_dest_dir = self.get_dest_path(root, dest_dir)
-        if not os.path.isdir(self.get_dest_path(root, dest_dir)):
-            os.mkdir(root_dest_dir)
-            self.album.log("\tCreated dir " + root_dest_dir)
+        if not os.path.isdir(self.dest):
+            os.mkdir(self.dest)
+            self.album.log("\tCreated dir " + self.dest)
 
-        for file in files:
-            file_path = os.path.join(root, file)
-            if self.img_proc.is_ext_supported(file):
-                self.album.log("\tProcessing " + file)
-                gen_files = self.img_proc.generate_other_sizes(file_path,
-                                                                      dest_dir)
+        for filename in self.filenames:
+            file_path = os.path.join(self.source, filename)
+            if self.album.is_ext_supported(filename):
+                self.album.log("\tProcessing " + filename)
+                file = ImageFile(file_path, self.album, self.album_dest_dir)
+                gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
-                supported_files.append(file)
-                self.album.log("\tFinished processing " + file)
+                self.supported_files.append(file)
+                self.album.log("\tFinished processing " + filename)
             else:
-                self.album.log("\tIgnoring " + file +\
+                self.album.log("\tIgnoring " + filename +\
                                " : format not supported", 1)
 
-        supported_files.sort(lambda x, y:
-                                self.img_proc.compare_date_taken(x, y, root))
-        for file in supported_files:
-            file_path = os.path.join(root, file)
-            prev = self.find_prev(file, supported_files, root)
-            next = self.find_next(file, supported_files, root)
-            gen_files = self.img_proc.generate_browse_pages(file_path,
-                                                            dest_dir,
-                                                            prev, next)
+        self.supported_files.sort(lambda x, y: x.compare_date_taken(y))
+        for file in self.supported_files:
+            prev = self.find_prev(file)
+            next = self.find_next(file)
+            gen_files = file.generate_browse_pages(prev, next)
             generated_files.extend(gen_files)
 
-        page = self.generate_index_page(root, dirs, supported_files, dest_dir)
+        page = self.generate_index_page()
         generated_files.append(page)
 
         return generated_files
 
-    def generate_index_page(self, root, dirs, files, dest_dir):
+    def generate_index_page(self):
         values = {}
 
         subgal_links = []
-        for dir in dirs:
+        for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
             subgal_links.append(self.album.templates['subgal_link'].\
                                                         instanciate(dir_info))
         values['subgals'] = "\n".join(subgal_links)
 
         image_links = []
-        for file in files:
-            file_path = os.path.join(root, file)
+        for file in self.supported_files:
             file_info = {}
 
-            default_size_name = self.album.browse_sizes[0][0]
-            link_page = self.album.image_processor.\
-                  get_othersize_path_noext(file_path,
-                                           dest_dir, default_size_name)\
-                                + '.html'
+            default_size_name = self.album.default_size_name
+            link_page = file.get_othersize_bpage_name(default_size_name)
             file_info['link'] = os.path.basename(link_page)
 
-            thumb = self.album.image_processor.\
-                         get_othersize_path_noext(file_path,
-                                                  dest_dir, 'thumb')\
-                    + self.get_extension(file)
+            thumb = os.path.join(self.dest,
+                                 file.get_othersize_img_link('thumb'))
             file_info['thumb'] = os.path.basename(thumb)
             file_info['width'],\
-                file_info['height'] = self.album.\
-                                  image_processor.get_size(thumb)
-            file_info['image_name'] = os.path.basename(file)
+                file_info['height'] = file.get_size(thumb)
+            file_info['image_name'] = file.filename
 
             image_links.append(self.album.templates['image_link'].\
                                                        instanciate(file_info))
         values['images'] = "\n".join(image_links)
-        values['title'] = self.strip_root(root)
-        values['rel_root'] = self.rel_root(root)
+        values['title'] = self.strip_root()
+        values['rel_root'] = self.rel_root()
 
-        page_file = os.path.join(self.get_dest_path(root, dest_dir),
-                                 'index.html')
+        page_file = os.path.join(self.dest, 'index.html')
         self.album.templates['page-index'].dump(values, page_file)
         self.album.log("\tDumped HTML " + page_file)
         return os.path.basename(page_file)
     
-    def clean_dest(self, root, dirs, generated_files, dest_dir):
-        for dest_file in os.listdir(self.get_dest_path(root, dest_dir)):
+    def clean_dest(self, generated_files):
+        for dest_file in os.listdir(self.dest):
             if dest_file not in generated_files and\
-               dest_file not in dirs:
+               dest_file not in self.dirnames:
                 self.album.log("\t\tCleanup: " + dest_file + " should be removed")
 
 
@@ -341,8 +320,6 @@ class Album:
         self.default_size_name = self.browse_sizes[0][0]
 
         self.templates = {}
-        self.image_processor = ImageFile(self)
-        self.dir_processor = Directory(self)
 
     def set_theme(self, theme):
         self.theme = theme
@@ -356,19 +333,22 @@ class Album:
         """Log message to stdout : 0 is debug, 1 is warning, 2 is info."""
         print msg
 
+    def is_ext_supported(self, filename):
+        filename, extension = os.path.splitext(filename)
+        return extension in ['.jpg']
+
     def generate(self, dest_dir):
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("Generating to " + sane_dest_dir)
 
-        for root, dirs, files in os.walk(self.source_dir):
+        for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("Entering " + root)
-            generated_files = self.dir_processor.\
-                                     generate(root, dirs, files, sane_dest_dir)
-            self.dir_processor.clean_dest(root, dirs,
-                                          generated_files, sane_dest_dir)
+            dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
+            generated_files = dir.generate()
+            dir.clean_dest(generated_files)
             self.log("Leaving " + root)
 
-        self.copy_shared(dest_dir)
+        self.copy_shared(sane_dest_dir)
 
     def copy_shared(self, dest_dir):
         shared_stuff_dir = os.path.join(dest_dir, 'shared')
