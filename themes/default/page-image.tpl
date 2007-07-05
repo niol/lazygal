@@ -10,7 +10,9 @@
 
 <body>
 
-<p><a href="index.html">Gallery index</a></p>
+<p><a href="%(index_link)s">Gallery index</a></p>
+
+<p>%(osize_links)s</p>
 
 %(prev_link)s
 

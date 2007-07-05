@@ -92,30 +92,58 @@ class File:
     def source_newer(self, dest_file = None):
         return self.get_source_mtime() > self.get_dest_mtime(dest_file)
 
+    def get_osize_name_noext(self, size_name=None,
+                                   filename=None,
+                                   no_def_ozise_suffix=False):
+        if not size_name:
+            size_name = self.album.default_size_name
+        if not filename:
+            filename = self.filename
+
+        if no_def_ozise_suffix and size_name == self.album.default_size_name:
+            return filename
+        else:
+            return '_'.join([filename, size_name])
+
+    def get_osize_links(self, size_name, filename, no_def_ozise_suffix=False):
+        osize_index_links = []
+        for osize_name, ozise in self.album.browse_sizes:
+            if osize_name == size_name:
+                # No link if we're on the current page
+                osize_index_link = osize_name
+            else:
+                osize_info = {}
+                osize_info['osize_name'] = osize_name
+                osize_page_name = self.get_osize_name_noext(osize_name,
+                                                            filename,
+                                                            no_def_ozise_suffix)
+                osize_info['osize_link'] = osize_page_name + '.html'
+                osize_index_link = self.album.templates['osize_link'].\
+                                                        instanciate(osize_info)
+            osize_index_links.append(osize_index_link)
+
+        return ' | '.join(osize_index_links)
+
 
 class ImageFile(File):
 
-    def __init__(self, source, album, album_dest_dir):
+    def __init__(self, source, dir, album, album_dest_dir):
         File.__init__(self, source, album, album_dest_dir)
+        self.dir = dir
         self.generated_sizes = [('thumb', album.thumb_size)]\
                                + album.browse_sizes
         self.date_taken = None
 
     def get_othersize_path_noext(self, size_name):
-        thumb_name = self.get_othersize_name_noext(size_name)
+        thumb_name = self.get_osize_name_noext(size_name)
         thumb_dir = os.path.dirname(self.dest)
         return os.path.join(thumb_dir, thumb_name)
 
-    def get_othersize_name_noext(self, size_name = None):
-        if not size_name:
-            size_name = self.album.default_size_name
-        return '_'.join([self.filename, size_name])
-
     def get_othersize_bpage_name(self, size_name = None):
-        return self.get_othersize_name_noext(size_name) + '.html'
+        return self.get_osize_name_noext(size_name) + '.html'
 
     def get_othersize_img_link(self, size_name = None):
-        return self.get_othersize_name_noext(size_name) + self.extension
+        return self.get_osize_name_noext(size_name) + self.extension
 
     def generate_size(self, size_name, size):
         osize_path = self.get_othersize_path_noext(size_name) + self.extension
@@ -191,6 +219,9 @@ class ImageFile(File):
             tpl_values['next_link'] = self.gen_other_img_link(next,
                                          size_name,
                                          self.album.templates['next_link'])
+            tpl_values['index_link'] = self.dir.get_index_filename(size_name)
+            tpl_values['osize_links'] = self.get_osize_links(size_name,
+                                                             self.filename)
             tpl_values['rel_root'] = self.rel_root()
 
             page_template.dump(tpl_values, page_file)
@@ -246,7 +277,8 @@ class Directory(File):
             file_path = os.path.join(self.source, filename)
             if self.album.is_ext_supported(filename):
                 self.album.log("\tProcessing " + filename)
-                file = ImageFile(file_path, self.album, self.album_dest_dir)
+                file = ImageFile(file_path, self,
+                                 self.album, self.album_dest_dir)
                 gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
                 self.supported_files.append(file)
@@ -262,13 +294,19 @@ class Directory(File):
             gen_files = file.generate_browse_pages(prev, next)
             generated_files.extend(gen_files)
 
-        page = self.generate_index_page()
-        generated_files.append(page)
+        index_pages = self.generate_index_pages()
+        generated_files.extend(index_pages)
 
         return generated_files
 
-    def generate_index_page(self):
+    def get_index_filename(self, size_name):
+        return self.get_osize_name_noext(size_name, 'index', True) + '.html'
+
+    def generate_index_page(self, size_name):
         values = {}
+
+        values['ozise_index_links'] = self.get_osize_links(size_name,
+                                                           'index', True)
 
         subgal_links = []
         for dir in self.dirnames:
@@ -281,8 +319,7 @@ class Directory(File):
         for file in self.supported_files:
             file_info = {}
 
-            default_size_name = self.album.default_size_name
-            link_page = file.get_othersize_bpage_name(default_size_name)
+            link_page = file.get_othersize_bpage_name(size_name)
             file_info['link'] = os.path.basename(link_page)
 
             thumb = os.path.join(self.dest,
@@ -298,10 +335,17 @@ class Directory(File):
         values['title'] = self.strip_root()
         values['rel_root'] = self.rel_root()
 
-        page_file = os.path.join(self.dest, 'index.html')
+        page_file = os.path.join(self.dest, self.get_index_filename(size_name))
         self.album.templates['page-index'].dump(values, page_file)
         self.album.log("\tDumped HTML " + page_file)
         return os.path.basename(page_file)
+
+    def generate_index_pages(self):
+        generated_pages = []
+        for size_name, size in self.album.browse_sizes:
+            page = self.generate_index_page(size_name)
+            generated_pages.append(page)
+        return generated_pages
     
     def clean_dest(self, generated_files):
         for dest_file in os.listdir(self.dest):

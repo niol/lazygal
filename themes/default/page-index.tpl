@@ -14,6 +14,8 @@
 
 <p><a href="..">Parent</a></p>
 
+<p>%(ozise_index_links)s</p>
+
 <ul id="subgal_links">
   %(subgals)s
 </ul>
