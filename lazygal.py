@@ -251,6 +251,7 @@ class Directory(File):
         File.__init__(self, source, album, album_dest_dir)
         self.dest = os.path.join(album_dest_dir, self.strip_root())
         self.dirnames = dirnames
+        self.dirnames.sort()
         self.filenames = filenames
         self.supported_files = []
 
