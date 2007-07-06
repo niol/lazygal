@@ -30,7 +30,6 @@ class File:
         self.source = source
         self.album = album
         self.album_dest_dir = album_dest_dir
-        self.dest = os.path.join(album_dest_dir, self.strip_root())
         filename, self.extension = os.path.splitext(self.source)
         self.filename = os.path.basename(filename)
 
@@ -79,10 +78,7 @@ class File:
     def get_source_mtime(self):
         return os.path.getmtime(self.source)
 
-    def get_dest_mtime(self, dest_file = None):
-        if not dest_file:
-            dest_file = self.dest
-
+    def get_dest_mtime(self, dest_file):
         try:
             return os.path.getmtime(dest_file)
         except OSError:
@@ -130,14 +126,14 @@ class ImageFile(File):
     def __init__(self, source, dir, album, album_dest_dir):
         File.__init__(self, source, album, album_dest_dir)
         self.dir = dir
+        self.destdir = self.dir.dest
         self.generated_sizes = [('thumb', album.thumb_size)]\
                                + album.browse_sizes
         self.date_taken = None
 
     def get_othersize_path_noext(self, size_name):
         thumb_name = self.get_osize_name_noext(size_name)
-        thumb_dir = os.path.dirname(self.dest)
-        return os.path.join(thumb_dir, thumb_name)
+        return os.path.join(self.destdir, thumb_name)
 
     def get_othersize_bpage_name(self, size_name = None):
         return self.get_osize_name_noext(size_name) + '.html'
@@ -248,6 +244,7 @@ class Directory(File):
 
     def __init__(self, source, dirnames, filenames, album, album_dest_dir):
         File.__init__(self, source, album, album_dest_dir)
+        self.dest = os.path.join(album_dest_dir, self.strip_root())
         self.dirnames = dirnames
         self.filenames = filenames
         self.supported_files = []
