@@ -159,13 +159,18 @@ class ImageFile(File):
         if not self.date_taken:
             f = open(self.source, 'rb')
             tags = EXIF.process_file(f)
-            exif_date = str(tags['Image DateTime'])
-            date, time = exif_date.split(' ')
-            year, month, day = date.split(':')
-            hour, minute, second = time.split(':')
-            self.date_taken =\
+            try:
+                exif_date = str(tags['Image DateTime'])
+                date, time = exif_date.split(' ')
+                year, month, day = date.split(':')
+                hour, minute, second = time.split(':')
+                self.date_taken =\
                          datetime.datetime(int(year), int(month), int(day),
                                            int(hour), int(minute), int(second))
+            except (KeyError, ValueError):
+                # No date available in EXIF, or bad format, use file mtime
+                self.date_taken = datetime.datetime.fromtimestamp(\
+                                               self.get_source_mtime())
         return self.date_taken
 
     def compare_date_taken(self, other_img):
