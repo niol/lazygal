@@ -335,8 +335,13 @@ class Directory(File):
             image_links.append(self.album.templates['image_link'].\
                                                        instanciate(file_info))
         values['images'] = "\n".join(image_links)
-        values['title'] = self.strip_root()
         values['rel_root'] = self.rel_root()
+
+        title = self.strip_root()
+        if title == "":
+            # Easy title for root directory
+            title = os.path.basename(os.path.dirname(self.dest))
+        values['title'] = title.replace('_', ' ')
 
         page_file = os.path.join(self.dest, self.get_index_filename(size_name))
         self.album.templates['page-index'].dump(values, page_file)
