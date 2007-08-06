@@ -129,6 +129,8 @@ class ImageFile(File):
         self.destdir = self.dir.dest
         self.generated_sizes = [('thumb', album.thumb_size)]\
                                + album.browse_sizes
+
+        self.tags = None
         self.date_taken = None
 
     def get_othersize_path_noext(self, size_name):
@@ -147,6 +149,12 @@ class ImageFile(File):
         if self.source_newer(osize_path):
             im = Image.open(self.source)
             im.thumbnail(size, Image.ANTIALIAS)
+
+            # Use EXIF data to rotate target image if available and required
+            rotation = self.get_required_rotation()
+            if rotation != 0:
+                im = im.rotate(rotation)
+
             im.save(osize_path) 
             self.album.log("\t\tGenerated " + osize_path)
         return os.path.basename(osize_path)
@@ -155,23 +163,41 @@ class ImageFile(File):
         im = Image.open(img)
         return im.size
 
-    def get_date_taken(self):
-        if not self.date_taken:
+    def __load_exif_data(self):
+        if not self.tags:
             f = open(self.source, 'rb')
-            tags = EXIF.process_file(f)
-            try:
-                exif_date = str(tags['Image DateTime'])
-                date, time = exif_date.split(' ')
-                year, month, day = date.split(':')
-                hour, minute, second = time.split(':')
-                self.date_taken =\
+            self.tags = EXIF.process_file(f)
+
+    def get_date_taken(self):
+        self.__load_exif_data()
+        try:
+            exif_date = str(self.tags['Image DateTime'])
+            date, time = exif_date.split(' ')
+            year, month, day = date.split(':')
+            hour, minute, second = time.split(':')
+            self.date_taken =\
                          datetime.datetime(int(year), int(month), int(day),
                                            int(hour), int(minute), int(second))
-            except (KeyError, ValueError):
-                # No date available in EXIF, or bad format, use file mtime
-                self.date_taken = datetime.datetime.fromtimestamp(\
+        except (KeyError, ValueError):
+            # No date available in EXIF, or bad format, use file mtime
+            self.date_taken = datetime.datetime.fromtimestamp(\
                                                self.get_source_mtime())
         return self.date_taken
+
+    def get_required_rotation(self):
+        self.__load_exif_data()
+
+        if self.tags.has_key('Image Orientation'):
+            orientation_code = int(self.tags['Image Orientation'].values[0])
+            # FIXME : This hsould really go in the EXIF library
+            if orientation_code == 8:
+                return 90
+            elif orientation_code == 6:
+                return 180
+            else:
+                return 0
+        else:
+            return 0
 
     def compare_date_taken(self, other_img):
         date1 = time.mktime(self.get_date_taken().timetuple())
