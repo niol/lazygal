@@ -193,7 +193,7 @@ class ImageFile(File):
             if orientation_code == 8:
                 return 90
             elif orientation_code == 6:
-                return 180
+                return 270
             else:
                 return 0
         else:
