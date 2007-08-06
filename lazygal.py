@@ -85,7 +85,7 @@ class File:
             # Let's tell that the file is very old if it does not exist
             return 0
 
-    def source_newer(self, dest_file = None):
+    def source_newer(self, dest_file):
         return self.get_source_mtime() > self.get_dest_mtime(dest_file)
 
     def get_osize_name_noext(self, size_name=None,
@@ -298,6 +298,10 @@ class Directory(File):
     def generate(self):
         generated_files = []
 
+        if not self.source_newer(self.dest):
+            self.album.log("\tSkipping because of mtime")
+            return
+
         if not os.path.isdir(self.dest):
             os.mkdir(self.dest)
             self.album.log("\tCreated dir " + self.dest)
@@ -326,7 +330,7 @@ class Directory(File):
         index_pages = self.generate_index_pages()
         generated_files.extend(index_pages)
 
-        return generated_files
+        self.clean_dest(generated_files)
 
     def get_index_filename(self, size_name):
         return self.get_osize_name_noext(size_name, 'index', True) + '.html'
@@ -424,8 +428,7 @@ class Album:
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("Entering " + root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
-            generated_files = dir.generate()
-            dir.clean_dest(generated_files)
+            dir.generate()
             self.log("Leaving " + root)
 
     def copy_shared(self, dest_dir):
