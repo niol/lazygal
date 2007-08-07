@@ -295,7 +295,7 @@ class Directory(File):
         except IndexError:
             return None
 
-    def generate(self):
+    def generate(self, do_clean_dest):
         generated_files = []
 
         if not self.source_newer(self.dest):
@@ -330,7 +330,7 @@ class Directory(File):
         index_pages = self.generate_index_pages()
         generated_files.extend(index_pages)
 
-        self.clean_dest(generated_files)
+        self.check_dest_for_junk(generated_files, do_clean_dest)
 
     def get_index_filename(self, size_name):
         return self.get_osize_name_noext(size_name, 'index', True) + '.html'
@@ -385,11 +385,18 @@ class Directory(File):
             generated_pages.append(page)
         return generated_pages
     
-    def clean_dest(self, generated_files):
+    def check_dest_for_junk(self, generated_files, do_clean_dest):
         for dest_file in os.listdir(self.dest):
             if dest_file not in generated_files and\
                dest_file not in self.dirnames:
-                self.album.log("\t\tCleanup: " + dest_file + " should be removed")
+                text = ''
+                if do_clean_dest:
+                    os.unlink(os.path.join(self.dest, dest_file))
+                    text = "has been"
+                else:
+                    text = "should be"
+                self.album.log("\t\tCleanup: " + dest_file + " " +
+                               text + " removed")
 
 
 class Album:
@@ -419,7 +426,7 @@ class Album:
         filename, extension = os.path.splitext(filename)
         return extension in ['.jpg']
 
-    def generate(self, dest_dir):
+    def generate(self, dest_dir, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("Generating to " + sane_dest_dir)
 
@@ -428,7 +435,7 @@ class Album:
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("Entering " + root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
-            dir.generate()
+            dir.generate(clean_dest)
             self.log("Leaving " + root)
 
     def copy_shared(self, dest_dir):

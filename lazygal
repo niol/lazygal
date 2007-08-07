@@ -15,6 +15,10 @@ parser.add_option("-t", "--theme",
                   action="store", type="string",
                   dest="theme", default="default",
                   help="Theme name (looked up in them directory) or theme full path.")
+parser.add_option("", "--clean-destination",
+                  action="store_true",
+                  dest="clean_dest", default=False,
+                  help="Clean destination directory of files that should not be there.")
 (options, args) = parser.parse_args()
 
 if len(args) != 1:
@@ -29,7 +33,7 @@ album = Album(source_dir,
               (150, 113),
               [('small', (800, 600)), ('medium', (1024, 768))])
 album.set_theme(options.theme)
-album.generate(options.dest_dir)
+album.generate(options.dest_dir, options.clean_dest)
 
 
 # vim: ts=4 sw=4 expandtab
