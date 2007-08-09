@@ -295,10 +295,10 @@ class Directory(File):
         except IndexError:
             return None
 
-    def generate(self, do_clean_dest):
+    def generate(self, check_all_dirs, do_clean_dest):
         generated_files = []
 
-        if not self.source_newer(self.dest):
+        if not check_all_dirs and not self.source_newer(self.dest):
             self.album.log("\tSkipping because of mtime")
             return
 
@@ -426,7 +426,7 @@ class Album:
         filename, extension = os.path.splitext(filename)
         return extension in ['.jpg']
 
-    def generate(self, dest_dir, clean_dest=False):
+    def generate(self, dest_dir, check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("Generating to " + sane_dest_dir)
 
@@ -435,7 +435,7 @@ class Album:
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("Entering " + root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
-            dir.generate(clean_dest)
+            dir.generate(check_all_dirs, clean_dest)
             self.log("Leaving " + root)
 
     def copy_shared(self, dest_dir):
