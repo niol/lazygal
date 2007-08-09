@@ -148,12 +148,13 @@ class ImageFile(File):
 
         if self.source_newer(osize_path):
             im = Image.open(self.source)
-            im.thumbnail(size, Image.ANTIALIAS)
 
             # Use EXIF data to rotate target image if available and required
             rotation = self.get_required_rotation()
             if rotation != 0:
                 im = im.rotate(rotation)
+
+            im.thumbnail(size, Image.ANTIALIAS)
 
             im.save(osize_path) 
             self.album.log("\t\tGenerated " + osize_path)
