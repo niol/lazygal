@@ -291,11 +291,20 @@ class Directory(File):
 
     def __init__(self, source, dirnames, filenames, album, album_dest_dir):
         File.__init__(self, source, album, album_dest_dir)
+
         self.dest = os.path.join(album_dest_dir, self.strip_root())
+        self.initial_dest_mtime = File.get_dest_mtime(self, self.dest)
+
         self.dirnames = dirnames
         self.dirnames.sort()
         self.filenames = filenames
         self.supported_files = []
+
+    def get_dest_mtime(self, dest_file):
+        if dest_file == self.dest:
+            return self.initial_dest_mtime
+        else:
+            return File.get_dest_mtime(self, dest_file)
 
     def find_prev(self, file):
         prev_index = self.supported_files.index(file) - 1
