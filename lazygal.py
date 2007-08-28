@@ -241,36 +241,34 @@ class ImageFile(File):
         page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
 
-        if self.source_newer(page_file):
-            page_template = self.album.templates['page-image']
+        page_template = self.album.templates['page-image']
 
-            tpl_values = {}
-            tpl_values['img_src'] = self.get_othersize_img_link(size_name)
-            tpl_values['name'] = self.filename
-            tpl_values['dir'] = self.get_album_dir()
-            tpl_values['image_name'] = self.filename
+        tpl_values = {}
+        tpl_values['img_src'] = self.get_othersize_img_link(size_name)
+        tpl_values['name'] = self.filename
+        tpl_values['dir'] = self.get_album_dir()
+        tpl_values['image_name'] = self.filename
 
-            browse_image = self.get_othersize_path_noext(size_name)\
-                           + self.extension
-            tpl_values['img_width'],\
-                tpl_values['img_height'] = self.get_size(browse_image)
+        browse_image = self.get_othersize_path_noext(size_name) + self.extension
+        tpl_values['img_width'],\
+        tpl_values['img_height'] = self.get_size(browse_image)
 
-            img_date = self.get_date_taken()
-            tpl_values['image_date'] = img_date.strftime("on %d/%m/%Y at %H:%M")
+        img_date = self.get_date_taken()
+        tpl_values['image_date'] = img_date.strftime("on %d/%m/%Y at %H:%M")
 
-            tpl_values['prev_link'] = self.gen_other_img_link(prev,
+        tpl_values['prev_link'] = self.gen_other_img_link(prev,
                                          size_name,
                                          self.album.templates['prev_link'])
-            tpl_values['next_link'] = self.gen_other_img_link(next,
+        tpl_values['next_link'] = self.gen_other_img_link(next,
                                          size_name,
                                          self.album.templates['next_link'])
-            tpl_values['index_link'] = self.dir.get_index_filename(size_name)
-            tpl_values['osize_links'] = self.get_osize_links(size_name,
-                                                             self.filename)
-            tpl_values['rel_root'] = self.rel_root()
+        tpl_values['index_link'] = self.dir.get_index_filename(size_name)
+        tpl_values['osize_links'] = self.get_osize_links(size_name,
+                                                         self.filename)
+        tpl_values['rel_root'] = self.rel_root()
 
-            page_template.dump(tpl_values, page_file)
-            self.album.log("Generated HTML" + page_file)
+        page_template.dump(tpl_values, page_file)
+        self.album.log("\t\tDumped HTML" + page_file)
 
         return os.path.basename(page_file)
 
