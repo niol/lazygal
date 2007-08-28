@@ -357,6 +357,13 @@ class Directory(File):
 
         self.check_dest_for_junk(generated_files, do_clean_dest)
 
+        # Although we should have modified the directory contents and thus its
+        # mtime, it is possible that the directory mtime has not been updated
+        # if we regenerated without adding/removing pictures (to take into
+        # account a rotation for example). This is why we force directory mtime
+        # update here.
+        os.utime(self.dest, None)
+
     def get_index_filename(self, size_name):
         return self.get_osize_name_noext(size_name, 'index', True) + '.html'
 
