@@ -392,7 +392,8 @@ class Directory(File):
         values['images'] = "\n".join(image_links)
         values['rel_root'] = self.rel_root()
 
-        title = self.strip_root()
+        values['rel_path'] = self.strip_root()
+        title = values['rel_path']
         if title == "":
             # Easy title for root directory
             title = os.path.basename(os.path.dirname(self.dest))
