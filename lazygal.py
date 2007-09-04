@@ -162,7 +162,7 @@ class ImageFile(File):
 
             im.thumbnail(size, Image.ANTIALIAS)
 
-            im.save(osize_path) 
+            im.save(osize_path)
             self.album.log("\t\tGenerated " + osize_path)
         return os.path.basename(osize_path)
 
@@ -401,7 +401,7 @@ class Directory(File):
             page = self.generate_index_page(size_name)
             generated_pages.append(page)
         return generated_pages
-    
+
     def check_dest_for_junk(self, generated_files, do_clean_dest):
         for dest_file in os.listdir(self.dest):
             if dest_file not in generated_files and\
