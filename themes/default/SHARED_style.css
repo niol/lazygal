@@ -24,4 +24,12 @@ img {
     margin:1em;
 }
 
+#image_links p{
+    text-align:justify;
+}
+
+#footer p {
+		text-align:justify;
+}
+
 // vim: ts=4 sw=4 expandtab

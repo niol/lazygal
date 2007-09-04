@@ -17,27 +17,18 @@
 
 import os, glob, shutil, time, datetime
 import Image, EXIF
+from genshi.template import TemplateLoader, MarkupTemplate
 
 
 THEME_DIR = os.path.join(os.path.dirname(__file__), 'themes')
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 
-class Template:
-
-    def __init__(self, tpl_file):
-        self.tpl_file = tpl_file
-
-        f = open(tpl_file, 'r')
-        self.tpl = f.read()
-        f.close()
-
-    def instanciate(self, values):
-        return self.tpl % values
+class Template(MarkupTemplate):
 
     def dump(self, values, dest):
         page = open(dest, 'w')
-        page.write(self.instanciate(values))
+        page.write(self.generate(t=values).render('xhtml'))
         page.close()
 
 
@@ -121,21 +112,19 @@ class File:
     def get_osize_links(self, size_name, filename, no_def_ozise_suffix=False):
         osize_index_links = []
         for osize_name, ozise in self.album.browse_sizes:
+            osize_info = {}
             if osize_name == size_name:
                 # No link if we're on the current page
-                osize_index_link = osize_name
+                osize_info['name'] = osize_name
             else:
-                osize_info = {}
-                osize_info['osize_name'] = osize_name
+                osize_info['name'] = osize_name
                 osize_page_name = self.get_osize_name_noext(osize_name,
                                                             filename,
                                                             no_def_ozise_suffix)
-                osize_info['osize_link'] = osize_page_name + '.html'
-                osize_index_link = self.album.templates['osize_link'].\
-                                                        instanciate(osize_info)
-            osize_index_links.append(osize_index_link)
+                osize_info['link'] = osize_page_name + '.html'
+            osize_index_links.append(osize_info)
 
-        return ' | '.join(osize_index_links)
+        return osize_index_links
 
 
 class ImageFile(File):
@@ -223,7 +212,7 @@ class ImageFile(File):
         delta = date1 - date2
         return int(delta)
 
-    def gen_other_img_link(self, img, size_name, template):
+    def gen_other_img_link(self, img, size_name):
         if img:
             link_vals = {}
             link_vals['link'] = img.get_othersize_bpage_name(size_name)
@@ -233,15 +222,15 @@ class ImageFile(File):
             link_vals['thumb_width'],\
                 link_vals['thumb_height'] = self.get_size(thumb)
 
-            return template.instanciate(link_vals)
+            return link_vals
         else:
-            return ''
+            return None
 
     def generate_browse_page(self, size_name, prev, next):
         page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
 
-        page_template = self.album.templates['page-image']
+        page_template = self.album.templates['browse']
 
         tpl_values = {}
         tpl_values['img_src'] = self.get_othersize_img_link(size_name)
@@ -256,12 +245,8 @@ class ImageFile(File):
         img_date = self.get_date_taken()
         tpl_values['image_date'] = img_date.strftime("on %d/%m/%Y at %H:%M")
 
-        tpl_values['prev_link'] = self.gen_other_img_link(prev,
-                                         size_name,
-                                         self.album.templates['prev_link'])
-        tpl_values['next_link'] = self.gen_other_img_link(next,
-                                         size_name,
-                                         self.album.templates['next_link'])
+        tpl_values['prev_link'] = self.gen_other_img_link(prev, size_name)
+        tpl_values['next_link'] = self.gen_other_img_link(next, size_name)
         tpl_values['index_link'] = self.dir.get_index_filename(size_name)
         tpl_values['osize_links'] = self.get_osize_links(size_name,
                                                          self.filename)
@@ -376,9 +361,8 @@ class Directory(File):
         subgal_links = []
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
-            subgal_links.append(self.album.templates['subgal_link'].\
-                                                        instanciate(dir_info))
-        values['subgals'] = "\n".join(subgal_links)
+            subgal_links.append(dir_info)
+        values['subgal_links'] = subgal_links
 
         image_links = []
         for file in self.supported_files:
@@ -394,9 +378,9 @@ class Directory(File):
                 file_info['height'] = file.get_size(thumb)
             file_info['image_name'] = file.filename
 
-            image_links.append(self.album.templates['image_link'].\
-                                                       instanciate(file_info))
-        values['images'] = "\n".join(image_links)
+            image_links.append(file_info)
+        values['images'] = image_links
+
         values['rel_root'] = self.rel_root()
 
         values['rel_path'] = self.strip_root()
@@ -407,7 +391,7 @@ class Directory(File):
         values['title'] = title.replace('_', ' ')
 
         page_file = os.path.join(self.dest, self.get_index_filename(size_name))
-        self.album.templates['page-index'].dump(values, page_file)
+        self.album.templates['dirindex'].dump(values, page_file)
         self.album.log("\tDumped HTML " + page_file)
         return os.path.basename(page_file)
 
@@ -447,9 +431,12 @@ class Album:
         self.theme = theme
         self.templates.clear()
 
-        for tpl_file in glob.glob(os.path.join(THEME_DIR, self.theme, "*.tpl")):
+        tpl_dir = os.path.join(THEME_DIR, self.theme)
+        tpl_loader = TemplateLoader([tpl_dir])
+        for tpl_file in glob.glob(os.path.join(tpl_dir, "*.thtml")):
             filename, ext = os.path.splitext(os.path.basename(tpl_file))
-            self.templates[filename] = Template(tpl_file)
+            self.templates[filename] = tpl_loader.load(tpl_file,
+                                                       cls=Template)
 
     def log(self, msg, level=0):
         """Log message to stdout : 0 is debug, 1 is warning, 2 is info."""
