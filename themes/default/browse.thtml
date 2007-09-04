@@ -34,7 +34,13 @@
     <div id="image_caption">
         <ul>
             <li>$t.image_name</li>
+            <li py:if="t.comment">$t.comment</li>
             <li>Taken $t.image_date</li>
+            <li py:if="t.camera_name">Using $t.camera_name</li>
+            <li py:if="t.exposure">Exposure $t.exposure</li>
+            <li py:if="t.fnumber">Aperture $t.fnumber</li>
+            <li py:if="t.flash">Flash $t.flash</li>
+            <li py:if="t.focal_length">Focal length $t.focal_length</li>
         </ul>
     </div>
 </div>

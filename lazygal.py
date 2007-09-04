@@ -226,6 +226,91 @@ class ImageFile(File):
         else:
             return None
 
+    def get_camera_name(self):
+        self.__load_exif_data()
+        try:
+            make = str(self.tags['Image Make'])
+            model = str(self.tags['Image Model'])
+            if model.find(make) == -1:
+                return '%s %s' % (make, model)
+            else:
+                return model
+        except KeyError:
+            return ''
+
+    def get_exif_string(self, name):
+        self.__load_exif_data()
+        try:
+            return str(self.tags[name])
+        except KeyError:
+            return ''
+
+    def get_jpeg_comment(self):
+        im = Image.open(self.source)
+        try:
+            return im.app['COM']
+        except KeyError:
+            return ''
+
+    def get_comment(self):
+        ret = self.get_exif_string('UserComment')
+        if ret != '':
+            return ret
+        return self.get_jpeg_comment()
+
+
+    def get_exif_float(self, name):
+        self.__load_exif_data()
+        try:
+            val = str(self.tags[name]).split('/')
+            if len(val) == 1:
+                val.append('1')
+            return str(round(float(val[0]) / float(val[1]), 1))
+        except KeyError:
+            return ''
+
+    def get_flash(self):
+        return self.get_exif_string('EXIF Flash')
+
+    def get_exposure(self):
+        return self.get_exif_string('EXIF ExposureTime')
+
+    def get_fnumber(self):
+        val = self.get_exif_float('EXIF FNumber')
+        if val == '':
+            return ''
+        return 'f/%s' % val
+
+    def get_focal_length(self):
+        flen = self.get_exif_float('EXIF FocalLength')
+        if flen == '':
+            return ''
+
+        try:
+            iwidth = float(str(self.tags['EXIF ExifImageWidth']))
+            fresunit = str(self.tags['EXIF FocalPlaneResolutionUnit'])
+            factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
+            try:
+                fresfactor = factors[fresunit]
+            except:
+                fresfactor = 0
+
+            fxrestxt = str(self.tags['EXIF FocalPlaneXResolution'])
+            if "/" in fxrestxt:
+                fxres = float(eval(fxrestxt))
+            else:
+                fxres = float(fxrestxt)
+            ccdwidth = float(iwidth * fresfactor / fxres)
+
+            val = str(self.tags['EXIF FocalLength']).split('/')
+            if len(val) == 1: val.append('1')
+            foclength = float(val[0]) / float(val[1])
+            flen += ' (35 mm equivalent: %d mm)' % int(foclength / ccdwidth * 36 + 0.5)
+        except KeyError:
+            return flen
+
+        return flen
+
     def generate_browse_page(self, size_name, prev, next):
         page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
@@ -251,6 +336,13 @@ class ImageFile(File):
         tpl_values['osize_links'] = self.get_osize_links(size_name,
                                                          self.filename)
         tpl_values['rel_root'] = self.rel_root()
+
+        tpl_values['camera_name'] = self.get_camera_name()
+        tpl_values['flash'] = self.get_flash()
+        tpl_values['exposure'] = self.get_exposure()
+        tpl_values['fnumber'] = self.get_fnumber()
+        tpl_values['focal_length'] = self.get_focal_length()
+        tpl_values['comment'] = self.get_comment()
 
         page_template.dump(tpl_values, page_file)
         self.album.log("\t\tDumped HTML" + page_file)
