@@ -450,13 +450,13 @@ class Album:
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("Generating to " + sane_dest_dir)
 
-        self.copy_shared(sane_dest_dir)
-
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("Entering " + root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
             dir.generate(check_all_dirs, clean_dest)
             self.log("Leaving " + root)
+
+        self.copy_shared(sane_dest_dir)
 
     def copy_shared(self, dest_dir):
         shared_stuff_dir = os.path.join(dest_dir, 'shared')
