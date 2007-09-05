@@ -40,6 +40,10 @@ parser.add_option("", "--check-all-dirs",
                   action="store_true",
                   dest="check_all_dirs", default=False,
                   help="Exhaustively go through all directories regardless of source modification time.")
+parser.add_option("-s", "--image-size",
+                  action="store", type="string",
+                  dest="image_size", default="small=800x600,medium=1024x768",
+                  help="Size of images, define as <name>=<x>,<y>,..., eg. small=800x600,medium=1024x768.")
 (options, args) = parser.parse_args()
 
 if len(args) != 1:
@@ -50,9 +54,16 @@ source_dir = args[0]
 if not os.path.isdir(source_dir):
     sys.exit("Directory " + source_dir + " does not exist.")
 
+sizes = []
+size_defs = options.image_size.split(',')
+for single_def in size_defs:
+    name, string_size = single_def.split('=')
+    x, y = string_size.split('x')
+    sizes.append((name, (x, y)))
+
 album = Album(source_dir,
               (150, 113),
-              [('small', (800, 600)), ('medium', (1024, 768))])
+              sizes)
 album.set_theme(options.theme)
 album.generate(options.dest_dir, options.check_all_dirs, options.clean_dest)
 
