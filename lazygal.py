@@ -89,7 +89,7 @@ class File:
             # If mtime is not set (can happen), we need to make this newer
             # than non existing destination file. This is kind of hack, but I
             # guess there won't be much albums from 1.1.1970 which would be
-            # breaken by this.
+            # broken by this.
             mtime = 1
         return mtime
 
