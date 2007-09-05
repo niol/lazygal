@@ -20,11 +20,11 @@ import Image, EXIF
 from genshi.template import TemplateLoader, MarkupTemplate
 
 
-DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
+DATAPATH = os.path.join(os.path.dirname(__file__), '..')
 if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-    DATAPATH = os.path.join(os.path.dirname(__file__), '..')
+    DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
     if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-        print 'Could not find images, you will not see them, check your installation!'
+        print 'Could not find themes dir, check your installation!'
 
 THEME_DIR = os.path.join(DATAPATH, 'themes')
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
