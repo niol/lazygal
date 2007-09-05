@@ -170,7 +170,7 @@ class ImageFile(File):
             im.thumbnail(size, Image.ANTIALIAS)
 
             im.save(osize_path)
-            self.album.log("\t\tGenerated " + osize_path)
+            self.album.log("\t\tGenerated %s" % osize_path)
         return os.path.basename(osize_path)
 
     def get_size(self, img):
@@ -352,7 +352,7 @@ class ImageFile(File):
         tpl_values['comment'] = self.get_comment()
 
         page_template.dump(tpl_values, page_file)
-        self.album.log("\t\tDumped HTML" + page_file)
+        self.album.log("\t\tDumped HTML %s" % page_file)
 
         return os.path.basename(page_file)
 
@@ -413,21 +413,21 @@ class Directory(File):
 
         if not os.path.isdir(self.dest):
             os.mkdir(self.dest)
-            self.album.log("\tCreated dir " + self.dest)
+            self.album.log("\tCreated dir %s" % self.dest)
 
         for filename in self.filenames:
             file_path = os.path.join(self.source, filename)
             if self.album.is_ext_supported(filename):
-                self.album.log("\tProcessing " + filename)
+                self.album.log("\tProcessing %s" % filename)
                 file = ImageFile(file_path, self,
                                  self.album, self.album_dest_dir)
                 gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
                 self.supported_files.append(file)
-                self.album.log("\tFinished processing " + filename)
+                self.album.log("\tFinished processing %s" % filename)
             else:
-                self.album.log("\tIgnoring " + filename +\
-                               " : format not supported", 1)
+                self.album.log("\tIgnoring %s : format not supported" 
+                        % filename, 1)
 
         self.supported_files.sort(lambda x, y: x.compare_date_taken(y))
         for file in self.supported_files:
@@ -491,7 +491,7 @@ class Directory(File):
 
         page_file = os.path.join(self.dest, self.get_index_filename(size_name))
         self.album.templates['dirindex'].dump(values, page_file)
-        self.album.log("\tDumped HTML " + page_file)
+        self.album.log("\tDumped HTML %s" % page_file)
         return os.path.basename(page_file)
 
     def generate_index_pages(self):
@@ -511,8 +511,8 @@ class Directory(File):
                     text = "has been"
                 else:
                     text = "should be"
-                self.album.log("\t\tCleanup: " + dest_file + " " +
-                               text + " removed")
+                self.album.log("\t\tCleanup: %s %s removed" %
+                        (dest_file, text))
 
 
 class Album:
@@ -547,13 +547,13 @@ class Album:
 
     def generate(self, dest_dir, check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
-        self.log("Generating to " + sane_dest_dir)
+        self.log("Generating to %s" % sane_dest_dir)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
-            self.log("Entering " + root)
+            self.log("Entering %s" % root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
             dir.generate(check_all_dirs, clean_dest)
-            self.log("Leaving " + root)
+            self.log("Leaving %s" % root)
 
         self.copy_shared(sane_dest_dir)
 
@@ -577,7 +577,7 @@ class Album:
 
             if os.path.getmtime(shared_file) > dest_mtime:
                 shutil.copy(shared_file, shared_file_dest)
-                self.log("Copied or updated " + shared_file_dest, 0)
+                self.log("Copied or updated %s" % shared_file_dest, 0)
 
 
 # vim: ts=4 sw=4 expandtab
