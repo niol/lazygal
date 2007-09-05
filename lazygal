@@ -43,7 +43,11 @@ parser.add_option("", "--check-all-dirs",
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size", default="small=800x600,medium=1024x768",
-                  help="Size of images, define as <name>=<x>,<y>,..., eg. small=800x600,medium=1024x768.")
+                  help="Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,medium=1024x768.")
+parser.add_option("-T", "--thumbnail-size",
+                  action="store", type="string",
+                  dest="thumbnail_size", default="150x113",
+                  help="Size of thumbnails, define as <x>x<y>, eg. 150x113.")
 (options, args) = parser.parse_args()
 
 if len(args) != 1:
@@ -61,9 +65,10 @@ for single_def in size_defs:
     x, y = string_size.split('x')
     sizes.append((name, (int(x), int(y))))
 
-album = Album(source_dir,
-              (150, 113),
-              sizes)
+x, y = options.thumbnail_size.split('x')
+thumbnail = (int(x), int(y))
+
+album = Album(source_dir, thumbnail, sizes)
 album.set_theme(options.theme)
 album.generate(options.dest_dir, options.check_all_dirs, options.clean_dest)
 
