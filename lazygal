@@ -59,7 +59,7 @@ size_defs = options.image_size.split(',')
 for single_def in size_defs:
     name, string_size = single_def.split('=')
     x, y = string_size.split('x')
-    sizes.append((name, (x, y)))
+    sizes.append((name, (int(x), int(y))))
 
 album = Album(source_dir,
               (150, 113),
