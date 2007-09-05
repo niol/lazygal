@@ -84,7 +84,14 @@ class File:
             return self.strip_root(os.path.dirname(self.source))
 
     def get_source_mtime(self):
-        return os.path.getmtime(self.source)
+        mtime = os.path.getmtime(self.source)
+        if mtime == 0:
+            # If mtime is not set (can happen), we need to make this newer
+            # than non existing destination file. This is kind of hack, but I
+            # guess there won't be much albums from 1.1.1970 which would be
+            # breaken by this.
+            mtime = 1
+        return mtime
 
     def get_dest_mtime(self, dest_file):
         try:
