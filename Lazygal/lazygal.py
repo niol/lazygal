@@ -20,7 +20,7 @@ import Image, EXIF
 from genshi.template import TemplateLoader, MarkupTemplate
 
 
-THEME_DIR = os.path.join(os.path.dirname(__file__), 'themes')
+THEME_DIR = os.path.join(os.path.dirname(__file__), '..', 'themes')
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 
