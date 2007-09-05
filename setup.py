@@ -136,7 +136,7 @@ setup(name = 'lazygal',
         'Topic :: Utilities',
         'Natural Language :: English',
     ],
-    packages = ['Lazygal'],
+    packages = ['lazygal'],
     scripts = ['lazygal.py'],
     # Override certain command classes with our own ones
     cmdclass = {
