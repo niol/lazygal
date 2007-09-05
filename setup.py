@@ -22,6 +22,7 @@ import distutils.command.build_scripts
 import re
 import os
 import sys
+import glob
 from stat import ST_MODE
 
 # check if Python is called on the first line with this expression
@@ -109,6 +110,16 @@ class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, objec
 
     # copy_scripts ()
 
+
+# list themes to install
+theme_data = []
+themes = glob.glob(os.path.join('themes', '*'))
+for theme in themes:
+    themename = os.path.basename(theme)
+    theme_data.append(
+            (os.path.join('share','lazygal','themes', themename), 
+                glob.glob(os.path.join('themes', themename, '*'))))
+
 setup(name = 'lazygal',
     version = '0.0',
     description = 'Static web gallery generator',
@@ -142,6 +153,7 @@ setup(name = 'lazygal',
     cmdclass = {
         'build_scripts': build_scripts_lazygal,
         },
+    data_files = theme_data,
     )
 
 # vim: ts=4 sw=4 expandtab

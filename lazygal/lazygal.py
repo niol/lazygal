@@ -15,12 +15,18 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, glob, shutil, time, datetime
+import os, glob, shutil, time, datetime, sys
 import Image, EXIF
 from genshi.template import TemplateLoader, MarkupTemplate
 
 
-THEME_DIR = os.path.join(os.path.dirname(__file__), '..', 'themes')
+DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
+if not os.path.exists(os.path.join(DATAPATH, 'themes')):
+    DATAPATH = os.path.join(os.path.dirname(__file__), '..')
+    if not os.path.exists(os.path.join(DATAPATH, 'themes')):
+        print 'Could not find images, you will not see them, check your installation!'
+
+THEME_DIR = os.path.join(DATAPATH, 'themes')
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 
