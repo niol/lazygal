@@ -27,6 +27,7 @@ if not os.path.exists(os.path.join(DATAPATH, 'themes')):
         print 'Could not find themes dir, check your installation!'
 
 THEME_DIR = os.path.join(DATAPATH, 'themes')
+USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 
@@ -536,9 +537,16 @@ class Album:
         self.theme = theme
         self.templates.clear()
 
-        tpl_dir = os.path.join(THEME_DIR, self.theme)
-        tpl_loader = TemplateLoader([tpl_dir])
-        for tpl_file in glob.glob(os.path.join(tpl_dir, "*.thtml")):
+        # First try user directory
+        self.tpl_dir = os.path.join(USER_THEME_DIR, self.theme)
+        if not os.path.exists(self.tpl_dir):
+            # Fallback to system themes
+            self.tpl_dir = os.path.join(THEME_DIR, self.theme)
+            if not os.path.exists(self.tpl_dir):
+                raise ValueError('Theme %s not found' % self.theme)
+
+        tpl_loader = TemplateLoader([self.tpl_dir])
+        for tpl_file in glob.glob(os.path.join(self.tpl_dir, "*.thtml")):
             filename, ext = os.path.splitext(os.path.basename(tpl_file))
             self.templates[filename] = tpl_loader.load(tpl_file,
                                                        cls=Template)
@@ -570,7 +578,7 @@ class Album:
             os.mkdir(shared_stuff_dir)
 
         for shared_file in glob.glob(\
-          os.path.join(THEME_DIR, self.theme, THEME_SHARED_FILE_PREFIX + '*')):
+          os.path.join(self.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
                                      replace(THEME_SHARED_FILE_PREFIX, '')
             shared_file_dest = os.path.join(shared_stuff_dir,
