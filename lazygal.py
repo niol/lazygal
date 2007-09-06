@@ -21,6 +21,7 @@ import sys, os
 from optparse import OptionParser
 
 from lazygal.lazygal import Album
+import lazygal
 
 usage = "usage: %prog [options] albumdir"
 parser = OptionParser(usage=usage)
@@ -36,6 +37,10 @@ parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_dest", default=False,
                   help="Clean destination directory of files that should not be there.")
+parser.add_option("-v", "--version",
+                  action="store_true",
+                  dest="show_version", default=False,
+                  help="Display program version.")
 parser.add_option("", "--check-all-dirs",
                   action="store_true",
                   dest="check_all_dirs", default=False,
@@ -49,6 +54,10 @@ parser.add_option("-T", "--thumbnail-size",
                   dest="thumbnail_size", default="150x113",
                   help="Size of thumbnails, define as <x>x<y>, eg. 150x113.")
 (options, args) = parser.parse_args()
+
+if options.show_version:
+    print 'lazygal version %s' % lazygal.__version__
+    sys.exit(0)
 
 if len(args) != 1:
     parser.print_help()

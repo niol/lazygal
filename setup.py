@@ -23,6 +23,7 @@ import re
 import os
 import sys
 import glob
+import lazygal
 from stat import ST_MODE
 
 # check if Python is called on the first line with this expression
@@ -121,7 +122,7 @@ for theme in themes:
                 glob.glob(os.path.join('themes', themename, '*'))))
 
 setup(name = 'lazygal',
-    version = '0.0',
+    version = lazygal.__version__,
     description = 'Static web gallery generator',
     long_description = '',
     author = 'Alexandre Rossi',
