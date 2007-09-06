@@ -16,9 +16,10 @@
 <p><a href="..">Parent</a></p>
 
 <p>
-    <py:for each="ozise_index_link in t.ozise_index_links">
+    <py:for each="i, ozise_index_link in enumerate(t.ozise_index_links)">
         <a py:strip="not ozise_index_link.link"
-           href="$ozise_index_link.link">$ozise_index_link.name</a> | 
+           href="$ozise_index_link.link">$ozise_index_link.name</a>
+        <py:if test="i != len(t.ozise_index_links)-1"> | </py:if>
     </py:for>
 </p>
 

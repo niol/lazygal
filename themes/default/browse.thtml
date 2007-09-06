@@ -14,9 +14,10 @@
 <p><a href="$t.index_link">Gallery index</a></p>
 
 <p>
-    <py:for each="osize_link in t.osize_links">
+    <py:for each="i, osize_link in enumerate(t.osize_links)">
         <a py:strip="not osize_link.link"
-           href="${osize_link.link}">${osize_link.name}</a> | 
+           href="${osize_link.link}">${osize_link.name}</a>
+        <py:if test="i != len(t.osize_links)-1"> | </py:if>
     </py:for>
 </p>
 
