@@ -17,7 +17,8 @@
 
 <p>
     <py:for each="ozise_index_link in t.ozise_index_links">
-        <a py:if="ozise_index_link.link" href="$ozise_index_link.link">$ozise_index_link.name</a>
+        <a py:strip="not ozise_index_link.link"
+           href="$ozise_index_link.link">$ozise_index_link.name</a> | 
     </py:for>
 </p>
 

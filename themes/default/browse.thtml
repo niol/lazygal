@@ -15,7 +15,8 @@
 
 <p>
     <py:for each="osize_link in t.osize_links">
-        <a href="${osize_link.link}">${osize_link.name}</a> | 
+        <a py:strip="not osize_link.link"
+           href="${osize_link.link}">${osize_link.name}</a> | 
     </py:for>
 </p>
 
