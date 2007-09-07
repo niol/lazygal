@@ -34,6 +34,7 @@ THEME_SHARED_FILE_PREFIX = 'SHARED_'
 class Template(MarkupTemplate):
 
     def dump(self, values, dest):
+        values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M")
         page = open(dest, 'w')
         page.write(self.generate(t=values).render('xhtml'))
         page.close()
