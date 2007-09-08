@@ -24,6 +24,15 @@ img {
     margin:1em;
 }
 
+#subgal_links img {
+    margin: 0;
+    display: block;
+}
+
+#subgal_links li {
+    margin: 0.5em;
+}
+
 #image_links p{
     text-align:justify;
 }
