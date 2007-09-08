@@ -11,12 +11,12 @@
 
 <body>
 
-<h1 py:if="t.name" py:content="t.name"></h1>
-<h1 py:if="not t.name" py:content="t.title"></h1>
+<h1 py:if="t.album_name" py:content="t.album_name"></h1>
+<h1 py:if="not t.album_name" py:content="t.title"></h1>
 
 <p><a href="..">Parent</a></p>
 
-<p py:if="t.description" class="description" py:content="t.description"></p>
+<p py:if="t.album_description" class="description" py:content="t.album_description"></p>
 
 <p>
     <py:for each="i, ozise_index_link in enumerate(t.ozise_index_links)">
@@ -28,7 +28,14 @@
 
 <ul py:if="t.subgal_links" id="subgal_links">
     <li py:for="subgal_link in t.subgal_links">
-        <a href="$subgal_link.link">$subgal_link.name</a>
+        <a href="$subgal_link.link">
+            <py:if test="subgal_link.album_name">
+                $subgal_link.album_name
+            </py:if>
+            <py:if test="not subgal_link.album_name">
+                $subgal_link.name
+            </py:if>
+        </a>
     </li>
 </ul>
 

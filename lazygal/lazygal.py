@@ -31,10 +31,11 @@ USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 MATEW_TAGS = {
-    'name': 'Album name',
-    'description': 'Album description',
-    'picture': 'Album image identifier',
+    'album_name': 'Album name',
+    'album_description': 'Album description',
+    'album_picture': 'Album image identifier',
 }
+MATEW_METADATA = 'album_description'
 
 
 class Template(MarkupTemplate):
@@ -397,7 +398,7 @@ class Directory(File):
         self.dirnames.sort()
         self.filenames = filenames
         self.supported_files = []
-        self.description_file = os.path.join(self.source, 'album_description')
+        self.description_file = os.path.join(self.source, MATEW_METADATA)
 
     def get_dest_mtime(self, dest_file):
         if dest_file == self.dest:
@@ -421,6 +422,8 @@ class Directory(File):
         """
         if path is None:
             path = self.description_file
+        else:
+            path = os.path.join(self.source, path, MATEW_METADATA)
 
         if not os.path.exists(path):
             return {}
@@ -439,6 +442,7 @@ class Directory(File):
                         data = data[1:-1]
                     result[tag] = data
                     break
+
         return result
 
     def find_prev(self, file):
@@ -511,6 +515,7 @@ class Directory(File):
         subgal_links = []
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
+            dir_info.update(self.get_directory_metadata(dir))
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         values.update(self.get_directory_metadata())
