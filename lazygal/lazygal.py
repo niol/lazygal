@@ -414,16 +414,16 @@ class Directory(File):
 
         return max(dir_mtime, description_mtime)
 
-    def get_directory_metadata(self, path = None):
+    def get_directory_metadata(self, subdir = None):
         """
         Parses file with directory metadata.
 
         Currently Matew like format is supported.
         """
-        if path is None:
+        if subdir is None:
             path = self.description_file
         else:
-            path = os.path.join(self.source, path, MATEW_METADATA)
+            path = os.path.join(self.source, subdir, MATEW_METADATA)
 
         if not os.path.exists(path):
             return {}
@@ -440,6 +440,11 @@ class Directory(File):
                     if data[0] == '"':
                         # Strip quotes
                         data = data[1:-1]
+                    if tag == 'album_picture':
+                        # Convert to thumbnail
+                        data = data.replace('.', '_thumb.')
+                        if subdir is not None:
+                            data = os.path.join(subdir, data)
                     result[tag] = data
                     break
 
