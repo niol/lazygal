@@ -15,11 +15,31 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import os
+
+
 __all__ = [
         'EXIF',
         'lazygal',
         ]
 
-__version__ = '0.0'
+def get_darcs_lastdate():
+    try:
+        lazygal_dir = os.path.join(os.path.dirname(__file__), '..')
+        inventory = os.path.join(lazygal_dir, '_darcs', 'inventory')
+        sk = max(0, os.path.getsize(inventory)-200)
+        inventoryf = open(inventory, 'r')
+        inventoryf.seek(sk)
+        last_lines = inventoryf.readlines()
+        inventoryf.close()
+
+        last_line = last_lines.pop()
+        null, date_and_crap = last_line.split('**')
+        return '+darcs' + date_and_crap[0:8]
+    except IOError:
+        return ''
+
+
+__version__ = '0.0' + get_darcs_lastdate()
 
 # vim: ts=4 sw=4 expandtab
