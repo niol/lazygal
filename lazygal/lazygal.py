@@ -41,7 +41,7 @@ MATEW_METADATA = 'album_description'
 class Template(MarkupTemplate):
 
     def dump(self, values, dest):
-        values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M")
+        values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M %Z")
         page = open(dest, 'w')
         page.write(self.generate(t=values).render('xhtml'))
         page.close()
