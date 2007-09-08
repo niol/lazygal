@@ -11,9 +11,12 @@
 
 <body>
 
-<h1 py:content="t.title"></h1>
+<h1 py:if="t.name" py:content="t.name"></h1>
+<h1 py:if="not t.name" py:content="t.title"></h1>
 
 <p><a href="..">Parent</a></p>
+
+<p py:if="t.description" class="description" py:content="t.description"></p>
 
 <p>
     <py:for each="i, ozise_index_link in enumerate(t.ozise_index_links)">

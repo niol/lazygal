@@ -30,6 +30,12 @@ THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
+MATEW_TAGS = {
+    'name': 'Album name',
+    'description': 'Album description',
+    'picture': 'Album image identifier',
+}
+
 
 class Template(MarkupTemplate):
 
@@ -391,12 +397,49 @@ class Directory(File):
         self.dirnames.sort()
         self.filenames = filenames
         self.supported_files = []
+        self.description_file = os.path.join(self.source, 'album_description')
 
     def get_dest_mtime(self, dest_file):
         if dest_file == self.dest:
             return self.initial_dest_mtime
         else:
             return File.get_dest_mtime(self, dest_file)
+
+    def get_source_mtime(self):
+        dir_mtime = File.get_source_mtime(self)
+        description_mtime = 0
+        if os.path.exists(self.description_file):
+            description_mtime = os.path.getmtime(self.description_file)
+
+        return max(dir_mtime, description_mtime)
+
+    def get_directory_metadata(self, path = None):
+        """
+        Parses file with directory metadata.
+
+        Currently Matew like format is supported.
+        """
+        if path is None:
+            path = self.description_file
+
+        if not os.path.exists(path):
+            return {}
+
+        result = {}
+        f = file(path, 'r')
+        for line in f:
+            for tag in MATEW_TAGS.keys():
+                tag_text = MATEW_TAGS[tag]
+                tag_len = len(tag_text)
+                if line[:tag_len] == tag_text:
+                    data = line[tag_len:]
+                    data = data.strip()
+                    if data[0] == '"':
+                        # Strip quotes
+                        data = data[1:-1]
+                    result[tag] = data
+                    break
+        return result
 
     def find_prev(self, file):
         prev_index = self.supported_files.index(file) - 1
@@ -434,7 +477,7 @@ class Directory(File):
                 self.supported_files.append(file)
                 self.album.log("\tFinished processing %s" % filename)
             else:
-                self.album.log("\tIgnoring %s : format not supported" 
+                self.album.log("\tIgnoring %s : format not supported"
                         % filename, 1)
 
         self.supported_files.sort(lambda x, y: x.compare_date_taken(y))
@@ -470,6 +513,7 @@ class Directory(File):
             dir_info = {'name': dir, 'link': dir + '/'}
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
+        values.update(self.get_directory_metadata())
 
         image_links = []
         for file in self.supported_files:
