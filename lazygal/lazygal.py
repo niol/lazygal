@@ -18,6 +18,7 @@
 import os, glob, shutil, time, datetime, sys
 import Image, EXIF
 from genshi.template import TemplateLoader, MarkupTemplate
+import __init__
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -42,6 +43,7 @@ class Template(MarkupTemplate):
 
     def dump(self, values, dest):
         values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M %Z")
+        values['lazygal_version'] = __init__.__version__
         page = open(dest, 'w')
         page.write(self.generate(t=values).render('xhtml'))
         page.close()
