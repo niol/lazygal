@@ -26,19 +26,26 @@
     </py:for>
 </p>
 
-<ul py:if="t.subgal_links" id="subgal_links">
-    <li py:for="subgal_link in t.subgal_links">
+<div id="subgal_links">
+    <div py:for="subgal_link in t.subgal_links" class="subgal_link">
         <a href="$subgal_link.link">
-            <img py:if="subgal_link.album_picture" src="$subgal_link.album_picture" />
-            <py:if test="subgal_link.album_name">
-                $subgal_link.album_name
-            </py:if>
-            <py:if test="not subgal_link.album_name">
-                $subgal_link.name
-            </py:if>
+            <div py:if="subgal_link.album_picture" class="subgal_image"><img src="$subgal_link.album_picture" /></div>
+            <div class="subgal_name">
+                <h4 class="subgal_name">
+                    <py:if test="subgal_link.album_name">
+                        $subgal_link.album_name
+                    </py:if>
+                    <py:if test="not subgal_link.album_name">
+                        $subgal_link.name
+                    </py:if>
+                </h4>
+                <span py:if="subgal_link.album_description" class="subgal_description">
+                    $subgal_link.album_description
+                </span>
+            </div>
         </a>
-    </li>
-</ul>
+    </div>
+</div>
 
 <div py:if="t.images" id="image_links">
     <p>

@@ -3,6 +3,7 @@ p{
 }
 
 #image_links{
+    clear: both;
     padding-left:7em;
     padding-right:7em;
 }
@@ -24,9 +25,23 @@ img {
     margin:1em;
 }
 
-#subgal_links img {
+div.subgal_link {
+    float: left;
+    clear: both;
+    padding: 1em;
+}
+
+div.subgal_image {
+    float: left;
+    width: 180px; /* This is based on thumbnail size */
+}
+
+div.subgal_name {
+    float: left;
+}
+
+div.subgal_image img {
     margin: 0;
-    display: block;
 }
 
 #subgal_links li {
@@ -37,8 +52,12 @@ img {
     text-align:justify;
 }
 
+#footer {
+    clear: both;
+}
+
 #footer p {
-		text-align:justify;
+    text-align:justify;
 }
 
 // vim: ts=4 sw=4 expandtab
