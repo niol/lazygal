@@ -614,7 +614,7 @@ class Album:
 
     def is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
-        return extension in ['.jpg']
+        return extension.lower() in ['.jpg']
 
     def generate(self, dest_dir, check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
