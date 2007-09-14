@@ -255,7 +255,11 @@ class ImageFile(File):
         try:
             make = str(self.tags['Image Make'])
             model = str(self.tags['Image Model'])
-            if model.find(make) == -1:
+            # We don't want things like
+            # Canon Canon A40
+            # PENTAX Corporation PENTAX K10D
+            # But we also want to include vendor when it is not in model name
+            if model.find(make) == -1 and model.find(make.split(' ')[0]) == -1:
                 return '%s %s' % (make, model)
             else:
                 return model
