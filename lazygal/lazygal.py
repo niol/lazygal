@@ -299,6 +299,9 @@ class ImageFile(File):
     def get_exposure(self):
         return self.get_exif_string('EXIF ExposureTime')
 
+    def get_iso(self):
+        return self.get_exif_string('EXIF ISOSpeedRatings')
+
     def get_fnumber(self):
         val = self.get_exif_float('EXIF FNumber')
         if val == '':
@@ -364,6 +367,7 @@ class ImageFile(File):
         tpl_values['camera_name'] = self.get_camera_name()
         tpl_values['flash'] = self.get_flash()
         tpl_values['exposure'] = self.get_exposure()
+        tpl_values['iso'] = self.get_iso()
         tpl_values['fnumber'] = self.get_fnumber()
         tpl_values['focal_length'] = self.get_focal_length()
         tpl_values['comment'] = self.get_comment()
