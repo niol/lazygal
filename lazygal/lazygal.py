@@ -30,6 +30,7 @@ if not os.path.exists(os.path.join(DATAPATH, 'themes')):
 THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
+DEST_SHARED_DIRECTORY_NAME = 'shared'
 
 MATEW_TAGS = {
     'album_name': 'Album name',
@@ -577,18 +578,23 @@ class Directory(File):
             generated_pages.append(page)
         return generated_pages
 
+    def is_album_root(self):
+        return self.source == self.path_to_unicode(self.album.source_dir)
+
     def check_dest_for_junk(self, generated_files, do_clean_dest):
         for dest_file in os.listdir(self.dest):
             if dest_file not in generated_files and\
                dest_file not in self.dirnames:
                 text = ''
-                if do_clean_dest:
-                    os.unlink(os.path.join(self.dest, dest_file))
-                    text = "has been"
-                else:
-                    text = "should be"
-                self.album.log("\t\tCleanup: %s %s removed" %
-                        (dest_file, text))
+                if not (self.is_album_root() and
+                        dest_file == DEST_SHARED_DIRECTORY_NAME):
+                    if do_clean_dest:
+                        os.unlink(os.path.join(self.dest, dest_file))
+                        text = "has been"
+                    else:
+                        text = "should be"
+                    self.album.log("\t\tCleanup: %s %s removed" %
+                                   (dest_file, text))
 
 
 class Album:
@@ -641,7 +647,7 @@ class Album:
         self.copy_shared(sane_dest_dir)
 
     def copy_shared(self, dest_dir):
-        shared_stuff_dir = os.path.join(dest_dir, 'shared')
+        shared_stuff_dir = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
 
         if not os.path.isdir(shared_stuff_dir):
             os.mkdir(shared_stuff_dir)
