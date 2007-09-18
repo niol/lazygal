@@ -58,6 +58,9 @@ class File:
         filename, self.extension = os.path.splitext(self.source)
         self.filename = os.path.basename(filename)
 
+    def path_to_unicode(self, path):
+        return path.decode(sys.getfilesystemencoding())
+
     def strip_root(self, path=None):
         found = False
         album_path = ""
@@ -400,14 +403,15 @@ class ImageFile(File):
 class Directory(File):
 
     def __init__(self, source, dirnames, filenames, album, album_dest_dir):
-        File.__init__(self, source, album, album_dest_dir)
+        File.__init__(self, self.path_to_unicode(source),
+                      album, self.path_to_unicode(album_dest_dir))
 
         self.dest = os.path.join(album_dest_dir, self.strip_root())
         self.initial_dest_mtime = File.get_dest_mtime(self, self.dest)
 
-        self.dirnames = dirnames
+        self.dirnames = map(self.path_to_unicode, dirnames)
         self.dirnames.sort()
-        self.filenames = filenames
+        self.filenames = map(self.path_to_unicode, filenames)
         self.supported_files = []
         self.description_file = os.path.join(self.source, MATEW_METADATA)
 
