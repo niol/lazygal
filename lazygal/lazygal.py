@@ -153,8 +153,9 @@ class File:
 
 class ImageFile(File):
 
-    def __init__(self, source, dir, album, album_dest_dir):
-        File.__init__(self, source, album, album_dest_dir)
+    def __init__(self, filename, dir, album, album_dest_dir):
+        File.__init__(self, os.path.join(dir.source, filename),
+                      album, album_dest_dir)
         self.dir = dir
         self.destdir = self.dir.dest
         self.generated_sizes = [('thumb', album.thumb_size)]\
@@ -486,10 +487,9 @@ class Directory(File):
             self.album.log("\tCreated dir %s" % self.dest)
 
         for filename in self.filenames:
-            file_path = os.path.join(self.source, filename)
             if self.album.is_ext_supported(filename):
                 self.album.log("\tProcessing %s" % filename)
-                file = ImageFile(file_path, self,
+                file = ImageFile(filename, self,
                                  self.album, self.album_dest_dir)
                 gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
