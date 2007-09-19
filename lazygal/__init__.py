@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os
+import os, re
 
 
 __all__ = [
@@ -33,9 +33,17 @@ def get_darcs_lastdate():
         last_lines = inventoryf.readlines()
         inventoryf.close()
 
-        last_line = last_lines.pop()
-        null, date_and_crap = last_line.split('**')
-        return '+darcs' + date_and_crap[0:8]
+        date_re = re.compile("\\*\\*\\d+")
+        last_date = None
+        for last_line in last_lines:
+            perhaps_match = date_re.search(last_line)
+            if perhaps_match != None:
+                last_date = perhaps_match.group()[2:]
+
+        if not last_date:
+            raise IOError
+
+        return "+darcs%s" % last_date[:8]
     except IOError:
         return ''
 
