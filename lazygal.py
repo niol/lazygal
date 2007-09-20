@@ -32,7 +32,7 @@ parser.add_option("-o", "--output-directory",
 parser.add_option("-t", "--theme",
                   action="store", type="string",
                   dest="theme", default="default",
-                  help="Theme name (looked up in them directory) or theme full path.")
+                  help="Theme name (looked up in theme directory) or theme full path.")
 parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_dest", default=False,
