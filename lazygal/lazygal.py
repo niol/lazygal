@@ -423,6 +423,11 @@ class ImageFile(File):
             generated_files.append(page)
         return generated_files
 
+class NoMetadata(Exception):
+    '''
+    Exception indicating that no meta data has been found.
+    '''
+    pass
 
 class Directory(File):
 
@@ -453,19 +458,17 @@ class Directory(File):
 
         return max(dir_mtime, description_mtime)
 
-    def get_directory_metadata(self, subdir = None):
-        """
-        Parses file with directory metadata.
-
-        Currently Matew like format is supported.
-        """
+    def get_matew_directory_metadata(self, subdir = None):
+        '''
+        Return dictionary with meta data parsed from Matew like format.
+        '''
         if subdir is None:
             path = self.description_file
         else:
             path = os.path.join(self.source, subdir, MATEW_METADATA)
 
         if not os.path.exists(path):
-            return {}
+            raise NoMetadata('Could not open metadata file (%s)' % path)
 
         result = {}
         f = file(path, 'r')
@@ -487,6 +490,20 @@ class Directory(File):
                     result[tag] = data
                     break
 
+        return result
+
+    def get_directory_metadata(self, subdir = None):
+        '''
+        Returns directory meta data. First tries to parse known formats
+        and then fall backs to built in defaults.
+        '''
+        try:
+            result = self.get_matew_directory_metadata()
+            return result
+        except NoMetadata:
+            pass
+
+        result = {}
         return result
 
     def find_prev(self, file):
