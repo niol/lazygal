@@ -256,17 +256,28 @@ class ImageFile(File):
             return None
 
     def get_camera_name(self):
+        '''
+        Gets vendor and model name from EXIF and tries to construct
+        camera name out of this. This is a bit fuzzy, because diferent
+        vendors put different information to both tags.
+        '''
         self.__load_exif_data()
         try:
-            make = str(self.tags['Image Make'])
             model = str(self.tags['Image Model'])
-            # We don't want things like
-            # Canon Canon A40
-            # PENTAX Corporation PENTAX K10D
-            # But we also want to include vendor when it is not in model name
-            if model.find(make) == -1 and model.find(make.split(' ')[0]) == -1:
-                return '%s %s' % (make, model)
-            else:
+            try:
+                vendor = str(self.tags['Image Make'])
+                vendor_l = vendor.lower()
+                model_l = model.lower()
+                # Split vendor to words and check whether they are
+                # already in model, for example:
+                # Canon/Canon A40
+                # PENTAX Corporation/PENTAX K10D
+                # Eastman Kodak Company/KODAK DIGITAL SCIENCE DC260 (V01.00)
+                for word in vendor_l.split(' '):
+                    if model_l.find(word) != -1:
+                        return model
+                return '%s %s' % (vendor, model)
+            except KeyError:
                 return model
         except KeyError:
             return ''
