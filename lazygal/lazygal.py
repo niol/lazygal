@@ -283,6 +283,10 @@ class ImageFile(File):
             return ''
 
     def get_exif_string(self, name):
+        '''
+        Reads string from EXIF information, returns empty string if key
+        is not found.
+        '''
         self.__load_exif_data()
         try:
             return str(self.tags[name])
@@ -290,6 +294,10 @@ class ImageFile(File):
             return ''
 
     def get_jpeg_comment(self):
+        '''
+        Reads JPEG comment field, returns empty string if key is not
+        found.
+        '''
         im = Image.open(self.source)
         try:
             return im.app['COM']
@@ -304,6 +312,10 @@ class ImageFile(File):
 
 
     def get_exif_float(self, name):
+        '''
+        Reads fload number from EXIF information (where it is stored as
+        fraction). Returns empty string if key is not found.
+        '''
         self.__load_exif_data()
         try:
             val = str(self.tags[name]).split('/')
