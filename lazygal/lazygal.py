@@ -293,6 +293,21 @@ class ImageFile(File):
         except KeyError:
             return ''
 
+
+    def get_exif_float(self, name):
+        '''
+        Reads fload number from EXIF information (where it is stored as
+        fraction). Returns empty string if key is not found.
+        '''
+        self.__load_exif_data()
+        try:
+            val = str(self.tags[name]).split('/')
+            if len(val) == 1:
+                val.append('1')
+            return str(round(float(val[0]) / float(val[1]), 1))
+        except KeyError:
+            return ''
+
     def get_jpeg_comment(self):
         '''
         Reads JPEG comment field, returns empty string if key is not
@@ -309,21 +324,6 @@ class ImageFile(File):
         if ret != '':
             return ret
         return self.get_jpeg_comment()
-
-
-    def get_exif_float(self, name):
-        '''
-        Reads fload number from EXIF information (where it is stored as
-        fraction). Returns empty string if key is not found.
-        '''
-        self.__load_exif_data()
-        try:
-            val = str(self.tags[name]).split('/')
-            if len(val) == 1:
-                val.append('1')
-            return str(round(float(val[0]) / float(val[1]), 1))
-        except KeyError:
-            return ''
 
     def get_flash(self):
         return self.get_exif_string('EXIF Flash')
