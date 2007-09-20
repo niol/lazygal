@@ -296,7 +296,7 @@ class ImageFile(File):
 
     def get_exif_float(self, name):
         '''
-        Reads fload number from EXIF information (where it is stored as
+        Reads float number from EXIF information (where it is stored as
         fraction). Returns empty string if key is not found.
         '''
         self.__load_exif_data()
