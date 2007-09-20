@@ -492,18 +492,46 @@ class Directory(File):
 
         return result
 
+    def guess_directory_picture(self, subdir = None):
+        '''
+        Guesses picture for directory by finding first suitable image.
+        '''
+        directory = self.source
+        relpath = ''
+        found = False
+
+        if subdir is not None:
+            directory = os.path.join(directory, subdir)
+            relpath = subdir
+
+        for root, dirs, files in os.walk(directory):
+            subdirs = root[len(directory):]
+            if len(subdirs) > 0 and subdirs[0] == '/':
+                subdirs = subdirs[1:]
+            for file in files:
+                if self.album.is_ext_supported(file):
+                    picture = os.path.join(relpath, subdirs, file)
+                    return picture.replace('.', '_thumb.')
+
+        return None
+
     def get_directory_metadata(self, subdir = None):
         '''
         Returns directory meta data. First tries to parse known formats
         and then fall backs to built in defaults.
         '''
         try:
-            result = self.get_matew_directory_metadata()
+            result = self.get_matew_directory_metadata(subdir)
             return result
         except NoMetadata:
             pass
 
         result = {}
+
+        picture = self.guess_directory_picture(subdir)
+        if picture is not None:
+            result['album_picture'] = picture
+
         return result
 
     def find_prev(self, file):
