@@ -458,7 +458,7 @@ class Directory(File):
 
         return max(dir_mtime, description_mtime)
 
-    def get_matew_directory_metadata(self, subdir = None):
+    def get_matew_directory_metadata(self, metadata, subdir = None):
         '''
         Return dictionary with meta data parsed from Matew like format.
         '''
@@ -470,7 +470,6 @@ class Directory(File):
         if not os.path.exists(path):
             raise NoMetadata('Could not open metadata file (%s)' % path)
 
-        result = {}
         f = file(path, 'r')
         for line in f:
             for tag in MATEW_TAGS.keys():
@@ -483,14 +482,12 @@ class Directory(File):
                         # Strip quotes
                         data = data[1:-1]
                     if tag == 'album_picture':
-                        # Convert to thumbnail
-                        data = data.replace('.', '_thumb.')
                         if subdir is not None:
                             data = os.path.join(subdir, data)
-                    result[tag] = data
+                    metadata[tag] = data
                     break
 
-        return result
+        return metadata
 
     def guess_directory_picture(self, subdir = None):
         '''
@@ -511,7 +508,7 @@ class Directory(File):
             for file in files:
                 if self.album.is_ext_supported(file):
                     picture = os.path.join(relpath, subdirs, file)
-                    return picture.replace('.', '_thumb.')
+                    return picture
 
         return None
 
@@ -520,17 +517,23 @@ class Directory(File):
         Returns directory meta data. First tries to parse known formats
         and then fall backs to built in defaults.
         '''
-        try:
-            result = self.get_matew_directory_metadata(subdir)
-            return result
-        except NoMetadata:
-            pass
 
         result = {}
 
-        picture = self.guess_directory_picture(subdir)
-        if picture is not None:
-            result['album_picture'] = picture
+        try:
+            result = self.get_matew_directory_metadata(result, subdir)
+        except NoMetadata:
+            pass
+
+        # Add album picture
+        if not result.has_key('album_picture'):
+            picture = self.guess_directory_picture(subdir)
+            if picture is not None:
+                result['album_picture'] = picture
+
+        if result.has_key('album_picture'):
+            # Convert to thumbnail path
+            result['album_picture'] =  result['album_picture'].replace('.', '_thumb.')
 
         return result
 
