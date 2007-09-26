@@ -55,8 +55,8 @@ parser.add_option("-T", "--thumbnail-size",
                   help="Size of thumbnails, define as <x>x<y>, eg. 150x113.")
 parser.add_option("-q", "--quality",
                   action="store", type="int",
-                  dest="quality", default=75,
-                  help="Quality of generated JPEG images (default is 75).")
+                  dest="quality", default=85,
+                  help="Quality of generated JPEG images (default is 85).")
 (options, args) = parser.parse_args()
 
 if options.show_version:
