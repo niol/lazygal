@@ -209,7 +209,7 @@ class ImageFile(File):
         Parses date from EXIF information.
         '''
         self.__load_exif_data()
-        exif_date = str(self.tags['Image DateTime'])
+        exif_date = str(self.tags[name])
         date, time = exif_date.split(' ')
         year, month, day = date.split(':')
         hour, minute, second = time.split(':')
