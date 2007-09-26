@@ -204,16 +204,21 @@ class ImageFile(File):
             f = open(self.source, 'rb')
             self.tags = EXIF.process_file(f)
 
-    def get_date_taken(self):
+    def get_exif_date(self, name):
+        '''
+        Parses date from EXIF information.
+        '''
         self.__load_exif_data()
+        exif_date = str(self.tags['Image DateTime'])
+        date, time = exif_date.split(' ')
+        year, month, day = date.split(':')
+        hour, minute, second = time.split(':')
+        return datetime.datetime(int(year), int(month), int(day),
+                           int(hour), int(minute), int(second))
+
+    def get_date_taken(self):
         try:
-            exif_date = str(self.tags['Image DateTime'])
-            date, time = exif_date.split(' ')
-            year, month, day = date.split(':')
-            hour, minute, second = time.split(':')
-            self.date_taken =\
-                         datetime.datetime(int(year), int(month), int(day),
-                                           int(hour), int(minute), int(second))
+            self.date_taken = self.get_exif_date('Image DateTime')
         except (KeyError, ValueError):
             # No date available in EXIF, or bad format, use file mtime
             self.date_taken = datetime.datetime.fromtimestamp(\
