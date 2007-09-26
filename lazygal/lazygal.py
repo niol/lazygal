@@ -670,7 +670,8 @@ class Directory(File):
 
 class Album:
 
-    def __init__(self, source_dir, thumb_size, browse_sizes, debug=False, quality=75):
+    def __init__(self, source_dir, thumb_size, browse_sizes,
+                 quality=85, debug=False):
         self.source_dir = os.path.abspath(source_dir)
 
         self.thumb_size = thumb_size
