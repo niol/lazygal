@@ -53,6 +53,10 @@ parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
                   dest="thumbnail_size", default="150x113",
                   help="Size of thumbnails, define as <x>x<y>, eg. 150x113.")
+parser.add_option("-q", "--quality",
+                  action="store", type="int",
+                  dest="quality", default=75,
+                  help="Quality of generated JPEG images (default is 75).")
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -77,7 +81,7 @@ for single_def in size_defs:
 x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
-album = Album(source_dir, thumbnail, sizes)
+album = Album(source_dir, thumbnail, sizes, quality=options.quality)
 album.set_theme(options.theme)
 album.generate(options.dest_dir, options.check_all_dirs, options.clean_dest)
 

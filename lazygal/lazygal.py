@@ -191,7 +191,7 @@ class ImageFile(File):
 
             im.thumbnail(size, Image.ANTIALIAS)
 
-            im.save(osize_path)
+            im.save(osize_path, quality = self.album.quality)
             self.album.log("\t\tGenerated %s" % osize_path)
         return os.path.basename(osize_path)
 
@@ -670,11 +670,12 @@ class Directory(File):
 
 class Album:
 
-    def __init__(self, source_dir, thumb_size, browse_sizes, debug=False):
+    def __init__(self, source_dir, thumb_size, browse_sizes, debug=False, quality=75):
         self.source_dir = os.path.abspath(source_dir)
 
         self.thumb_size = thumb_size
         self.browse_sizes = browse_sizes
+        self.quality = quality
         self.default_size_name = self.browse_sizes[0][0]
 
         self.templates = {}
