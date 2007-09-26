@@ -27,17 +27,13 @@ img {
 
 div.subgal_link {
     float: left;
-    clear: both;
     padding: 1em;
+    width: 40em;
 }
 
 div.subgal_image {
     float: left;
     width: 180px; /* This is based on thumbnail size */
-}
-
-div.subgal_name {
-    float: left;
 }
 
 div.subgal_image img {
