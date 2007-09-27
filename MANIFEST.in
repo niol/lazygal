@@ -1,0 +1,4 @@
+include COPYING
+include README
+recursive-include themes *.thtml
+recursive-include themes *.css
