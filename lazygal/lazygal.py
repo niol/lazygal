@@ -575,7 +575,7 @@ class Directory(File):
             return
 
         if not os.path.isdir(self.dest):
-            os.mkdir(self.dest)
+            os.makedirs(self.dest, mode = 0755)
             self.album.log("\tCreated dir %s" % self.dest)
 
         for filename in self.filenames:
