@@ -20,8 +20,8 @@
 import sys, os
 from optparse import OptionParser
 
-from lazygal.lazygal import Album
 import lazygal
+from lazygal.generators import Album
 
 usage = "usage: %prog [options] albumdir"
 parser = OptionParser(usage=usage)
