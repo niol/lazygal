@@ -183,7 +183,10 @@ class ExifTags:
                 fxres = float(eval(fxrestxt))
             else:
                 fxres = float(fxrestxt)
-            ccdwidth = float(iwidth * fresfactor / fxres)
+            try:
+                ccdwidth = float(iwidth * fresfactor / fxres)
+            except ZeroDivisionError:
+                return ''
 
             val = str(self.tags['EXIF FocalLength']).split('/')
             if len(val) == 1: val.append('1')
