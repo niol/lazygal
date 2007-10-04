@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, datetime
+import os, sys, datetime
 import Image, EXIF
 
 
@@ -249,7 +249,7 @@ class DirectoryMetadata:
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
-                    metadata[tag] = data
+                    metadata[tag] = data.decode(sys.stdin.encoding)
                     break
 
         return metadata
