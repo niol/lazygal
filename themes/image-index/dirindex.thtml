@@ -30,22 +30,28 @@
 
 <div id="subgal_links">
     <div py:for="subgal_link in t.subgal_links" class="subgal_link">
-        <a href="$subgal_link.link">
-            <div py:if="subgal_link.album_picture" class="subgal_image"><img src="$subgal_link.album_picture" /></div>
-            <div class="subgal_name">
-                <h4 class="subgal_name">
+        <div py:if="subgal_link.album_picture" class="subgal_image">
+            <a href="$subgal_link.link">
+                <img src="$subgal_link.album_picture" />
+            </a>
+        </div>
+        <div class="subgal_name">
+            <h4 class="subgal_name">
+                <a href="$subgal_link.link">
                     <py:if test="subgal_link.album_name">
                         $subgal_link.album_name
                     </py:if>
                     <py:if test="not subgal_link.album_name">
                         $subgal_link.name
                     </py:if>
-                </h4>
-                <span py:if="subgal_link.album_description" class="subgal_description">
+                </a>
+            </h4>
+            <span py:if="subgal_link.album_description" class="subgal_description">
+                <a href="$subgal_link.link">
                     $subgal_link.album_description
-                </span>
-            </div>
-        </a>
+                </a>
+            </span>
+        </div>
     </div>
 </div>
 

@@ -2,6 +2,11 @@ p{
     text-align:center;
 }
 
+a{
+		color:blue;
+		text-decoration:none;
+}
+
 #image_links{
     clear: both;
     padding-left:7em;
