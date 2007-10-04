@@ -16,9 +16,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, glob, shutil, time, datetime, sys
-import Image, EXIF
+import Image
 from genshi.template import TemplateLoader, MarkupTemplate
-import __init__
+
+import __init__, metadata
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -31,14 +32,6 @@ THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
-
-MATEW_TAGS = {
-    'album_name': 'Album name',
-    'album_description': 'Album description',
-    'album_picture': 'Album image identifier',
-}
-MATEW_METADATA = 'album_description'
-
 
 class Template(MarkupTemplate):
 
@@ -165,8 +158,7 @@ class ImageFile(File):
         self.generated_sizes = [('thumb', album.thumb_size)]\
                                + album.browse_sizes
 
-        self.tags = None
-        self.date_taken = None
+        self.exif = None
 
     def get_othersize_path_noext(self, size_name):
         thumb_name = self.get_osize_name_noext(size_name)
@@ -200,21 +192,8 @@ class ImageFile(File):
         return im.size
 
     def __load_exif_data(self):
-        if not self.tags:
-            f = open(self.source, 'rb')
-            self.tags = EXIF.process_file(f)
-
-    def get_exif_date(self, name):
-        '''
-        Parses date from EXIF information.
-        '''
-        self.__load_exif_data()
-        exif_date = str(self.tags[name])
-        date, time = exif_date.split(' ')
-        year, month, day = date.split(':')
-        hour, minute, second = time.split(':')
-        return datetime.datetime(int(year), int(month), int(day),
-                           int(hour), int(minute), int(second))
+        if not self.exif:
+            self.exif = metadata.ExifTags(self.source)
 
     def get_date_taken(self):
         '''
@@ -222,14 +201,16 @@ class ImageFile(File):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         '''
+        self.__load_exif_data()
+
         try:
-            self.date_taken = self.get_exif_date('EXIF DateTimeDigitized')
+            self.date_taken = self.exif.get_date('EXIF DateTimeDigitized')
         except (KeyError, ValueError):
             try:
-                self.date_taken = self.get_exif_date('EXIF DateTimeOriginal')
+                self.date_taken = self.exif.get_date('EXIF DateTimeOriginal')
             except (KeyError, ValueError):
                 try:
-                    self.date_taken = self.get_exif_date('Image DateTime')
+                    self.date_taken = self.exif.get_date('Image DateTime')
                 except (KeyError, ValueError):
                     # No date available in EXIF, or bad format, use file mtime
                     self.date_taken = datetime.datetime.fromtimestamp(\
@@ -239,9 +220,9 @@ class ImageFile(File):
     def get_required_rotation(self):
         self.__load_exif_data()
 
-        if self.tags.has_key('Image Orientation'):
-            orientation_code = int(self.tags['Image Orientation'].values[0])
-            # FIXME : This hsould really go in the EXIF library
+        if self.exif['Image Orientation']:
+            orientation_code = int(self.exif['Image Orientation'].values[0])
+            # FIXME : This should really go in the EXIF library
             if orientation_code == 8:
                 return 90
             elif orientation_code == 6:
@@ -271,121 +252,6 @@ class ImageFile(File):
         else:
             return None
 
-    def get_camera_name(self):
-        '''
-        Gets vendor and model name from EXIF and tries to construct
-        camera name out of this. This is a bit fuzzy, because diferent
-        vendors put different information to both tags.
-        '''
-        self.__load_exif_data()
-        try:
-            model = str(self.tags['Image Model'])
-            try:
-                vendor = str(self.tags['Image Make'])
-                vendor_l = vendor.lower()
-                model_l = model.lower()
-                # Split vendor to words and check whether they are
-                # already in model, for example:
-                # Canon/Canon A40
-                # PENTAX Corporation/PENTAX K10D
-                # Eastman Kodak Company/KODAK DIGITAL SCIENCE DC260 (V01.00)
-                for word in vendor_l.split(' '):
-                    if model_l.find(word) != -1:
-                        return model
-                return '%s %s' % (vendor, model)
-            except KeyError:
-                return model
-        except KeyError:
-            return ''
-
-    def get_exif_string(self, name):
-        '''
-        Reads string from EXIF information, returns empty string if key
-        is not found.
-        '''
-        self.__load_exif_data()
-        try:
-            return str(self.tags[name])
-        except KeyError:
-            return ''
-
-
-    def get_exif_float(self, name):
-        '''
-        Reads float number from EXIF information (where it is stored as
-        fraction). Returns empty string if key is not found.
-        '''
-        self.__load_exif_data()
-        try:
-            val = str(self.tags[name]).split('/')
-            if len(val) == 1:
-                val.append('1')
-            return str(round(float(val[0]) / float(val[1]), 1))
-        except KeyError:
-            return ''
-
-    def get_jpeg_comment(self):
-        '''
-        Reads JPEG comment field, returns empty string if key is not
-        found.
-        '''
-        im = Image.open(self.source)
-        try:
-            return im.app['COM']
-        except KeyError:
-            return ''
-
-    def get_comment(self):
-        ret = self.get_exif_string('UserComment')
-        if ret != '':
-            return ret
-        return self.get_jpeg_comment()
-
-    def get_flash(self):
-        return self.get_exif_string('EXIF Flash')
-
-    def get_exposure(self):
-        return self.get_exif_string('EXIF ExposureTime')
-
-    def get_iso(self):
-        return self.get_exif_string('EXIF ISOSpeedRatings')
-
-    def get_fnumber(self):
-        val = self.get_exif_float('EXIF FNumber')
-        if val == '':
-            return ''
-        return 'f/%s' % val
-
-    def get_focal_length(self):
-        flen = self.get_exif_float('EXIF FocalLength')
-        if flen == '':
-            return ''
-
-        try:
-            iwidth = float(str(self.tags['EXIF ExifImageWidth']))
-            fresunit = str(self.tags['EXIF FocalPlaneResolutionUnit'])
-            factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
-            try:
-                fresfactor = factors[fresunit]
-            except:
-                fresfactor = 0
-
-            fxrestxt = str(self.tags['EXIF FocalPlaneXResolution'])
-            if "/" in fxrestxt:
-                fxres = float(eval(fxrestxt))
-            else:
-                fxres = float(fxrestxt)
-            ccdwidth = float(iwidth * fresfactor / fxres)
-
-            val = str(self.tags['EXIF FocalLength']).split('/')
-            if len(val) == 1: val.append('1')
-            foclength = float(val[0]) / float(val[1])
-            flen += ' (35 mm equivalent: %d mm)' % int(foclength / ccdwidth * 36 + 0.5)
-        except KeyError:
-            return flen
-
-        return flen
-
     def generate_browse_page(self, size_name, prev, next):
         page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
@@ -412,13 +278,13 @@ class ImageFile(File):
                                                          self.filename)
         tpl_values['rel_root'] = self.rel_root()
 
-        tpl_values['camera_name'] = self.get_camera_name()
-        tpl_values['flash'] = self.get_flash()
-        tpl_values['exposure'] = self.get_exposure()
-        tpl_values['iso'] = self.get_iso()
-        tpl_values['fnumber'] = self.get_fnumber()
-        tpl_values['focal_length'] = self.get_focal_length()
-        tpl_values['comment'] = self.get_comment()
+        tpl_values['camera_name'] = self.exif.get_camera_name()
+        tpl_values['flash'] = self.exif.get_flash()
+        tpl_values['exposure'] = self.exif.get_exposure()
+        tpl_values['iso'] = self.exif.get_iso()
+        tpl_values['fnumber'] = self.exif.get_fnumber()
+        tpl_values['focal_length'] = self.exif.get_focal_length()
+        tpl_values['comment'] = self.exif.get_comment()
 
         page_template.dump(tpl_values, page_file)
         self.album.log("\t\tDumped HTML %s" % page_file)
@@ -439,11 +305,6 @@ class ImageFile(File):
             generated_files.append(page)
         return generated_files
 
-class NoMetadata(Exception):
-    '''
-    Exception indicating that no meta data has been found.
-    '''
-    pass
 
 class Directory(File):
 
@@ -458,7 +319,7 @@ class Directory(File):
         self.dirnames.sort()
         self.filenames = map(self.path_to_unicode, filenames)
         self.supported_files = []
-        self.description_file = os.path.join(self.source, MATEW_METADATA)
+        self.metadata = metadata.DirectoryMetadata(self)
 
     def get_dest_mtime(self, dest_file):
         if dest_file == self.dest:
@@ -468,42 +329,7 @@ class Directory(File):
 
     def get_source_mtime(self):
         dir_mtime = File.get_source_mtime(self)
-        description_mtime = 0
-        if os.path.exists(self.description_file):
-            description_mtime = os.path.getmtime(self.description_file)
-
-        return max(dir_mtime, description_mtime)
-
-    def get_matew_directory_metadata(self, metadata, subdir = None):
-        '''
-        Return dictionary with meta data parsed from Matew like format.
-        '''
-        if subdir is None:
-            path = self.description_file
-        else:
-            path = os.path.join(self.source, subdir, MATEW_METADATA)
-
-        if not os.path.exists(path):
-            raise NoMetadata('Could not open metadata file (%s)' % path)
-
-        f = file(path, 'r')
-        for line in f:
-            for tag in MATEW_TAGS.keys():
-                tag_text = MATEW_TAGS[tag]
-                tag_len = len(tag_text)
-                if line[:tag_len] == tag_text:
-                    data = line[tag_len:]
-                    data = data.strip()
-                    if data[0] == '"':
-                        # Strip quotes
-                        data = data[1:-1]
-                    if tag == 'album_picture':
-                        if subdir is not None:
-                            data = os.path.join(subdir, data)
-                    metadata[tag] = data
-                    break
-
-        return metadata
+        return max(dir_mtime, self.metadata.get_mtime())
 
     def guess_directory_picture(self, subdir = None):
         '''
@@ -527,31 +353,6 @@ class Directory(File):
                     return picture
 
         return None
-
-    def get_directory_metadata(self, subdir = None):
-        '''
-        Returns directory meta data. First tries to parse known formats
-        and then fall backs to built in defaults.
-        '''
-
-        result = {}
-
-        try:
-            result = self.get_matew_directory_metadata(result, subdir)
-        except NoMetadata:
-            pass
-
-        # Add album picture
-        if not result.has_key('album_picture'):
-            picture = self.guess_directory_picture(subdir)
-            if picture is not None:
-                result['album_picture'] = picture
-
-        if result.has_key('album_picture'):
-            # Convert to thumbnail path
-            result['album_picture'] =  result['album_picture'].replace('.', '_thumb.')
-
-        return result
 
     def find_prev(self, file):
         prev_index = self.supported_files.index(file) - 1
@@ -622,10 +423,10 @@ class Directory(File):
         subgal_links = []
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
-            dir_info.update(self.get_directory_metadata(dir))
+            dir_info.update(self.metadata.get(dir))
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
-        values.update(self.get_directory_metadata())
+        values.update(self.metadata.get())
 
         image_links = []
         for file in self.supported_files:
