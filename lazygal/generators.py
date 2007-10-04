@@ -313,7 +313,6 @@ class Directory(File):
         '''
         directory = self.source
         relpath = ''
-        found = False
 
         if subdir is not None:
             directory = os.path.join(directory, subdir)
