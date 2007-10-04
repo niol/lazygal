@@ -177,7 +177,8 @@ class ImageFile(File):
             im = Image.open(self.source)
 
             # Use EXIF data to rotate target image if available and required
-            rotation = self.get_required_rotation()
+            self.__load_exif_data()
+            rotation = self.exif.get_required_rotation()
             if rotation != 0:
                 im = im.rotate(rotation)
 
@@ -206,21 +207,6 @@ class ImageFile(File):
             self.date_taken = datetime.datetime.fromtimestamp(\
                                                        self.get_source_mtime())
         return self.date_taken
-
-    def get_required_rotation(self):
-        self.__load_exif_data()
-
-        if self.exif['Image Orientation']:
-            orientation_code = int(self.exif['Image Orientation'].values[0])
-            # FIXME : This should really go in the EXIF library
-            if orientation_code == 8:
-                return 90
-            elif orientation_code == 6:
-                return 270
-            else:
-                return 0
-        else:
-            return 0
 
     def compare_date_taken(self, other_img):
         date1 = time.mktime(self.get_date_taken().timetuple())

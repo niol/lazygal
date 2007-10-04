@@ -87,8 +87,6 @@ class ExifTags:
         return self.date_taken
 
     def get_required_rotation(self):
-        self.__load_exif_data()
-
         if self.tags.has_key('Image Orientation'):
             orientation_code = int(self.tags['Image Orientation'].values[0])
             # FIXME : This hsould really go in the EXIF library
