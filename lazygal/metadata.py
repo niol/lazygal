@@ -37,7 +37,7 @@ class ExifTags:
     def __getitem__(self, name):
         return self.tags[name]
 
-    def get_date(self, name):
+    def get_exif_date(self, name):
         '''
         Parses date from EXIF information.
         '''
@@ -47,6 +47,24 @@ class ExifTags:
         hour, minute, second = time.split(':')
         return datetime.datetime(int(year), int(month), int(day),
                            int(hour), int(minute), int(second))
+
+    def get_date(self):
+        '''
+        Get real time when photo has been taken. We prefer EXIF fields
+        as those were filled by camera, Image DateTime can be update by
+        software when editing photos later.
+        '''
+        try:
+            return self.get_exif_date('EXIF DateTimeDigitized')
+        except (KeyError, ValueError):
+            try:
+                return self.get_exif_date('EXIF DateTimeOriginal')
+            except (KeyError, ValueError):
+                try:
+                    return self.get_exif_date('Image DateTime')
+                except (KeyError, ValueError):
+                    # No date available in EXIF
+                    return None
 
     def get_date_taken(self):
         '''

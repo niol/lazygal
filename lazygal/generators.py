@@ -196,24 +196,14 @@ class ImageFile(File):
             self.exif = metadata.ExifTags(self.source)
 
     def get_date_taken(self):
-        '''
-        Get real time when photo has been taken. We prefer EXIF fields
-        as those were filled by camera, Image DateTime can be update by
-        software when editing photos later.
-        '''
         self.__load_exif_data()
 
-        try:
-            self.date_taken = self.exif.get_date('EXIF DateTimeDigitized')
-        except (KeyError, ValueError):
-            try:
-                self.date_taken = self.exif.get_date('EXIF DateTimeOriginal')
-            except (KeyError, ValueError):
-                try:
-                    self.date_taken = self.exif.get_date('Image DateTime')
-                except (KeyError, ValueError):
-                    # No date available in EXIF, or bad format, use file mtime
-                    self.date_taken = datetime.datetime.fromtimestamp(\
+        exif_date = self.exif.get_date()
+        if exif_date:
+            self.date_taken = exif_date
+        else:
+            # No date available in EXIF, or bad format, use file mtime
+            self.date_taken = datetime.datetime.fromtimestamp(\
                                                        self.get_source_mtime())
         return self.date_taken
 
