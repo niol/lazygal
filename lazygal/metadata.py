@@ -66,26 +66,6 @@ class ExifTags:
                     # No date available in EXIF
                     return None
 
-    def get_date_taken(self):
-        '''
-        Get real time when photo has been taken. We prefer EXIF fields
-        as those were filled by camera, Image DateTime can be update by
-        software when editing photos later.
-        '''
-        try:
-            self.date_taken = self.get_exif_date('EXIF DateTimeDigitized')
-        except (KeyError, ValueError):
-            try:
-                self.date_taken = self.get_exif_date('EXIF DateTimeOriginal')
-            except (KeyError, ValueError):
-                try:
-                    self.date_taken = self.get_exif_date('Image DateTime')
-                except (KeyError, ValueError):
-                    # No date available in EXIF, or bad format, use file mtime
-                    self.date_taken = datetime.datetime.fromtimestamp(\
-                                                       self.get_source_mtime())
-        return self.date_taken
-
     def get_required_rotation(self):
         if self.tags.has_key('Image Orientation'):
             orientation_code = int(self.tags['Image Orientation'].values[0])
