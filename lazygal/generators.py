@@ -254,6 +254,7 @@ class ImageFile(File):
                                                          self.filename)
         tpl_values['rel_root'] = self.rel_root()
 
+        self.__load_exif_data()
         tpl_values['camera_name'] = self.exif.get_camera_name()
         tpl_values['flash'] = self.exif.get_flash()
         tpl_values['exposure'] = self.exif.get_exposure()
