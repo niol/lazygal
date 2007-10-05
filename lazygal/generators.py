@@ -185,7 +185,7 @@ class ImageFile(File):
             im.thumbnail(size, Image.ANTIALIAS)
 
             im.save(osize_path, quality = self.album.quality)
-            self.album.log("\t\tGenerated %s" % osize_path)
+            self.album.log("    Generated %s" % osize_path)
         return os.path.basename(osize_path)
 
     def get_size(self, img):
@@ -263,7 +263,7 @@ class ImageFile(File):
         tpl_values['comment'] = self.exif.get_comment()
 
         page_template.dump(tpl_values, page_file)
-        self.album.log("\t\tDumped HTML %s" % page_file)
+        self.album.log("  - Generated %s" % page_file)
 
         return os.path.basename(page_file)
 
@@ -347,25 +347,28 @@ class Directory(File):
         generated_files = []
 
         if not check_all_dirs and not self.source_newer(self.dest):
-            self.album.log("\tSkipping because of mtime")
+            self.album.log("Skipping %s because of mtime, use --check-all-dirs or touch source directory to override."\
+                           % self.source,
+                           'warning')
             return
 
         if not os.path.isdir(self.dest):
             os.makedirs(self.dest, mode = 0755)
-            self.album.log("\tCreated dir %s" % self.dest)
+            self.album.log("  - Created %s" % self.dest)
 
         for filename in self.filenames:
             if self.album.is_ext_supported(filename):
-                self.album.log("\tProcessing %s" % filename)
+                self.album.log("  - Processing %s" % filename)
                 file = ImageFile(filename, self,
                                  self.album, self.album_dest_dir)
                 gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
                 self.supported_files.append(file)
-                self.album.log("\tFinished processing %s" % filename)
+                self.album.log("  - Finished processing %s" % filename)
             else:
-                self.album.log("\tIgnoring %s : format not supported"
-                        % filename, 1)
+                self.album.log("Ignoring %s, format not supported."\
+                               % os.path.join(self.source, filename),
+                               'warning')
 
         self.supported_files.sort(lambda x, y: x.compare_date_taken(y))
         for file in self.supported_files:
@@ -431,7 +434,7 @@ class Directory(File):
 
         page_file = os.path.join(self.dest, self.get_index_filename(size_name))
         self.album.templates['dirindex'].dump(values, page_file)
-        self.album.log("\tDumped HTML %s" % page_file)
+        self.album.log("  - Generated %s" % page_file)
         return os.path.basename(page_file)
 
     def generate_index_pages(self):
@@ -456,14 +459,16 @@ class Directory(File):
                         text = "has been"
                     else:
                         text = "should be"
-                    self.album.log("\t\tCleanup: %s %s removed" %
-                                   (dest_file, text))
+                    self.album.log("  - %s %s removed" %
+                                   (dest_file, text), 'warning')
 
 
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
                  quality=85, debug=False):
+        self.set_logging()
+
         self.source_dir = os.path.abspath(source_dir)
 
         self.thumb_size = thumb_size
@@ -491,9 +496,22 @@ class Album:
             self.templates[filename] = tpl_loader.load(tpl_file,
                                                        cls=Template)
 
-    def log(self, msg, level=0):
-        """Log message to stdout : 0 is debug, 1 is warning, 2 is info."""
-        print msg
+    log_levels = ['debug', 'warning', 'error']
+
+    def set_logging(self, level='warning', outpipe=sys.stdout,
+                                           errpipe=sys.stderr):
+        self.log_level = level
+        self.log_outpipe = outpipe
+        self.log_errpipe = errpipe
+
+    def log(self, msg, level='debug'):
+        if self.log_levels.index(level)\
+           >= self.log_levels.index(self.log_level):
+            txt = "%s: %s" % (level, msg)
+            if level == 'error':
+                print >> self.log_errpipe, txt
+            else:
+                print >> self.log_outpipe, txt
 
     def is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
@@ -501,13 +519,13 @@ class Album:
 
     def generate(self, dest_dir, check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
-        self.log("Generating to %s" % sane_dest_dir)
+        self.log("* Generating to %s" % sane_dest_dir)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
-            self.log("Entering %s" % root)
+            self.log("* Entering %s" % root)
             dir = Directory(root, dirnames, filenames, self, sane_dest_dir)
             dir.generate(check_all_dirs, clean_dest)
-            self.log("Leaving %s" % root)
+            self.log("* Leaving %s" % root)
 
         self.copy_shared(sane_dest_dir)
 
@@ -531,7 +549,7 @@ class Album:
 
             if os.path.getmtime(shared_file) > dest_mtime:
                 shutil.copy(shared_file, shared_file_dest)
-                self.log("Copied or updated %s" % shared_file_dest, 0)
+                self.log("* Copied or updated %s" % shared_file_dest)
 
 
 # vim: ts=4 sw=4 expandtab

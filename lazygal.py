@@ -25,6 +25,14 @@ from lazygal.generators import Album
 
 usage = "usage: %prog [options] albumdir"
 parser = OptionParser(usage=usage)
+parser.add_option("", "--quiet",
+                  action="store_true",
+                  dest="quiet", default=False,
+                  help="Don't output anything except for errors.")
+parser.add_option("", "--debug",
+                  action="store_true",
+                  dest="debug", default=False,
+                  help="Output everything that lazygal is doing.")
 parser.add_option("-o", "--output-directory",
                   action="store", type="string",
                   dest="dest_dir", default=".",
@@ -83,6 +91,15 @@ thumbnail = (int(x), int(y))
 
 album = Album(source_dir, thumbnail, sizes, quality=options.quality)
 album.set_theme(options.theme)
+
+log_level = None
+if options.quiet:
+    log_level = 'error'
+if options.debug:
+    log_level = 'debug'
+if log_level != None:
+    album.set_logging(log_level)
+
 album.generate(options.dest_dir, options.check_all_dirs, options.clean_dest)
 
 
