@@ -366,7 +366,7 @@ class Directory(File):
                 generated_files.extend(gen_files)
                 self.supported_files.append(file)
                 self.album.log("  - Finished processing %s" % filename)
-            else:
+            elif filename != metadata.MATEW_METADATA:
                 self.album.log("Ignoring %s, format not supported."\
                                % os.path.join(self.source, filename),
                                'warning')
