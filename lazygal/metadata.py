@@ -120,7 +120,10 @@ class ExifTags(pyexiv2.Image):
         '''
         try:
             val = self[name]
-            return str(round(float(val[0]) / float(val[1]), 1))
+            if type(val) == int:
+                return str(round(val, 1))
+            else:
+                return str(round(float(val[0]) / float(val[1]), 1))
         except (IndexError, KeyError):
             return ''
 
