@@ -119,13 +119,21 @@ class ExifTags(pyexiv2.Image):
         fraction). Returns empty string if key is not found.
         '''
         try:
-            val = self[name]
-            if type(val) == int:
-                return str(round(val, 1))
-            else:
-                return str(round(float(val[0]) / float(val[1]), 1))
+            val = self.get_exif_float_value(name)
+            return str(round(val, 1))
         except (IndexError, KeyError):
             return ''
+
+    def get_exif_float_value(self, name):
+        '''
+        Reads float number from EXIF information (where it is stored as
+        fraction or int).
+        '''
+        val = self[name]
+        if type(val) == int:
+            return float(val)
+        else:
+            return float(val[0]) / float(val[1])
 
     def get_jpeg_comment(self):
         '''
@@ -190,13 +198,13 @@ class ExifTags(pyexiv2.Image):
             except IndexError:
                 fresfactor = 0
 
-            fxres = float(self.get_exif_float('Exif.Photo.FocalPlaneXResolution'))
+            fxres = self.get_exif_float_value('Exif.Photo.FocalPlaneXResolution')
             try:
                 ccdwidth = float(iwidth * fresfactor / fxres)
             except ZeroDivisionError:
                 return ''
 
-            foclength = float(self.get_exif_float('Exif.Photo.FocalLength'))
+            foclength = self.get_exif_float_value('Exif.Photo.FocalLength')
 
             flen += ' (35 mm equivalent: %.01f mm)' % (foclength / ccdwidth * 36 + 0.5)
         except IndexError:
