@@ -30,8 +30,8 @@ Configuration
 -------------
 
 In addition to command line, you can specify parameters in configuration
-file placed as ~/.lazygal. This is INI like formatted file, where you
-can specify most of parameters same as on command line. Example:
+file placed as ~/.lazygal/config. This is INI like formatted file, where
+you can specify most of parameters same as on command line. Example:
 
 [lazygal]
 theme = image-index

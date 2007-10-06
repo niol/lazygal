@@ -24,7 +24,7 @@ import ConfigParser
 import lazygal
 from lazygal.generators import Album
 
-CONFIGFILE = '~/.lazygal'
+CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
     'theme': 'default',
     'clean-destination': 'No',
