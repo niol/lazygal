@@ -55,13 +55,13 @@ class ExifTags(pyexiv2.Image):
         '''
         try:
             return self.get_exif_date('Exif.Photo.DateTimeDigitized')
-        except (IndexError, ValueError):
+        except (IndexError, ValueError, KeyError):
             try:
                 return self.get_exif_date('Exif.Photo.DateTimeOriginal')
-            except (IndexError, ValueError):
+            except (IndexError, ValueError, KeyError):
                 try:
                     return self.get_exif_date('Exif.Image.DateTime')
-                except (IndexError, ValueError):
+                except (IndexError, ValueError, KeyError):
                     # No date available in EXIF
                     return None
 
@@ -74,7 +74,7 @@ class ExifTags(pyexiv2.Image):
                 return 270
             else:
                 return 0
-        except IndexError:
+        except KeyError:
             return 0
 
     def get_camera_name(self):
@@ -100,7 +100,7 @@ class ExifTags(pyexiv2.Image):
                 return '%s %s' % (vendor, model)
             except KeyError:
                 return model
-        except IndexError:
+        except KeyError:
             return ''
 
     def get_exif_string(self, name):
@@ -110,7 +110,7 @@ class ExifTags(pyexiv2.Image):
         '''
         try:
             return str(self[name])
-        except (IndexError, ValueError):
+        except (IndexError, ValueError, KeyError):
             return ''
 
     def get_exif_float(self, name):
@@ -121,7 +121,7 @@ class ExifTags(pyexiv2.Image):
         try:
             val = self[name]
             return str(round(float(val[0]) / float(val[1]), 1))
-        except IndexError:
+        except (IndexError, KeyError):
             return ''
 
     def get_jpeg_comment(self):
