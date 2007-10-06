@@ -26,6 +26,20 @@ It can be summed up by the following features :
 You can find more information about Lazygal at its website:
 <http://sousmonlit.dyndns.org/~niol/playa/oss:lazygal>
 
+Configuration
+-------------
+
+In addition to command line, you can specify parameters in configuration
+file placed as ~/.lazygal. This is INI like formatted file, where you
+can specify most of parameters same as on command line. Example:
+
+[lazygal]
+theme = image-index
+clean-destination = Yes
+image-size = medium=1024x685,small=640x428
+thumbnail-size = 150x100
+quality = 90
+
 Specifying album meta data
 --------------------------
 

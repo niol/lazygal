@@ -19,9 +19,23 @@
 
 import sys, os
 from optparse import OptionParser
+import ConfigParser
 
 import lazygal
 from lazygal.generators import Album
+
+CONFIGFILE = '~/.lazygal'
+CONFIGDEFAULTS = {
+    'theme': 'default',
+    'clean-destination': 'No',
+    'image-size': 'small=800x600,medium=1024x768',
+    'thumbnail-size': '150x113',
+    'quality': '85',
+}
+
+# Read configuration file
+config = ConfigParser.ConfigParser(defaults = CONFIGDEFAULTS)
+config.read(os.path.expanduser(CONFIGFILE))
 
 usage = "usage: %prog [options] albumdir"
 parser = OptionParser(usage=usage)
@@ -39,11 +53,13 @@ parser.add_option("-o", "--output-directory",
                   help="Directory where web pages, slides and thumbs will be written (default is current directory).")
 parser.add_option("-t", "--theme",
                   action="store", type="string",
-                  dest="theme", default="default",
+                  dest="theme",
+                  default=config.get('lazygal', 'theme'),
                   help="Theme name (looked up in theme directory) or theme full path.")
 parser.add_option("", "--clean-destination",
                   action="store_true",
-                  dest="clean_dest", default=False,
+                  dest="clean_dest",
+                  default=config.getboolean('lazygal', 'clean-destination'),
                   help="Clean destination directory of files that should not be there.")
 parser.add_option("-v", "--version",
                   action="store_true",
@@ -55,15 +71,18 @@ parser.add_option("", "--check-all-dirs",
                   help="Exhaustively go through all directories regardless of source modification time.")
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
-                  dest="image_size", default="small=800x600,medium=1024x768",
+                  dest="image_size",
+                  default=config.get('lazygal', 'image-size'),
                   help="Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,medium=1024x768.")
 parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
-                  dest="thumbnail_size", default="150x113",
+                  dest="thumbnail_size",
+                  default=config.get('lazygal', 'thumbnail-size'),
                   help="Size of thumbnails, define as <x>x<y>, eg. 150x113.")
 parser.add_option("-q", "--quality",
                   action="store", type="int",
-                  dest="quality", default=85,
+                  dest="quality",
+                  default=config.get('lazygal', 'quality'),
                   help="Quality of generated JPEG images (default is 85).")
 (options, args) = parser.parse_args()
 
