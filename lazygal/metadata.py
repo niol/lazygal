@@ -172,6 +172,11 @@ class ExifTags(pyexiv2.Image):
         if flen == '':
             return ''
 
+        flen35 = self.get_exif_float('Exif.Photo.FocalLengthIn35mmFilm')
+        if flen35 != '':
+            flen += ' (35 mm equivalent: %s mm)' % flen35
+            return flen
+
         try:
             iwidth = float(str(self['Exif.Photo.ImageWidth']))
             fresunit = str(self['Exif.Photo.FocalPlaneResolutionUnit'])
