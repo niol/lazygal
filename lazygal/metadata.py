@@ -16,7 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime
-import Image, EXIF
+import pyexiv2, Image
 
 
 MATEW_TAGS = {
@@ -27,23 +27,22 @@ MATEW_TAGS = {
 MATEW_METADATA = 'album_description'
 
 
-class ExifTags:
+class ExifTags(pyexiv2.Image):
 
     def __init__(self, image_path):
-        self.image_path = image_path
-        f = open(self.image_path, 'rb')
-        self.tags = EXIF.process_file(f)
+        pyexiv2.Image.__init__(self,
+                               image_path.encode(sys.getfilesystemencoding()))
+        self.readMetadata()
 
-    def __getitem__(self, name):
-        return self.tags[name]
+        self.image_path = image_path
 
     def get_exif_date(self, name):
         '''
         Parses date from EXIF information.
         '''
-        exif_date = str(self.tags[name])
+        exif_date = str(self[name])
         date, time = exif_date.split(' ')
-        year, month, day = date.split(':')
+        year, month, day = date.split('-')
         hour, minute, second = time.split(':')
         return datetime.datetime(int(year), int(month), int(day),
                            int(hour), int(minute), int(second))
@@ -55,28 +54,27 @@ class ExifTags:
         software when editing photos later.
         '''
         try:
-            return self.get_exif_date('EXIF DateTimeDigitized')
-        except (KeyError, ValueError):
+            return self.get_exif_date('Exif.Photo.DateTimeDigitized')
+        except (IndexError, ValueError):
             try:
-                return self.get_exif_date('EXIF DateTimeOriginal')
-            except (KeyError, ValueError):
+                return self.get_exif_date('Exif.Photo.DateTimeOriginal')
+            except (IndexError, ValueError):
                 try:
-                    return self.get_exif_date('Image DateTime')
-                except (KeyError, ValueError):
+                    return self.get_exif_date('Exif.Image.DateTime')
+                except (IndexError, ValueError):
                     # No date available in EXIF
                     return None
 
     def get_required_rotation(self):
-        if self.tags.has_key('Image Orientation'):
-            orientation_code = int(self.tags['Image Orientation'].values[0])
-            # FIXME : This hsould really go in the EXIF library
+        try:
+            orientation_code = int(self['Exif.Image.Orientation'])
             if orientation_code == 8:
                 return 90
             elif orientation_code == 6:
                 return 270
             else:
                 return 0
-        else:
+        except IndexError:
             return 0
 
     def get_camera_name(self):
@@ -86,9 +84,9 @@ class ExifTags:
         vendors put different information to both tags.
         '''
         try:
-            model = str(self.tags['Image Model'])
+            model = str(self['Exif.Image.Model'])
             try:
-                vendor = str(self.tags['Image Make'])
+                vendor = str(self['Exif.Image.Make'])
                 vendor_l = vendor.lower()
                 model_l = model.lower()
                 # Split vendor to words and check whether they are
@@ -102,7 +100,7 @@ class ExifTags:
                 return '%s %s' % (vendor, model)
             except KeyError:
                 return model
-        except KeyError:
+        except IndexError:
             return ''
 
     def get_exif_string(self, name):
@@ -111,8 +109,8 @@ class ExifTags:
         is not found.
         '''
         try:
-            return str(self.tags[name])
-        except KeyError:
+            return str(self[name])
+        except (IndexError, ValueError):
             return ''
 
     def get_exif_float(self, name):
@@ -121,11 +119,9 @@ class ExifTags:
         fraction). Returns empty string if key is not found.
         '''
         try:
-            val = str(self.tags[name]).split('/')
-            if len(val) == 1:
-                val.append('1')
+            val = self[name]
             return str(round(float(val[0]) / float(val[1]), 1))
-        except KeyError:
+        except IndexError:
             return ''
 
     def get_jpeg_comment(self):
@@ -140,41 +136,52 @@ class ExifTags:
             return ''
 
     def get_comment(self):
-        ret = self.get_exif_string('UserComment')
-        if ret != '':
-            return ret
-        return self.get_jpeg_comment()
+        try:
+            ret = self.get_exif_string('Exif.Photo.UserComment')
+            if ret == '':
+                raise ValueError
+            else:
+                return ret
+        except (ValueError, KeyError):
+            return self.get_jpeg_comment()
 
     def get_flash(self):
-        return self.get_exif_string('EXIF Flash')
+        return self.get_exif_string('Exif.Photo.Flash')
 
     def get_exposure(self):
-        return self.get_exif_string('EXIF ExposureTime')
+        try:
+            exposure = self['Exif.Photo.ExposureTime']
+            # FIXME : Not sure about this at all
+            return "%d/%d" % (exposure[0], exposure[1])
+        except (ValueError, KeyError):
+            return ''
 
     def get_iso(self):
+        # FIXME : Find how this is called in pyexiv2
         return self.get_exif_string('EXIF ISOSpeedRatings')
 
     def get_fnumber(self):
-        val = self.get_exif_float('EXIF FNumber')
+        val = self.get_exif_float('Exif.Photo.FNumber')
         if val == '':
             return ''
         return 'f/%s' % val
 
     def get_focal_length(self):
-        flen = self.get_exif_float('EXIF FocalLength')
+        flen = self.get_exif_float('Exif.Photo.FocalLength')
         if flen == '':
             return ''
 
         try:
-            iwidth = float(str(self.tags['EXIF ExifImageWidth']))
-            fresunit = str(self.tags['EXIF FocalPlaneResolutionUnit'])
+            # FIXME : Find how this is called in pyexiv2
+            iwidth = float(str(self['EXIF ExifImageWidth']))
+            fresunit = str(self['Exif.Photo.FocalPlaneResolutionUnit'])
             factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
             try:
                 fresfactor = factors[fresunit]
-            except:
+            except IndexError:
                 fresfactor = 0
 
-            fxrestxt = str(self.tags['EXIF FocalPlaneXResolution'])
+            fxrestxt = str(self['Exif.Photo.FocalPlaneXResolution'])
             if "/" in fxrestxt:
                 fxres = float(eval(fxrestxt))
             else:
@@ -184,11 +191,11 @@ class ExifTags:
             except ZeroDivisionError:
                 return ''
 
-            val = str(self.tags['EXIF FocalLength']).split('/')
+            val = str(self['Exif.Photo.FocalLength']).split('/')
             if len(val) == 1: val.append('1')
             foclength = float(val[0]) / float(val[1])
             flen += ' (35 mm equivalent: %d mm)' % int(foclength / ccdwidth * 36 + 0.5)
-        except KeyError:
+        except IndexError:
             return flen
 
         return flen
