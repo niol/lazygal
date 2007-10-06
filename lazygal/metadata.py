@@ -194,7 +194,7 @@ class ExifTags(pyexiv2.Image):
             val = str(self['Exif.Photo.FocalLength']).split('/')
             if len(val) == 1: val.append('1')
             foclength = float(val[0]) / float(val[1])
-            flen += ' (35 mm equivalent: %d mm)' % int(foclength / ccdwidth * 36 + 0.5)
+            flen += ' (35 mm equivalent: %01f mm)' % (foclength / ccdwidth * 36 + 0.5)
         except IndexError:
             return flen
 
