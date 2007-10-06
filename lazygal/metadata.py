@@ -171,6 +171,7 @@ class ExifTags(pyexiv2.Image):
         flen = self.get_exif_float('Exif.Photo.FocalLength')
         if flen == '':
             return ''
+        flen = '%s mm' % flen
 
         flen35 = self.get_exif_float('Exif.Photo.FocalLengthIn35mmFilm')
         if flen35 != '':
@@ -178,7 +179,10 @@ class ExifTags(pyexiv2.Image):
             return flen
 
         try:
-            iwidth = float(str(self['Exif.Photo.ImageWidth']))
+            try:
+                iwidth = float(str(self['Exif.Photo.ImageWidth']))
+            except IndexError:
+                iwidth = float(str(self['Exif.Photo.PixelXDimension']))
             fresunit = str(self['Exif.Photo.FocalPlaneResolutionUnit'])
             factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
             try:
@@ -186,20 +190,15 @@ class ExifTags(pyexiv2.Image):
             except IndexError:
                 fresfactor = 0
 
-            fxrestxt = str(self['Exif.Photo.FocalPlaneXResolution'])
-            if "/" in fxrestxt:
-                fxres = float(eval(fxrestxt))
-            else:
-                fxres = float(fxrestxt)
+            fxres = float(self.get_exif_float('Exif.Photo.FocalPlaneXResolution'))
             try:
                 ccdwidth = float(iwidth * fresfactor / fxres)
             except ZeroDivisionError:
                 return ''
 
-            val = str(self['Exif.Photo.FocalLength']).split('/')
-            if len(val) == 1: val.append('1')
-            foclength = float(val[0]) / float(val[1])
-            flen += ' (35 mm equivalent: %01f mm)' % (foclength / ccdwidth * 36 + 0.5)
+            foclength = float(self.get_exif_float('Exif.Photo.FocalLength'))
+
+            flen += ' (35 mm equivalent: %.01f mm)' % (foclength / ccdwidth * 36 + 0.5)
         except IndexError:
             return flen
 
