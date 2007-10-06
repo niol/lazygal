@@ -151,14 +151,12 @@ class ExifTags(pyexiv2.Image):
     def get_exposure(self):
         try:
             exposure = self['Exif.Photo.ExposureTime']
-            # FIXME : Not sure about this at all
             return "%d/%d" % (exposure[0], exposure[1])
         except (ValueError, KeyError):
             return ''
 
     def get_iso(self):
-        # FIXME : Find how this is called in pyexiv2
-        return self.get_exif_string('EXIF ISOSpeedRatings')
+        return self.get_exif_string('Exif.Photo.ISOSpeedRatings')
 
     def get_fnumber(self):
         val = self.get_exif_float('Exif.Photo.FNumber')
@@ -172,8 +170,7 @@ class ExifTags(pyexiv2.Image):
             return ''
 
         try:
-            # FIXME : Find how this is called in pyexiv2
-            iwidth = float(str(self['EXIF ExifImageWidth']))
+            iwidth = float(str(self['Exif.Photo.ImageWidth']))
             fresunit = str(self['Exif.Photo.FocalPlaneResolutionUnit'])
             factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
             try:
