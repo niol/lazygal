@@ -36,8 +36,8 @@
     </div>
     <div id="image_caption">
         <ul>
-            <li>$t.image_name</li>
             <li py:if="t.comment">$t.comment</li>
+            <li>$t.image_name</li>
             <li>Taken $t.image_date</li>
             <li py:if="t.camera_name">Using $t.camera_name</li>
             <li py:if="t.exposure">Exposure $t.exposure</li>
