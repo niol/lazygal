@@ -35,6 +35,9 @@ CONFIGDEFAULTS = {
 
 # Read configuration file
 config = ConfigParser.ConfigParser(defaults = CONFIGDEFAULTS)
+# The following will hold until the config file has more than one section.
+# See http://mail.python.org/pipermail/python-list/2006-March/370021.html
+config.add_section('lazygal')
 config.read(os.path.expanduser(CONFIGFILE))
 
 usage = "usage: %prog [options] albumdir"
