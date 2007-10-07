@@ -162,7 +162,10 @@ class ExifTags(pyexiv2.Image):
     def get_exposure(self):
         try:
             exposure = self['Exif.Photo.ExposureTime']
-            return "%d/%d" % (exposure[0], exposure[1])
+            if exposure[1] == 1:
+                return "%d s" % exposure[0]
+            else:
+                return "%d/%d s" % (exposure[0], exposure[1])
         except (ValueError, KeyError):
             return ''
 
