@@ -17,9 +17,8 @@
 
 import os, glob, shutil, time, datetime, sys
 import Image
-from genshi.template import TemplateLoader, MarkupTemplate
 
-import __init__, metadata
+import tpl, metadata
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -32,15 +31,6 @@ THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
-
-class Template(MarkupTemplate):
-
-    def dump(self, values, dest):
-        values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M %Z")
-        values['lazygal_version'] = __init__.__version__
-        page = open(dest, 'w')
-        page.write(self.generate(t=values).render('xhtml'))
-        page.close()
 
 
 class File:
@@ -232,7 +222,7 @@ class ImageFile(File):
         page_file = '.'.join([self.get_othersize_path_noext(size_name),
                               'html'])
 
-        page_template = self.album.templates['browse']
+        page_template = self.album.templates['browse.thtml']
 
         tpl_values = {}
         tpl_values['img_src'] = self.get_othersize_img_link(size_name)
@@ -434,7 +424,7 @@ class Directory(File):
         values['title'] = title.replace('_', ' ')
 
         page_file = os.path.join(self.dest, self.get_index_filename(size_name))
-        self.album.templates['dirindex'].dump(values, page_file)
+        self.album.templates['dirindex.thtml'].dump(values, page_file)
         self.album.log("  - Generated %s" % page_file)
         return os.path.basename(page_file)
 
@@ -491,13 +481,21 @@ class Album:
             if not os.path.exists(self.tpl_dir):
                 raise ValueError('Theme %s not found' % self.theme)
 
-        tpl_loader = TemplateLoader([self.tpl_dir])
-        for tpl_file in glob.glob(os.path.join(self.tpl_dir, "*.thtml")):
-            filename, ext = os.path.splitext(os.path.basename(tpl_file))
-            self.templates[filename] = tpl_loader.load(tpl_file,
-                                                       cls=Template)
+        self.tpl_loader = tpl.TplFactory([self.tpl_dir])
+        self.set_tpl_vars()
+
+        for tpl_file in os.listdir(self.tpl_dir):
+            if self.tpl_loader.is_known_template_type(tpl_file):
+                filename = os.path.basename(tpl_file)
+                self.templates[filename] = self.tpl_loader.load(tpl_file)
 
     log_levels = ['debug', 'warning', 'error']
+
+    def set_tpl_vars(self, tpl_vars=None):
+        if tpl_vars is not None:
+            self.tpl_vars = tpl_vars
+        if self.tpl_loader is not None and self.tpl_vars is not None:
+            self.tpl_loader.set_common_values(self.tpl_vars)
 
     def set_logging(self, level='warning', outpipe=sys.stdout,
                                            errpipe=sys.stderr):
@@ -548,9 +546,20 @@ class Album:
             except OSError:
                 dest_mtime = 0
 
-            if os.path.getmtime(shared_file) > dest_mtime:
-                shutil.copy(shared_file, shared_file_dest)
-                self.log("* Copied or updated %s" % shared_file_dest)
+            if self.tpl_loader.is_known_template_type(shared_file):
+                tpl = self.templates[os.path.basename(shared_file)]
+
+                # Remove the 't' from the beginning of ext
+                filename, ext = os.path.splitext(shared_file_dest)
+                if ext.startswith('.t'):
+                    real_dest = filename + '.' + ext[2:]
+                else:
+                    raise ValueError('We have a template with an extension that does not start with a t. Abording.')
+                tpl.dump({}, real_dest)
+            else:
+                if os.path.getmtime(shared_file) > dest_mtime:
+                    shutil.copy(shared_file, shared_file_dest)
+            self.log("* Copied or updated %s" % shared_file_dest)
 
 
 # vim: ts=4 sw=4 expandtab
