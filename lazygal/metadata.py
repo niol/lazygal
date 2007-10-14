@@ -210,7 +210,7 @@ class ExifTags(pyexiv2.Image):
             foclength = self.get_exif_float_value('Exif.Photo.FocalLength')
 
             flen += ' (35 mm equivalent: %.01f mm)' % (foclength / ccdwidth * 36 + 0.5)
-        except IndexError:
+        except (IndexError, KeyError):
             return flen
 
         return flen
