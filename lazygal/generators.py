@@ -558,10 +558,11 @@ class Album:
                 else:
                     raise ValueError('We have a template with an extension that does not start with a t. Abording.')
                 tpl.dump({}, real_dest)
+                self.log("* Generated or updated %s" % shared_file_dest)
             else:
                 if os.path.getmtime(shared_file) > dest_mtime:
                     shutil.copy(shared_file, shared_file_dest)
-            self.log("* Copied or updated %s" % shared_file_dest)
+                    self.log("* Copied or updated %s" % shared_file_dest)
 
 
 # vim: ts=4 sw=4 expandtab
