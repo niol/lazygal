@@ -1,3 +1,9 @@
+#if t.bgcolor
+body{
+		background-color:${t.bgcolor}
+}
+#end
+
 p{
     text-align:center;
 }
@@ -7,19 +13,19 @@ a{
 		text-decoration:none;
 }
 
-#image_links{
+\#image_links{
     clear: both;
     padding-left:7em;
     padding-right:7em;
 }
 
-#prev_link{
+\#prev_link{
     position:absolute;
     top:50%;
     left:0.1em;
 }
 
-#next_link{
+\#next_link{
     position:absolute;
     top:50%;
     right:0.1em;
@@ -45,22 +51,22 @@ div.subgal_image img {
     margin: 0;
 }
 
-#subgal_links li {
+\#subgal_links li {
     margin: 0.5em;
 }
 
-#image_links p{
+\#image_links p{
     text-align:justify;
 }
 
-#footer {
+\#footer {
     clear: both;
 }
 
-#footer p {
+\#footer p {
     text-align:justify;
 }
 
 /*
- * vim: ts=4 sw=4 expandtab 
+ * vim: ts=4 sw=4 expandtab
  */
