@@ -59,6 +59,10 @@ parser.add_option("-t", "--theme",
                   dest="theme",
                   default=config.get('lazygal', 'theme'),
                   help="Theme name (looked up in theme directory) or theme full path.")
+parser.add_option("", "--template-vars",
+                  action="store", type="string",
+                  dest="tpl_vars", default=None,
+                  help="Common variables to load all templates with.")
 parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_dest",
@@ -112,6 +116,15 @@ x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
 album = Album(source_dir, thumbnail, sizes, quality=options.quality)
+
+if options.tpl_vars:
+    tpl_vars = {}
+    tpl_vars_defs = options.tpl_vars.split(',')
+    for single_def in tpl_vars_defs:
+        name, value = single_def.split('=')
+        tpl_vars[name] = value
+    album.set_tpl_vars(tpl_vars)
+
 album.set_theme(options.theme)
 
 log_level = None

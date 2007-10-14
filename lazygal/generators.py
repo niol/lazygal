@@ -468,6 +468,8 @@ class Album:
         self.default_size_name = self.browse_sizes[0][0]
 
         self.templates = {}
+        self.tpl_loader = None
+        self.tpl_vars = None
 
     def set_theme(self, theme):
         self.theme = theme
