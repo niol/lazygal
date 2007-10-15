@@ -293,7 +293,8 @@ class DirectoryMetadata:
 
         if result.has_key('album_picture'):
             # Convert to thumbnail path
-            result['album_picture'] =  result['album_picture'].replace('.', '_thumb.')
+            filename, extension = os.path.splitext(result['album_picture'])
+            result['album_picture'] = self.dir.get_osize_name_noext('thumb', filename) + extension
 
         return result
 
