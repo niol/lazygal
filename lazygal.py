@@ -31,6 +31,7 @@ CONFIGDEFAULTS = {
     'image-size': 'small=800x600,medium=1024x768',
     'thumbnail-size': '150x113',
     'quality': '85',
+    'template-vars': '',
 }
 
 # Read configuration file
@@ -61,7 +62,8 @@ parser.add_option("-t", "--theme",
                   help="Theme name (looked up in theme directory) or theme full path.")
 parser.add_option("", "--template-vars",
                   action="store", type="string",
-                  dest="tpl_vars", default=None,
+                  dest="tpl_vars",
+                  default=config.get('lazygal', 'template-vars'),
                   help="Common variables to load all templates with.")
 parser.add_option("", "--clean-destination",
                   action="store_true",
