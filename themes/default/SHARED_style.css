@@ -1,5 +1,26 @@
+#if t.bgcolor
+body{
+		background-color:${t.bgcolor}
+}
+#end
+
+#if t.txtcolor
+body{
+		color:${t.txtcolor}
+}
+#end
+
 p{
     text-align:center;
+}
+
+a{
+#if t.lnkcolor
+		color:${t.lnkcolor};
+#end
+#if t.lnkdecoration
+		text-decoration:${t.lnkdecoration};
+#end
 }
 
 #image_links{
