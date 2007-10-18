@@ -4,13 +4,29 @@ body{
 }
 #end
 
+#if t.txtcolor
+body{
+		color:${t.txtcolor}
+}
+#end
+
 p{
     text-align:center;
 }
 
 a{
+#if t.lnkcolor
+		color:${t.lnkcolor};
+#end
+#if not t.lnkcolor
 		color:blue;
+#end
+#if t.lnkdecoration
+		text-decoration:${t.lnkdecoration};
+#end
+#if not t.lnkdecoration
 		text-decoration:none;
+#end
 }
 
 \#image_links{
