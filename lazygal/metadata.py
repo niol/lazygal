@@ -103,6 +103,16 @@ class ExifTags(pyexiv2.Image):
         except KeyError:
             return ''
 
+    def get_exif_value(self, name):
+        '''
+        Reads interpreted string from EXIF information, returns empty
+        string if key is not found.
+        '''
+        try:
+            return self.interpretedExifValue(name)
+        except (IndexError, ValueError, KeyError):
+            return ''
+
     def get_exif_string(self, name):
         '''
         Reads string from EXIF information, returns empty string if key
@@ -157,7 +167,7 @@ class ExifTags(pyexiv2.Image):
             return self.get_jpeg_comment()
 
     def get_flash(self):
-        return self.get_exif_string('Exif.Photo.Flash')
+        return self.get_exif_value('Exif.Photo.Flash')
 
     def get_exposure(self):
         try:
