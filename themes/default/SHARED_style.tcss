@@ -23,18 +23,18 @@ a{
 #end
 }
 
-#image_links{
+\#image_links{
     padding-left:7em;
     padding-right:7em;
 }
 
-#prev_link{
+\#prev_link{
     position:absolute;
     top:50%;
     left:0.1em;
 }
 
-#next_link{
+\#next_link{
     position:absolute;
     top:50%;
     right:0.1em;
@@ -45,11 +45,11 @@ img {
     margin:1em;
 }
 
-#image_links p{
+\#image_links p{
     text-align:justify;
 }
 
-#footer p {
+\#footer p {
 		text-align:justify;
 }
 
