@@ -48,6 +48,6 @@ def get_darcs_lastdate():
         return ''
 
 
-__version__ = '0.0' + get_darcs_lastdate()
+__version__ = '0.1' + get_darcs_lastdate()
 
 # vim: ts=4 sw=4 expandtab
