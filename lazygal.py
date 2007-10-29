@@ -93,6 +93,10 @@ parser.add_option("-q", "--quality",
                   dest="quality",
                   default=config.get('lazygal', 'quality'),
                   help="Quality of generated JPEG images (default is 85).")
+parser.add_option("-O", "--original",
+                  action="store_true",
+                  dest="original", default=False,
+                  help="Include original photos in output.")
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -128,6 +132,7 @@ if options.tpl_vars:
     album.set_tpl_vars(tpl_vars)
 
 album.set_theme(options.theme)
+album.set_original(options.original)
 
 log_level = None
 if options.quiet:

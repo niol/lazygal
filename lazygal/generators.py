@@ -120,6 +120,9 @@ class File:
         else:
             return '_'.join([filename, size_name])
 
+    def get_original_path(self):
+        return os.path.join(self.destdir, self.filename) + self.extension
+
     def get_osize_links(self, size_name, filename, no_def_ozise_suffix=False):
         osize_index_links = []
         for osize_name, ozise in self.album.browse_sizes:
@@ -136,6 +139,9 @@ class File:
             osize_index_links.append(osize_info)
 
         return osize_index_links
+
+    def get_original_link(self):
+        return self.filename + self.extension
 
 
 class ImageFile(File):
@@ -177,6 +183,13 @@ class ImageFile(File):
             im.save(osize_path, quality = self.album.quality)
             self.album.log("    Generated %s" % osize_path)
         return os.path.basename(osize_path)
+
+    def generate_original(self):
+        o_path = self.get_original_path()
+
+        if self.source_newer(o_path):
+            shutil.copy(self.source, o_path)
+        return [os.path.basename(o_path)]
 
     def get_size(self, img):
         im = Image.open(img)
@@ -252,6 +265,9 @@ class ImageFile(File):
         tpl_values['fnumber'] = self.exif.get_fnumber()
         tpl_values['focal_length'] = self.exif.get_focal_length()
         tpl_values['comment'] = self.exif.get_comment()
+
+        if self.album.original:
+            tpl_values['original_link'] = self.get_original_link()
 
         page_template.dump(tpl_values, page_file)
         self.album.log("  - Generated %s" % page_file)
@@ -354,6 +370,9 @@ class Directory(File):
                                  self.album, self.album_dest_dir)
                 gen_files = file.generate_other_sizes()
                 generated_files.extend(gen_files)
+                if self.album.original:
+                    gen_files = file.generate_original()
+                    generated_files.extend(gen_files)
                 self.supported_files.append(file)
                 self.album.log("  - Finished processing %s" % filename)
             elif filename != metadata.MATEW_METADATA:
@@ -470,6 +489,7 @@ class Album:
         self.templates = {}
         self.tpl_loader = None
         self.tpl_vars = None
+        self.original = False
 
     def set_theme(self, theme):
         self.theme = theme
@@ -504,6 +524,9 @@ class Album:
         self.log_level = level
         self.log_outpipe = outpipe
         self.log_errpipe = errpipe
+
+    def set_original(self, original = False):
+        self.original = original
 
     def log(self, msg, level='debug'):
         if self.log_levels.index(level)\
