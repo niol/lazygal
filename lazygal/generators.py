@@ -464,8 +464,9 @@ class Directory(File):
                 text = ''
                 if not (self.is_album_root() and
                         dest_file == DEST_SHARED_DIRECTORY_NAME):
-                    if do_clean_dest:
-                        os.unlink(os.path.join(self.dest, dest_file))
+                    rmv_candidate = os.path.join(self.dest, dest_file)
+                    if do_clean_dest and not os.path.isdir(rmv_candidate):
+                        os.unlink(rmv_candidate)
                         text = "has been"
                     else:
                         text = "should be"
