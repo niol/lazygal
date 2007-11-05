@@ -19,6 +19,7 @@
 
 import sys, os
 from optparse import OptionParser
+import genshi.core
 import ConfigParser
 
 import lazygal
@@ -123,12 +124,16 @@ thumbnail = (int(x), int(y))
 
 album = Album(source_dir, thumbnail, sizes, quality=options.quality)
 
-if options.tpl_vars:
+if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
-    tpl_vars_defs = options.tpl_vars.split(',')
-    for single_def in tpl_vars_defs:
-        name, value = single_def.split('=')
-        tpl_vars[name] = value
+    if config.has_section('template-vars'):
+        for option in config.options('template-vars'):
+            tpl_vars[option] = genshi.core.Markup(config.get('template-vars', option))
+    if options.tpl_vars:
+        tpl_vars_defs = options.tpl_vars.split(',')
+        for single_def in tpl_vars_defs:
+            name, value = single_def.split('=')
+            tpl_vars[name] = genshi.core.Markup(value)
     album.set_tpl_vars(tpl_vars)
 
 album.set_theme(options.theme)

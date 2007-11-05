@@ -40,6 +40,15 @@ image-size = medium=1024x685,small=640x428
 thumbnail-size = 150x100
 quality = 90
 
+Additionally you can define template variables in special section
+[template-vars], for example:
+
+[template-vars]
+lnkcolor = #e0e0e0
+bgcolor = #202020
+txtcolor = #d0d0d0
+lnkdecoration = underline
+
 Specifying album meta data
 --------------------------
 
