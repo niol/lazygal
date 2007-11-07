@@ -459,6 +459,7 @@ class Directory(File):
 
     def check_dest_for_junk(self, generated_files, do_clean_dest):
         for dest_file in os.listdir(self.dest):
+            dest_file = self.path_to_unicode(dest_file)
             if dest_file not in generated_files and\
                dest_file not in self.dirnames:
                 text = ''
