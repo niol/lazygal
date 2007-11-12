@@ -1,0 +1,67 @@
+.TH LAZYGAL "1" "November 2007" "lazygal version 0.1" "User Commands"
+.SH NAME
+lazygal \- static web gallery generator
+
+.SH SYNOPSIS
+usage: lazygal.py [options] albumdir
+
+.SH DESCRIPTION
+This manual page explains the
+.B photo-upload
+program. This program is static web gallery generator written in Python.
+.SH OPTIONS
+.TP
+\fB\-\-version\fR
+show program's version number and exit
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+show this help message and exit
+.TP
+\fB\-\-quiet\fR
+Don't output anything except for errors.
+.TP
+\fB\-\-debug\fR
+Output everything that lazygal is doing.
+.TP
+\fB\-o\fR DEST_DIR, \fB\-\-output\-directory\fR=\fIDEST_DIR\fR
+Directory where web pages, slides and thumbs will be
+written (default is current directory).
+.TP
+\fB\-t\fR THEME, \fB\-\-theme\fR=\fITHEME\fR
+Theme name (looked up in theme directory) or theme
+full path.
+.TP
+\fB\-\-template\-vars\fR=\fITPL_VARS\fR
+Common variables to load all templates with.
+.TP
+\fB\-\-clean\-destination\fR
+Clean destination directory of files that should not
+be there.
+.TP
+\fB\-v\fR, \fB\-\-version\fR
+Display program version.
+.TP
+\fB\-\-check\-all\-dirs\fR
+Exhaustively go through all directories regardless of
+source modification time.
+.TP
+\fB\-s\fR IMAGE_SIZE, \fB\-\-image\-size\fR=\fIIMAGE_SIZE\fR
+Size of images, define as <name>=<x>x<y>,..., eg.
+small=800x600,medium=1024x768.
+.TP
+\fB\-T\fR THUMBNAIL_SIZE, \fB\-\-thumbnail\-size\fR=\fITHUMBNAIL_SIZE\fR
+Size of thumbnails, define as <x>x<y>, eg. 150x113.
+.TP
+\fB\-q\fR QUALITY, \fB\-\-quality\fR=\fIQUALITY\fR
+Quality of generated JPEG images (default is 85).
+.TP
+\fB\-O\fR, \fB\-\-original\fR
+Include original photos in output.
+
+.SH SEE ALSO
+The full documentation for
+.B lazygal
+is maintained as a README file.
+
+More information is available on program website:
+<\fIhttp://sousmonlit.dyndns.org/~niol/playa/oss:lazygal\fR>.

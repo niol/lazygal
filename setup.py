@@ -118,7 +118,7 @@ themes = glob.glob(os.path.join('themes', '*'))
 for theme in themes:
     themename = os.path.basename(theme)
     theme_data.append(
-            (os.path.join('share','lazygal','themes', themename), 
+            (os.path.join('share','lazygal','themes', themename),
                 glob.glob(os.path.join('themes', themename, '*'))))
 
 setup(name = 'lazygal',
@@ -154,7 +154,8 @@ setup(name = 'lazygal',
     cmdclass = {
         'build_scripts': build_scripts_lazygal,
         },
-    data_files = theme_data,
+    data_files = theme_data +
+        [(os.path.join('share','man','man1'), ['lazygal.1'])]
     )
 
 # vim: ts=4 sw=4 expandtab
