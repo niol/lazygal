@@ -44,7 +44,7 @@ def get_darcs_lastdate():
             raise IOError
 
         return "+darcs%s" % last_date[:8]
-    except IOError:
+    except (IOError, OSError):
         return ''
 
 
