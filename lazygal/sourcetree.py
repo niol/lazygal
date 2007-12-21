@@ -21,10 +21,10 @@ import Image
 from lazygal import make, metadata
 
 
-class File(make.FileMakeObject):
+class File(make.FileSimpleDependency):
 
     def __init__(self, path, album):
-        make.FileMakeObject.__init__(self, path)
+        make.FileSimpleDependency.__init__(self, path)
 
         self.path = path
         self.album = album

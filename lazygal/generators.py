@@ -142,7 +142,7 @@ class WebalbumBrowsePage(WebalbumPage):
             self.add_dependency(ImageOriginal(self.dir, self.image))
 
         self.page_template = self.dir.album.templates['browse.thtml']
-        self.add_dependency(make.FileMakeObject(self.page_template.path))
+        self.add_file_dependency(self.page_template.path)
 
     def make(self, force=False):
         self.dir.album.log("  - Processing %s" % self.image.filename)
@@ -221,7 +221,7 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_file_dependency(os.path.join(self.dir.path, dirname))
 
         self.page_template = self.dir.album.templates['dirindex.thtml']
-        self.add_dependency(make.FileMakeObject(self.page_template.path))
+        self.add_file_dependency(self.page_template.path)
 
     def build(self):
         values = {}

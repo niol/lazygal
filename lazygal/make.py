@@ -76,6 +76,9 @@ class FileMakeObject(MakeObject):
         # The built file is a forced output of this target
         self.register_output(path)
 
+    def needs_build(self):
+        return MakeObject.needs_build(self) or not os.path.exists(self.__path)
+
     def get_mtime(self):
         try:
             mtime = os.path.getmtime(self.__path)
