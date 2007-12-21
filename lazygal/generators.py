@@ -262,7 +262,14 @@ class WebalbumDir(make.FileMakeObject):
 
         make.FileMakeObject.__init__(self, self.path)
 
-        self.create()
+        # mtime for directories must be saved, because the WebalbumDir gets
+        # updated as its dependencies are built.
+        self.__mtime = make.FileMakeObject.get_mtime(self)
+
+        # Create the directory if it does not exist
+        if not os.path.isdir(self.path):
+            os.makedirs(self.path, mode = 0755)
+            self.source_dir.album.log("  - Created %s" % self.path)
 
         self.clean_dest = clean_dest
         self.album = album
@@ -292,10 +299,9 @@ class WebalbumDir(make.FileMakeObject):
                                                   metadatas,
                                                   self.source_dir.dirnames))
 
-    def create(self):
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path, mode = 0755)
-            self.source_dir.album.log("  - Created %s" % self.path)
+    def get_mtime(self):
+        # Use the saved mtime that was initialized once, in self.__init__()
+        return self.__mtime
 
     def _add_size_qualifier(self, path, size_name):
         filename, extension = os.path.splitext(path)

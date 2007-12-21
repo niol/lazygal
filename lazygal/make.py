@@ -25,7 +25,6 @@ class CircularDependency(Exception):
 class MakeObject:
 
     def __init__(self):
-        self.__mtime = self.get_mtime()
         self.deps = []
         self.output_items = []
         self.builder = None
@@ -44,7 +43,7 @@ class MakeObject:
 
     def needs_build(self):
         for dependency in self.deps:
-            if dependency.get_mtime() > self.__mtime:
+            if dependency.get_mtime() > self.get_mtime():
                 return True
         return False
 
