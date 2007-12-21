@@ -237,7 +237,7 @@ class DirectoryMetadata:
 
     def __init__(self, dir):
         self.dir = dir
-        self.directory_path = self.dir.source
+        self.directory_path = self.dir.path
 
         description = os.path.join(self.directory_path, MATEW_METADATA)
         if os.path.isfile(description):
@@ -304,7 +304,7 @@ class DirectoryMetadata:
         if result.has_key('album_picture'):
             # Convert to thumbnail path
             filename, extension = os.path.splitext(result['album_picture'])
-            result['album_picture'] = self.dir.get_osize_name_noext('thumb', filename) + extension
+            result['album_picture'] = filename + '_thumb' + extension
 
         return result
 
