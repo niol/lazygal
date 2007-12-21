@@ -135,8 +135,6 @@ class WebalbumBrowsePage(WebalbumPage):
         for prevnext in [self.image.previous_image, self.image.next_image]:
             if prevnext:
                 self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
-                # FIXME : The following line should not be needed
-                ImageOtherSize(self.dir, prevnext, 'thumb').make()
 
         if self.dir.album.original:
             self.add_dependency(ImageOriginal(self.dir, self.image))
@@ -197,18 +195,11 @@ class WebalbumIndexPage(WebalbumPage):
         WebalbumPage.__init__(self, dir, size_name, 'index')
 
         self.images = images
-        previous_image = None
         for image in self.images:
             thumb_dep = ImageOtherSize(self.dir, image, 'thumb')
             self.add_dependency(thumb_dep)
             image_dep = WebalbumBrowsePage(self.dir, size_name, image)
             self.add_dependency(image_dep)
-
-            # chain images
-            if previous_image:
-                previous_image.next_image = image
-                image.previous_image = previous_image
-            previous_image = image
 
         self.metadata = None
         for metadata_file in metadatas:
@@ -291,6 +282,13 @@ class WebalbumDir(make.FileMakeObject):
                                % os.path.join(self.source_dir.path, filename),
                                'warning')
         images.sort(lambda x, y: x.compare_date_taken(y))
+        # chain images
+        previous_image = None
+        for image in images:
+            if previous_image:
+                previous_image.next_image = image
+                image.previous_image = previous_image
+            previous_image = image
 
         for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self,
