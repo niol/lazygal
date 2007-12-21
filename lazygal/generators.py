@@ -15,10 +15,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, glob, shutil, time, datetime, sys
+import os, glob, shutil, sys
 import Image
 
-from lazygal import make, tpl, metadata
+from lazygal import make, sourcetree, tpl, metadata
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -31,121 +31,6 @@ THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
-
-
-class File(make.FileMakeObject):
-
-    def __init__(self, path, album):
-        make.FileMakeObject.__init__(self, path)
-
-        self.path = path
-        self.album = album
-        self.filename = os.path.basename(self.path)
-        self.name, self.extension = os.path.splitext(self.filename)
-
-    def _path_to_unicode(self, path):
-        return path.decode(sys.getfilesystemencoding())
-
-    def strip_root(self, path=None):
-        found = False
-        album_path = ""
-
-        if not path:
-            head = self.path
-        else:
-            head = path
-
-        while not found:
-            if head == self.album.source_dir:
-                found = True
-            elif head == "/":
-                raise Exception("Root not found")
-            else:
-                head, tail = os.path.split(head)
-                if album_path == "":
-                    album_path = tail
-                else:
-                    album_path = os.path.join(tail, album_path)
-
-        return album_path
-
-    def rel_root(self):
-        if os.path.isdir(self.path):
-            cur_path = self.path
-        else:
-            cur_path = os.path.dirname(self.path)
-
-        rel_root = ""
-
-        while cur_path != self.album.source_dir:
-            cur_path, tail = os.path.split(cur_path)
-            rel_root = os.path.join('..', rel_root)
-        return rel_root
-
-
-class ImageFile(File):
-
-    def __init__(self, path, album):
-        File.__init__(self, path, album)
-        self.exif = metadata.ExifTags(self.path)
-        self.previous_image = None
-        self.next_image = None
-
-    def get_size(self, img_path=None):
-        if not img_path:
-            img_path = self.path
-        im = Image.open(img_path)
-        return im.size
-
-    def get_date_taken(self):
-        exif_date = self.exif.get_date()
-        if exif_date:
-            self.date_taken = exif_date
-        else:
-            # No date available in EXIF, or bad format, use file mtime
-            self.date_taken = datetime.datetime.fromtimestamp(self.get_mtime())
-        return self.date_taken
-
-    def compare_date_taken(self, other_img):
-        date1 = time.mktime(self.get_date_taken().timetuple())
-        date2 = time.mktime(other_img.get_date_taken().timetuple())
-        delta = date1 - date2
-        return int(delta)
-
-
-class Directory(File):
-
-    def __init__(self, source, dirnames, filenames, album):
-        File.__init__(self, self._path_to_unicode(source), album)
-
-        self.dirnames = map(self._path_to_unicode, dirnames)
-        self.dirnames.sort()
-        self.filenames = map(self._path_to_unicode, filenames)
-
-    def guess_directory_picture(self, subdir = None):
-        '''
-        Guesses picture for directory by finding first suitable image.
-        '''
-        directory = self.path
-        relpath = ''
-
-        if subdir is not None:
-            directory = os.path.join(directory, subdir)
-            relpath = subdir
-
-        for root, dirs, files in os.walk(directory):
-            subdirs = root[len(directory):]
-            if len(subdirs) > 0 and subdirs[0] == '/':
-                subdirs = subdirs[1:]
-            for file in files:
-                if self.album.is_ext_supported(file):
-                    picture = os.path.join(relpath, subdirs, file)
-                    return picture
-
-        return None
-
-    def is_album_root(self):
-        return self.path == self._path_to_unicode(self.album.source_dir)
 
 
 class ImageOriginal(make.FileMakeObject):
@@ -388,9 +273,10 @@ class WebalbumDir(make.FileMakeObject):
         metadatas = []
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
-                images.append(ImageFile(os.path.join(self.source_dir.path,
-                                                     filename),
-                                        album))
+                image = sourcetree.ImageFile(os.path.join(self.source_dir.path,
+                                                          filename),
+                                             album)
+                images.append(image)
             elif filename == metadata.MATEW_METADATA:
                 metadatas.append(os.path.join(self.source_dir.path, filename))
             else:
@@ -525,7 +411,7 @@ class Album:
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("* Entering %s" % root)
 
-            dir = Directory(root, dirnames, filenames, self)
+            dir = sourcetree.Directory(root, dirnames, filenames, self)
             destgal = WebalbumDir(dir, self, sane_dest_dir, clean_dest)
 
             if not destgal.needs_build() and not check_all_dirs:
