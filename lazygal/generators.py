@@ -18,7 +18,7 @@
 import os, glob, shutil, sys
 import Image
 
-from lazygal import make, sourcetree, tpl, metadata
+from lazygal import make, sourcetree, tpl, metadata, feeds
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -333,6 +333,49 @@ class WebalbumDir(make.FileMakeObject):
         os.utime(self.path, None)
 
 
+class WebalbumFeed(make.FileMakeObject):
+
+    def __init__(self, album, dest_dir, pub_url):
+        self.album = album
+        self.pub_url = pub_url
+        if not self.pub_url:
+            self.pub_url = 'http://example.com'
+        if not self.pub_url.endswith('/'):
+            self.pub_url = self.pub_url + '/'
+
+        self.path = os.path.join(dest_dir, 'index.xml')
+        make.FileMakeObject.__init__(self, self.path)
+        self.feed = feeds.RSS20(self.pub_url)
+
+    def set_title(self, title):
+        self.feed.title = title
+
+    def set_description(self, description):
+        self.feed.description = description
+
+    def add_dependency(self, webalbumdir):
+        make.FileMakeObject.add_dependency(self, webalbumdir)
+
+        desc = '<p>%d sub-galleries, %d photos</p>' %\
+               (len(webalbumdir.source_dir.dirnames), len(webalbumdir.images))
+        # FIXME : Those 'if metadata' should disappear.
+        if webalbumdir.metadata:
+            md = webalbumdir.metadata.get()
+            desc = '<p>' + md['album_description'] + '</p>' + desc
+            title = md['album_name']
+        else:
+            title = webalbumdir.source_dir.name
+
+        self.feed.add_item(title,
+                           self.pub_url + webalbumdir.source_dir.strip_root(),
+                           desc,
+                           webalbumdir.get_mtime())
+
+    def build(self):
+        self.feed.dump(self.path)
+        self.album.log("  - Generated %s" % os.path.basename(self.path))
+
+
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
@@ -403,15 +446,26 @@ class Album:
         filename, extension = os.path.splitext(filename)
         return extension.lower() in ['.jpg']
 
-    def generate(self, dest_dir, check_all_dirs=False, clean_dest=False):
+    def generate(self, dest_dir, pub_url,
+                 check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("* Generating to %s" % sane_dest_dir)
+
+        feed = WebalbumFeed(self, sane_dest_dir, pub_url)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
             self.log("* Entering %s" % root)
 
             dir = sourcetree.Directory(root, dirnames, filenames, self)
             destgal = WebalbumDir(dir, self, sane_dest_dir, clean_dest)
+
+            if dir.is_album_root():
+                feed.set_title(dir.name)
+                if destgal.metadata:
+                    feed.set_description(destgal.metadata.get())
+                destgal.register_output(feed.path)
+
+            feed.add_dependency(destgal)
 
             if not destgal.needs_build() and not check_all_dirs:
                 self.log("Skipping %s because of mtime, use --check-all-dirs or touch source directory to override." % root,
@@ -420,6 +474,9 @@ class Album:
                 destgal.make()
 
             self.log("* Leaving %s" % root)
+
+        if pub_url and feeds.HAVE_ETREE:
+            feed.make()
 
         self.copy_shared(sane_dest_dir)
 

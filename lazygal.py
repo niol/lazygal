@@ -98,6 +98,10 @@ parser.add_option("-O", "--original",
                   action="store_true",
                   dest="original", default=False,
                   help="Include original photos in output.")
+parser.add_option("", "--puburl",
+                  action="store", type="string",
+                  dest="pub_url",
+                  help="Publication URL (only usefull for feed generation).")
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -147,7 +151,8 @@ if options.debug:
 if log_level != None:
     album.set_logging(log_level)
 
-album.generate(options.dest_dir, options.check_all_dirs, options.clean_dest)
+album.generate(options.dest_dir, options.pub_url,
+               options.check_all_dirs, options.clean_dest)
 
 
 # vim: ts=4 sw=4 expandtab
