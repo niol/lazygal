@@ -63,7 +63,6 @@ class TplFactory(TemplateLoader):
         if self.is_known_template_type(tpl_file):
             filename, ext = os.path.splitext(os.path.basename(tpl_file))
             tpl = TemplateLoader.load(self, tpl_file, cls=self.known_exts[ext])
-            tpl.path = tpl_file
             if self.common_values:
                 tpl.common_values = self.common_values
             else:

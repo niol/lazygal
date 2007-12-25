@@ -370,6 +370,8 @@ class Album:
             if self.tpl_loader.is_known_template_type(tpl_file):
                 filename = os.path.basename(tpl_file)
                 self.templates[filename] = self.tpl_loader.load(tpl_file)
+                self.templates[filename].path = os.path.join(self.tpl_dir,
+                                                             tpl_file)
 
     log_levels = ['debug', 'warning', 'error']
 
