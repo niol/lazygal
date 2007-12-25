@@ -169,7 +169,7 @@ class WebalbumBrowsePage(WebalbumPage):
             self._gen_other_img_link(self.image.next_image)
         tpl_values['index_link'] = self.dir._add_size_qualifier('index.html',
                                                                 self.size_name)
-        tpl_values['osize_links'] = self._get_osize_links(self.image.filename)
+        tpl_values['osize_links'] = self._get_osize_links(self.image.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
         tpl_values['camera_name'] = self.image.exif.get_camera_name()
