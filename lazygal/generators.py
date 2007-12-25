@@ -191,7 +191,7 @@ class WebalbumBrowsePage(WebalbumPage):
 
 class WebalbumIndexPage(WebalbumPage):
 
-    def __init__(self, dir, size_name, images, metadatas, subdirs):
+    def __init__(self, dir, size_name, images, subdirs):
         WebalbumPage.__init__(self, dir, size_name, 'index')
 
         self.images = images
@@ -200,12 +200,6 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_dependency(thumb_dep)
             image_dep = WebalbumBrowsePage(self.dir, size_name, image)
             self.add_dependency(image_dep)
-
-        self.metadata = None
-        for metadata_file in metadatas:
-            self.add_file_dependency(os.path.join(self.dir.path, metadata_file))
-            # FIXME : This won't work if multiple formats are supported
-            self.metadata = metadata.DirectoryMetadata(self.dir.source_dir)
 
         self.dirnames = subdirs
         for dirname in self.dirnames:
@@ -222,12 +216,12 @@ class WebalbumIndexPage(WebalbumPage):
         subgal_links = []
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
-            if self.metadata:
-                dir_info.update(self.metadata.get(dir))
+            if self.dir.metadata:
+                dir_info.update(self.dir.metadata.get(dir))
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
-        if self.metadata:
-            values.update(self.metadata.get())
+        if self.dir.metadata:
+            values.update(self.dir.metadata.get())
 
         values['images'] = map(self._gen_other_img_link, self.images)
 
@@ -267,24 +261,24 @@ class WebalbumDir(make.FileMakeObject):
 
         self.add_dependency(self.source_dir)
 
-        images = []
-        metadatas = []
+        self.images = []
+        self.metadata = None
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
                 image = sourcetree.ImageFile(os.path.join(self.source_dir.path,
                                                           filename),
                                              album)
-                images.append(image)
+                self.images.append(image)
             elif filename == metadata.MATEW_METADATA:
-                metadatas.append(os.path.join(self.source_dir.path, filename))
+                self.metadata = metadata.DirectoryMetadata(self.source_dir)
             else:
                 self.album.log("Ignoring %s, format not supported."\
                                % os.path.join(self.source_dir.path, filename),
                                'warning')
-        images.sort(lambda x, y: x.compare_date_taken(y))
+        self.images.sort(lambda x, y: x.compare_date_taken(y))
         # chain images
         previous_image = None
-        for image in images:
+        for image in self.images:
             if previous_image:
                 previous_image.next_image = image
                 image.previous_image = previous_image
@@ -293,8 +287,7 @@ class WebalbumDir(make.FileMakeObject):
         for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self,
                                                   size_name,
-                                                  images,
-                                                  metadatas,
+                                                  self.images,
                                                   self.source_dir.dirnames))
 
     def get_mtime(self):

@@ -18,6 +18,8 @@
 import os, sys, datetime
 import pyexiv2, Image
 
+from lazygal import make
+
 
 MATEW_TAGS = {
     'album_name': 'Album name',
@@ -233,23 +235,18 @@ class NoMetadata(Exception):
     pass
 
 
-class DirectoryMetadata:
+class DirectoryMetadata(make.FileSimpleDependency):
 
     def __init__(self, dir):
         self.dir = dir
         self.directory_path = self.dir.path
+        make.FileSimpleDependency.__init__(self, self.directory_path)
 
         description = os.path.join(self.directory_path, MATEW_METADATA)
         if os.path.isfile(description):
             self.description_file = description
         else:
             self.description_file = None
-
-    def get_mtime(self):
-        if self.description_file:
-            return os.path.getmtime(self.description_file)
-        else:
-            return 0
 
     def get_matew_metadata(self, metadata, subdir = None):
         '''
