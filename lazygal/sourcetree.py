@@ -75,9 +75,14 @@ class ImageFile(File):
 
     def __init__(self, path, album):
         File.__init__(self, path, album)
-        self.exif = metadata.ExifTags(self.path)
+        self.__exif = None
         self.previous_image = None
         self.next_image = None
+
+    def info(self):
+        if not self.__exif:
+            self.__exif = metadata.ExifTags(self.path)
+        return self.__exif
 
     def get_size(self, img_path=None):
         if not img_path:
@@ -86,7 +91,7 @@ class ImageFile(File):
         return im.size
 
     def get_date_taken(self):
-        exif_date = self.exif.get_date()
+        exif_date = self.info().get_date()
         if exif_date:
             self.date_taken = exif_date
         else:

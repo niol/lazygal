@@ -67,7 +67,7 @@ class ImageOtherSize(make.FileMakeObject):
         im = Image.open(self.source_image.path)
 
         # Use EXIF data to rotate target image if available and required
-        rotation = self.source_image.exif.get_required_rotation()
+        rotation = self.source_image.info().get_required_rotation()
         if rotation != 0:
             im = im.rotate(rotation)
 
@@ -172,13 +172,13 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
-        tpl_values['camera_name'] = self.image.exif.get_camera_name()
-        tpl_values['flash'] = self.image.exif.get_flash()
-        tpl_values['exposure'] = self.image.exif.get_exposure()
-        tpl_values['iso'] = self.image.exif.get_iso()
-        tpl_values['fnumber'] = self.image.exif.get_fnumber()
-        tpl_values['focal_length'] = self.image.exif.get_focal_length()
-        tpl_values['comment'] = self.image.exif.get_comment()
+        tpl_values['camera_name'] = self.image.info().get_camera_name()
+        tpl_values['flash'] = self.image.info().get_flash()
+        tpl_values['exposure'] = self.image.info().get_exposure()
+        tpl_values['iso'] = self.image.info().get_iso()
+        tpl_values['fnumber'] = self.image.info().get_fnumber()
+        tpl_values['focal_length'] = self.image.info().get_focal_length()
+        tpl_values['comment'] = self.image.info().get_comment()
 
         if self.dir.album.original:
             tpl_values['original_link'] = self.image.filename\
@@ -275,7 +275,16 @@ class WebalbumDir(make.FileMakeObject):
                 self.album.log("Ignoring %s, format not supported."\
                                % os.path.join(self.source_dir.path, filename),
                                'warning')
+
+       for size_name in self.album.browse_sizes.keys():
+            self.add_dependency(WebalbumIndexPage(self,
+                                                  size_name,
+                                                  self.images,
+                                                  self.source_dir.dirnames))
+
+    def prepare(self):
         self.images.sort(lambda x, y: x.compare_date_taken(y))
+
         # chain images
         previous_image = None
         for image in self.images:
@@ -283,12 +292,6 @@ class WebalbumDir(make.FileMakeObject):
                 previous_image.next_image = image
                 image.previous_image = previous_image
             previous_image = image
-
-        for size_name in self.album.browse_sizes.keys():
-            self.add_dependency(WebalbumIndexPage(self,
-                                                  size_name,
-                                                  self.images,
-                                                  self.source_dir.dirnames))
 
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()

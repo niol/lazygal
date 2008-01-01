@@ -48,11 +48,16 @@ class MakeObject:
         return False
 
     def make(self, force=False):
+        self.prepare()
         for d in self.deps:
             d.make() # dependency building is not forced, regardless of current
                      # target.
         if self.needs_build() or force:
             self.build()
+
+    def prepare(self):
+        """Method called before make, this is usefull if you want to build in your target internals stuff needed by dependencies."""
+        pass
 
     def build(self):
         if self.builder:
