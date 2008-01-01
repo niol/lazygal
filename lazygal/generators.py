@@ -468,13 +468,13 @@ class Album:
                     feed.set_description(destgal.metadata.get())
                 destgal.register_output(feed.path)
 
-            feed.add_dependency(destgal)
-
             if not destgal.needs_build() and not check_all_dirs:
                 self.log("Skipping %s because of mtime, use --check-all-dirs or touch source directory to override." % root,
                              'warning')
             else:
                 destgal.make()
+                feed.add_dependency(destgal) # Only processed directories get
+                                             # included in the feed.
 
             self.log("* Leaving %s" % root)
 
