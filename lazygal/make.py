@@ -28,6 +28,7 @@ class MakeObject:
         self.deps = []
         self.output_items = []
         self.builder = None
+        self.__prepared = False
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -48,7 +49,10 @@ class MakeObject:
         return False
 
     def make(self, force=False):
-        self.prepare()
+        if not self.__prepared:
+            self.prepare()
+            self.__prepared = True
+
         for d in self.deps:
             d.make() # dependency building is not forced, regardless of current
                      # target.
