@@ -339,7 +339,7 @@ class WebalbumDir(make.FileMakeObject):
 
 class WebalbumFeed(make.FileMakeObject):
 
-    def __init__(self, album, dest_dir, pub_url):
+    def __init__(self, album, dest_dir, pub_url, maxitems=10):
         self.album = album
         self.pub_url = pub_url
         if not self.pub_url:
@@ -351,15 +351,27 @@ class WebalbumFeed(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
         self.feed = feeds.RSS20(self.pub_url)
 
+        self.__maxitems = maxitems
+        self.webalbumdirs = []
+
     def set_title(self, title):
         self.feed.title = title
 
     def set_description(self, description):
         self.feed.description = description
 
-    def add_dependency(self, webalbumdir):
-        make.FileMakeObject.add_dependency(self, webalbumdir)
+    def __source_dir_older(self, x, y):
+        return y.source_dir.get_mtime() - x.source_dir.get_mtime()
 
+    def push_dir(self, webalbumdir):
+        if len(webalbumdir.images) > 0:
+            self.webalbumdirs.append(webalbumdir)
+
+            self.webalbumdirs.sort(self.__source_dir_older)
+            while len(self.webalbumdirs) > self.__maxitems:
+                self.webalbumdirs.pop()
+
+    def __add_item(self, webalbumdir):
         desc = '<p>%d sub-galleries, %d photos</p>' %\
                (len(webalbumdir.source_dir.dirnames), len(webalbumdir.images))
         md = webalbumdir.metadata.get()
@@ -372,7 +384,12 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.add_item(title,
                            self.pub_url + webalbumdir.source_dir.strip_root(),
                            desc,
-                           webalbumdir.get_mtime())
+                           webalbumdir.source_dir.get_mtime())
+
+    def prepare(self):
+        for webalbumdir in self.webalbumdirs:
+            self.add_dependency(webalbumdir)
+            self.__add_item(webalbumdir)
 
     def build(self):
         self.feed.dump(self.path)
@@ -474,8 +491,8 @@ class Album:
                              'warning')
             else:
                 destgal.make()
-                feed.add_dependency(destgal) # Only processed directories get
-                                             # included in the feed.
+                feed.push_dir(destgal) # Only processed directories get
+                                       # included in the feed.
 
             self.log("* Leaving %s" % root)
 

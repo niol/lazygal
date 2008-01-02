@@ -32,9 +32,8 @@ except ImportError:
 
 class RSS20:
 
-    def __init__(self, link, maxitems=20):
+    def __init__(self, link):
         self.items = []
-        self.__maxitems = 20
 
         self.title = None
         self.description = None
@@ -72,9 +71,6 @@ class RSS20:
         return time.strftime("%a, %d %b %Y %H:%M:%S " + self.timezone_offset,
                              time.localtime(timestamp))
 
-    def __item_newer(self, item1, item2):
-        return item1['timestamp'] > item2['timestamp']
-
     def add_item(self, title, link, contents, timestamp):
         item = {}
         item['title'] = title
@@ -83,16 +79,13 @@ class RSS20:
         item['timestamp'] = timestamp
 
         self.items.append(item)
-        self.items.sort(self.__item_newer)
-
-        while len(self.items) > self.__maxitems:
-            self.items.pop()
 
     def dump(self, path):
         (root, channel) = self.__get_root_and_channel(os.path.basename(path))
 
         pubdate = ET.SubElement(channel, 'pubDate' )
 
+        self.items.sort(lambda x,y: x['timestamp'] - y['timestamp'])
         for item in self.items:
             rssitem = ET.SubElement(channel, 'item')
             ET.SubElement(rssitem, 'title').text = item['title']
