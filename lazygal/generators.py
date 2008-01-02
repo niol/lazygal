@@ -132,10 +132,6 @@ class WebalbumBrowsePage(WebalbumPage):
                                            self.image,
                                            self.size_name))
 
-        for prevnext in [self.image.previous_image, self.image.next_image]:
-            if prevnext:
-                self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
-
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
 
@@ -144,6 +140,11 @@ class WebalbumBrowsePage(WebalbumPage):
 
         self.page_template = self.dir.album.templates['browse.thtml']
         self.add_file_dependency(self.page_template.path)
+
+    def prepare(self):
+        for prevnext in [self.image.previous_image, self.image.next_image]:
+            if prevnext:
+                self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
 
     def make(self, force=False):
         self.dir.album.log("  - Processing %s" % self.image.filename)
