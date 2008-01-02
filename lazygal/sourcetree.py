@@ -131,7 +131,7 @@ class Directory(File):
             if len(subdirs) > 0 and subdirs[0] == '/':
                 subdirs = subdirs[1:]
             for file in files:
-                if self.album.is_ext_supported(file):
+                if self.album._is_ext_supported(file):
                     picture = os.path.join(relpath, subdirs, file)
                     return picture
 

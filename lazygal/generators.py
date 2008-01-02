@@ -220,8 +220,7 @@ class WebalbumIndexPage(WebalbumPage):
         subgal_links = []
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
-            if self.dir.metadata:
-                dir_info.update(self.dir.metadata.get(dir))
+            dir_info.update(self.dir.metadata.get(dir))
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         if self.dir.metadata:
@@ -266,16 +265,14 @@ class WebalbumDir(make.FileMakeObject):
         self.add_dependency(self.source_dir)
 
         self.images = []
-        self.metadata = None
+        self.metadata = metadata.DirectoryMetadata(self.source_dir)
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
                 image = sourcetree.ImageFile(os.path.join(self.source_dir.path,
                                                           filename),
                                              album)
                 self.images.append(image)
-            elif filename == metadata.MATEW_METADATA:
-                self.metadata = metadata.DirectoryMetadata(self.source_dir)
-            else:
+            elif not filename == metadata.MATEW_METADATA:
                 self.album.log("Ignoring %s, format not supported."\
                                % os.path.join(self.source_dir.path, filename),
                                'warning')
@@ -365,9 +362,8 @@ class WebalbumFeed(make.FileMakeObject):
 
         desc = '<p>%d sub-galleries, %d photos</p>' %\
                (len(webalbumdir.source_dir.dirnames), len(webalbumdir.images))
-        # FIXME : Those 'if metadata' should disappear.
-        if webalbumdir.metadata:
-            md = webalbumdir.metadata.get()
+        md = webalbumdir.metadata.get()
+        if 'album_description' in md.keys():
             desc = '<p>' + md['album_description'] + '</p>' + desc
             title = md['album_name']
         else:
@@ -468,8 +464,9 @@ class Album:
 
             if dir.is_album_root():
                 feed.set_title(dir.name)
-                if destgal.metadata:
-                    feed.set_description(destgal.metadata.get())
+                md = destgal.metadata.get()
+                if 'album_description' in md.keys():
+                    feed.set_description(md['album_description'])
                 destgal.register_output(feed.path)
 
             if not destgal.needs_build() and not check_all_dirs:
