@@ -276,7 +276,7 @@ class WebalbumDir(make.FileMakeObject):
                                % os.path.join(self.source_dir.path, filename),
                                'warning')
 
-       for size_name in self.album.browse_sizes.keys():
+        for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self,
                                                   size_name,
                                                   self.images,
