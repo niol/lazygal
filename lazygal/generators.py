@@ -136,6 +136,9 @@ class WebalbumBrowsePage(WebalbumPage):
             if prevnext:
                 self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
 
+        # Depends on source directory in case an image was deleted
+        self.add_dependency(self.dir.source_dir)
+
         if self.dir.album.original:
             self.add_dependency(ImageOriginal(self.dir, self.image))
 
