@@ -42,6 +42,9 @@ class ImageOriginal(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
 
     def build(self):
+        self.dir.album.log("  CP %s" % os.path.basename(self.path),
+                           'info')
+        self.dir.album.log("(%s)" % self.path)
         shutil.copy(self.source_image.path, self.path)
 
 
@@ -64,6 +67,10 @@ class ImageOtherSize(make.FileMakeObject):
         self.add_dependency(self.source_image)
 
     def build(self):
+        self.dir.album.log("  RESIZE %s" % os.path.basename(self.osize_path),
+                           'info')
+        self.dir.album.log("(%s)" % self.osize_path)
+
         im = Image.open(self.source_image.path)
 
         # Use EXIF data to rotate target image if available and required
@@ -74,7 +81,6 @@ class ImageOtherSize(make.FileMakeObject):
         im.thumbnail(self.size, Image.ANTIALIAS)
 
         im.save(self.osize_path, quality = self.dir.album.quality)
-        self.dir.album.log("    Generated %s" % self.osize_path)
 
 
 class WebalbumPage(make.FileMakeObject):
@@ -146,12 +152,11 @@ class WebalbumBrowsePage(WebalbumPage):
             if prevnext:
                 self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
 
-    def make(self, force=False):
-        self.dir.album.log("  - Processing %s" % self.image.filename)
-        WebalbumPage.make(self, force)
-        self.dir.album.log("  - Finished processing %s" % self.image.filename)
-
     def build(self):
+        self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
+                           'info')
+        self.dir.album.log("(%s)" % self.page_path)
+
         tpl_values = {}
         tpl_values['img_src'] = self.dir._add_size_qualifier(self.image.filename, self.size_name)
         tpl_values['name'] = self.image.filename
@@ -189,8 +194,6 @@ class WebalbumBrowsePage(WebalbumPage):
                                           + self.image.extension
 
         self.page_template.dump(tpl_values, self.page_path)
-        self.dir.album.log("  - Generated %s"\
-                           % os.path.basename(self.page_path))
 
 
 class WebalbumIndexPage(WebalbumPage):
@@ -213,6 +216,10 @@ class WebalbumIndexPage(WebalbumPage):
         self.add_file_dependency(self.page_template.path)
 
     def build(self):
+        self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
+                           'info')
+        self.dir.album.log("(%s)" % self.page_path)
+
         values = {}
 
         values['ozise_index_links'] = self._get_osize_links('index')
@@ -238,8 +245,6 @@ class WebalbumIndexPage(WebalbumPage):
         values['title'] = title.replace('_', ' ')
 
         self.page_template.dump(values, self.page_path)
-        self.dir.album.log("  - Generated %s" %\
-                           os.path.basename(self.page_path))
 
 
 class WebalbumDir(make.FileMakeObject):
@@ -254,13 +259,15 @@ class WebalbumDir(make.FileMakeObject):
         # updated as its dependencies are built.
         self.__mtime = make.FileMakeObject.get_mtime(self)
 
-        # Create the directory if it does not exist
-        if not os.path.isdir(self.path):
-            os.makedirs(self.path, mode = 0755)
-            self.source_dir.album.log("  - Created %s" % self.path)
-
         self.clean_dest = clean_dest
         self.album = album
+
+        # Create the directory if it does not exist
+        if not os.path.isdir(self.path):
+            self.album.log("  MKDIR %%WEBALBUMROOT%%/%s"\
+                           % self.source_dir.strip_root(), 'info')
+            self.album.log("(%s)" % self.path)
+            os.makedirs(self.path, mode = 0755)
 
         self.add_dependency(self.source_dir)
 
@@ -273,9 +280,10 @@ class WebalbumDir(make.FileMakeObject):
                                              album)
                 self.images.append(image)
             elif not filename == metadata.MATEW_METADATA:
-                self.album.log("Ignoring %s, format not supported."\
-                               % os.path.join(self.source_dir.path, filename),
-                               'warning')
+                self.album.log("  Ignoring %s, format not supported."\
+                               % filename, 'info')
+                self.album.log("(%s)" % os.path.join(self.source_dir.path,
+                                                     filename))
 
         for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self,
@@ -320,11 +328,10 @@ class WebalbumDir(make.FileMakeObject):
                     rmv_candidate = os.path.join(self.path, dest_file)
                     if self.clean_dest and not os.path.isdir(rmv_candidate):
                         os.unlink(rmv_candidate)
-                        text = "has been"
+                        text = ""
                     else:
-                        text = "should be"
-                    self.album.log("  - %s %s removed" %
-                                   (dest_file, text), 'warning')
+                        text = "you should "
+                    self.album.log("  %sRM %s" % (text, dest_file), 'info')
 
     def make(self, force=False):
         make.FileMakeObject.make(self, force)
@@ -392,8 +399,9 @@ class WebalbumFeed(make.FileMakeObject):
             self.__add_item(webalbumdir)
 
     def build(self):
+        self.album.log("FEED %s" % os.path.basename(self.path), 'info')
+        self.album.log("(%s)" % self.path)
         self.feed.dump(self.path)
-        self.album.log("  - Generated %s" % os.path.basename(self.path))
 
 
 class Album:
@@ -436,7 +444,7 @@ class Album:
                 self.templates[filename].path = os.path.join(self.tpl_dir,
                                                              tpl_file)
 
-    log_levels = ['debug', 'warning', 'error']
+    log_levels = ['debug', 'info', 'error']
 
     def set_tpl_vars(self, tpl_vars=None):
         if tpl_vars is not None:
@@ -444,7 +452,7 @@ class Album:
         if self.tpl_loader is not None and self.tpl_vars is not None:
             self.tpl_loader.set_common_values(self.tpl_vars)
 
-    def set_logging(self, level='warning', outpipe=sys.stdout,
+    def set_logging(self, level='info', outpipe=sys.stdout,
                                            errpipe=sys.stderr):
         self.log_level = level
         self.log_outpipe = outpipe
@@ -456,11 +464,10 @@ class Album:
     def log(self, msg, level='debug'):
         if self.log_levels.index(level)\
            >= self.log_levels.index(self.log_level):
-            txt = "%s: %s" % (level, msg)
             if level == 'error':
-                print >> self.log_errpipe, txt
+                print >> self.log_errpipe, msg
             else:
-                print >> self.log_outpipe, txt
+                print >> self.log_outpipe, msg
 
     def _is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
@@ -469,14 +476,15 @@ class Album:
     def generate(self, dest_dir, pub_url,
                  check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
-        self.log("* Generating to %s" % sane_dest_dir)
+        self.log("Generating to %s" % sane_dest_dir)
 
         feed = WebalbumFeed(self, sane_dest_dir, pub_url)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
-            self.log("* Entering %s" % root)
-
             dir = sourcetree.Directory(root, dirnames, filenames, self)
+            self.log("[Entering %%ALBUMROOT%%/%s]" % dir.strip_root(), 'info')
+            self.log("(%s)" % dir.path)
+
             destgal = WebalbumDir(dir, self, sane_dest_dir, clean_dest)
 
             if dir.is_album_root():
@@ -486,15 +494,12 @@ class Album:
                     feed.set_description(md['album_description'])
                 destgal.register_output(feed.path)
 
-            if not destgal.needs_build() and not check_all_dirs:
-                self.log("Skipping %s because of mtime, use --check-all-dirs or touch source directory to override." % root,
-                             'warning')
-            else:
+            if destgal.needs_build() or check_all_dirs:
                 destgal.make()
                 feed.push_dir(destgal) # Only processed directories get
                                        # included in the feed.
-
-            self.log("* Leaving %s" % root)
+            else:
+                self.log("  SKIPPED because of mtime, touch source or use --check-all-dirs to override.")
 
         if pub_url and feeds.HAVE_ETREE:
             feed.make()
@@ -529,11 +534,15 @@ class Album:
                 else:
                     raise ValueError('We have a template with an extension that does not start with a t. Abording.')
                 tpl.dump({}, real_dest)
-                self.log("* Generated or updated %s" % shared_file_dest)
+                self.log("[TPL %%SHAREDDIR%%/%s]"\
+                         % os.path.basename(shared_file_dest), 'info')
+                self.log("(%s)" % shared_file_dest)
             else:
                 if os.path.getmtime(shared_file) > dest_mtime:
                     shutil.copy(shared_file, shared_file_dest)
-                    self.log("* Copied or updated %s" % shared_file_dest)
+                    self.log("CP %%SHAREDDIR%%/%s"\
+                             % os.path.basename(shared_file_dest), 'info')
+                    self.log("(%s)" % shared_file_dest)
 
 
 # vim: ts=4 sw=4 expandtab
