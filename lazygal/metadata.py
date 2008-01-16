@@ -86,9 +86,13 @@ class ExifTags(pyexiv2.Image):
         vendors put different information to both tags.
         '''
         try:
-            model = str(self['Exif.Image.Model'])
+            model = str(self['Exif.Image.Model']).strip()
+            # Terminate string at \x00
+            pos = model.find('\x00')
+            if pos != -1:
+                model = model[:14]
             try:
-                vendor = str(self['Exif.Image.Make'])
+                vendor = str(self['Exif.Image.Make']).strip()
                 vendor_l = vendor.lower()
                 model_l = model.lower()
                 # Split vendor to words and check whether they are
