@@ -109,6 +109,29 @@ class ExifTags(pyexiv2.Image):
         except KeyError:
             return ''
 
+    def get_lens_name(self):
+        '''
+        Return name of used lenses. This usually makes sense only for
+        SLR cameras and uses various maker notes. Currently supported
+        for Pentax, Nikon and Minolta (as soon as Exiv2 supports others,
+        support can be added here.
+        '''
+
+        ret = self.get_exif_value('Exif.Pentax.LensType')
+        if ret != '':
+            return ret
+        ret = self.get_exif_value('Exif.Nikon3.Lens')
+        if ret != '':
+            ret2 = self.get_exif_value('Exif.Nikon3.LensType')
+            if ret2 != '':
+                return '%s %s' % (ret, ret2)
+            return ret
+        ret = self.get_exif_value('Exif.Minolta.LensID')
+        if ret != '':
+            return ret
+
+        return ''
+
     def get_exif_value(self, name):
         '''
         Reads interpreted string from EXIF information, returns empty

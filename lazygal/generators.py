@@ -182,6 +182,7 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
         tpl_values['camera_name'] = self.image.info().get_camera_name()
+        tpl_values['lens_name'] = self.image.info().get_lens_name()
         tpl_values['flash'] = self.image.info().get_flash()
         tpl_values['exposure'] = self.image.info().get_exposure()
         tpl_values['iso'] = self.image.info().get_iso()
