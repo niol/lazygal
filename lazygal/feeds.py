@@ -17,6 +17,7 @@
 
 
 import os, time
+import sys, urllib
 try:
     # python >= 2.5
     from xml.etree import cElementTree as ET
@@ -57,13 +58,16 @@ class RSS20:
 
         channel = ET.SubElement(root, 'channel')
         ET.SubElement(channel, 'title' ).text = self.title
-        ET.SubElement(channel, 'link' ).text = self.link
+        ET.SubElement(channel, 'link' ).text = self.__url_quote(self.link)
         ET.SubElement(channel, 'description' ).text = self.description
         ET.SubElement(channel, 'atom:link', {'href': self.link + feed_filename,
                                              'rel' : 'self',
                                              'type': 'application/rss+xml'})
 
         return root, channel
+
+    def __url_quote(self, url):
+        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/')
 
     def __rfc822_time(self, timestamp=None):
         if not timestamp:
@@ -89,8 +93,8 @@ class RSS20:
         for item in self.items:
             rssitem = ET.SubElement(channel, 'item')
             ET.SubElement(rssitem, 'title').text = item['title']
-            ET.SubElement(rssitem, 'link').text = item['link']
-            ET.SubElement(rssitem, 'guid').text = item['link']
+            ET.SubElement(rssitem, 'link').text = self.__url_quote(item['link'])
+            ET.SubElement(rssitem, 'guid').text = self.__url_quote(item['link'])
             date = self.__rfc822_time(item['timestamp'])
             ET.SubElement(rssitem, 'pubDate').text = date
             ET.SubElement(rssitem, 'description').text = item['contents']
