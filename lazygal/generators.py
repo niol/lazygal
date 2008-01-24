@@ -216,6 +216,8 @@ class WebalbumIndexPage(WebalbumPage):
         self.page_template = self.dir.album.templates['dirindex.thtml']
         self.add_file_dependency(self.page_template.path)
 
+        self.add_dependency(dir.metadata)
+
     def build(self):
         self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
                            'info')
