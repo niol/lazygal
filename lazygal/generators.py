@@ -479,12 +479,15 @@ class Album:
         filename, extension = os.path.splitext(filename)
         return extension.lower() in ['.jpg']
 
-    def generate(self, dest_dir, pub_url,
+    def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
         self.log("Generating to %s" % sane_dest_dir)
 
-        feed = WebalbumFeed(self, sane_dest_dir, pub_url)
+        if pub_url and feeds.HAVE_ETREE:
+            feed = WebalbumFeed(self, sane_dest_dir, pub_url)
+        else:
+            feed = None
 
         for root, dirnames, filenames in os.walk(self.source_dir):
             dir = sourcetree.Directory(root, dirnames, filenames, self)
@@ -493,20 +496,21 @@ class Album:
 
             destgal = WebalbumDir(dir, self, sane_dest_dir, clean_dest)
 
-            if dir.is_album_root():
+            if feed and dir.is_album_root():
                 feed.set_title(dir.name)
                 md = destgal.metadata.get()
                 if 'album_description' in md.keys():
                     feed.set_description(md['album_description'])
                 destgal.register_output(feed.path)
 
-            feed.push_dir(LightWebalbumDir(destgal))
+            if feed:
+                feed.push_dir(LightWebalbumDir(destgal))
             if destgal.needs_build() or check_all_dirs:
                 destgal.make()
             else:
                 self.log("  SKIPPED because of mtime, touch source or use --check-all-dirs to override.")
 
-        if pub_url and feeds.HAVE_ETREE:
+        if feed:
             feed.make()
 
         self.copy_shared(sane_dest_dir)
