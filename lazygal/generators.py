@@ -255,6 +255,7 @@ class WebalbumDir(make.FileMakeObject):
     def __init__(self, dir, album, album_dest_dir, clean_dest):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
+        self.human_name = self.source_dir.name.replace('_', ' ')
 
         make.FileMakeObject.__init__(self, self.path)
 
@@ -347,9 +348,29 @@ class WebalbumDir(make.FileMakeObject):
         os.utime(self.path, None)
 
 
+class LightWebalbumDir(make.FileSimpleDependency):
+
+    def __init__(self, heavy_webalbum_dir):
+        make.FileSimpleDependency.__init__(self, heavy_webalbum_dir.path)
+        self.rel_path = heavy_webalbum_dir.source_dir.strip_root()
+
+        self.image_count = len(heavy_webalbum_dir.images)
+        self.subgal_count = len(heavy_webalbum_dir.source_dir.dirnames)
+
+        md = heavy_webalbum_dir.metadata.get()
+        if 'album_name' in md.keys():
+            self.title = md['album_name']
+        else:
+            self.title = heavy_webalbum_dir.human_name
+        if 'album_description' in md.keys():
+            self.desc = md['album_description']
+        else:
+            self.desc = None
+
+
 class WebalbumFeed(make.FileMakeObject):
 
-    def __init__(self, album, dest_dir, pub_url, maxitems=10):
+    def __init__(self, album, dest_dir, pub_url):
         self.album = album
         self.pub_url = pub_url
         if not self.pub_url:
@@ -361,45 +382,27 @@ class WebalbumFeed(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
         self.feed = feeds.RSS20(self.pub_url)
 
-        self.__maxitems = maxitems
-        self.webalbumdirs = []
-
     def set_title(self, title):
         self.feed.title = title
 
     def set_description(self, description):
         self.feed.description = description
 
-    def __source_dir_older(self, x, y):
-        return y.source_dir.get_mtime() - x.source_dir.get_mtime()
-
     def push_dir(self, webalbumdir):
-        if len(webalbumdir.images) > 0:
-            self.webalbumdirs.append(webalbumdir)
-
-            self.webalbumdirs.sort(self.__source_dir_older)
-            while len(self.webalbumdirs) > self.__maxitems:
-                self.webalbumdirs.pop()
+        if webalbumdir.image_count > 0:
+            self.add_dependency(webalbumdir)
+            self.__add_item(webalbumdir)
 
     def __add_item(self, webalbumdir):
         desc = '<p>%d sub-galleries, %d photos</p>' %\
-               (len(webalbumdir.source_dir.dirnames), len(webalbumdir.images))
-        md = webalbumdir.metadata.get()
-        if 'album_description' in md.keys():
-            desc = '<p>' + md['album_description'] + '</p>' + desc
-            title = md['album_name']
-        else:
-            title = webalbumdir.source_dir.name
+               (webalbumdir.subgal_count, webalbumdir.image_count)
+        if webalbumdir.desc:
+            desc = '<p>' + webalbumdir.desc + '</p>' + desc
 
-        self.feed.add_item(title,
-                           self.pub_url + webalbumdir.source_dir.strip_root(),
-                           desc,
-                           webalbumdir.source_dir.get_mtime())
-
-    def prepare(self):
-        for webalbumdir in self.webalbumdirs:
-            self.add_dependency(webalbumdir)
-            self.__add_item(webalbumdir)
+        self.feed.push_item(webalbumdir.title,
+                            self.pub_url + webalbumdir.rel_path,
+                            desc,
+                            webalbumdir.get_mtime())
 
     def build(self):
         self.album.log("FEED %s" % os.path.basename(self.path), 'info')
@@ -497,10 +500,9 @@ class Album:
                     feed.set_description(md['album_description'])
                 destgal.register_output(feed.path)
 
+            feed.push_dir(LightWebalbumDir(destgal))
             if destgal.needs_build() or check_all_dirs:
                 destgal.make()
-                feed.push_dir(destgal) # Only processed directories get
-                                       # included in the feed.
             else:
                 self.log("  SKIPPED because of mtime, touch source or use --check-all-dirs to override.")
 

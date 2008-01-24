@@ -33,12 +33,13 @@ except ImportError:
 
 class RSS20:
 
-    def __init__(self, link):
+    def __init__(self, link, maxitems=10):
         self.items = []
 
         self.title = None
         self.description = None
         self.link = link
+        self.__maxitems = maxitems
 
         # Workaround the fact that struct_time does not hold timezone info and
         # that %z in strftime() resets to UTC if an argument is given.
@@ -75,7 +76,10 @@ class RSS20:
         return time.strftime("%a, %d %b %Y %H:%M:%S " + self.timezone_offset,
                              time.localtime(timestamp))
 
-    def add_item(self, title, link, contents, timestamp):
+    def __item_older(self, x, y):
+        return y['timestamp'] - x['timestamp']
+
+    def push_item(self, title, link, contents, timestamp):
         item = {}
         item['title'] = title
         item['link'] = link
@@ -83,6 +87,9 @@ class RSS20:
         item['timestamp'] = timestamp
 
         self.items.append(item)
+        self.items.sort(self.__item_older)
+        while len(self.items) > self.__maxitems:
+            self.items.pop()
 
     def dump(self, path):
         (root, channel) = self.__get_root_and_channel(os.path.basename(path))
