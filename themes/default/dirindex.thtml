@@ -8,6 +8,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="Generator" content="lazygal $t.lazygal_version" />
   <link rel="stylesheet" type="text/css" media="screen,projection" title="Original" href="${t.rel_root}shared/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="Recent galleries" href="${t.rel_root}index.xml" />
 </head>
 
 <body>
