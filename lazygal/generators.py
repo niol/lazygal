@@ -410,6 +410,70 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.dump(self.path)
 
 
+class SharedFileCopy(make.FileCopy):
+
+    def __init__(self, album, src, dst):
+        make.FileCopy.__init__(self, src, dst)
+        self.album = album
+
+    def build(self):
+        self.album.log("CP %%SHAREDDIR%%/%s" %\
+                       os.path.basename(self.dst), 'info')
+        self.album.log("(%s)" % self.dst)
+        make.FileCopy.build(self)
+
+
+class SharedFileTemplate(make.FileMakeObject):
+
+    def __init__(self, album, shared_tpl_name, shared_file_dest_tplname):
+        self.album = album
+        self.tpl = self.album.templates[os.path.basename(shared_tpl_name)]
+
+        # Remove the 't' from the beginning of ext
+        filename, ext = os.path.splitext(shared_file_dest_tplname)
+        if ext.startswith('.t'):
+            self.path = filename + '.' + ext[2:]
+        else:
+            raise ValueError('We have a template with an extension that does not start with a t. Abording.')
+
+        make.FileMakeObject.__init__(self, self.path)
+
+    def build(self):
+        self.album.log("XHTML %%SHAREDDIR%%/%s]"\
+                       % os.path.basename(self.path), 'info')
+        self.album.log("(%s)" % self.path)
+        self.tpl.dump({}, self.path)
+
+
+class SharedFiles(make.FileMakeObject):
+
+    def __init__(self, album, dest_dir):
+        self.path = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
+        make.FileMakeObject.__init__(self, self.path)
+
+        # Create the shared files directory if it does not exist
+        if not os.path.isdir(self.path):
+            album.log("MKDIR %SHAREDDIR%", 'info')
+            album.log("(%s)" % self.path)
+            os.makedirs(self.path, mode = 0755)
+
+        for shared_file in glob.glob(\
+          os.path.join(album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
+            shared_file_name = os.path.basename(shared_file).\
+                                     replace(THEME_SHARED_FILE_PREFIX, '')
+            shared_file_dest = os.path.join(self.path,
+                                            shared_file_name)
+
+            if album.tpl_loader.is_known_template_type(shared_file):
+                self.add_dependency(SharedFileTemplate(album,
+                                                       shared_file,
+                                                       shared_file_dest))
+            else:
+                self.add_dependency(SharedFileCopy(album,
+                                                   shared_file,
+                                                   shared_file_dest))
+
+
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
@@ -513,45 +577,7 @@ class Album:
         if feed:
             feed.make()
 
-        self.copy_shared(sane_dest_dir)
-
-    def copy_shared(self, dest_dir):
-        shared_stuff_dir = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
-
-        if not os.path.isdir(shared_stuff_dir):
-            os.mkdir(shared_stuff_dir)
-
-        for shared_file in glob.glob(\
-          os.path.join(self.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
-            shared_file_name = os.path.basename(shared_file).\
-                                     replace(THEME_SHARED_FILE_PREFIX, '')
-            shared_file_dest = os.path.join(shared_stuff_dir,
-                                            shared_file_name)
-
-            try:
-                dest_mtime = os.path.getmtime(shared_file_dest)
-            except OSError:
-                dest_mtime = 0
-
-            if self.tpl_loader.is_known_template_type(shared_file):
-                tpl = self.templates[os.path.basename(shared_file)]
-
-                # Remove the 't' from the beginning of ext
-                filename, ext = os.path.splitext(shared_file_dest)
-                if ext.startswith('.t'):
-                    real_dest = filename + '.' + ext[2:]
-                else:
-                    raise ValueError('We have a template with an extension that does not start with a t. Abording.')
-                tpl.dump({}, real_dest)
-                self.log("[TPL %%SHAREDDIR%%/%s]"\
-                         % os.path.basename(shared_file_dest), 'info')
-                self.log("(%s)" % shared_file_dest)
-            else:
-                if os.path.getmtime(shared_file) > dest_mtime:
-                    shutil.copy(shared_file, shared_file_dest)
-                    self.log("CP %%SHAREDDIR%%/%s"\
-                             % os.path.basename(shared_file_dest), 'info')
-                    self.log("(%s)" % shared_file_dest)
+        SharedFiles(self, sane_dest_dir).make()
 
 
 # vim: ts=4 sw=4 expandtab

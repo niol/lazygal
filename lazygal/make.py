@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os
+import os, shutil
 
 
 class CircularDependency(Exception):
@@ -106,6 +106,19 @@ class FileSimpleDependency(FileMakeObject):
 
     def build(self):
         pass
+
+
+class FileCopy(FileMakeObject):
+    """Simple file copy make target."""
+
+    def __init__(self, src, dst):
+        self.src = src
+        self.dst = dst
+        FileMakeObject.__init__(self, dst)
+        self.add_file_dependency(self.src)
+
+    def build(self):
+        shutil.copy(self.src, self.dst)
 
 
 # vim: ts=4 sw=4 expandtab
