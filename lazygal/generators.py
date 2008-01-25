@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, glob, shutil, sys
+import os, glob, sys
 import Image
 
 from lazygal import make, sourcetree, tpl, metadata, feeds
@@ -33,19 +33,18 @@ THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
 
 
-class ImageOriginal(make.FileMakeObject):
+class ImageOriginal(make.FileCopy):
 
     def __init__(self, dir, source_image):
         self.dir = dir
-        self.source_image = source_image
-        self.path = os.path.join(self.dir.path, self.source_image.filename)
-        make.FileMakeObject.__init__(self, self.path)
+        self.path = os.path.join(self.dir.path, source_image.filename)
+        make.FileCopy.__init__(self, source_image.path, self.path)
 
     def build(self):
         self.dir.album.log("  CP %s" % os.path.basename(self.path),
                            'info')
         self.dir.album.log("(%s)" % self.path)
-        shutil.copy(self.source_image.path, self.path)
+        make.FileCopy.build(self)
 
 
 class ImageOtherSize(make.FileMakeObject):
