@@ -295,9 +295,11 @@ class DirectoryMetadata(make.FileSimpleDependency):
                 if line[:tag_len] == tag_text:
                     data = line[tag_len:]
                     data = data.strip()
+                    # Strip quotes
                     if data[0] == '"':
-                        # Strip quotes
-                        data = data[1:-1]
+                        data = data[1:]
+                    if data[-1] == '"':
+                        data = data[:-1]
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
