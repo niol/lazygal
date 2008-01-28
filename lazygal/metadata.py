@@ -269,9 +269,9 @@ class DirectoryMetadata(make.FileSimpleDependency):
         self.directory_path = self.dir.path
         make.FileSimpleDependency.__init__(self, self.directory_path)
 
-        description = os.path.join(self.directory_path, MATEW_METADATA)
-        if os.path.isfile(description):
-            self.description_file = description
+        self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)
+        if os.path.isfile(self.description_filename):
+            self.description_file = self.description_filename
         else:
             self.description_file = None
 
@@ -333,6 +333,24 @@ class DirectoryMetadata(make.FileSimpleDependency):
             result['album_picture'] = filename + '_thumb' + extension
 
         return result
+
+    def generate(self):
+        '''
+        Generates new metadata file with default values.
+        '''
+
+        self.dir.album.log("GEN %s" %
+                self.description_filename, 'info')
+
+        md = self.get()
+
+        f = file(self.description_filename, 'w')
+        f.write('# Directory metadata for lazygal, Matew format\n')
+        f.write('Album name ""\n');
+        f.write('Album description ""\n');
+        picture_name = md['album_picture'].replace('_thumb', '')
+        f.write('Album image identifier "%s"\n' % picture_name);
+        f.close()
 
 
 # vim: ts=4 sw=4 expandtab

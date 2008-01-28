@@ -102,6 +102,10 @@ parser.add_option("", "--puburl",
                   action="store", type="string",
                   dest="pub_url",
                   help="Publication URL (only usefull for feed generation).")
+parser.add_option("-m", "--generate-metadata",
+                  action="store_true",
+                  dest="metadata", default=False,
+                  help="Generate metadata description files where they don't exist.")
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -151,8 +155,11 @@ if options.debug:
 if log_level != None:
     album.set_logging(log_level)
 
-album.generate(options.dest_dir, options.pub_url,
-               options.check_all_dirs, options.clean_dest)
+if options.metadata:
+    album.generate_default_medatada()
+else:
+    album.generate(options.dest_dir, options.pub_url,
+                   options.check_all_dirs, options.clean_dest)
 
 
 # vim: ts=4 sw=4 expandtab
