@@ -53,8 +53,8 @@ class ImageOtherSize(make.FileMakeObject):
         self.dir = dir
         self.source_image = source_image
         self.osize_path = os.path.join(self.dir.path,
-                   self.dir._add_size_qualifier(self.source_image.filename,
-                                                size_name))
+               self.dir.album._add_size_qualifier(self.source_image.filename,
+                                                  size_name))
         make.FileMakeObject.__init__(self, self.osize_path)
 
         self.size_name = size_name
@@ -88,23 +88,22 @@ class WebalbumPage(make.FileMakeObject):
         self.dir = dir
         self.size_name = size_name
 
-        page_filename = self.dir._add_size_qualifier(base_name + '.html',
-                                                     self.size_name)
+        page_filename = self._add_size_qualifier(base_name + '.html',
+                                                 self.size_name)
         self.page_path = os.path.join(self.dir.path, page_filename)
         make.FileMakeObject.__init__(self, self.page_path)
 
     def _gen_other_img_link(self, img):
         if img:
             link_vals = {}
-            link_vals['link'] = self.dir._add_size_qualifier(img.name + '.html',
-                                                             self.size_name)
-            link_vals['thumb'] = self.dir._add_size_qualifier(img.name\
-                                                              + img.extension,
-                                                              'thumb')
+            link_vals['link'] = self._add_size_qualifier(img.name + '.html',
+                                                         self.size_name)
+            link_vals['thumb'] = self._add_size_qualifier(img.name\
+                                                          + img.extension,
+                                                          'thumb')
 
             thumb = os.path.join(self.dir.path,
-                                 self.dir._add_size_qualifier(img.filename,
-                                                              'thumb'))
+                                 self._add_size_qualifier(img.filename, 'thumb'))
             link_vals['thumb_width'],\
                 link_vals['thumb_height'] = img.get_size(thumb)
 
@@ -121,10 +120,15 @@ class WebalbumPage(make.FileMakeObject):
                 osize_info['name'] = osize_name
             else:
                 osize_info['name'] = osize_name
-                osize_info['link'] = self.dir._add_size_qualifier(filename + '.html', osize_name)
+                osize_info['link'] = self._add_size_qualifier(filename\
+                                                              + '.html',
+                                                              osize_name)
             osize_index_links.append(osize_info)
 
         return osize_index_links
+
+    def _add_size_qualifier(self, path, size_name):
+        return self.dir.album._add_size_qualifier(path, size_name)
 
 
 class WebalbumBrowsePage(WebalbumPage):
@@ -157,14 +161,15 @@ class WebalbumBrowsePage(WebalbumPage):
         self.dir.album.log("(%s)" % self.page_path)
 
         tpl_values = {}
-        tpl_values['img_src'] = self.dir._add_size_qualifier(self.image.filename, self.size_name)
+        tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
+                                                         self.size_name)
         tpl_values['name'] = self.image.filename
         tpl_values['dir'] = self.dir.source_dir.strip_root()
         tpl_values['image_name'] = self.image.filename
 
         browse_image_path = os.path.join(self.dir.path,
-                               self.dir._add_size_qualifier(self.image.filename,
-                                                            self.size_name))
+                                         self._add_size_qualifier(\
+                                           self.image.filename, self.size_name))
         tpl_values['img_width'],\
             tpl_values['img_height'] = self.image.get_size(browse_image_path)
 
@@ -175,8 +180,8 @@ class WebalbumBrowsePage(WebalbumPage):
             self._gen_other_img_link(self.image.previous_image)
         tpl_values['next_link'] =\
             self._gen_other_img_link(self.image.next_image)
-        tpl_values['index_link'] = self.dir._add_size_qualifier('index.html',
-                                                                self.size_name)
+        tpl_values['index_link'] = self._add_size_qualifier('index.html',
+                                                            self.size_name)
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
@@ -308,15 +313,6 @@ class WebalbumDir(make.FileMakeObject):
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()
         return self.__mtime
-
-    def _add_size_qualifier(self, path, size_name):
-        filename, extension = os.path.splitext(path)
-        if size_name == self.source_dir.album.default_size_name\
-        and extension == '.html':
-            # Do not append default size name to HTML page filename
-            return path
-        else:
-            return "%s_%s%s" % (filename, size_name, extension)
 
     def build(self):
         # Check dest for junk files
@@ -541,6 +537,14 @@ class Album:
     def _is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
         return extension.lower() in ['.jpg']
+
+    def _add_size_qualifier(self, path, size_name):
+        filename, extension = os.path.splitext(path)
+        if size_name == self.default_size_name and extension == '.html':
+            # Do not append default size name to HTML page filename
+            return path
+        else:
+            return "%s_%s%s" % (filename, size_name, extension)
 
     def generate_default_medatada(self):
         '''
