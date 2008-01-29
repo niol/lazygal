@@ -480,6 +480,7 @@ class SharedFileTemplate(make.FileMakeObject):
             raise ValueError('We have a template with an extension that does not start with a t. Abording.')
 
         make.FileMakeObject.__init__(self, self.path)
+        self.add_file_dependency(shared_tpl_name)
 
     def build(self):
         self.album.log("TPL %%SHAREDDIR%%/%s"\
