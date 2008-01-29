@@ -438,17 +438,17 @@ class SharedFileTemplate(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
 
     def build(self):
-        self.album.log("XHTML %%SHAREDDIR%%/%s]"\
+        self.album.log("TPL %%SHAREDDIR%%/%s"\
                        % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
         self.tpl.dump({}, self.path)
 
 
-class SharedFiles(make.FileMakeObject):
+class SharedFiles(make.FileSimpleDependency):
 
     def __init__(self, album, dest_dir):
         self.path = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
-        make.FileMakeObject.__init__(self, self.path)
+        make.FileSimpleDependency.__init__(self, self.path)
 
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
