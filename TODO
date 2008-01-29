@@ -9,6 +9,8 @@ Ideas to improve Lazygal (in no particular order)
   fonctionnality in those.
     Work to do to be mostly in lazygal/generators.py
 
+* Have WebalbumIndexPage depend on subdir metadata file.
+
 * Have some generic methods on LightWebalbumDir to provide metadata.
 
 * Themes mostly through CSS : it is a pain to maintain multiple structure, and
