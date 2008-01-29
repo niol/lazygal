@@ -18,7 +18,7 @@
 import os, glob, sys
 import Image
 
-from lazygal import make, sourcetree, tpl, metadata, feeds
+from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
 
 
 DATAPATH = os.path.join(os.path.dirname(__file__), '..')
@@ -80,6 +80,33 @@ class ImageOtherSize(make.FileMakeObject):
         im.thumbnail(self.size, Image.ANTIALIAS)
 
         im.save(self.osize_path, quality = self.dir.album.quality)
+
+
+class WebalbumPicture(make.FileMakeObject):
+
+    def __init__(self, lightdir, album):
+        self.path = os.path.join(lightdir.path, 'index.png')
+        make.FileMakeObject.__init__(self, self.path)
+        self.album = album
+
+        # Use already generated thumbs for better performance (lighter to
+        # rotate, etc.).
+        pics = map(lambda path: self.album._add_size_qualifier(path, 'thumb'),
+                   lightdir.get_all_images_paths())
+
+        for pic in pics:
+            self.add_file_dependency(pic)
+
+        md_dirpic_thumb = self.album._add_size_qualifier(lightdir.album_picture,
+                                                         'thumb')
+        self.dirpic = eyecandy.PictureMess(pics,
+                                           os.path.join(lightdir.path,
+                                                        md_dirpic_thumb))
+
+    def build(self):
+        self.album.log("  DIRPIC %s" % os.path.basename(self.path), 'info')
+        self.album.log("(%s)" % self.path)
+        self.dirpic.write(self.path)
 
 
 class WebalbumPage(make.FileMakeObject):
@@ -236,6 +263,7 @@ class WebalbumIndexPage(WebalbumPage):
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
             dir_info.update(self.dir.metadata.get(dir))
+            dir_info['album_picture'] = os.path.join(dir, 'index.png')
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         if self.dir.metadata:
@@ -368,6 +396,19 @@ class LightWebalbumDir(make.FileSimpleDependency):
             self.desc = md['album_description']
         else:
             self.desc = None
+
+        if 'album_picture' in md.keys():
+            self.album_picture = md['album_picture']
+        else:
+            self.album_picture = None
+        self.add_dependency(WebalbumPicture(self, heavy_webalbum_dir.album))
+
+    def get_all_images_paths(self):
+        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
+                               self.images_names)
+        for subdir in self.subdirs:
+            all_images_paths.extend(subdir.get_all_images_paths())
+        return all_images_paths
 
 
 class WebalbumFeed(make.FileMakeObject):

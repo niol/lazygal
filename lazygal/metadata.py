@@ -327,11 +327,6 @@ class DirectoryMetadata(make.FileSimpleDependency):
             if picture is not None:
                 result['album_picture'] = picture
 
-        if result.has_key('album_picture'):
-            # Convert to thumbnail path
-            filename, extension = os.path.splitext(result['album_picture'])
-            result['album_picture'] = filename + '_thumb' + extension
-
         return result
 
     def generate(self):

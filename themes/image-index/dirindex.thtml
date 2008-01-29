@@ -33,7 +33,7 @@
     <div py:for="subgal_link in t.subgal_links" class="subgal_link">
         <div py:if="subgal_link.album_picture" class="subgal_image">
             <a href="$subgal_link.link">
-                <img src="$subgal_link.album_picture" />
+                <img class="subgal" src="$subgal_link.album_picture" />
             </a>
         </div>
         <div class="subgal_name">

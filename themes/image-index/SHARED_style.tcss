@@ -52,6 +52,10 @@ img {
     margin:1em;
 }
 
+img.subgal {
+    border: none;
+}
+
 div.subgal_link {
     float: left;
     padding: 1em;
