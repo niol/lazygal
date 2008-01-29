@@ -203,19 +203,20 @@ class WebalbumBrowsePage(WebalbumPage):
 
 class WebalbumIndexPage(WebalbumPage):
 
-    def __init__(self, dir, size_name, images, subdirs):
+    def __init__(self, dir, size_name):
         WebalbumPage.__init__(self, dir, size_name, 'index')
 
-        self.images = images
+        self.images = dir.images
         for image in self.images:
             thumb_dep = ImageOtherSize(self.dir, image, 'thumb')
             self.add_dependency(thumb_dep)
             image_dep = WebalbumBrowsePage(self.dir, size_name, image)
             self.add_dependency(image_dep)
 
-        self.dirnames = subdirs
-        for dirname in self.dirnames:
-            self.add_file_dependency(os.path.join(self.dir.path, dirname))
+        self.dirnames = dir.source_dir.dirnames
+        self.subdirs = dir.subdirs
+        for subdir in self.subdirs:
+            self.add_dependency(subdir)
 
         self.page_template = self.dir.album.templates['dirindex.thtml']
         self.add_file_dependency(self.page_template.path)
@@ -256,8 +257,9 @@ class WebalbumIndexPage(WebalbumPage):
 
 class WebalbumDir(make.FileMakeObject):
 
-    def __init__(self, dir, album, album_dest_dir, clean_dest):
+    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
         self.source_dir = dir
+        self.subdirs = subdirs
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         self.human_name = self.source_dir.name.replace('_', ' ')
 
@@ -294,10 +296,7 @@ class WebalbumDir(make.FileMakeObject):
                                                      filename))
 
         for size_name in self.album.browse_sizes.keys():
-            self.add_dependency(WebalbumIndexPage(self,
-                                                  size_name,
-                                                  self.images,
-                                                  self.source_dir.dirnames))
+            self.add_dependency(WebalbumIndexPage(self, size_name))
 
     def prepare(self):
         self.images.sort(lambda x, y: x.compare_date_taken(y))
@@ -344,13 +343,18 @@ class WebalbumDir(make.FileMakeObject):
 
 
 class LightWebalbumDir(make.FileSimpleDependency):
+    """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data."""
 
-    def __init__(self, heavy_webalbum_dir):
-        make.FileSimpleDependency.__init__(self, heavy_webalbum_dir.path)
+    def __init__(self, heavy_webalbum_dir, subdirs):
+        self.path = heavy_webalbum_dir.path
+        make.FileSimpleDependency.__init__(self, self.path)
+        self.images_names = map(lambda x: os.path.basename(x.path),
+                                heavy_webalbum_dir.images)
+        self.subdirs = subdirs
         self.rel_path = heavy_webalbum_dir.source_dir.strip_root()
 
-        self.image_count = len(heavy_webalbum_dir.images)
-        self.subgal_count = len(heavy_webalbum_dir.source_dir.dirnames)
+        self.image_count = len(self.images_names)
+        self.subgal_count = len(self.subdirs)
 
         md = heavy_webalbum_dir.metadata.get()
         if 'album_name' in md.keys():
@@ -576,12 +580,26 @@ class Album:
         else:
             feed = None
 
-        for root, dirnames, filenames in os.walk(self.source_dir):
+        dir_heap = {}
+        for root, dirnames, filenames in os.walk(self.source_dir,
+                                                 topdown=False):
             dir = sourcetree.Directory(root, dirnames, filenames, self)
             self.log("[Entering %%ALBUMROOT%%/%s]" % dir.strip_root(), 'info')
             self.log("(%s)" % dir.path)
 
-            destgal = WebalbumDir(dir, self, sane_dest_dir, clean_dest)
+            if dir_heap.has_key(root):
+                subdirs = dir_heap[root]
+                del dir_heap[root] # No need to keep it there
+            else:
+                subdirs = []
+
+            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
+            light_destgal = LightWebalbumDir(destgal, subdirs)
+            if not dir.is_album_root():
+                container_dirname = os.path.dirname(root)
+                if not dir_heap.has_key(container_dirname):
+                    dir_heap[container_dirname] = []
+                dir_heap[container_dirname].append(light_destgal)
 
             if feed and dir.is_album_root():
                 feed.set_title(dir.name)
@@ -591,7 +609,7 @@ class Album:
                 destgal.register_output(feed.path)
 
             if feed:
-                feed.push_dir(LightWebalbumDir(destgal))
+                feed.push_dir(light_destgal)
             if destgal.needs_build() or check_all_dirs:
                 destgal.make()
             else:
