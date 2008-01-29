@@ -315,14 +315,17 @@ class WebalbumDir(make.FileMakeObject):
 
     def build(self):
         # Check dest for junk files
+        extra_files = []
+        if self.source_dir.is_album_root():
+            extra_files.append(os.path.join(self.path,
+                                            DEST_SHARED_DIRECTORY_NAME))
+
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
             if dest_file not in self.output_items and\
                dest_file not in self.source_dir.dirnames:
                 text = ''
-                if not (self.source_dir.is_album_root() and
-                        dest_file == os.path.join(self.path,
-                                                  DEST_SHARED_DIRECTORY_NAME)):
+                if dest_file not in extra_files:
                     rmv_candidate = os.path.join(self.path, dest_file)
                     if self.clean_dest and not os.path.isdir(rmv_candidate):
                         os.unlink(rmv_candidate)
