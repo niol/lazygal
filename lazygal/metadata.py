@@ -343,8 +343,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
         f.write('# Directory metadata for lazygal, Matew format\n')
         f.write('Album name ""\n');
         f.write('Album description ""\n');
-        picture_name = md['album_picture'].replace('_thumb', '')
-        f.write('Album image identifier "%s"\n' % picture_name);
+        f.write('Album image identifier "%s"\n' % md['album_picture']);
         f.close()
 
 
