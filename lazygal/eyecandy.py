@@ -27,9 +27,9 @@ class Color:
 class PictureMess:
 
     RESULT_SIZE = (200, 150)
-    THUMB_HOW_MANY = 8
+    THUMB_HOW_MANY = 5
     THUMB_MAX_ROTATE_ANGLE = 40
-    THUMB_SIZE = map(lambda x: x/2, RESULT_SIZE)
+    THUMB_SIZE = [3*max(RESULT_SIZE)/5 for i in range(2)]
 
     def __init__(self, images_paths, top_image_path=None):
         random.seed(time.time())
