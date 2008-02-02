@@ -84,10 +84,10 @@ class ImageOtherSize(make.FileMakeObject):
 
 class WebalbumPicture(make.FileMakeObject):
 
-    def __init__(self, lightdir, album):
+    def __init__(self, lightdir):
         self.path = os.path.join(lightdir.path, 'index.png')
         make.FileMakeObject.__init__(self, self.path)
-        self.album = album
+        self.album = lightdir.album
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
@@ -244,6 +244,7 @@ class WebalbumIndexPage(WebalbumPage):
         self.subdirs = dir.subdirs
         for subdir in self.subdirs:
             self.add_dependency(subdir)
+            self.add_dependency(WebalbumPicture(subdir))
 
         self.page_template = self.dir.album.templates['dirindex.thtml']
         self.add_file_dependency(self.page_template.path)
@@ -283,22 +284,66 @@ class WebalbumIndexPage(WebalbumPage):
         self.page_template.dump(values, self.page_path)
 
 
-class WebalbumDir(make.FileMakeObject):
+class LightWebalbumDir(make.FileSimpleDependency):
+    """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data, and does not build anything."""
 
-    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
+    def __init__(self, dir, subdirs, album, album_dest_dir):
         self.source_dir = dir
-        self.subdirs = subdirs
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
+        make.FileSimpleDependency.__init__(self, self.path)
+
+        self.add_dependency(self.source_dir)
+        self.subdirs = subdirs
+        self.album = album
         self.human_name = self.source_dir.name.replace('_', ' ')
 
-        make.FileMakeObject.__init__(self, self.path)
+        self.images_names = []
+        for filename in self.source_dir.filenames:
+            if self.album._is_ext_supported(filename):
+                self.images_names.append(filename)
+            elif not filename == metadata.MATEW_METADATA:
+                self.album.log("  Ignoring %s, format not supported."\
+                               % filename, 'info')
+                self.album.log("(%s)" % os.path.join(self.source_dir.path,
+                                                     filename))
+
+        self.image_count = len(self.images_names)
+        self.subgal_count = len(self.subdirs)
+
+        self.metadata = metadata.DirectoryMetadata(self.source_dir)
+        md = self.metadata.get()
+        if 'album_name' in md.keys():
+            self.title = md['album_name']
+        else:
+            self.title = self.human_name
+        if 'album_description' in md.keys():
+            self.desc = md['album_description']
+        else:
+            self.desc = None
+
+        if 'album_picture' in md.keys():
+            self.album_picture = md['album_picture']
+        else:
+            self.album_picture = None
+
+    def get_all_images_paths(self):
+        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
+                               self.images_names)
+        for subdir in self.subdirs:
+            all_images_paths.extend(subdir.get_all_images_paths())
+        return all_images_paths
+
+
+class WebalbumDir(LightWebalbumDir):
+
+    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
+        LightWebalbumDir.__init__(self, dir, subdirs, album, album_dest_dir)
 
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
         self.__mtime = make.FileMakeObject.get_mtime(self)
 
         self.clean_dest = clean_dest
-        self.album = album
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
@@ -307,21 +352,10 @@ class WebalbumDir(make.FileMakeObject):
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
-        self.add_dependency(self.source_dir)
-
-        self.images = []
-        self.metadata = metadata.DirectoryMetadata(self.source_dir)
-        for filename in self.source_dir.filenames:
-            if self.album._is_ext_supported(filename):
-                image = sourcetree.ImageFile(os.path.join(self.source_dir.path,
-                                                          filename),
-                                             album)
-                self.images.append(image)
-            elif not filename == metadata.MATEW_METADATA:
-                self.album.log("  Ignoring %s, format not supported."\
-                               % filename, 'info')
-                self.album.log("(%s)" % os.path.join(self.source_dir.path,
-                                                     filename))
+        self.images = map(lambda fn:\
+                 sourcetree.ImageFile(os.path.join(self.source_dir.path, fn),
+                                      album),
+                                      self.images_names)
 
         for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self, size_name))
@@ -373,44 +407,6 @@ class WebalbumDir(make.FileMakeObject):
         os.utime(self.path, None)
 
 
-class LightWebalbumDir(make.FileSimpleDependency):
-    """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data."""
-
-    def __init__(self, heavy_webalbum_dir, subdirs):
-        self.path = heavy_webalbum_dir.path
-        make.FileSimpleDependency.__init__(self, self.path)
-        self.images_names = map(lambda x: os.path.basename(x.path),
-                                heavy_webalbum_dir.images)
-        self.subdirs = subdirs
-        self.rel_path = heavy_webalbum_dir.source_dir.strip_root()
-
-        self.image_count = len(self.images_names)
-        self.subgal_count = len(self.subdirs)
-
-        md = heavy_webalbum_dir.metadata.get()
-        if 'album_name' in md.keys():
-            self.title = md['album_name']
-        else:
-            self.title = heavy_webalbum_dir.human_name
-        if 'album_description' in md.keys():
-            self.desc = md['album_description']
-        else:
-            self.desc = None
-
-        if 'album_picture' in md.keys():
-            self.album_picture = md['album_picture']
-        else:
-            self.album_picture = None
-        self.add_dependency(WebalbumPicture(self, heavy_webalbum_dir.album))
-
-    def get_all_images_paths(self):
-        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
-                               self.images_names)
-        for subdir in self.subdirs:
-            all_images_paths.extend(subdir.get_all_images_paths())
-        return all_images_paths
-
-
 class WebalbumFeed(make.FileMakeObject):
 
     def __init__(self, album, dest_dir, pub_url):
@@ -443,7 +439,7 @@ class WebalbumFeed(make.FileMakeObject):
             desc = '<p>' + webalbumdir.desc + '</p>' + desc
 
         self.feed.push_item(webalbumdir.title,
-                            self.pub_url + webalbumdir.rel_path,
+                            self.pub_url + webalbumdir.source_dir.strip_root(),
                             desc,
                             webalbumdir.get_mtime())
 
@@ -639,7 +635,7 @@ class Album:
                 subdirs = []
 
             destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
-            light_destgal = LightWebalbumDir(destgal, subdirs)
+            light_destgal = LightWebalbumDir(dir, subdirs, self, sane_dest_dir)
             if not dir.is_album_root():
                 container_dirname = os.path.dirname(root)
                 if not dir_heap.has_key(container_dirname):
