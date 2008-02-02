@@ -5,12 +5,6 @@ Ideas to improve Lazygal (in no particular order)
   os.fork() would be a better alternative.
     Work to be done mostly in lazygal/make.py
 
-* Have WebalbumDir use LightWebalbumDir because there is much common
-  fonctionnality in those. (inheritence would not be good because we would have
-  to build the same LightWebalbumDir twice, once in WebalbumDir and once in the
-  lighter object).
-    Work to do to be mostly in lazygal/generators.py
-
 * Have WebalbumIndexPage depend on subdir metadata file.
 
 * Have some generic methods on LightWebalbumDir to provide metadata.
