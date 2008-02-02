@@ -441,7 +441,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.push_item(webalbumdir.title,
                             self.pub_url + webalbumdir.source_dir.strip_root(),
                             desc,
-                            webalbumdir.get_mtime())
+                            webalbumdir.source_dir.get_mtime())
 
     def build(self):
         self.album.log("FEED %s" % os.path.basename(self.path), 'info')
