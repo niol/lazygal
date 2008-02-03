@@ -21,7 +21,7 @@ import Image
 from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
 
 
-DATAPATH = os.path.join(os.path.dirname(__file__), '..')
+DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 if not os.path.exists(os.path.join(DATAPATH, 'themes')):
     DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
     if not os.path.exists(os.path.join(DATAPATH, 'themes')):
