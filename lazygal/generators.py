@@ -284,13 +284,13 @@ class WebalbumIndexPage(WebalbumPage):
         self.page_template.dump(values, self.page_path)
 
 
-class LightWebalbumDir(make.FileSimpleDependency):
+class LightWebalbumDir(make.FileMakeObject):
     """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data, and does not build anything."""
 
     def __init__(self, dir, subdirs, album, album_dest_dir):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
-        make.FileSimpleDependency.__init__(self, self.path)
+        make.FileMakeObject.__init__(self, self.path)
 
         self.add_dependency(self.source_dir)
         self.subdirs = subdirs
@@ -333,6 +333,10 @@ class LightWebalbumDir(make.FileSimpleDependency):
             all_images_paths.extend(subdir.get_all_images_paths())
         return all_images_paths
 
+    def build(self):
+        # This one does not build anything.
+        pass
+
 
 class WebalbumDir(LightWebalbumDir):
 
@@ -341,7 +345,7 @@ class WebalbumDir(LightWebalbumDir):
 
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
-        self.__mtime = make.FileMakeObject.get_mtime(self)
+        self.__mtime = LightWebalbumDir.get_mtime(self)
 
         self.clean_dest = clean_dest
 

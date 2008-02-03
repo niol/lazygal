@@ -77,35 +77,42 @@ class MakeObject:
         self.output_items.append(output)
 
 
-class FileMakeObject(MakeObject):
+class FileSimpleDependency(MakeObject):
+    """Simple file dependency that needn't build. It just should be there."""
 
     def __init__(self, path):
-        self.__path = path
         MakeObject.__init__(self)
+        self._path = path
+
+    def get_mtime(self):
+        return os.path.getmtime(self._path)
+
+    def build(self):
+        pass
+
+
+class FileMakeObject(FileSimpleDependency):
+
+    def __init__(self, path):
+        FileSimpleDependency.__init__(self, path)
         # The built file is a forced output of this target
         self.register_output(path)
 
     def needs_build(self):
-        return MakeObject.needs_build(self) or not os.path.exists(self.__path)
+        return FileSimpleDependency.needs_build(self)\
+               or not os.path.exists(self._path)
 
     def get_mtime(self):
         try:
-            mtime = os.path.getmtime(self.__path)
+            mtime = FileSimpleDependency.get_mtime(self)
         except OSError:
             # Let's tell that the file is very old, older than 1.1.1970 if it
             # does not exist.
             return -1
         return mtime
 
-
-class FileSimpleDependency(FileMakeObject):
-    """Simple file dependency that needn't build. It just should be there."""
-
-    def __init__(self, path):
-        FileMakeObject.__init__(self, path)
-
     def build(self):
-        pass
+        MakeObject.build(self)
 
 
 class FileCopy(FileMakeObject):
