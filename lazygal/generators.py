@@ -84,8 +84,10 @@ class ImageOtherSize(make.FileMakeObject):
 
 class WebalbumPicture(make.FileMakeObject):
 
+    FILENAME = 'index.png'
+
     def __init__(self, lightdir):
-        self.path = os.path.join(lightdir.path, 'index.png')
+        self.path = os.path.join(lightdir.path, self.FILENAME)
         make.FileMakeObject.__init__(self, self.path)
         self.album = lightdir.album
 
@@ -264,7 +266,8 @@ class WebalbumIndexPage(WebalbumPage):
         for dir in self.dirnames:
             dir_info = {'name': dir, 'link': dir + '/'}
             dir_info.update(self.dir.metadata.get(dir))
-            dir_info['album_picture'] = os.path.join(dir, 'index.png')
+            dir_info['album_picture'] = os.path.join(dir,
+                                                     WebalbumPicture.FILENAME)
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         if self.dir.metadata:
@@ -437,14 +440,15 @@ class WebalbumFeed(make.FileMakeObject):
             self.__add_item(webalbumdir)
 
     def __add_item(self, webalbumdir):
-        desc = '<p>%d sub-galleries, %d photos</p>' %\
-               (webalbumdir.subgal_count, webalbumdir.image_count)
+        url = os.path.join(self.pub_url, webalbumdir.source_dir.strip_root())
+        desc = '<p><img src="%s" alt="album picture"/></p><p>%d sub-galleries, %d photos</p>' %\
+               (os.path.join(url, WebalbumPicture.FILENAME),
+                webalbumdir.subgal_count,
+                webalbumdir.image_count)
         if webalbumdir.desc:
             desc = '<p>' + webalbumdir.desc + '</p>' + desc
 
-        self.feed.push_item(webalbumdir.title,
-                            self.pub_url + webalbumdir.source_dir.strip_root(),
-                            desc,
+        self.feed.push_item(webalbumdir.title, url, desc,
                             webalbumdir.source_dir.get_mtime())
 
     def build(self):
