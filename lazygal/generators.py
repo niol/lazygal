@@ -599,6 +599,16 @@ class Album:
         else:
             return "%s_%s%s" % (filename, size_name, extension)
 
+    def is_in_sourcetree(self, path):
+        head = path
+        old_head = None
+        while head != old_head:
+            if head == self.source_dir:
+                return True
+            old_head = head
+            head, tail = os.path.split(head)
+        return False
+
     def generate_default_medatada(self):
         '''
         Generate default metada files if no exists.
@@ -622,6 +632,10 @@ class Album:
     def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):
         sane_dest_dir = os.path.abspath(dest_dir)
+
+        if self.is_in_sourcetree(sane_dest_dir):
+            raise ValueError("Fatal error, web gallery directory is within source tree.")
+
         self.log("Generating to %s" % sane_dest_dir)
 
         if pub_url and feeds.HAVE_ETREE:
