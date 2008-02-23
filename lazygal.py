@@ -141,6 +141,7 @@ if options.tpl_vars or config.has_section('template-vars'):
         tpl_vars_defs = options.tpl_vars.split(',')
         for single_def in tpl_vars_defs:
             name, value = single_def.split('=')
+            value = value.decode(sys.stdin.encoding)
             tpl_vars[name] = genshi.core.Markup(value)
     album.set_tpl_vars(tpl_vars)
 
