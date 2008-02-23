@@ -21,6 +21,3 @@ Ideas to improve Lazygal (in no particular order)
     Work to do to be mostly in lazygal/generators.py, lazygal.py, themes
 
 * Add some styles to the default theme.
-
-* Make the contents of a feed item a template
-    Work to do to be mostly in lazygal/generators.py

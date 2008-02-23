@@ -426,6 +426,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.path = os.path.join(dest_dir, 'index.xml')
         make.FileMakeObject.__init__(self, self.path)
         self.feed = feeds.RSS20(self.pub_url)
+        self.item_template = self.album.templates['feeditem.thtml']
 
     def set_title(self, title):
         self.feed.title = title
@@ -440,12 +441,14 @@ class WebalbumFeed(make.FileMakeObject):
 
     def __add_item(self, webalbumdir):
         url = os.path.join(self.pub_url, webalbumdir.source_dir.strip_root())
-        desc = '<p><img src="%s" alt="album picture"/></p><p>%d sub-galleries, %d photos</p>' %\
-               (os.path.join(url, WebalbumPicture.FILENAME),
-                webalbumdir.subgal_count,
-                webalbumdir.image_count)
-        if webalbumdir.desc:
-            desc = '<p>' + webalbumdir.desc + '</p>' + desc
+
+        desc_values = {}
+        desc_values['album_pic_path'] = os.path.join(url,
+                                                     WebalbumPicture.FILENAME)
+        desc_values['subgal_count'] = webalbumdir.subgal_count
+        desc_values['picture_count'] = webalbumdir.image_count
+        desc_values['desc'] = webalbumdir.desc
+        desc = self.item_template.instanciate(desc_values)
 
         self.feed.push_item(webalbumdir.title, url, desc,
                             webalbumdir.source_dir.get_mtime())
