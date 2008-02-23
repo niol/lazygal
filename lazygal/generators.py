@@ -224,8 +224,7 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['comment'] = self.image.info().get_comment()
 
         if self.dir.album.original:
-            tpl_values['original_link'] = self.image.filename\
-                                          + self.image.extension
+            tpl_values['original_link'] = self.image.filename
 
         self.page_template.dump(tpl_values, self.page_path)
 
