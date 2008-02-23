@@ -566,8 +566,6 @@ class Album:
                 self.templates[filename].path = os.path.join(self.tpl_dir,
                                                              tpl_file)
 
-    log_levels = ['debug', 'info', 'error']
-
     def set_tpl_vars(self, tpl_vars=None):
         if tpl_vars is not None:
             self.tpl_vars.update(tpl_vars)
@@ -590,14 +588,16 @@ class Album:
             styles.append(style)
         return styles
 
+    def set_original(self, original = False):
+        self.original = original
+
+    log_levels = ['debug', 'info', 'error']
+
     def set_logging(self, level='info', outpipe=sys.stdout,
                                            errpipe=sys.stderr):
         self.log_level = level
         self.log_outpipe = outpipe
         self.log_errpipe = errpipe
-
-    def set_original(self, original = False):
-        self.original = original
 
     def log(self, msg, level='debug'):
         if self.log_levels.index(level)\
@@ -651,7 +651,6 @@ class Album:
                 self.log("  SKIPPED because metadata exists.")
             else:
                 md.generate()
-
 
     def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):
