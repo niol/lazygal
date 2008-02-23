@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, glob, sys
+import os, glob, sys, string
 import Image
 
 from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
@@ -539,10 +539,10 @@ class Album:
 
         self.templates = {}
         self.tpl_loader = None
-        self.tpl_vars = None
+        self.tpl_vars = {}
         self.original = False
 
-    def set_theme(self, theme):
+    def set_theme(self, theme='default', default_style=None):
         self.theme = theme
         self.templates.clear()
 
@@ -555,6 +555,8 @@ class Album:
                 raise ValueError('Theme %s not found' % self.theme)
 
         self.tpl_loader = tpl.TplFactory([self.tpl_dir])
+        self.tpl_vars.update({'styles' : self.get_avail_styles(self.theme,
+                                                               default_style)})
         self.set_tpl_vars()
 
         for tpl_file in os.listdir(self.tpl_dir):
@@ -568,9 +570,25 @@ class Album:
 
     def set_tpl_vars(self, tpl_vars=None):
         if tpl_vars is not None:
-            self.tpl_vars = tpl_vars
-        if self.tpl_loader is not None and self.tpl_vars is not None:
+            self.tpl_vars.update(tpl_vars)
+        if self.tpl_loader is not None:
             self.tpl_loader.set_common_values(self.tpl_vars)
+
+    def get_avail_styles(self, theme, default_style):
+        style_files_mask = os.path.join(self.tpl_dir,
+                                        THEME_SHARED_FILE_PREFIX + '*' + 'css')
+        styles = []
+        for style_tpl_file in glob.glob(style_files_mask):
+            style = {}
+            tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
+            style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
+            style['name'] = self._str_humanize(style['filename'])
+            if style['filename'] == default_style:
+                style['alternate'] = False
+            else:
+                style['alternate'] = True
+            styles.append(style)
+        return styles
 
     def set_logging(self, level='info', outpipe=sys.stdout,
                                            errpipe=sys.stderr):
@@ -600,6 +618,10 @@ class Album:
             return path
         else:
             return "%s_%s%s" % (filename, size_name, extension)
+
+    def _str_humanize(self, text):
+        dash_replaced = text.replace('_', ' ')
+        return string.capwords(dash_replaced)
 
     def is_in_sourcetree(self, path):
         head = path

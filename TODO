@@ -9,15 +9,4 @@ Ideas to improve Lazygal (in no particular order)
 
 * Have some generic methods on LightWebalbumDir to provide metadata.
 
-* Themes mostly through CSS : it is a pain to maintain multiple structure, and
-  I'm sure using CSS and eventually 'display: none' for information we do not
-  want in some themes, a high level of customization may be achieved. This
-  would mostly involve :
-    - merging default and image-index themes,
-    - building a style sheets list,
-    - adding a command line option the would be a synonym for
-      '--template-var default-style=STYLE' and use this to not add 'alternate'
-      to the 'rel' attribute of the stylesheet declaration.
-    Work to do to be mostly in lazygal/generators.py, lazygal.py, themes
-
 * Add some styles to the default theme.

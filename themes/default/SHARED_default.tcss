@@ -18,12 +18,19 @@ a{
 #if t.lnkcolor
 		color:${t.lnkcolor};
 #end
+#if not t.lnkcolor
+		color:blue;
+#end
 #if t.lnkdecoration
 		text-decoration:${t.lnkdecoration};
+#end
+#if not t.lnkdecoration
+		text-decoration:none;
 #end
 }
 
 \#image_links{
+    clear: both;
     padding-left:7em;
     padding-right:7em;
 }
@@ -45,12 +52,40 @@ img {
     margin:1em;
 }
 
+img.subgal {
+    border: none;
+}
+
+div.subgal_link {
+    float: left;
+    padding: 1em;
+    width: 40em;
+}
+
+div.subgal_image {
+    float: left;
+    width: 280px; /* This is based on thumbnail size */
+}
+
+div.subgal_image img {
+    margin: 0;
+    border: none;
+}
+
+\#subgal_links li {
+    margin: 0.5em;
+}
+
 \#image_links p{
     text-align:justify;
 }
 
-\#footer p {
-		text-align:justify;
+.footer {
+    clear: both;
+}
+
+.footer p {
+    text-align:justify;
 }
 
 /*

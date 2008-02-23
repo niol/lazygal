@@ -28,6 +28,7 @@ from lazygal.generators import Album
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
     'theme': 'default',
+    'default-style': 'default',
     'clean-destination': 'No',
     'image-size': 'small=800x600,medium=1024x768',
     'thumbnail-size': '150x113',
@@ -61,6 +62,11 @@ parser.add_option("-t", "--theme",
                   dest="theme",
                   default=config.get('lazygal', 'theme'),
                   help="Theme name (looked up in theme directory) or theme full path.")
+parser.add_option("", "--default-style",
+                  action="store", type="string",
+                  dest="default_style",
+                  default=config.get('lazygal', 'default-style'),
+                  help="Default style to apply to the theme.")
 parser.add_option("", "--template-vars",
                   action="store", type="string",
                   dest="tpl_vars",
@@ -145,7 +151,7 @@ if options.tpl_vars or config.has_section('template-vars'):
             tpl_vars[name] = genshi.core.Markup(value)
     album.set_tpl_vars(tpl_vars)
 
-album.set_theme(options.theme)
+album.set_theme(options.theme, options.default_style)
 album.set_original(options.original)
 
 log_level = None
