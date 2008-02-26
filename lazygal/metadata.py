@@ -171,8 +171,10 @@ class ExifTags(pyexiv2.Image):
         val = self[name]
         if type(val) == int:
             return float(val)
-        else:
+        elif type(val) == tuple:
             return float(val[0]) / float(val[1])
+        else:
+            return float(val.numerator) / float(val.denominator)
 
     def get_jpeg_comment(self):
         '''
@@ -201,10 +203,16 @@ class ExifTags(pyexiv2.Image):
     def get_exposure(self):
         try:
             exposure = self['Exif.Photo.ExposureTime']
-            if exposure[1] == 1:
-                return "%d s" % exposure[0]
+            if type(exposure) == tuple:
+                if exposure[1] == 1:
+                    return "%d s" % exposure[0]
+                else:
+                    return "%d/%d s" % (exposure[0], exposure[1])
             else:
-                return "%d/%d s" % (exposure[0], exposure[1])
+                if exposure.denominator == 1:
+                    return "%d s" % exposure.numerator
+                else:
+                    return "%d/%d s" % (exposure.numerator, exposure.denominator)
         except (ValueError, KeyError):
             return ''
 
