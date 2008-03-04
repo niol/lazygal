@@ -99,11 +99,13 @@ class WebalbumPicture(make.FileMakeObject):
         for pic in pics:
             self.add_file_dependency(pic)
 
-        md_dirpic_thumb = self.album._add_size_qualifier(lightdir.album_picture,
-                                                         'thumb')
-        self.dirpic = eyecandy.PictureMess(pics,
-                                           os.path.join(lightdir.path,
-                                                        md_dirpic_thumb))
+        if lightdir.album_picture:
+            md_dirpic_thumb = self.album._add_size_qualifier(\
+                                           lightdir.album_picture, 'thumb')
+            md_dirpic_thumb = os.path.join(lightdir.path, md_dirpic_thumb)
+        else:
+            md_dirpic_thumb = None
+        self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb)
 
     def build(self):
         self.album.log("  DIRPIC %s" % os.path.basename(self.path), 'info')
