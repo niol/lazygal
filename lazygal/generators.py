@@ -259,7 +259,7 @@ class WebalbumIndexPage(WebalbumPage):
 
         values = {}
 
-        values['ozise_index_links'] = self._get_osize_links('index')
+        values['osize_index_links'] = self._get_osize_links('index')
 
         subgal_links = []
         for dir in self.dirnames:
