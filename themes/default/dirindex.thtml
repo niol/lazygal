@@ -28,7 +28,7 @@
 
 <p py:if="t.album_description" class="description" py:content="t.album_description"></p>
 
-<p>
+<p py:if="len(t.ozise_index_links) > 1">
     <py:for each="i, ozise_index_link in enumerate(t.ozise_index_links)">
         <a py:strip="not ozise_index_link.link"
            href="$ozise_index_link.link">$ozise_index_link.name</a>

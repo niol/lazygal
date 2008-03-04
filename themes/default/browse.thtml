@@ -23,7 +23,7 @@
 <div id="gallery_links">
 		<div id="index_link"><a href="$t.index_link">Gallery index</a></div>
 
-		<div id="osize_links">
+		<div id="osize_links" py:if="len(t.osize_links) > 1">
 				<p>
 						<py:for each="i, osize_link in enumerate(t.osize_links)">
 								<a py:strip="not osize_link.link"
