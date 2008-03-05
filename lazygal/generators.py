@@ -263,11 +263,11 @@ class WebalbumIndexPage(WebalbumPage):
         values['osize_index_links'] = self._get_osize_links('index')
 
         subgal_links = []
-        for dir in self.dirnames:
-            dir_info = {'name': self.dir.album._str_humanize(dir),
-                        'link': dir + '/'}
-            dir_info.update(self.dir.metadata.get(dir))
-            dir_info['album_picture'] = os.path.join(dir,
+        for subdir in self.subdirs:
+            dir_info = {'name': subdir.human_name,
+                        'link': subdir.source_dir.name + '/'}
+            dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
+            dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
                                                      WebalbumPicture.FILENAME)
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
