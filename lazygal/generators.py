@@ -264,7 +264,8 @@ class WebalbumIndexPage(WebalbumPage):
 
         subgal_links = []
         for dir in self.dirnames:
-            dir_info = {'name': dir, 'link': dir + '/'}
+            dir_info = {'name': self.dir.album._str_humanize(dir),
+                        'link': dir + '/'}
             dir_info.update(self.dir.metadata.get(dir))
             dir_info['album_picture'] = os.path.join(dir,
                                                      WebalbumPicture.FILENAME)
@@ -281,8 +282,8 @@ class WebalbumIndexPage(WebalbumPage):
         title = values['rel_path']
         if title == "":
             # Easy title for root directory
-            title = os.path.basename(self.dir.path)
-        values['title'] = title.replace('_', ' ')
+            title = self.dir.human_name
+        values['title'] = title
 
         self.page_template.dump(values, self.page_path)
 
@@ -298,7 +299,7 @@ class LightWebalbumDir(make.FileMakeObject):
         self.add_dependency(self.source_dir)
         self.subdirs = subdirs
         self.album = album
-        self.human_name = self.source_dir.name.replace('_', ' ')
+        self.human_name = self.album._str_humanize(self.source_dir.name)
 
         self.images_names = []
         for filename in self.source_dir.filenames:
