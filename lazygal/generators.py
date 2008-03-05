@@ -247,7 +247,6 @@ class WebalbumIndexPage(WebalbumPage):
         self.subdirs = dir.subdirs
         for subdir in self.subdirs:
             self.add_dependency(subdir)
-            self.add_dependency(WebalbumPicture(subdir))
 
         self.page_template = self.dir.album.templates['dirindex.thtml']
         self.add_file_dependency(self.page_template.path)
@@ -367,6 +366,8 @@ class WebalbumDir(LightWebalbumDir):
 
         for size_name in self.album.browse_sizes.keys():
             self.add_dependency(WebalbumIndexPage(self, size_name))
+
+        self.add_dependency(WebalbumPicture(self))
 
     def prepare(self):
         self.images.sort(lambda x, y: x.compare_date_taken(y))
