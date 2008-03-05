@@ -671,7 +671,13 @@ class Album:
         dir_heap = {}
         for root, dirnames, filenames in os.walk(self.source_dir,
                                                  topdown=False):
+
             dir = sourcetree.Directory(root, dirnames, filenames, self)
+
+            if dir.should_be_skipped():
+                self.log("(%s) has been skipped" % dir.path)
+                continue
+
             self.log("[Entering %%ALBUMROOT%%/%s]" % dir.strip_root(), 'info')
             self.log("(%s)" % dir.path)
 

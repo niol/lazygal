@@ -70,6 +70,17 @@ class File(make.FileSimpleDependency):
             rel_root = os.path.join('..', rel_root)
         return rel_root
 
+    SKIPPED_DIRS = ('.svn', '_darcs', '.bzr', '.git', '.hg', 'CVS', )
+
+    def should_be_skipped(self):
+        head = None
+        tail = self.strip_root()
+        while head != '':
+            head, tail = os.path.split(tail)
+            if tail in Directory.SKIPPED_DIRS:
+                return True
+        return False
+
 
 class ImageFile(File):
 
