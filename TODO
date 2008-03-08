@@ -5,8 +5,6 @@ Ideas to improve Lazygal (in no particular order)
   os.fork() would be a better alternative.
     Work to be done mostly in lazygal/make.py
 
-* Have WebalbumIndexPage depend on subdir metadata file.
-
 * Have some generic methods on LightWebalbumDir to provide metadata.
 
 * Add some styles to the default theme.

@@ -247,6 +247,7 @@ class WebalbumIndexPage(WebalbumPage):
         self.subdirs = dir.subdirs
         for subdir in self.subdirs:
             self.add_dependency(subdir)
+            self.add_dependency(subdir.metadata)
 
         self.page_template = self.dir.album.templates['dirindex.thtml']
         self.add_file_dependency(self.page_template.path)
