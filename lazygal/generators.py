@@ -681,6 +681,8 @@ class Album:
 
             if dir_heap.has_key(root):
                 subdirs = dir_heap[root]
+                subdirs.sort(lambda x, y: cmp(x.source_dir.name,
+                                              y.source_dir.name))
                 del dir_heap[root] # No need to keep it there
             else:
                 subdirs = []
