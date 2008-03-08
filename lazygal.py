@@ -17,7 +17,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import sys, os
+import sys, os, locale
 from optparse import OptionParser
 import genshi.core
 import ConfigParser
@@ -142,7 +142,9 @@ if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
     if config.has_section('template-vars'):
         for option in config.options('template-vars'):
-            tpl_vars[option] = genshi.core.Markup(config.get('template-vars', option))
+            value = config.get('template-vars', option)
+            value = value.decode(locale.getpreferredencoding())
+            tpl_vars[option] = genshi.core.Markup(value)
     if options.tpl_vars:
         tpl_vars_defs = options.tpl_vars.split(',')
         for single_def in tpl_vars_defs:
