@@ -278,13 +278,8 @@ class WebalbumIndexPage(WebalbumPage):
         values['images'] = map(self._gen_other_img_link, self.images)
 
         values['rel_root'] = self.dir.source_dir.rel_root()
-
         values['rel_path'] = self.dir.source_dir.strip_root()
-        title = values['rel_path']
-        if title == "":
-            # Easy title for root directory
-            title = self.dir.human_name
-        values['title'] = title
+        values['title'] = self.dir.human_name
 
         self.page_template.dump(values, self.page_path)
 
