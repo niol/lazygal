@@ -12,7 +12,3 @@ Ideas to improve Lazygal (in no particular order)
 * Delete half made stuff on KeyInterrupt
      Work to do to be mostly in lazygal/make.py but should uncover some bugs in
      output items computations.
-
-* Make it possible to use variables in template vars provided on the command
-  line.
-    Work to do in lazygal.py, lazygal/generators.py and perhaps lazygal/tpl.py
