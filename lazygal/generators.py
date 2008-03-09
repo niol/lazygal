@@ -87,7 +87,7 @@ class WebalbumPicture(make.FileMakeObject):
     FILENAME = 'index.png'
 
     def __init__(self, lightdir):
-        self.path = os.path.join(lightdir.path, self.FILENAME)
+        self.path = os.path.join(lightdir.path, WebalbumPicture.FILENAME)
         make.FileMakeObject.__init__(self, self.path)
         self.album = lightdir.album
 
