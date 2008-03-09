@@ -91,6 +91,8 @@ class WebalbumPicture(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
         self.album = lightdir.album
 
+        self.add_dependency(lightdir.source_dir)
+
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
         pics = map(lambda path: self.album._add_size_qualifier(path, 'thumb'),
