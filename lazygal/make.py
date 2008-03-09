@@ -44,7 +44,8 @@ class MakeObject:
 
     def needs_build(self):
         for dependency in self.deps:
-            if dependency.get_mtime() > self.get_mtime():
+            if dependency.get_mtime() > self.get_mtime()\
+            or dependency.needs_build():
                 return True
         return False
 
