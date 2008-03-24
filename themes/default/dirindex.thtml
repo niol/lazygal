@@ -63,7 +63,7 @@
 
 <div py:if="t.images" id="image_links">
     <p>
-        <a py:for="image in t.images" href="$image.link"><img src="$image.thumb" width="$image.width" height="$image.height" alt="$image.image_name thumb"/></a>
+        <a py:for="image in t.images" href="$image.link"><img src="$image.thumb" width="$image.thumb_width" height="$image.thumb_height" alt="$image.thumb thumb"/></a>
     </p>
 </div>
 
