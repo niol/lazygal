@@ -140,6 +140,8 @@ class WebalbumPage(make.FileMakeObject):
             link_vals['thumb_width'],\
                 link_vals['thumb_height'] = img.get_size(thumb)
 
+            link_vals['thumb_name'] = self.dir.album._str_humanize(img.name)
+
             return link_vals
         else:
             return None
