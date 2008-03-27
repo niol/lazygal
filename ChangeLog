@@ -1,3 +1,13 @@
+Lazygal 0.3.1
+  * set version to 0.3.1
+  * add a script that builds a changelog from the darcs history
+  * better description of touch instead of --check-all-dirs in man page
+  * fix thumb alt in dirindex
+  * fix thumb width/height not being outputed in dirindex
+  * if dep needs build, target should be built
+  * rebuild webalbumpic when pics get removed from dir
+  * use static var instead of instance var for configurable webalbumpic fn
+
 Lazygal 0.3
   * set version to 0.3
   * sort subdirs for nice ordering when displayed
