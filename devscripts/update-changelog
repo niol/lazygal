@@ -1,0 +1,13 @@
+#!/bin/bash
+# Small script to easily generate a ChangeLog from darcs changes.
+
+project=Lazygal
+
+DARCS=$(which darcs)
+AWK=$(which awk)
+
+repo=$(dirname $0)/..
+
+$DARCS changes --repo $repo |\
+    $AWK "/\ \ \*/ {print \$0} /\ \ tagged/ {print \"\n\" \"$project \" \$2}"\
+    > $repo/ChangeLog
