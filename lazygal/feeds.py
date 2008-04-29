@@ -77,7 +77,7 @@ class RSS20:
                              time.localtime(timestamp))
 
     def __item_older(self, x, y):
-        return y['timestamp'] - x['timestamp']
+        return int(y['timestamp'] - x['timestamp'])
 
     def push_item(self, title, link, contents, timestamp):
         item = {}
