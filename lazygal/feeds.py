@@ -96,7 +96,7 @@ class RSS20:
 
         pubdate = ET.SubElement(channel, 'pubDate' )
 
-        self.items.sort(lambda x,y: x['timestamp'] - y['timestamp'])
+        self.items.sort(lambda x,y: int(x['timestamp'] - y['timestamp']))
         for item in self.items:
             rssitem = ET.SubElement(channel, 'item')
             ET.SubElement(rssitem, 'title').text = item['title']
