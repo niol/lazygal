@@ -531,7 +531,7 @@ class SharedFiles(make.FileSimpleDependency):
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
-                 quality=85, debug=False):
+                 quality=85):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
