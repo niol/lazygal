@@ -237,18 +237,37 @@ class WebalbumBrowsePage(WebalbumPage):
 
 class WebalbumIndexPage(WebalbumPage):
 
-    def __init__(self, dir, size_name):
-        WebalbumPage.__init__(self, dir, size_name, 'index')
+    FILENAME_BASE_STRING = 'index'
 
-        self.images = dir.images
+    def __init__(self, dir, size_name, page_number=0):
+        page_paginated_name = self._get_paginated_name(page_number)
+        WebalbumPage.__init__(self, dir, size_name, page_paginated_name)
+
+        self.page_number = page_number
+
+        if self.dir.album.thumbs_per_page == 0:
+            # No pagination
+            self.images = dir.images
+            self.dirnames = dir.source_dir.dirnames
+            self.subdirs = dir.subdirs
+        else:
+            step = self.page_number * self.dir.album.thumbs_per_page
+            self.images = dir.images[step:step+self.dir.album.thumbs_per_page]
+
+            # subgal links only for first page
+            if self.page_number == 0:
+                self.dirnames = dir.source_dir.dirnames
+                self.subdirs = dir.subdirs
+            else:
+                self.dirnames = []
+                self.subdirs = []
+
         for image in self.images:
             thumb_dep = ImageOtherSize(self.dir, image, 'thumb')
             self.add_dependency(thumb_dep)
             image_dep = WebalbumBrowsePage(self.dir, size_name, image)
             self.add_dependency(image_dep)
 
-        self.dirnames = dir.source_dir.dirnames
-        self.subdirs = dir.subdirs
         for subdir in self.subdirs:
             self.add_dependency(subdir)
             self.add_dependency(subdir.metadata)
@@ -258,6 +277,33 @@ class WebalbumIndexPage(WebalbumPage):
 
         self.add_dependency(dir.metadata)
 
+    def _get_paginated_name(self, page_number=None):
+        if page_number == None:
+            page_number = self.page_number
+        assert page_number != None
+
+        if page_number < 1:
+            return WebalbumIndexPage.FILENAME_BASE_STRING
+        else:
+            return '_'.join([WebalbumIndexPage.FILENAME_BASE_STRING,
+                             str(page_number)])
+
+    def _get_onum_links(self):
+        onum_index_links = []
+        for onum in range(0, self.dir.how_many_pages):
+            onum_info = {}
+            if onum == self.page_number:
+                # No link if we're on the current page
+                onum_info['name'] = onum
+            else:
+                onum_info['name'] = onum
+                filename = self._get_paginated_name(onum)
+                onum_info['link'] = self._add_size_qualifier(filename + '.html',
+                                                             self.size_name)
+            onum_index_links.append(onum_info)
+
+        return onum_index_links
+
     def build(self):
         self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
                            'info')
@@ -265,7 +311,8 @@ class WebalbumIndexPage(WebalbumPage):
 
         values = {}
 
-        values['osize_index_links'] = self._get_osize_links('index')
+        values['osize_index_links'] = self._get_osize_links(self._get_paginated_name())
+        values['onum_index_links'] = self._get_onum_links()
 
         subgal_links = []
         for subdir in self.subdirs:
@@ -365,8 +412,23 @@ class WebalbumDir(LightWebalbumDir):
                                       album),
                                       self.images_names)
 
+        self.how_many_pages = None
+        if self.album.thumbs_per_page == 0\
+        or self.image_count <= self.album.thumbs_per_page:
+            # No pagination (requested or needed)
+            self.how_many_pages = 1
+        else:
+            # Pagination requested and needed
+            how_many_pages = self.image_count / self.album.thumbs_per_page
+            if self.image_count % self.album.thumbs_per_page > 0:
+                how_many_pages = how_many_pages + 1
+            assert how_many_pages > 1
+            self.how_many_pages = how_many_pages
+
         for size_name in self.album.browse_sizes.keys():
-            self.add_dependency(WebalbumIndexPage(self, size_name))
+            for page_number in range(0, self.how_many_pages):
+                self.add_dependency(WebalbumIndexPage(self, size_name,
+                                                      page_number))
 
         self.add_dependency(WebalbumPicture(self))
 
@@ -531,7 +593,7 @@ class SharedFiles(make.FileSimpleDependency):
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
-                 quality=85):
+                 quality=85, thumbs_per_page=0):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
@@ -545,6 +607,7 @@ class Album:
         self.tpl_loader = None
         self.tpl_vars = {}
         self.original = False
+        self.thumbs_per_page = thumbs_per_page
 
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme

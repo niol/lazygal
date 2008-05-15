@@ -36,6 +36,14 @@
     </py:for>
 </p>
 
+<p py:if="len(t.onum_index_links) > 1">
+    <py:for each="i, onum_index_link in enumerate(t.onum_index_links)">
+        <a py:strip="not onum_index_link.link"
+           href="$onum_index_link.link">$onum_index_link.name</a>
+        <py:if test="i != len(t.onum_index_links)-1"> | </py:if>
+    </py:for>
+</p>
+
 <div id="subgal_links">
     <div py:for="subgal_link in t.subgal_links" class="subgal_link">
         <div py:if="subgal_link.album_picture" class="subgal_image">

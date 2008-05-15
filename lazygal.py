@@ -34,6 +34,7 @@ CONFIGDEFAULTS = {
     'thumbnail-size': '150x113',
     'quality': '85',
     'template-vars': '',
+    'thumbs-per-page': '0',
 }
 
 # Read configuration file
@@ -112,6 +113,11 @@ parser.add_option("-m", "--generate-metadata",
                   action="store_true",
                   dest="metadata", default=False,
                   help="Generate metadata description files where they don't exist.")
+parser.add_option("-n", "--thumbs-per-page",
+                  action="store", type="int",
+                  dest="thumbs_per_page",
+                  default=config.get('lazygal', 'thumbs-per-page'),
+                  help="Maximum number of thumbs per index page. This enables index pagination (0 is unlimited).")
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -136,7 +142,8 @@ for single_def in size_defs:
 x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
-album = Album(source_dir, thumbnail, sizes, quality=options.quality)
+album = Album(source_dir, thumbnail, sizes, quality=options.quality,
+              thumbs_per_page=options.thumbs_per_page)
 
 if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
