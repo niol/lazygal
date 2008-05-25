@@ -19,8 +19,7 @@ import os, re
 
 
 __all__ = [
-        'EXIF',
-        'lazygal',
+        'generators',
         ]
 
 def get_darcs_lastdate():
