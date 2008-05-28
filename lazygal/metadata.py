@@ -233,7 +233,7 @@ class ExifTags(pyexiv2.Image):
 
         flen35 = self.get_exif_float('Exif.Photo.FocalLengthIn35mmFilm')
         if flen35 != '':
-            flen += ' (35 mm equivalent: %s mm)' % flen35
+            flen += _(' (35 mm equivalent: %s mm)') % flen35
             return flen
 
         try:
@@ -256,7 +256,8 @@ class ExifTags(pyexiv2.Image):
 
             foclength = self.get_exif_float_value('Exif.Photo.FocalLength')
 
-            flen += ' (35 mm equivalent: %.01f mm)' % (foclength / ccdwidth * 36 + 0.5)
+            flen += _(' (35 mm equivalent: %.01f mm)')\
+                    % (foclength / ccdwidth * 36 + 0.5)
         except (IndexError, KeyError):
             return flen
 
@@ -293,7 +294,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
             path = os.path.join(self.directory_path, subdir, MATEW_METADATA)
 
         if path is None or not os.path.exists(path):
-            raise NoMetadata('Could not open metadata file (%s)' % path)
+            raise NoMetadata(_('Could not open metadata file (%s)' % path))
 
         f = file(path, 'r')
         for line in f:
@@ -342,7 +343,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
         Generates new metadata file with default values.
         '''
 
-        self.dir.album.log("GEN %s" %
+        self.dir.album.log(_("GEN %s") %
                 self.description_filename, 'info')
 
         md = self.get()

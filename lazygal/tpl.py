@@ -69,7 +69,7 @@ class TplFactory(TemplateLoader):
                 tpl.common_values = {}
             return tpl
         else:
-            raise ValueError('Unknown template type')
+            raise ValueError(_('Unknown template type'))
 
 
 # vim: ts=4 sw=4 expandtab

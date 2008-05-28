@@ -16,8 +16,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, glob, sys, string
+import locale
 import Image
 
+import __init__
 from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
 
 
@@ -25,7 +27,7 @@ DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 if not os.path.exists(os.path.join(DATAPATH, 'themes')):
     DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
     if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-        print 'Could not find themes dir, check your installation!'
+        print _('Could not find themes dir, check your installation!')
 
 THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
@@ -110,7 +112,7 @@ class WebalbumPicture(make.FileMakeObject):
         self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb)
 
     def build(self):
-        self.album.log("  DIRPIC %s" % os.path.basename(self.path), 'info')
+        self.album.log(_("  DIRPIC %s") % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
         self.dirpic.write(self.path)
 
@@ -191,7 +193,7 @@ class WebalbumBrowsePage(WebalbumPage):
                 self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
 
     def build(self):
-        self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
+        self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
                            'info')
         self.dir.album.log("(%s)" % self.page_path)
 
@@ -209,7 +211,10 @@ class WebalbumBrowsePage(WebalbumPage):
             tpl_values['img_height'] = self.image.get_size(browse_image_path)
 
         img_date = self.image.get_date_taken()
-        tpl_values['image_date'] = img_date.strftime("on %d/%m/%Y at %H:%M")
+        # strftime does not work with utf-8...
+        time_format = _("on %d/%m/%Y at %H:%M").encode(locale.getpreferredencoding())
+        time_str = img_date.strftime(time_format)
+        tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
 
         tpl_values['prev_link'] =\
             self._gen_other_img_link(self.image.previous_image)
@@ -305,7 +310,7 @@ class WebalbumIndexPage(WebalbumPage):
         return onum_index_links
 
     def build(self):
-        self.dir.album.log("  XHTML %s" % os.path.basename(self.page_path),
+        self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
                            'info')
         self.dir.album.log("(%s)" % self.page_path)
 
@@ -353,7 +358,7 @@ class LightWebalbumDir(make.FileMakeObject):
             if self.album._is_ext_supported(filename):
                 self.images_names.append(filename)
             elif not filename == metadata.MATEW_METADATA:
-                self.album.log("  Ignoring %s, format not supported."\
+                self.album.log(_("  Ignoring %s, format not supported.")\
                                % filename, 'info')
                 self.album.log("(%s)" % os.path.join(self.source_dir.path,
                                                      filename))
@@ -402,7 +407,7 @@ class WebalbumDir(LightWebalbumDir):
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
-            self.album.log("  MKDIR %%WEBALBUMROOT%%/%s"\
+            self.album.log(_("  MKDIR %%WEBALBUMROOT%%/%s")\
                            % self.source_dir.strip_root(), 'info')
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
@@ -465,8 +470,8 @@ class WebalbumDir(LightWebalbumDir):
                         os.unlink(rmv_candidate)
                         text = ""
                     else:
-                        text = "you should "
-                    self.album.log("  %sRM %s" % (text, dest_file), 'info')
+                        text = _("you should ")
+                    self.album.log(_("  %sRM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
         make.FileMakeObject.make(self, force)
@@ -520,7 +525,7 @@ class WebalbumFeed(make.FileMakeObject):
                             webalbumdir.source_dir.get_mtime())
 
     def build(self):
-        self.album.log("FEED %s" % os.path.basename(self.path), 'info')
+        self.album.log(_("FEED %s") % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
         self.feed.dump(self.path)
 
@@ -532,7 +537,7 @@ class SharedFileCopy(make.FileCopy):
         self.album = album
 
     def build(self):
-        self.album.log("CP %%SHAREDDIR%%/%s" %\
+        self.album.log(_("CP %%SHAREDDIR%%/%s") %\
                        os.path.basename(self.dst), 'info')
         self.album.log("(%s)" % self.dst)
         make.FileCopy.build(self)
@@ -549,13 +554,13 @@ class SharedFileTemplate(make.FileMakeObject):
         if ext.startswith('.t'):
             self.path = filename + '.' + ext[2:]
         else:
-            raise ValueError('We have a template with an extension that does not start with a t. Abording.')
+            raise ValueError(_('We have a template with an extension that does not start with a t. Abording.'))
 
         make.FileMakeObject.__init__(self, self.path)
         self.add_file_dependency(shared_tpl_name)
 
     def build(self):
-        self.album.log("TPL %%SHAREDDIR%%/%s"\
+        self.album.log(_("TPL %%SHAREDDIR%%/%s")\
                        % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
         self.tpl.dump({}, self.path)
@@ -569,7 +574,7 @@ class SharedFiles(make.FileSimpleDependency):
 
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
-            album.log("MKDIR %SHAREDDIR%", 'info')
+            album.log(_("MKDIR %SHAREDDIR%"), 'info')
             album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
@@ -619,7 +624,7 @@ class Album:
             # Fallback to system themes
             self.tpl_dir = os.path.join(THEME_DIR, self.theme)
             if not os.path.exists(self.tpl_dir):
-                raise ValueError('Theme %s not found' % self.theme)
+                raise ValueError(_('Theme %s not found') % self.theme)
 
         self.tpl_loader = tpl.TplFactory([self.tpl_dir])
         self.tpl_vars.update({'styles' : self.get_avail_styles(self.theme,
@@ -704,18 +709,19 @@ class Album:
         '''
         Generate default metada files if no exists.
         '''
-        self.log("Generating metadata in %s" % self.source_dir)
+        self.log(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
             dir = sourcetree.Directory(root, dirnames, filenames, self)
-            self.log("[Entering %%ALBUMROOT%%/%s]" % dir.strip_root(), 'info')
+            self.log(_("[Entering %%ALBUMROOT%%/%s]") % dir.strip_root(),
+                     'info')
             self.log("(%s)" % dir.path)
 
             md = metadata.DirectoryMetadata(dir)
 
             md_data = md.get()
             if 'album_description' in md_data.keys() or 'album_name' in md_data.keys():
-                self.log("  SKIPPED because metadata exists.")
+                self.log(_("  SKIPPED because metadata exists."))
             else:
                 md.generate()
 
@@ -724,9 +730,9 @@ class Album:
         sane_dest_dir = os.path.abspath(dest_dir)
 
         if self.is_in_sourcetree(sane_dest_dir):
-            raise ValueError("Fatal error, web gallery directory is within source tree.")
+            raise ValueError(_("Fatal error, web gallery directory is within source tree."))
 
-        self.log("Generating to %s" % sane_dest_dir)
+        self.log(_("Generating to %s") % sane_dest_dir)
 
         if pub_url and feeds.HAVE_ETREE:
             feed = WebalbumFeed(self, sane_dest_dir, pub_url)
@@ -740,10 +746,11 @@ class Album:
             dir = sourcetree.Directory(root, dirnames, filenames, self)
 
             if dir.should_be_skipped():
-                self.log("(%s) has been skipped" % dir.path)
+                self.log(_("(%s) has been skipped") % dir.path)
                 continue
 
-            self.log("[Entering %%ALBUMROOT%%/%s]" % dir.strip_root(), 'info')
+            self.log(_("[Entering %%ALBUMROOT%%/%s]") % dir.strip_root(),
+                     'info')
             self.log("(%s)" % dir.path)
 
             if dir_heap.has_key(root):
@@ -774,7 +781,7 @@ class Album:
             if destgal.needs_build() or check_all_dirs:
                 destgal.make()
             else:
-                self.log("  SKIPPED because of mtime, touch source or use --check-all-dirs to override.")
+                self.log(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
         if feed:
             feed.make()

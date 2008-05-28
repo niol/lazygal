@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 # Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2008 Michal Čihař
+# Copyright (C) 2007-2008 Michal Čihař, Mickaël Royer
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,14 +17,57 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from distutils.core import setup
+from distutils.core import setup, Command
 import distutils.command.build_scripts
+import distutils.command.build
 import re
 import os
 import sys
 import glob
 import lazygal
 from stat import ST_MODE
+
+
+class build_i18n_lazygal(Command):
+    user_options = []
+    po_package = None
+    po_directory = None
+    po_files = None
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        self.po_directory = "locale"
+        self.po_package = "lazygal"
+        self.po_files = glob.glob(os.path.join(self.po_directory, "*.po"))
+
+    def run(self):
+        data_files = self.distribution.data_files
+
+        for po_file in self.po_files:
+            lang = os.path.basename(po_file[:-3])
+            mo_dir =  os.path.join("build", "mo", lang, "LC_MESSAGES")
+            mo_file = os.path.join(mo_dir, "%s.mo" % self.po_package)
+            if not os.path.exists(mo_dir):
+                os.makedirs(mo_dir)
+
+            cmd = ["msgfmt", po_file, "-o", mo_file]
+            self.spawn(cmd)
+
+            targetpath = os.path.join("share/locale", lang, "LC_MESSAGES")
+            data_files.append((targetpath, (mo_file,)))
+
+
+class build_lazygal(distutils.command.build.build):
+
+    def __has_i18n(self, command):
+        return self.distribution.cmdclass.has_key("build_i18n")
+
+    def finalize_options(self):
+        distutils.command.build.build.finalize_options(self)
+        self.sub_commands.append(("build_i18n", self.__has_i18n))
+
 
 # check if Python is called on the first line with this expression
 first_line_re = re.compile('^#!.*python[0-9.]*([ \t].*)?$')
@@ -152,7 +195,9 @@ setup(name = 'lazygal',
     scripts = ['lazygal.py'],
     # Override certain command classes with our own ones
     cmdclass = {
+        'build'        : build_lazygal,
         'build_scripts': build_scripts_lazygal,
+        'build_i18n'   : build_i18n_lazygal,
         },
     data_files = theme_data +
         [(os.path.join('share','man','man1'), ['lazygal.1'])]

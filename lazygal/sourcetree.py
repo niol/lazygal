@@ -47,7 +47,7 @@ class File(make.FileSimpleDependency):
             if head == self.album.source_dir:
                 found = True
             elif head == "/":
-                raise Exception("Root not found")
+                raise Exception(_("Root not found"))
             else:
                 head, tail = os.path.split(head)
                 if album_path == "":
