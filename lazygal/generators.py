@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, glob, sys, string
+import zipfile
 import locale
 import Image
 
@@ -115,6 +116,39 @@ class WebalbumPicture(make.FileMakeObject):
         self.album.log(_("  DIRPIC %s") % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
         self.dirpic.write(self.path)
+
+
+class WebalbumArchive(make.FileMakeObject):
+
+    def __init__(self, lightdir):
+        self.path = os.path.join(lightdir.path,
+                                 lightdir.source_dir.name + '.zip')
+        make.FileMakeObject.__init__(self, self.path)
+
+        self.dir = lightdir
+        self.album = self.dir.album
+
+        self.dir.dirzip = self
+
+        self.add_dependency(self.dir.source_dir)
+
+        self.pics = map(lambda x: os.path.join(self.dir.source_dir.path, x),
+                        self.dir.images_names)
+        for pic in self.pics:
+            self.add_file_dependency(pic)
+
+    def build(self):
+        self.album.log(_("  ZIP %s") % os.path.basename(self.path), 'info')
+        self.album.log("(%s)" % self.path)
+
+        archive = zipfile.ZipFile(self.path, mode='w')
+        for pic in self.pics:
+            inzip_filename = os.path.join(self.dir.source_dir.name,
+                                          os.path.basename(pic))
+            # zipfile dislikes unicode
+            inzip_fn = inzip_filename.encode(locale.getpreferredencoding())
+            archive.write(pic, inzip_fn)
+        archive.close()
 
 
 class WebalbumPage(make.FileMakeObject):
@@ -337,6 +371,9 @@ class WebalbumIndexPage(WebalbumPage):
         values['rel_path'] = self.dir.source_dir.strip_root()
         values['title'] = self.dir.human_name
 
+        if self.dir.album.dirzip and self.dir.dirzip:
+            values['dirzip'] = os.path.basename(self.dir.dirzip.path)
+
         self.page_template.dump(values, self.page_path)
 
 
@@ -381,6 +418,8 @@ class LightWebalbumDir(make.FileMakeObject):
             self.album_picture = md['album_picture']
         else:
             self.album_picture = None
+
+        self.dirzip = None
 
     def get_all_images_paths(self):
         all_images_paths = map(lambda fn: os.path.join(self.path, fn),
@@ -436,6 +475,8 @@ class WebalbumDir(LightWebalbumDir):
                                                       page_number))
 
         self.add_dependency(WebalbumPicture(self))
+        if self.album.dirzip and self.image_count > 1:
+            self.add_dependency(WebalbumArchive(self))
 
     def prepare(self):
         self.images.sort(lambda x, y: x.compare_date_taken(y))
@@ -598,7 +639,7 @@ class SharedFiles(make.FileSimpleDependency):
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
-                 quality=85, thumbs_per_page=0):
+                 quality=85, thumbs_per_page=0, dirzip=False):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
@@ -613,6 +654,7 @@ class Album:
         self.tpl_vars = {}
         self.original = False
         self.thumbs_per_page = thumbs_per_page
+        self.dirzip = dirzip
 
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme

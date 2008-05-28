@@ -75,6 +75,10 @@
     </p>
 </div>
 
+<div class="footer" py:if="t.dirzip">
+    <a href="$t.dirzip">All full scale picture as an archive, for "$t.title".</a>
+</div>
+
 <div class="footer" py:if="t.footer" py:content="t.footer">
 </div>
 

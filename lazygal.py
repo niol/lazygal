@@ -130,6 +130,10 @@ parser.add_option("-n", "--thumbs-per-page",
                   dest="thumbs_per_page",
                   default=config.get('lazygal', 'thumbs-per-page'),
                   help=_("Maximum number of thumbs per index page. This enables index pagination (0 is unlimited)."))
+parser.add_option("-z", "--make-dir-zip",
+                  action="store_true",
+                  dest="dirzip", default=False,
+                  help=_("Make a zip archive of original pictures for each directory."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -155,7 +159,8 @@ x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
 album = Album(source_dir, thumbnail, sizes, quality=options.quality,
-              thumbs_per_page=options.thumbs_per_page)
+              thumbs_per_page=options.thumbs_per_page,
+              dirzip=options.dirzip)
 
 if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
