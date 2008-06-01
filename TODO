@@ -12,3 +12,11 @@ Ideas to improve Lazygal (in no particular order)
 * Delete half made stuff on KeyInterrupt
      Work to do to be mostly in lazygal/make.py but should uncover some bugs in
      output items computations.
+
+* Video support with embedded flash player.
+     - include a flash video player (maybe http://flowplayer.org/)
+     - convert videos in flv, and point the player in generated pages to
+       this converted video.
+
+* Add a command line option for the background color of gallery images, which
+  would make pngs only if transparency is requested, jpegs otherwise.
