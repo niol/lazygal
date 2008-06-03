@@ -502,6 +502,9 @@ class WebalbumDir(LightWebalbumDir):
 
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
+            if not isinstance(dest_file, unicode):
+                # No clue why this happens, but it happens!
+                dest_file = dest_file.decode(sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
                dest_file not in self.source_dir.dirnames:
                 text = ''
