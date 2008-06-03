@@ -19,28 +19,42 @@ import os, time
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 import __init__
 
-class LazygalTemplate:
 
-    def dump(self, values, dest):
+class LazygalTemplate(object):
+
+    def __complement_values(self, values):
         values.update(self.common_values)
         values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M %Z")
         values['lazygal_version'] = __init__.__version__
+        return values
+
+    def instanciate(self, values):
+        self.__complement_values(values)
+        # encoding=None gives us a unicode string instead of an utf-8 encoded
+        # string. This is because we are not out of lazygal yet.
+        return self.generate(t=values).render(self.serialization_method,
+                                              encoding=None)
+
+    def dump(self, values, dest):
+        self.__complement_values(values)
 
         page = open(dest, 'w')
-        page.write(self.instanciate(values))
+        # FIXME : use new out paramater when it is available
+        # (python-genshi >= 0.5).
+        #self.generate(t=values).render(method=self.serialization_method,
+        #                               out=page, encoding='utf-8')
+        page.write(self.instanciate(values).encode('utf-8'))
         page.close()
 
 
 class XmlTemplate(LazygalTemplate, MarkupTemplate):
 
-    def instanciate(self, values):
-        return self.generate(t=values).render('xhtml')
+    serialization_method = 'xhtml'
 
 
 class PlainTemplate(LazygalTemplate, TextTemplate):
 
-    def instanciate(self, values):
-        return self.generate(t=values).render()
+    serialization_method = 'text'
 
 
 class TplFactory(TemplateLoader):
