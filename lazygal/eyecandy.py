@@ -31,7 +31,7 @@ class PictureMess:
     THUMB_MAX_ROTATE_ANGLE = 40
     THUMB_SIZE = [3*max(RESULT_SIZE)/5 for i in range(2)]
 
-    def __init__(self, images_paths, top_image_path=None):
+    def __init__(self, images_paths, top_image_path=None, bg='transparent'):
         random.seed(time.time())
         if len(images_paths) > self.THUMB_HOW_MANY:
             self.images_paths = random.sample(images_paths, self.THUMB_HOW_MANY)
@@ -44,6 +44,8 @@ class PictureMess:
             else:
                 self.images_paths.pop()
             self.images_paths.append(top_image_path)
+
+        self.bg = bg != 'transparent' and bg or Color.TRANSPARENT
 
         self.picture_mess = None
 
@@ -94,8 +96,7 @@ class PictureMess:
         self.picture_mess.paste(img, self.__place_thumb_box(img), mask=img)
 
     def __build_picture_mess(self):
-        self.picture_mess = Image.new("RGBA", self.RESULT_SIZE,
-                                              Color.TRANSPARENT)
+        self.picture_mess = Image.new("RGBA", self.RESULT_SIZE, self.bg)
         for image_path in self.images_paths:
             mess_thumb = self.__build_mess_thumb(image_path)
             self.__add_img_to_mess_top(mess_thumb)

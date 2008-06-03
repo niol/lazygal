@@ -35,6 +35,7 @@ CONFIGDEFAULTS = {
     'quality': '85',
     'template-vars': '',
     'thumbs-per-page': '0',
+    'webalbumpic-bg': 'transparent',
 }
 
 # i18n
@@ -134,6 +135,11 @@ parser.add_option("-z", "--make-dir-zip",
                   action="store_true",
                   dest="dirzip", default=False,
                   help=_("Make a zip archive of original pictures for each directory."))
+parser.add_option("", "--webalbum-pic-bg",
+                  action="store", type="string",
+                  dest="webalbumpic_bg",
+                  default=config.get('lazygal', 'webalbumpic-bg'),
+                  help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -179,6 +185,7 @@ if options.tpl_vars or config.has_section('template-vars'):
 
 album.set_theme(options.theme, options.default_style)
 album.set_original(options.original)
+album.set_webalbumpic(bg=options.webalbumpic_bg)
 
 log_level = None
 if options.quiet:

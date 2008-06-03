@@ -87,12 +87,13 @@ class ImageOtherSize(make.FileMakeObject):
 
 class WebalbumPicture(make.FileMakeObject):
 
-    FILENAME = 'index.png'
+    BASEFILENAME = 'index'
 
     def __init__(self, lightdir):
-        self.path = os.path.join(lightdir.path, WebalbumPicture.FILENAME)
-        make.FileMakeObject.__init__(self, self.path)
         self.album = lightdir.album
+        self.path = os.path.join(lightdir.path,
+                                 self.album.get_webalbumpic_filename())
+        make.FileMakeObject.__init__(self, self.path)
 
         self.add_dependency(lightdir.source_dir)
 
@@ -110,7 +111,8 @@ class WebalbumPicture(make.FileMakeObject):
             md_dirpic_thumb = os.path.join(lightdir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None
-        self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb)
+        self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb,
+                                           bg=self.album.webalbumpic_bg)
 
     def build(self):
         self.album.log(_("  DIRPIC %s") % os.path.basename(self.path), 'info')
@@ -359,7 +361,7 @@ class WebalbumIndexPage(WebalbumPage):
                         'link': subdir.source_dir.name + '/'}
             dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
             dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
-                                                     WebalbumPicture.FILENAME)
+                                     self.dir.album.get_webalbumpic_filename())
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         if self.dir.metadata:
@@ -559,7 +561,7 @@ class WebalbumFeed(make.FileMakeObject):
 
         desc_values = {}
         desc_values['album_pic_path'] = os.path.join(url,
-                                                     WebalbumPicture.FILENAME)
+                                          self.album.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.subgal_count
         desc_values['picture_count'] = webalbumdir.image_count
         desc_values['desc'] = webalbumdir.desc
@@ -707,6 +709,16 @@ class Album:
 
     def set_original(self, original = False):
         self.original = original
+
+    def set_webalbumpic(self, bg='transparent'):
+        self.webalbumpic_bg = bg
+
+    def get_webalbumpic_filename(self):
+        if self.webalbumpic_bg == 'transparent':
+            ext = '.png' # JPEG does not have an alpha channel
+        else:
+            ext = '.jpg'
+        return WebalbumPicture.BASEFILENAME + ext
 
     log_levels = ['debug', 'info', 'error']
 
