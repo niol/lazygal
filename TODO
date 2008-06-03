@@ -1,5 +1,9 @@
 Ideas to improve Lazygal (in no particular order)
 
+* i18n in templates.
+    Work to be done in lazygal/tpl.py and devscripts/update-po .
+    See http://genshi.edgewall.org/wiki/Documentation/i18n.html
+
 * SMP support, perhaps using parallel python (http://www.parallelpython.com/)
   though not sure about its ability to transmit MakeObject.build. Perhaps
   os.fork() would be a better alternative.
