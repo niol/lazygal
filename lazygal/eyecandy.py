@@ -49,12 +49,12 @@ class PictureMess:
 
         self.picture_mess = None
 
-    def __frame(self, img, width=2):
+    def __frame(self, img, color='black', width=2):
         d = ImageDraw.Draw(img)
         w = width/2
         d.line(((w, w), (w, img.size[1]-w),
                 (img.size[0]-w, img.size[1]-w), (img.size[0]-w, w), (w, w), ),
-                fill='black', width=width)
+                fill=color, width=width)
         del d
 
     def __build_mess_thumb(self, image_path):
@@ -67,7 +67,8 @@ class PictureMess:
         or mt.size[1] > acceptable_working_size[1]:
             mt.thumbnail(map(lambda x: x*2, self.THUMB_SIZE), Image.ANTIALIAS)
 
-        self.__frame(mt)
+        self.__frame(mt, 'white', 5)
+        self.__frame(mt, 'black', 1)
 
         # Add an alpha channel to the pic
         if mt.mode != 'RGBA':
