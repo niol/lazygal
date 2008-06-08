@@ -148,7 +148,7 @@ class ExifTags(pyexiv2.Image):
         is not found.
         '''
         try:
-            return str(self[name])
+            return str(self[name]).strip('\0')
         except (IndexError, ValueError, KeyError):
             return ''
 
