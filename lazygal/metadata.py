@@ -199,11 +199,11 @@ class ExifTags(pyexiv2.Image):
                     raise ValueError
             except (ValueError, KeyError):
                 ret = self.get_jpeg_comment()
-        # Some programs include charset="Unicode" to indicate that field is in utf-8
-        if ret[:9] == 'charset="':
-            endcset = ret.find('"', 9)
-            cset = ret[9:endcset]
-            text = ret[endcset + 1:]
+        # This field can contain charset information
+        if ret.startswith('charset='):
+            csetfield, text = ret.split(' ', 1)
+            ignore, cset = csetfield.split('=')
+            cset = cset.strip('"')
             try:
                 if cset == 'Unicode':
                     ret = text.decode('utf-16')
