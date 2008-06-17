@@ -201,7 +201,9 @@ class ExifTags(pyexiv2.Image):
                 ret = self.get_jpeg_comment()
         # This field can contain charset information
         if ret.startswith('charset='):
-            csetfield, text = ret.split(' ', 1)
+            tokens = ret.split(' ')
+            csetfield = tokens[0]
+            text = ' '.join(tokens[1:])
             ignore, cset = csetfield.split('=')
             cset = cset.strip('"')
             try:
