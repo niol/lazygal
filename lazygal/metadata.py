@@ -206,17 +206,23 @@ class ExifTags(pyexiv2.Image):
             text = ' '.join(tokens[1:])
             ignore, cset = csetfield.split('=')
             cset = cset.strip('"')
+            if cset == 'Unicode':
+                encoding = 'utf-16'
+                # Traling zero is lost somewhere
+                text += '\x00'
+            elif cset == 'Ascii':
+                encoding = 'ascii'
+            elif cset == 'Jis':
+                encoding = 'shift_jis'
+            else:
+                # Fallback to utf-8 as this is mostly the default for Linux
+                # distributions.
+                encoding = 'utf-8'
+
             try:
-                if cset == 'Unicode':
-                    # Traling zero is lost somewhere
-                    text += '\x00'
-                    ret = text.decode('utf-16')
-                elif cset == 'Jis':
-                    ret = text.decode('shift_jis')
-                else:
-                    ret = text.decode(cset)
-            except UnicodeEncodeError:
-                ret = text
+                ret = text.decode(encoding)
+            except UnicodeDecodeError:
+                ret = text.decode(encoding, 'replace')
         return ret
 
     def get_flash(self):
