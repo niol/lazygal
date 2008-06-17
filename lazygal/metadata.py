@@ -199,6 +199,18 @@ class ExifTags(pyexiv2.Image):
                     raise ValueError
             except (ValueError, KeyError):
                 ret = self.get_jpeg_comment()
+        # Some programs include charset="Unicode" to indicate that field is in utf-8
+        if ret[:9] == 'charset="':
+            endcset = ret.find('"', 9)
+            cset = ret[9:endcset]
+            text = ret[endcset + 1:]
+            try:
+                if cset == 'Unicode':
+                    ret = text.decode('utf-8')
+                else:
+                    ret = text.decode(cset)
+            except UnicodeEncodeError:
+                ret = text
         return ret
 
     def get_flash(self):
