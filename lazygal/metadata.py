@@ -192,10 +192,14 @@ class ExifTags(pyexiv2.Image):
             ret = self.get_exif_string('Exif.Photo.UserComment')
             if ret == '':
                 raise ValueError
-            else:
-                return ret
         except (ValueError, KeyError):
-            return self.get_jpeg_comment()
+            try:
+                ret = self.get_exif_string('Exif.Image.ImageDescription')
+                if ret == '':
+                    raise ValueError
+            except (ValueError, KeyError):
+                ret = self.get_jpeg_comment()
+        return ret
 
     def get_flash(self):
         return self.get_exif_value('Exif.Photo.Flash')
