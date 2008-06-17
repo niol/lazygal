@@ -206,6 +206,8 @@ class ExifTags(pyexiv2.Image):
             cset = cset.strip('"')
             try:
                 if cset == 'Unicode':
+                    # Traling zero is lost somewhere
+                    text += '\x00'
                     ret = text.decode('utf-16')
                 elif cset == 'Jis':
                     ret = text.decode('shift_jis')
