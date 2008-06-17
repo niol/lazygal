@@ -206,7 +206,9 @@ class ExifTags(pyexiv2.Image):
             text = ret[endcset + 1:]
             try:
                 if cset == 'Unicode':
-                    ret = text.decode('utf-8')
+                    ret = text.decode('utf-16')
+                elif cset == 'Jis':
+                    ret = text.decode('shift_jis')
                 else:
                     ret = text.decode(cset)
             except UnicodeEncodeError:
