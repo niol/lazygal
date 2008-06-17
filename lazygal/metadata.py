@@ -176,11 +176,11 @@ class ExifTags(pyexiv2.Image):
         else:
             return float(val.numerator) / float(val.denominator)
 
-    def __fallback_to_utf8(self, encoded_string):
+    def __fallback_to_encoding(self, encoded_string, encoding='utf-8'):
         try:
-            return encoded_string.decode('utf-8')
+            return encoded_string.decode(encoding)
         except UnicodeDecodeError:
-            return encoded_string.decode('utf-8', 'replace')
+            return encoded_string.decode(encoding, 'replace')
 
     def get_jpeg_comment(self):
         '''
@@ -189,13 +189,41 @@ class ExifTags(pyexiv2.Image):
         '''
         im = Image.open(self.image_path)
         try:
-            return self.__fallback_to_utf8(im.app['COM'])
+            return self.__fallback_to_encoding(im.app['COM'])
         except KeyError:
             return ''
 
+    def get_exif_usercomment(self):
+        ret = self.get_exif_string('Exif.Photo.UserComment')
+        # This field can contain charset information
+        if ret.startswith('charset='):
+            tokens = ret.split(' ')
+            csetfield = tokens[0]
+            text = ' '.join(tokens[1:])
+            ignore, cset = csetfield.split('=')
+            cset = cset.strip('"')
+        else:
+            cset = None
+            text = ret
+
+        if cset == 'Unicode':
+            encoding = 'utf-16'
+            # Traling zero is lost somewhere
+            text += '\x00'
+        elif cset == 'Ascii':
+            encoding = 'ascii'
+        elif cset == 'Jis':
+            encoding = 'shift_jis'
+        else:
+            # Fallback to utf-8 as this is mostly the default for Linux
+            # distributions.
+            encoding = 'utf-8'
+
+        return self.__fallback_to_encoding(text, encoding)
+
     def get_comment(self):
         try:
-            ret = self.get_exif_string('Exif.Photo.UserComment')
+            ret = self.get_exif_usercomment()
             if ret == '':
                 raise ValueError
         except (ValueError, KeyError):
@@ -205,30 +233,6 @@ class ExifTags(pyexiv2.Image):
                     raise ValueError
             except (ValueError, KeyError):
                 ret = self.get_jpeg_comment()
-        # This field can contain charset information
-        if ret.startswith('charset='):
-            tokens = ret.split(' ')
-            csetfield = tokens[0]
-            text = ' '.join(tokens[1:])
-            ignore, cset = csetfield.split('=')
-            cset = cset.strip('"')
-            if cset == 'Unicode':
-                encoding = 'utf-16'
-                # Traling zero is lost somewhere
-                text += '\x00'
-            elif cset == 'Ascii':
-                encoding = 'ascii'
-            elif cset == 'Jis':
-                encoding = 'shift_jis'
-            else:
-                # Fallback to utf-8 as this is mostly the default for Linux
-                # distributions.
-                encoding = 'utf-8'
-
-            try:
-                ret = text.decode(encoding)
-            except UnicodeDecodeError:
-                ret = text.decode(encoding, 'replace')
         return ret
 
     def get_flash(self):
