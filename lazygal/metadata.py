@@ -176,6 +176,12 @@ class ExifTags(pyexiv2.Image):
         else:
             return float(val.numerator) / float(val.denominator)
 
+    def __fallback_to_utf8(self, encoded_string):
+        try:
+            return encoded_string.decode('utf-8')
+        except UnicodeDecodeError:
+            return encoded_string.decode('utf-8', 'replace')
+
     def get_jpeg_comment(self):
         '''
         Reads JPEG comment field, returns empty string if key is not
@@ -183,7 +189,7 @@ class ExifTags(pyexiv2.Image):
         '''
         im = Image.open(self.image_path)
         try:
-            return im.app['COM']
+            return self.__fallback_to_utf8(im.app['COM'])
         except KeyError:
             return ''
 
