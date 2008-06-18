@@ -148,7 +148,7 @@ class ExifTags(pyexiv2.Image):
         is not found.
         '''
         try:
-            return str(self[name]).strip('\0').strip(' ')
+            return str(self[name]).strip(' ')
         except (IndexError, ValueError, KeyError):
             return ''
 
@@ -207,9 +207,7 @@ class ExifTags(pyexiv2.Image):
             text = ret
 
         if cset == 'Unicode':
-            encoding = 'utf-16'
-            # Traling zero is lost somewhere
-            text += '\x00'
+            encoding = 'utf-16be'
         elif cset == 'Ascii':
             encoding = 'ascii'
         elif cset == 'Jis':
@@ -219,7 +217,7 @@ class ExifTags(pyexiv2.Image):
             # distributions.
             encoding = 'utf-8'
 
-        return self.__fallback_to_encoding(text, encoding)
+        return self.__fallback_to_encoding(text, encoding).strip('\0')
 
     def get_comment(self):
         try:
