@@ -196,6 +196,7 @@ class ExifTags(pyexiv2.Image):
     def get_exif_usercomment(self):
         ret = self.get_exif_string('Exif.Photo.UserComment')
         # This field can contain charset information
+        # FIXME : All this stuff should really go in pyexiv2.
         if ret.startswith('charset='):
             tokens = ret.split(' ')
             csetfield = tokens[0]
@@ -207,7 +208,15 @@ class ExifTags(pyexiv2.Image):
             text = ret
 
         if cset == 'Unicode':
-            encoding = 'utf-16be'
+            im = Image.open(self.image_path)
+            endian = im.app['APP1'][6:8]
+            if endian == 'MM':
+                encoding = 'utf-16be'
+            elif endian == 'II':
+                encoding = 'utf-16le'
+            else:
+                return ''
+
         elif cset == 'Ascii':
             encoding = 'ascii'
         elif cset == 'Jis':
