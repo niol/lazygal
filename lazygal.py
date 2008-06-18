@@ -152,7 +152,8 @@ if len(args) != 1:
 
 source_dir = args[0]
 if not os.path.isdir(source_dir):
-    sys.exit(_("Directory %s does not exist."), source_dir)
+    print _("Directory %s does not exist.") % source_dir
+    sys.exit(1)
 
 sizes = []
 size_defs = options.image_size.split(',')
