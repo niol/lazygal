@@ -32,6 +32,10 @@ class LazygalTemplate(object):
         self.__complement_values(values)
         # encoding=None gives us a unicode string instead of an utf-8 encoded
         # string. This is because we are not out of lazygal yet.
+        #
+        # We use here a 't' variable to hold all of the template values, which
+        # explains why every single template value is called with the '$t.'
+        # prefix.
         return self.generate(t=values).render(self.serialization_method,
                                               encoding=None)
 
