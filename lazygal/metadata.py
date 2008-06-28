@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, sys, datetime
+import os, sys, datetime, locale
 import pyexiv2, Image
 
 from lazygal import make
@@ -357,7 +357,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
-                    metadata[tag] = data.decode(sys.stdin.encoding)
+                    metadata[tag] = data.decode(locale.getpreferredencoding())
                     break
 
         return metadata
