@@ -43,7 +43,7 @@ class LazygalTemplate(object):
         self.__complement_values(values)
 
         page = open(dest, 'w')
-        # FIXME : use new out paramater when it is available
+        # FIXME : use new out parameter when it is available
         # (python-genshi >= 0.5).
         #self.generate(t=values).render(method=self.serialization_method,
         #                               out=page, encoding='utf-8')
