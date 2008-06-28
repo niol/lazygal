@@ -18,7 +18,9 @@
 import os, glob, sys, string
 import zipfile
 import locale
+
 import Image
+import genshi
 
 import __init__
 from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
@@ -203,6 +205,9 @@ class WebalbumPage(make.FileMakeObject):
     def _add_size_qualifier(self, path, size_name):
         return self.dir.album._add_size_qualifier(path, size_name)
 
+    def _do_not_escape(self, value):
+        return genshi.core.Markup(value)
+
 
 class WebalbumBrowsePage(WebalbumPage):
 
@@ -362,10 +367,16 @@ class WebalbumIndexPage(WebalbumPage):
             dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
             dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
                                      self.dir.album.get_webalbumpic_filename())
+            if 'album_description' in dir_info.keys():
+                dir_info['album_description'] =\
+                             self._do_not_escape(dir_info['album_description'])
             subgal_links.append(dir_info)
         values['subgal_links'] = subgal_links
         if self.dir.metadata:
             values.update(self.dir.metadata.get())
+            if 'album_description' in values.keys():
+                values['album_description'] =\
+                             self._do_not_escape(values['album_description'])
 
         values['images'] = map(self._gen_other_img_link, self.images)
 
