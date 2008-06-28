@@ -49,6 +49,12 @@ bgcolor = #202020
 txtcolor = #d0d0d0
 lnkdecoration = underline
 
+In this example, those are made available in the templates as $t.lnkcolor,
+$t.bgcolor, $t.txtcolor and $t.lnkdecoration .
+
+Those template variables may also be set on the command line using the
+--template-vars option.
+
 Specifying album meta data
 --------------------------
 
