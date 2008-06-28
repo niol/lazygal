@@ -339,7 +339,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
             path = os.path.join(self.directory_path, subdir, MATEW_METADATA)
 
         if path is None or not os.path.exists(path):
-            raise NoMetadata(_('Could not open metadata file (%s)' % path))
+            raise NoMetadata(_('Could not open metadata file %s') % path)
 
         f = file(path, 'r')
         for line in f:
