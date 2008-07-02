@@ -684,7 +684,7 @@ class Album:
             if not os.path.exists(self.tpl_dir):
                 raise ValueError(_('Theme %s not found') % self.theme)
 
-        self.tpl_loader = tpl.TplFactory([self.tpl_dir])
+        self.tpl_loader = tpl.TplFactory(self.tpl_dir)
         self.tpl_vars.update({'styles' : self.get_avail_styles(self.theme,
                                                                default_style)})
         self.set_tpl_vars()

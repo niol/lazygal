@@ -74,6 +74,13 @@ class TplFactory(TemplateLoader):
 
     common_values = None
 
+    def __init__(self, tpl_dir):
+        # We use lenient mode here because we want an easy way to check whether
+        # a template variable is defined, or the empty string, thus defined()
+        # will only work for the 'whether it is defined' part of the test.
+        super(TplFactory, self).__init__([tpl_dir],
+                                         variable_lookup='lenient')
+
     def set_common_values(self, values):
         self.common_values = values
 
