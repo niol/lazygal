@@ -36,8 +36,12 @@ class LazygalTemplate(object):
         # We use here a 't' variable to hold all of the template values, which
         # explains why every single template value is called with the '$t.'
         # prefix.
-        return self.generate(t=values).render(self.serialization_method,
-                                              encoding=None)
+        #
+        # The cryptic _=_ is the way to pass the gettext translation function
+        # to the templates : the _() callable is assigned to the '_' keyword
+        # arg.
+        return self.generate(t=values, _=_).render(self.serialization_method,
+                                                   encoding=None)
 
     def dump(self, values, dest):
         self.__complement_values(values)
