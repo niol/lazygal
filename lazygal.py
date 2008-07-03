@@ -23,7 +23,7 @@ import genshi.core
 import ConfigParser
 
 import lazygal
-from lazygal.generators import Album
+from lazygal.generators import Album, SOURCEDIR_CONFIGFILE
 
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
@@ -154,6 +154,11 @@ source_dir = args[0]
 if not os.path.isdir(source_dir):
     print _("Directory %s does not exist.") % source_dir
     sys.exit(1)
+
+# Load a config file in the source_dir root
+sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
+if os.path.isfile(sourcedir_configfile):
+    config.read(sourcedir_configfile)
 
 sizes = []
 size_defs = options.image_size.split(',')

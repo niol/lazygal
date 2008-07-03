@@ -37,6 +37,8 @@ USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
 
+SOURCEDIR_CONFIGFILE = '.lazygal'
+
 
 class ImageOriginal(make.FileCopy):
 
@@ -407,7 +409,8 @@ class LightWebalbumDir(make.FileMakeObject):
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
                 self.images_names.append(filename)
-            elif not filename == metadata.MATEW_METADATA:
+            elif filename not in (metadata.MATEW_METADATA,
+                                  SOURCEDIR_CONFIGFILE):
                 if self.__class__.__name__ != 'LightWebalbumDir':
                     self.album.log(_("  Ignoring %s, format not supported.")\
                                    % filename, 'info')

@@ -29,9 +29,14 @@ You can find more information about Lazygal at its website:
 Configuration
 -------------
 
-In addition to command line, you can specify parameters in configuration
-file placed as ~/.lazygal/config. This is INI like formatted file, where
-you can specify most of parameters same as on command line. Example:
+In addition to command line, you can specify parameters in configuration files.
+Configuration files are looked up as follows, the next taking precedence for already declared variables over the previous :
+    1) Lazygals's defaults.
+    2) ~/.lazygal/config
+    3) %SOURCE_DIR/.lazygal
+    4) command line.
+
+Example configuration file :
 
 [lazygal]
 theme = image-index
