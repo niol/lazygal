@@ -28,11 +28,7 @@ class LazygalTemplate(object):
         values['lazygal_version'] = __init__.__version__
         return values
 
-    def instanciate(self, values):
-        self.__complement_values(values)
-        # encoding=None gives us a unicode string instead of an utf-8 encoded
-        # string. This is because we are not out of lazygal yet.
-        #
+    def __generate(self, values):
         # We use here a 't' variable to hold all of the template values, which
         # explains why every single template value is called with the '$t.'
         # prefix.
@@ -40,18 +36,22 @@ class LazygalTemplate(object):
         # The cryptic _=_ is the way to pass the gettext translation function
         # to the templates : the _() callable is assigned to the '_' keyword
         # arg.
-        return self.generate(t=values, _=_).render(self.serialization_method,
-                                                   encoding=None)
+        return self.generate(t=values, _=_)
+
+
+    def instanciate(self, values):
+        self.__complement_values(values)
+        # encoding=None gives us a unicode string instead of an utf-8 encoded
+        # string. This is because we are not out of lazygal yet.
+        return self.__generate(values).render(self.serialization_method,
+                                              encoding=None)
 
     def dump(self, values, dest):
         self.__complement_values(values)
 
         page = open(dest, 'w')
-        # FIXME : use new out parameter when it is available
-        # (python-genshi >= 0.5).
-        #self.generate(t=values).render(method=self.serialization_method,
-        #                               out=page, encoding='utf-8')
-        page.write(self.instanciate(values).encode('utf-8'))
+        self.__generate(values).render(method=self.serialization_method,
+                                       out=page, encoding='utf-8')
         page.close()
 
 
