@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-04 00:20+0200\n"
+"POT-Creation-Date: 2008-07-04 00:53+0200\n"
 "PO-Revision-Date: 2008-07-03 11:50+0200\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -132,103 +132,103 @@ msgstr "Kořenový adresář nebyl nalezen"
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
 
-#: ../lazygal/generators.py:120
+#: ../lazygal/generators.py:122
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  ADROBR %s"
 
-#: ../lazygal/generators.py:145
+#: ../lazygal/generators.py:147
 #, python-format
 msgid "  ZIP %s"
 msgstr "  ZIP %s"
 
-#: ../lazygal/generators.py:237 ../lazygal/generators.py:354
+#: ../lazygal/generators.py:239 ../lazygal/generators.py:356
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
 #. strftime does not work with utf-8...
-#: ../lazygal/generators.py:256
+#: ../lazygal/generators.py:258
 msgid "on %d/%m/%Y at %H:%M"
 msgstr ""
 
-#: ../lazygal/generators.py:411
+#: ../lazygal/generators.py:415
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr ""
 
-#: ../lazygal/generators.py:462
+#: ../lazygal/generators.py:466
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:530
+#: ../lazygal/generators.py:534
 msgid "you should "
 msgstr "měli byste"
 
-#: ../lazygal/generators.py:531
+#: ../lazygal/generators.py:535
 #, python-format
 msgid "  %sRM %s"
 msgstr "  %sRM %s"
 
-#: ../lazygal/generators.py:585
+#: ../lazygal/generators.py:589
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/generators.py:597
+#: ../lazygal/generators.py:601
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/generators.py:614
+#: ../lazygal/generators.py:618
 msgid ""
 "We have a template with an extension that does not start with a t. Abording."
 msgstr ""
 
-#: ../lazygal/generators.py:620
+#: ../lazygal/generators.py:624
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "ŠAB %%SHAREDDIR%%/%s"
 
-#: ../lazygal/generators.py:634
+#: ../lazygal/generators.py:638
 msgid "MKDIR %SHAREDDIR%"
 msgstr "MKDIR %SHAREDDIR%"
 
-#: ../lazygal/generators.py:685
+#: ../lazygal/generators.py:689
 #, python-format
 msgid "Theme %s not found"
 msgstr "Téma %s nebylo nalezeno"
 
-#: ../lazygal/generators.py:780
+#: ../lazygal/generators.py:784
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Vytvářím metadata v %s"
 
-#: ../lazygal/generators.py:784 ../lazygal/generators.py:820
+#: ../lazygal/generators.py:788 ../lazygal/generators.py:824
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Vstupuji do %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:792
+#: ../lazygal/generators.py:796
 msgid "  SKIPPED because metadata exists."
 msgstr ""
 
-#: ../lazygal/generators.py:801
+#: ../lazygal/generators.py:805
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 
-#: ../lazygal/generators.py:803
+#: ../lazygal/generators.py:807
 #, python-format
 msgid "Generating to %s"
 msgstr "Generuji do %s"
 
-#: ../lazygal/generators.py:817
+#: ../lazygal/generators.py:821
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) byl přeskočen"
 
-#: ../lazygal/generators.py:852
+#: ../lazygal/generators.py:856
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
