@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-05-27 15:42+0200\n"
+"POT-Creation-Date: 2008-07-03 11:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,96 +16,107 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:55
+#: ../lazygal.py:56
 msgid "usage: %prog [options] albumdir"
 msgstr ""
 
-#: ../lazygal.py:59
+#. The help option must be changed to comply with i18n.
+#: ../lazygal.py:60
 msgid "Show this help message and exit."
 msgstr ""
 
-#: ../lazygal.py:63
+#: ../lazygal.py:65
 msgid "Don't output anything except for errors."
 msgstr ""
 
-#: ../lazygal.py:67
+#: ../lazygal.py:69
 msgid "Output everything that lazygal is doing."
 msgstr ""
 
-#: ../lazygal.py:71
+#: ../lazygal.py:73
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
 msgstr ""
 
-#: ../lazygal.py:76
+#: ../lazygal.py:78
 msgid "Theme name (looked up in theme directory) or theme full path."
 msgstr ""
 
-#: ../lazygal.py:81
+#: ../lazygal.py:83
 msgid "Default style to apply to the theme."
 msgstr ""
 
-#: ../lazygal.py:86
+#: ../lazygal.py:88
 msgid "Common variables to load all templates with."
 msgstr ""
 
-#: ../lazygal.py:91
+#: ../lazygal.py:93
 msgid "Clean destination directory of files that should not be there."
 msgstr ""
 
-#: ../lazygal.py:95
+#: ../lazygal.py:97
 msgid "Display program version."
 msgstr ""
 
-#: ../lazygal.py:99
+#: ../lazygal.py:101
 msgid ""
 "Exhaustively go through all directories regardless of source modification "
 "time."
 msgstr ""
 
-#: ../lazygal.py:104
+#: ../lazygal.py:106
 msgid ""
 "Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,"
 "medium=1024x768."
 msgstr ""
 
-#: ../lazygal.py:109
+#: ../lazygal.py:111
 msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
 msgstr ""
 
-#: ../lazygal.py:114
+#: ../lazygal.py:116
 msgid "Quality of generated JPEG images (default is 85)."
 msgstr ""
 
-#: ../lazygal.py:118
+#: ../lazygal.py:120
 msgid "Include original photos in output."
 msgstr ""
 
-#: ../lazygal.py:122
+#: ../lazygal.py:124
 msgid "Publication URL (only usefull for feed generation)."
 msgstr ""
 
-#: ../lazygal.py:126
+#: ../lazygal.py:128
 msgid "Generate metadata description files where they don't exist."
 msgstr ""
 
-#: ../lazygal.py:131
+#: ../lazygal.py:133
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
 msgstr ""
 
-#: ../lazygal.py:135
+#: ../lazygal.py:137
+msgid "Make a zip archive of original pictures for each directory."
+msgstr ""
+
+#: ../lazygal.py:142
+msgid ""
+"Webalbum picture background color. Default is transparent, and implies the "
+"PNG format. Any other value, e.g. red, white, blue, uses JPEG."
+msgstr ""
+
+#: ../lazygal.py:146
 #, python-format
 msgid "lazygal version %s"
 msgstr ""
 
-#: ../lazygal.py:140
+#: ../lazygal.py:151
 msgid "Bad command line."
 msgstr ""
 
-#: ../lazygal.py:144
+#: ../lazygal.py:155
 #, python-format
 msgid "Directory %s does not exist."
 msgstr ""
@@ -114,125 +125,126 @@ msgstr ""
 msgid "Root not found"
 msgstr ""
 
-#: ../lazygal/generators.py:29
+#: ../lazygal/generators.py:33
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
 
-#: ../lazygal/generators.py:114
+#: ../lazygal/generators.py:120
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/generators.py:195 ../lazygal/generators.py:309
+#: ../lazygal/generators.py:145
+#, python-format
+msgid "  ZIP %s"
+msgstr ""
+
+#: ../lazygal/generators.py:237 ../lazygal/generators.py:354
 #, python-format
 msgid "  XHTML %s"
 msgstr ""
 
-#: ../lazygal/generators.py:213
+#. strftime does not work with utf-8...
+#: ../lazygal/generators.py:256
 msgid "on %d/%m/%Y at %H:%M"
 msgstr ""
 
-#: ../lazygal/generators.py:357
+#: ../lazygal/generators.py:411
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr ""
 
-#: ../lazygal/generators.py:406
+#: ../lazygal/generators.py:462
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:469
+#: ../lazygal/generators.py:530
 msgid "you should "
 msgstr ""
 
-#: ../lazygal/generators.py:470
+#: ../lazygal/generators.py:531
 #, python-format
 msgid "  %sRM %s"
 msgstr ""
 
-#: ../lazygal/generators.py:524
+#: ../lazygal/generators.py:585
 #, python-format
 msgid "FEED %s"
 msgstr ""
 
-#: ../lazygal/generators.py:536
+#: ../lazygal/generators.py:597
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:553
+#: ../lazygal/generators.py:614
 msgid ""
 "We have a template with an extension that does not start with a t. Abording."
 msgstr ""
 
-#: ../lazygal/generators.py:559
+#: ../lazygal/generators.py:620
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:573
+#: ../lazygal/generators.py:634
 msgid "MKDIR %SHAREDDIR%"
 msgstr ""
 
-#: ../lazygal/generators.py:623
+#: ../lazygal/generators.py:685
 #, python-format
 msgid "Theme %s not found"
 msgstr ""
 
-#: ../lazygal/generators.py:708
+#: ../lazygal/generators.py:780
 #, python-format
 msgid "Generating metadata in %s"
 msgstr ""
 
-#: ../lazygal/generators.py:712 ../lazygal/generators.py:748
+#: ../lazygal/generators.py:784 ../lazygal/generators.py:820
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr ""
 
-#: ../lazygal/generators.py:720
+#: ../lazygal/generators.py:792
 msgid "  SKIPPED because metadata exists."
 msgstr ""
 
-#: ../lazygal/generators.py:729
+#: ../lazygal/generators.py:801
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 
-#: ../lazygal/generators.py:731
+#: ../lazygal/generators.py:803
 #, python-format
 msgid "Generating to %s"
 msgstr ""
 
-#: ../lazygal/generators.py:745
+#: ../lazygal/generators.py:817
 #, python-format
 msgid "(%s) has been skipped"
 msgstr ""
 
-#: ../lazygal/generators.py:780
+#: ../lazygal/generators.py:852
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 
-#: ../lazygal/metadata.py:236
+#: ../lazygal/metadata.py:281 ../lazygal/metadata.py:305
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr ""
 
-#: ../lazygal/metadata.py:259
+#: ../lazygal/metadata.py:342
 #, python-format
-msgid " (35 mm equivalent: %.01f mm)"
+msgid "Could not open metadata file %s"
 msgstr ""
 
-#: ../lazygal/metadata.py:297
-#, python-format
-msgid "Could not open metadata file (%s)"
-msgstr ""
-
-#: ../lazygal/metadata.py:346
+#: ../lazygal/metadata.py:391
 #, python-format
 msgid "GEN %s"
 msgstr ""
 
-#: ../lazygal/tpl.py:72
+#: ../lazygal/tpl.py:101
 msgid "Unknown template type"
 msgstr ""
