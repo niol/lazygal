@@ -45,6 +45,8 @@ if not os.path.exists(LOCALES_PATH):
     LOCALES_PATH = '/usr/share/locale'
 gettext.install('lazygal', LOCALES_PATH, unicode=1)
 
+locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
+
 
 # Read configuration file
 config = ConfigParser.ConfigParser(defaults = CONFIGDEFAULTS)

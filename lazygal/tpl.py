@@ -24,7 +24,7 @@ class LazygalTemplate(object):
 
     def __complement_values(self, values):
         values.update(self.common_values)
-        values['gen_date'] = time.strftime("%A, %d %B %Y %H:%M %Z")
+        values['gen_date'] = time.strftime("%c")
         values['lazygal_version'] = __init__.__version__
         return values
 
