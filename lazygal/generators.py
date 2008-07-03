@@ -408,10 +408,11 @@ class LightWebalbumDir(make.FileMakeObject):
             if self.album._is_ext_supported(filename):
                 self.images_names.append(filename)
             elif not filename == metadata.MATEW_METADATA:
-                self.album.log(_("  Ignoring %s, format not supported.")\
-                               % filename, 'info')
-                self.album.log("(%s)" % os.path.join(self.source_dir.path,
-                                                     filename))
+                if self.__class__.__name__ != 'LightWebalbumDir':
+                    self.album.log(_("  Ignoring %s, format not supported.")\
+                                   % filename, 'info')
+                    self.album.log("(%s)" % os.path.join(self.source_dir.path,
+                                                         filename))
 
         self.image_count = len(self.images_names)
         self.subgal_count = len(self.subdirs)
