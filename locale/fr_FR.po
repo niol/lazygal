@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-04 00:53+0200\n"
+"POT-Creation-Date: 2008-07-04 01:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -16,24 +16,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:56
+#: ../lazygal.py:58
 msgid "usage: %prog [options] albumdir"
 msgstr "usage: %prog [options] albumdir"
 
 #. The help option must be changed to comply with i18n.
-#: ../lazygal.py:60
+#: ../lazygal.py:62
 msgid "Show this help message and exit."
 msgstr "Afficher ce message d'aide et quitter."
 
-#: ../lazygal.py:65
+#: ../lazygal.py:67
 msgid "Don't output anything except for errors."
 msgstr "N'afficher que les erreurs."
 
-#: ../lazygal.py:69
+#: ../lazygal.py:71
 msgid "Output everything that lazygal is doing."
 msgstr "Afficher tout ce que lazygal fait."
 
-#: ../lazygal.py:73
+#: ../lazygal.py:75
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
@@ -41,31 +41,31 @@ msgstr ""
 "Répertoire dans lequel les pages, les images et tles miniatures seront "
 "écrits (par défaut le répertoire courant)."
 
-#: ../lazygal.py:78
+#: ../lazygal.py:80
 msgid "Theme name (looked up in theme directory) or theme full path."
 msgstr ""
 "Identifiant du thème (utilisé dans le répertoire des thèmes) ou chemin "
 "complet d'un thème."
 
-#: ../lazygal.py:83
+#: ../lazygal.py:85
 msgid "Default style to apply to the theme."
 msgstr "Style par défaut à appliquer au thème."
 
-#: ../lazygal.py:88
+#: ../lazygal.py:90
 msgid "Common variables to load all templates with."
 msgstr "Variables communes avec lesquelles charger tous les modèles."
 
-#: ../lazygal.py:93
+#: ../lazygal.py:95
 msgid "Clean destination directory of files that should not be there."
 msgstr ""
 "Supprimer dans le répertoire de destination tous les fichiers qui ne doivent "
 "pas s'y trouver."
 
-#: ../lazygal.py:97
+#: ../lazygal.py:99
 msgid "Display program version."
 msgstr "Afficher la version du programme."
 
-#: ../lazygal.py:101
+#: ../lazygal.py:103
 msgid ""
 "Exhaustively go through all directories regardless of source modification "
 "time."
@@ -73,7 +73,7 @@ msgstr ""
 "Parcourir exhaustivement tous les répertoires sans examiner la date de "
 "modification du répertoire source."
 
-#: ../lazygal.py:106
+#: ../lazygal.py:108
 msgid ""
 "Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,"
 "medium=1024x768."
@@ -81,28 +81,28 @@ msgstr ""
 "Taille des images, à définir comme suit <name>=<x>x<y>,..., eg. "
 "small=800x600,medium=1024x768."
 
-#: ../lazygal.py:111
+#: ../lazygal.py:113
 msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
 msgstr "Taille des miniatures, à définir comme suit <x>x<y>, eg. 150x113."
 
-#: ../lazygal.py:116
+#: ../lazygal.py:118
 msgid "Quality of generated JPEG images (default is 85)."
 msgstr "Qualité des JPEG générés (85 par défaut)"
 
-#: ../lazygal.py:120
+#: ../lazygal.py:122
 msgid "Include original photos in output."
 msgstr "Copier les photos originales dans ce qui est produit."
 
-#: ../lazygal.py:124
+#: ../lazygal.py:126
 msgid "Publication URL (only usefull for feed generation)."
 msgstr ""
 "Adresse URL de publication (utilisé uniquement pour la génération du flux)."
 
-#: ../lazygal.py:128
+#: ../lazygal.py:130
 msgid "Generate metadata description files where they don't exist."
 msgstr "Générer les fichiers de description qui n'existent pas."
 
-#: ../lazygal.py:133
+#: ../lazygal.py:135
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
@@ -110,13 +110,13 @@ msgstr ""
 "Nombre maximum de miniatures par page d'index. Ceci active la pagination "
 "pour les index (0 correspond à sans limite)."
 
-#: ../lazygal.py:137
+#: ../lazygal.py:139
 msgid "Make a zip archive of original pictures for each directory."
 msgstr ""
 "Générer une archive zip contenant les images originales pour chaque "
 "répertoire."
 
-#: ../lazygal.py:142
+#: ../lazygal.py:144
 msgid ""
 "Webalbum picture background color. Default is transparent, and implies the "
 "PNG format. Any other value, e.g. red, white, blue, uses JPEG."
@@ -125,16 +125,16 @@ msgstr ""
 "transparente, ce qui implique le format PNG. Pour toutes autre valeur, par "
 "exemple red, white, blue, c'est le format JPEG qui est utilisé."
 
-#: ../lazygal.py:146
+#: ../lazygal.py:148
 #, python-format
 msgid "lazygal version %s"
 msgstr "lazygal version %s"
 
-#: ../lazygal.py:151
+#: ../lazygal.py:153
 msgid "Bad command line."
 msgstr "Mauvaise ligne de commande."
 
-#: ../lazygal.py:155
+#: ../lazygal.py:157
 #, python-format
 msgid "Directory %s does not exist."
 msgstr "La répertoire %s n'existe pas."
@@ -269,7 +269,7 @@ msgstr "Impossible d'ouvrir le fichier de description."
 msgid "GEN %s"
 msgstr "GEN %s"
 
-#: ../lazygal/tpl.py:98
+#: ../lazygal/tpl.py:101
 msgid "Unknown template type"
 msgstr "Type de modèle inconnu"
 

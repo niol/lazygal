@@ -1,3 +1,53 @@
+Lazygal 0.4
+  * set version to 0.4
+  * output tpl gen date in current local to match i18n
+  * use new out parameter in genshi templates generation (genshi >=0.5)
+  * add french translation
+  * support for an additionnal config file in source_dir
+  * do not output format not supported message twice
+  * update TODO : better i18n in templates
+  * add some translatable strings in the default theme
+  * Initial czech translation.
+  * Avoid two strings with different format chars.
+  * revert previous patch and use lenient mode for variable lookup
+  * i18n support for templates
+  * Use defined() as it seems to be needed with genshi 0.5.0
+  * remove version in manpage
+  * fix typo in comment
+  * add a comment about the usage of the 't' dict in templates
+  * fix typo in exception raising
+  * better encoding detection for album_description
+  * allow xhtml tags in album_description
+  * improve README a bit on template vars
+  * compute utf-16 endianess from EXIF tag endianess (patch by Matthieu Castet)
+  * fix typo in source dir does not exist error
+  * fix unicode EXIF UserComment (thanks Matthieu Castet for the hint on endianess)
+  * charset parsing is only for the UserComment EXIF field
+  * strip useless space in exif strings
+  * fallback to utf-8 for jpeg comments
+  * better handling of decoding errors for EXIF commendings
+  * handle charset decl with no text in EXIF comment
+  * Readd lost zero
+  * Better parsing of field
+  * Better charset handling
+  * Handle charset in EXIF comment
+  * Handle old EXIF comment
+  * Fix \0 in comment
+  * add a white frame to webalbum pics which looks better
+  * add an option to choose the webalbum picture color
+  * TODO i18n in tpls
+  * fix filename encoding issue during dest_dir cleanup checks
+  * make genshi templates play better with unicode
+  * TODO video and dirgalpic bg color
+  * optional directory archive with original images for easy download
+  * update-po script reorganization
+  * i18n support for runtime messages
+  * fix lazygal module * import
+  * webalbum index pagination for big directories
+  * remove useless Album constructor parameter
+  * Another int conversion
+  * Force int conversion
+
 Lazygal 0.3.1
   * set version to 0.3.1
   * add a script that builds a changelog from the darcs history
