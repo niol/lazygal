@@ -1,8 +1,10 @@
 Ideas to improve Lazygal (in no particular order)
 
-* i18n in templates.
-    Work to be done in lazygal/tpl.py and devscripts/update-po .
+* better i18n in templates : better string extractor and use of Translator to
+  make syntax nicer.
+    Work to be done in lazygal/tpl.py and mainly in devscripts/update-po .
     See http://genshi.edgewall.org/wiki/Documentation/i18n.html
+    and http://genshi.edgewall.org/wiki/ApiDocs/genshi.filters.i18n
 
 * SMP support, perhaps using parallel python (http://www.parallelpython.com/)
   though not sure about its ability to transmit MakeObject.build. Perhaps
