@@ -18,13 +18,14 @@
 import os, time
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
 import __init__
+import locale
 
 
 class LazygalTemplate(object):
 
     def __complement_values(self, values):
         values.update(self.common_values)
-        values['gen_date'] = time.strftime("%c")
+        values['gen_date'] = time.strftime("%c").decode(locale.getpreferredencoding())
         values['lazygal_version'] = __init__.__version__
         return values
 
