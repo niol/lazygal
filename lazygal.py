@@ -105,7 +105,7 @@ parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",
                   default=config.get('lazygal', 'image-size'),
-                  help=_("Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,medium=1024x768."))
+                  help=_("Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,medium=1024x768. The special dimensions 0x0 use original size."))
 parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
                   dest="thumbnail_size",

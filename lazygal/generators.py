@@ -44,9 +44,14 @@ THUMB_SIZE_NAME = 'thumb'
 
 class ImageOriginal(make.FileCopy):
 
-    def __init__(self, dir, source_image):
+    def __init__(self, dir, source_image, size_name=None):
         self.dir = dir
-        self.path = os.path.join(self.dir.path, source_image.filename)
+
+        dest_name = source_image.filename
+        if size_name:
+            dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
+
+        self.path = os.path.join(self.dir.path, dest_name)
         make.FileCopy.__init__(self, source_image.path, self.path)
 
     def build(self):
@@ -222,15 +227,17 @@ class WebalbumBrowsePage(WebalbumPage):
         self.image = image_file
         WebalbumPage.__init__(self, dir, size_name, self.image.name)
 
-        self.add_dependency(ImageOtherSize(self.dir,
-                                           self.image,
-                                           self.size_name))
+        if self.dir.album.browse_sizes[size_name] == (0, 0):
+            self.add_dependency(ImageOriginal(self.dir, self.image))
+        else:
+            self.add_dependency(ImageOtherSize(self.dir,
+                                               self.image,
+                                               self.size_name))
+            if self.dir.album.original:
+                self.add_dependency(ImageOriginal(self.dir, self.image))
 
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
-
-        if self.dir.album.original:
-            self.add_dependency(ImageOriginal(self.dir, self.image))
 
         self.page_template = self.dir.album.templates['browse.thtml']
         self.add_file_dependency(self.page_template.path)
@@ -765,6 +772,10 @@ class Album:
         filename, extension = os.path.splitext(path)
         if size_name == self.default_size_name and extension == '.html':
             # Do not append default size name to HTML page filename
+            return path
+        elif size_name in self.browse_sizes.keys()\
+        and self.browse_sizes[size_name] == (0, 0) and extension != '.html':
+            # Do not append size_name to unresized images.
             return path
         else:
             return "%s_%s%s" % (filename, size_name, extension)
