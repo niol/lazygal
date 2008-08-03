@@ -72,7 +72,7 @@ class RSS20:
 
     def __rfc822_time(self, timestamp=None):
         if not timestamp:
-            mytime = time.time()
+            timestamp = time.time()
         return time.strftime("%a, %d %b %Y %H:%M:%S " + self.timezone_offset,
                              time.localtime(timestamp))
 
