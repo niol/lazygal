@@ -23,7 +23,7 @@ import genshi.core
 import ConfigParser
 
 import lazygal
-from lazygal.generators import Album, SOURCEDIR_CONFIGFILE
+from lazygal.generators import Album, SOURCEDIR_CONFIGFILE, THUMB_SIZE_NAME
 
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
@@ -166,6 +166,10 @@ sizes = []
 size_defs = options.image_size.split(',')
 for single_def in size_defs:
     name, string_size = single_def.split('=')
+    if name == THUMB_SIZE_NAME:
+        print _("Size name '%s' is reserved for internal processing.")\
+                % THUMB_SIZE_NAME
+        sys.exit(1)
     x, y = string_size.split('x')
     sizes.append((name, (int(x), int(y))))
 

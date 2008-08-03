@@ -39,6 +39,8 @@ DEST_SHARED_DIRECTORY_NAME = 'shared'
 
 SOURCEDIR_CONFIGFILE = '.lazygal'
 
+THUMB_SIZE_NAME = 'thumb'
+
 
 class ImageOriginal(make.FileCopy):
 
@@ -65,7 +67,7 @@ class ImageOtherSize(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.osize_path)
 
         self.size_name = size_name
-        if self.size_name == 'thumb':
+        if self.size_name == THUMB_SIZE_NAME:
             self.size = self.dir.album.thumb_size
         else:
             self.size = self.dir.album.browse_sizes[size_name]
@@ -103,7 +105,8 @@ class WebalbumPicture(make.FileMakeObject):
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
-        pics = map(lambda path: self.album._add_size_qualifier(path, 'thumb'),
+        pics = map(lambda path: self.album._add_size_qualifier(path,
+                                                               THUMB_SIZE_NAME),
                    lightdir.get_all_images_paths())
 
         for pic in pics:
@@ -111,7 +114,8 @@ class WebalbumPicture(make.FileMakeObject):
 
         if lightdir.album_picture:
             md_dirpic_thumb = self.album._add_size_qualifier(\
-                                           lightdir.album_picture, 'thumb')
+                                           lightdir.album_picture,
+                                           THUMB_SIZE_NAME)
             md_dirpic_thumb = os.path.join(lightdir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None
@@ -175,10 +179,11 @@ class WebalbumPage(make.FileMakeObject):
                                                          self.size_name)
             link_vals['thumb'] = self._add_size_qualifier(img.name\
                                                           + img.extension,
-                                                          'thumb')
+                                                          THUMB_SIZE_NAME)
 
             thumb = os.path.join(self.dir.path,
-                                 self._add_size_qualifier(img.filename, 'thumb'))
+                                 self._add_size_qualifier(img.filename,
+                                                          THUMB_SIZE_NAME))
             link_vals['thumb_width'],\
                 link_vals['thumb_height'] = img.get_size(thumb)
 
@@ -233,7 +238,8 @@ class WebalbumBrowsePage(WebalbumPage):
     def prepare(self):
         for prevnext in [self.image.previous_image, self.image.next_image]:
             if prevnext:
-                self.add_dependency(ImageOtherSize(self.dir, prevnext, 'thumb'))
+                self.add_dependency(ImageOtherSize(self.dir, prevnext,
+                                                   THUMB_SIZE_NAME))
 
     def build(self):
         self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
@@ -311,7 +317,7 @@ class WebalbumIndexPage(WebalbumPage):
                 self.subdirs = []
 
         for image in self.images:
-            thumb_dep = ImageOtherSize(self.dir, image, 'thumb')
+            thumb_dep = ImageOtherSize(self.dir, image, THUMB_SIZE_NAME)
             self.add_dependency(thumb_dep)
             image_dep = WebalbumBrowsePage(self.dir, size_name, image)
             self.add_dependency(image_dep)
