@@ -42,7 +42,8 @@ class RSS20:
         self.__maxitems = maxitems
 
         # Workaround the fact that struct_time does not hold timezone info and
-        # that %z in strftime() resets to UTC if an argument is given.
+        # that %z in strftime() resets to UTC if an argument is given. This
+        # seems to be related to http://bugs.python.org/issue762963 .
         # FIXME : There's got to be a simpler way than this.
         offset = {}
         offset['hour'] = abs(time.timezone / 3600)
