@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate      "<date>August 2008</date>">
+  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
+       allowed: see man(7), man(1). -->
+  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
+  <!ENTITY dhucpackage "<refentrytitle>LAZYGAL</refentrytitle>">
+  <!ENTITY dhpackage   "lazygal">
+  <!ENTITY debian      "<productname>Debian</productname>">
+  <!ENTITY gnu         "<acronym>GNU</acronym>">
+  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <address>
+    </address>
+    <copyright>
+      <year>2008</year>
+      <holder></holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    &dhucpackage;
+
+    &dhsection;
+  </refmeta>
+  <refnamediv>
+    <refname>&dhpackage;</refname>
+    <refpurpose>static web gallery generator</refpurpose>
+  </refnamediv>
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>&dhpackage;</command>
+      <arg><option>-h | -v |
+      <arg><replaceable>options</replaceable></arg></option>
+      <replaceable>albumdir</replaceable></arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>This manual page explains the <command>&dhpackage;</command>
+    program. This program is a static web gallery generator written in
+    Python.</para>
+
+  </refsect1>
+  <refsect1>
+    <title>OPTIONS</title>
+
+    <para>These programs follow the usual &gnu; command line syntax,
+      with long options starting with two dashes (`-').  A summary of
+      options is included below.  For a complete description, see the
+      <option>-h</option> switch.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>
+          <option>-v</option>
+          <option>--version</option>
+        </term>
+        <listitem>
+          <para>Show program's version number and exit.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-h</option>
+          <option>--help</option>
+        </term>
+        <listitem>
+          <para>Show summary of options.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--quiet</option>
+        </term>
+        <listitem>
+          <para>Don't output anything except for errors.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--debug</option>
+        </term>
+        <listitem>
+          <para>Output everything that &dhpackage; is doing.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-o <replaceable>DEST_DIR</replaceable></option>
+          <option>--output-directory=<replaceable>DEST_DIR</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>Directory where web pages, slides and thumbs will be
+          written (default is current directory).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-t <replaceable>THEME</replaceable></option>
+          <option>--theme=<replaceable>THEME</replaceable></option>
+        </term>
+        <listitem>
+          <para>Theme name (looked up in theme directory) or theme full path.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--default-style=<replaceable>DEFAULT_STYLE</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>Default style to apply to the theme.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--template-vars=<replaceable>TPL_VARS</replaceable></option>
+        </term>
+        <listitem>
+          <para>Common variables to load all templates with.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--clean-destination</option>
+        </term>
+        <listitem>
+          <para>Clean destination directory of files that should not
+          be there.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--check-all-dirs</option>
+        </term>
+        <listitem>
+          <para>Exhaustively go through all directories regardless of
+          source modification time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-s <replaceable>IMAGE_SIZE</replaceable></option>
+          <option>--image-size=<replaceable>IMAGE_SIZE</replaceable></option>
+        </term>
+        <listitem>
+          <para>Size of images, define as
+          <replaceable>name</replaceable>=<replaceable>x</replaceable>x<replaceable>y</replaceable>,
+          ..., eg.
+          small=800x600,medium=1024x768. The special dimensions
+          0x0 use original size.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-T <replaceable>THUMBNAIL_SIZE</replaceable></option>
+          <option>--thumbnail-size=<replaceable>THUMBNAIL_SIZE</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>Size of thumbnails, define as
+          <replaceable>x</replaceable>x<replaceable>y</replaceable>,
+          eg. 150x113.</para>
+        </listitem>
+      </varlistentry>
+
+     <varlistentry>
+        <term>
+          <option>-q <replaceable>QUALITY</replaceable></option>
+          <option>--quality=<replaceable>QUALITY</replaceable></option>
+        </term>
+        <listitem>
+          <para>Quality of generated JPEG images (default is 85).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-O</option>
+          <option>--original</option>
+        </term>
+        <listitem>
+          <para>Include original photos in output.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--puburl=<replaceable>PUB_URL</replaceable></option>
+        </term>
+        <listitem>
+          <para>Publication URL (only usefull for feed generation).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-m</option>
+          <option>--generate-metadata</option>
+        </term>
+        <listitem>
+          <para>Generate metadata description files where they don't
+          exist.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-n <replaceable>THUMBS_PER_PAGE</replaceable></option>
+          <option>--thumbs-per-page=<replaceable>THUMBS_PER_PAGE</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>Maximum number of thumbs per index page. This enables
+          index pagination (0 is unlimited).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>-z</option>
+          <option>--make-dir-zip</option>
+        </term>
+        <listitem>
+          <para>Make a zip archive of original pictures for each
+          directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--webalbum-pic-bg=<replaceable>WEBALBUMPIC_BG</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>Webalbum picture background color. Default is transparent,
+          and implies the PNG format. Any other value, e.g. red, white,
+          blue, uses JPEG.</para>
+        </listitem>
+      </varlistentry>
+
+  </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>THEMES</title>
+
+    <para>A theme maps to a directory that contains at least the following
+    items:</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><filename><replaceable>theme</replaceable>/browse.thtml</filename></term>
+        <listitem>
+            <para>The XHTML template for the theme browse page (displaying
+            one picture).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename><replaceable>theme</replaceable>/dirindex.thtml</filename></term>
+        <listitem>
+            <para>The XHTML template for the directory index page (pictures
+            and sub-galleries links).</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+    <para>This must be valid XML. See
+    <filename>http://genshi.edgewall.org/wiki/Documentation/xml-templates.html</filename>
+    for syntax.</para>
+
+    <para>Each file which name starts with <parameter>SHARED_</parameter> is
+    copied to the web album destination under the directory
+    <parameter>shared</parameter> and is aimed at being a shared ressource
+    accross your web album (CSS stylesheet, button, etc.).</para>
+
+    <para>Each file which extension starts with <parameter>t</parameter>
+    is processed through the Genshi text template engine before being copied.
+    See
+    <filename>http://http://genshi.edgewall.org/wiki/Documentation/text-templates.html</filename>
+    for syntax.</para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>ALBUM METADATA</title>
+    <para>If a directory from the source album contains a file named
+    <filename>album_description</filename>, it is processed as a source
+    of album metadata. See <filename>/usr/share/doc/lazygal/README</filename>
+    for more information.</para>
+  </refsect1>
+
+  <refsect1>
+    <title>FILES</title>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><filename>~/.lazygal</filename></term>
+        <listitem>
+            <para>User configuration directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename>~/.lazygal/config</filename></term>
+        <listitem>
+            <para>User configuration file. INI like file format.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename>~/.lazygal/themes</filename></term>
+        <listitem>
+            <para>User themes directory.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>The full documentation of &dhpackage; is maintained as a README file.</para>
+    <para>More information is available on the program website:
+    <filename>http://sousmonlit.dyndns.org/~niol/playa/oss:lazygal</filename>.
+    </para>
+  </refsect1>
+
+  <refsect1>
+    <title>AUTHOR</title>
+
+    <para>This manual page was written for
+      the &debian; system (but may be used by others).  Permission is
+      granted to copy, distribute and/or modify this document under
+      the terms of the &gnu; General Public License, Version 2 any
+	  later version published by the Free Software Foundation.
+    </para>
+	<para>
+	  On Debian systems, the complete text of the GNU General Public
+	  License can be found in /usr/share/common-licenses/GPL.
+	</para>
+
+  </refsect1>
+</refentry>

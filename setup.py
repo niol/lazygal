@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 # Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2008 Michal Čihař, Mickaël Royer
+# Copyright (C) 2007-2008 Michal Čihař, Mickaël Royer, Alexandre Rossi
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,12 +20,54 @@
 from distutils.core import setup, Command
 import distutils.command.build_scripts
 import distutils.command.build
+from distutils.dep_util import newer
+from distutils.spawn import find_executable
 import re
 import os
 import sys
 import glob
 import lazygal
 from stat import ST_MODE
+
+
+class build_manpages(Command):
+    manpages = None
+    db2mans = [
+        # debian
+        "/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl",
+        # gentoo
+        "/usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl",
+        ]
+    mandir = "./"
+    executable = find_executable('xsltproc')
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        self.manpages = glob.glob(os.path.join(self.mandir, "*.xml"))
+
+    def __get_man_section(self, filename):
+        # filename should be file.mansection.xml
+        return filename.split('.')[-2]
+
+    def run(self):
+        data_files = self.distribution.data_files
+        db2man = None
+        for path in self.__class__.db2mans:
+            if os.path.exists(path):
+                db2man = path
+                continue
+
+        for xmlmanpage in self.manpages:
+            manpage = xmlmanpage[:-4] # remove '.xml' at the end
+            if newer(xmlmanpage, manpage):
+                cmd = (self.executable, "--nonet", "-o", self.mandir, db2man,
+                       xmlmanpage)
+                self.spawn(cmd)
+
+            targetpath = os.path.join("share", "man")
+            data_files.append((targetpath, (manpage, ), ))
 
 
 class build_i18n_lazygal(Command):
@@ -61,12 +103,20 @@ class build_i18n_lazygal(Command):
 
 class build_lazygal(distutils.command.build.build):
 
+    def __has_manpages(self, command):
+        has_db2man = False
+        for path in build_manpages.db2mans:
+            if os.path.exists(path): has_db2man = True
+        return self.distribution.cmdclass.has_key("build_manpages")\
+            and has_db2man and build_manpages.executable != None
+
     def __has_i18n(self, command):
         return self.distribution.cmdclass.has_key("build_i18n")
 
     def finalize_options(self):
         distutils.command.build.build.finalize_options(self)
         self.sub_commands.append(("build_i18n", self.__has_i18n))
+        self.sub_commands.append(("build_manpages", self.__has_manpages))
 
 
 # check if Python is called on the first line with this expression
@@ -195,9 +245,10 @@ setup(name = 'lazygal',
     scripts = ['lazygal.py'],
     # Override certain command classes with our own ones
     cmdclass = {
-        'build'        : build_lazygal,
-        'build_scripts': build_scripts_lazygal,
-        'build_i18n'   : build_i18n_lazygal,
+        'build'         : build_lazygal,
+        'build_scripts' : build_scripts_lazygal,
+        'build_i18n'    : build_i18n_lazygal,
+        'build_manpages': build_manpages,
         },
     data_files = theme_data +
         [(os.path.join('share','man','man1'), ['lazygal.1'])]
