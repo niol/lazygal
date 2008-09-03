@@ -243,7 +243,7 @@ class ExifTags(pyexiv2.Image):
         return ret
 
     def get_flash(self):
-        return self.get_exif_value('Exif.Photo.Flash')
+        return self.get_exif_value('Exif.Photo.Flash').decode('utf-8')
 
     def get_exposure(self):
         try:
