@@ -27,15 +27,19 @@ from lazygal.generators import Album, SOURCEDIR_CONFIGFILE, THUMB_SIZE_NAME
 
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
+    'quiet': 'No',
     'theme': 'default',
     'default-style': 'default',
     'clean-destination': 'No',
+    'check-all-dirs': 'No',
+    'original': 'No',
     'image-size': 'small=800x600,medium=1024x768',
     'thumbnail-size': '150x113',
-    'quality': '85',
-    'template-vars': '',
+    'make-dir-zip': 'No',
     'thumbs-per-page': '0',
+    'quality': '85',
     'webalbumpic-bg': 'transparent',
+    'template-vars': '',
 }
 
 # i18n
@@ -63,7 +67,7 @@ parser.get_option('-h').help = _("Show this help message and exit.")
 
 parser.add_option("", "--quiet",
                   action="store_true",
-                  dest="quiet", default=False,
+                  dest="quiet", default=config.getboolean('lazygal', 'quiet'),
                   help=_("Don't output anything except for errors."))
 parser.add_option("", "--debug",
                   action="store_true",
@@ -99,7 +103,7 @@ parser.add_option("-v", "--version",
                   help=_("Display program version."))
 parser.add_option("", "--check-all-dirs",
                   action="store_true",
-                  dest="check_all_dirs", default=False,
+                  dest="check_all_dirs", default=config.getboolean('lazygal', 'check-all-dirs'),
                   help=_("Exhaustively go through all directories regardless of source modification time."))
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
@@ -131,11 +135,11 @@ parser.add_option("-m", "--generate-metadata",
 parser.add_option("-n", "--thumbs-per-page",
                   action="store", type="int",
                   dest="thumbs_per_page",
-                  default=config.get('lazygal', 'thumbs-per-page'),
+                  default=config.getint('lazygal', 'thumbs-per-page'),
                   help=_("Maximum number of thumbs per index page. This enables index pagination (0 is unlimited)."))
 parser.add_option("-z", "--make-dir-zip",
                   action="store_true",
-                  dest="dirzip", default=False,
+                  dest="dirzip", default=config.getboolean('lazygal', 'make-dir-zip'),
                   help=_("Make a zip archive of original pictures for each directory."))
 parser.add_option("", "--webalbum-pic-bg",
                   action="store", type="string",
