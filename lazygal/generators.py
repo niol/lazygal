@@ -20,6 +20,8 @@ import zipfile
 import locale
 
 import Image
+# lazygal has her own ImageFile class, so avoid trouble
+import ImageFile as PILImageFile
 import genshi
 
 import __init__
@@ -93,7 +95,17 @@ class ImageOtherSize(make.FileMakeObject):
 
         im.thumbnail(self.size, Image.ANTIALIAS)
 
-        im.save(self.osize_path, quality = self.dir.album.quality)
+        calibrated = False
+        while not calibrated:
+            try:
+                im.save(self.osize_path, quality = self.dir.album.quality, **self.dir.album.save_options)
+            except IOError, e:
+                if str(e).startswith('encoder error'):
+                    PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
+                    continue
+                else:
+                    raise
+            calibrated = True
 
 
 class WebalbumPicture(make.FileMakeObject):
@@ -672,6 +684,7 @@ class SharedFiles(make.FileSimpleDependency):
 class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
+                 optimize=False, progressive=False,
                  quality=85, thumbs_per_page=0, dirzip=False):
         self.set_logging()
 
@@ -688,6 +701,11 @@ class Album:
         self.original = False
         self.thumbs_per_page = thumbs_per_page
         self.dirzip = dirzip
+        self.save_options = {}
+        if optimize:
+            self.save_options['optimize'] = True
+        if progressive:
+            self.save_options['progressive'] = True
 
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme

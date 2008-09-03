@@ -38,6 +38,8 @@ CONFIGDEFAULTS = {
     'make-dir-zip': 'No',
     'thumbs-per-page': '0',
     'quality': '85',
+    'optimize': 'Yes',
+    'progressive': 'Yes',
     'webalbumpic-bg': 'transparent',
     'template-vars': '',
 }
@@ -146,6 +148,14 @@ parser.add_option("", "--webalbum-pic-bg",
                   dest="webalbumpic_bg",
                   default=config.get('lazygal', 'webalbumpic-bg'),
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
+parser.add_option("", "--optimize",
+                  action="store_true",
+                  dest="optimize", default=config.getboolean('lazygal', 'optimize'),
+                  help=_("Run an extra optimization pass an each image."))
+parser.add_option("", "--progressive",
+                  action="store_true",
+                  dest="progressive", default=config.getboolean('lazygal', 'progressive'),
+                  help=_("Generate Progressive JPEG images."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -181,6 +191,7 @@ x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
 album = Album(source_dir, thumbnail, sizes, quality=options.quality,
+              optimize=options.optimize, progressive=options.progressive,
               thumbs_per_page=options.thumbs_per_page,
               dirzip=options.dirzip)
 
