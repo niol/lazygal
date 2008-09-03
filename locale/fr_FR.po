@@ -38,7 +38,7 @@ msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
 msgstr ""
-"Répertoire dans lequel les pages, les images et tles miniatures seront "
+"Répertoire dans lequel les pages, les images et les miniatures seront "
 "écrits (par défaut le répertoire courant)."
 
 #: ../lazygal.py:80
