@@ -101,6 +101,13 @@ class ImageFile(File):
         im = Image.open(img_path)
         return im.size
 
+    def has_exif_date(self):
+        exif_date = self.info().get_date()
+        if exif_date:
+            return True
+        else:
+            return False
+
     def get_date_taken(self):
         exif_date = self.info().get_date()
         if exif_date:
@@ -115,6 +122,29 @@ class ImageFile(File):
         date2 = time.mktime(other_img.get_date_taken().timetuple())
         delta = date1 - date2
         return int(delta)
+
+    def compare_mtime(self, other_img):
+        return int(self.get_mtime() - other_img.get_mtime())
+
+    def compare_filename(self, other_img):
+        return cmp(self.filename, other_img.filename)
+
+    def compare_no_exif_date(self, other_img):
+        # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after.
+        if self.has_exif_date():
+            return 1
+        else:
+            return -1
+
+    def compare_to_sort(self, other_img):
+        if self.has_exif_date() and other_img.has_exif_date():
+            return self.compare_date_taken(other_img)
+        elif not self.has_exif_date() and not other_img.has_exif_date():
+            return self.compare_filename(other_img)
+        else:
+            # One of the picture has no EXIF date, so we arbitrary sort it
+            # before the one with EXIF.
+            return self.compare_no_exif_date(other_img)
 
 
 class Directory(File):

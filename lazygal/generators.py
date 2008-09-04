@@ -521,7 +521,16 @@ class WebalbumDir(LightWebalbumDir):
             self.add_dependency(WebalbumArchive(self))
 
     def prepare(self):
-        self.images.sort(lambda x, y: x.compare_date_taken(y))
+        if self.album.sort_by == 'exif':
+            sorter = lambda x, y: x.compare_to_sort(y)
+        elif self.album.sort_by == 'mtime':
+            sorter = lambda x, y: x.compare_mtime(y)
+        elif self.album.sort_by == 'filename':
+            sorter = lambda x, y: x.compare_filename(y)
+        else:
+            raise ValueError(_("Unknown sorting criterion '%s'")\
+                             % self.album.sort_by)
+        self.images.sort(sorter)
 
         # chain images
         previous_image = None
@@ -685,7 +694,7 @@ class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
                  optimize=False, progressive=False,
-                 quality=85, thumbs_per_page=0, dirzip=False):
+                 quality=85, thumbs_per_page=0, dirzip=False, sort_by='exif'):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
@@ -706,6 +715,7 @@ class Album:
             self.save_options['optimize'] = True
         if progressive:
             self.save_options['progressive'] = True
+        self.sort_by = sort_by
 
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme

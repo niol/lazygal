@@ -37,6 +37,7 @@ CONFIGDEFAULTS = {
     'thumbnail-size': '150x113',
     'make-dir-zip': 'No',
     'thumbs-per-page': '0',
+    'sort-by': 'exif',
     'quality': '85',
     'optimize': 'Yes',
     'progressive': 'Yes',
@@ -156,6 +157,9 @@ parser.add_option("", "--progressive",
                   action="store_true",
                   dest="progressive", default=config.getboolean('lazygal', 'progressive'),
                   help=_("Generate Progressive JPEG images."))
+parser.add_option("", "--sort-by",
+                  action="store", default=config.get('lazygal', 'sort-by'), metavar=_('ORDER'),
+                  dest="sort_by", help=_("Sort order for images in a folder: name, mtime, or exif. [name]"))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -193,7 +197,7 @@ thumbnail = (int(x), int(y))
 album = Album(source_dir, thumbnail, sizes, quality=options.quality,
               optimize=options.optimize, progressive=options.progressive,
               thumbs_per_page=options.thumbs_per_page,
-              dirzip=options.dirzip)
+              dirzip=options.dirzip, sort_by=options.sort_by)
 
 if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
