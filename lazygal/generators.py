@@ -384,13 +384,22 @@ class WebalbumIndexPage(WebalbumPage):
 
         values = {}
 
+        related_index_fn = self._add_size_qualifier(\
+                            WebalbumIndexPage.FILENAME_BASE_STRING + '.html',
+                            self.size_name)
+        if not self.dir.source_dir.is_album_root():
+            # Parent index link not for album root
+            values['parent_index_link'] = related_index_fn
+
         values['osize_index_links'] = self._get_osize_links(self._get_paginated_name())
         values['onum_index_links'] = self._get_onum_links()
 
         subgal_links = []
         for subdir in self.subdirs:
             dir_info = {'name': subdir.human_name,
-                        'link': subdir.source_dir.name + '/'}
+                        'link': '/'.join([subdir.source_dir.name,
+                                          related_index_fn]),
+                       }
             dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
             dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
                                      self.dir.album.get_webalbumpic_filename())
