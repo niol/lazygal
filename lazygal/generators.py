@@ -530,16 +530,27 @@ class WebalbumDir(LightWebalbumDir):
             self.add_dependency(WebalbumArchive(self))
 
     def prepare(self):
-        if self.album.sort_by == 'exif':
+        if self.album.subgal_sort_by[0] == 'mtime':
+            subgal_sorter = lambda x, y:\
+                                x.source_dir.compare_mtime(y.source_dir)
+        elif self.album.subgal_sort_by[0] == 'filename':
+            subgal_sorter = lambda x, y:\
+                                x.source_dir.compare_filename(y.source_dir)
+        else:
+            raise ValueError(_("Unknown sorting criterion '%s'")\
+                             % self.album.subgal_sort_by[0])
+        self.subdirs.sort(subgal_sorter, reverse=self.album.subgal_sort_by[1])
+
+        if self.album.pic_sort_by[0] == 'exif':
             sorter = lambda x, y: x.compare_to_sort(y)
-        elif self.album.sort_by == 'mtime':
+        elif self.album.pic_sort_by[0] == 'mtime':
             sorter = lambda x, y: x.compare_mtime(y)
-        elif self.album.sort_by == 'filename':
+        elif self.album.pic_sort_by[0] == 'filename':
             sorter = lambda x, y: x.compare_filename(y)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
-                             % self.album.sort_by)
-        self.images.sort(sorter)
+                             % self.album.pic_sort_by[0])
+        self.images.sort(sorter, reverse=self.album.pic_sort_by[1])
 
         # chain images
         previous_image = None
@@ -703,7 +714,9 @@ class Album:
 
     def __init__(self, source_dir, thumb_size, browse_sizes,
                  optimize=False, progressive=False,
-                 quality=85, thumbs_per_page=0, dirzip=False, sort_by='exif'):
+                 quality=85, thumbs_per_page=0, dirzip=False,
+                 pic_sort_by=('exif', False),
+                 subgal_sort_by=('filename', False)):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
@@ -724,7 +737,9 @@ class Album:
             self.save_options['optimize'] = True
         if progressive:
             self.save_options['progressive'] = True
-        self.sort_by = sort_by
+
+        self.pic_sort_by = pic_sort_by
+        self.subgal_sort_by = subgal_sort_by
 
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme
@@ -881,8 +896,6 @@ class Album:
 
             if dir_heap.has_key(root):
                 subdirs = dir_heap[root]
-                subdirs.sort(lambda x, y: cmp(x.source_dir.name,
-                                              y.source_dir.name))
                 del dir_heap[root] # No need to keep it there
             else:
                 subdirs = []

@@ -259,13 +259,26 @@
 
       <varlistentry>
         <term>
-          <option>--sort-by=<replaceable>ORDER</replaceable></option>
+          <option>--pic-sort-by=<replaceable>ORDER</replaceable></option>
         </term>
         <listitem>
           <para>Sort order for images in a subgallery, among 'mtime',
           'filename', or 'exif'. (default is 'exif' which is by EXIF date if
           EXIF data is available, filename otherwise, sorting EXIF-less
-          images before)</para>
+          images before). Add ':reverse' to reverse the sort order
+          (e.g. <option>--pic-sort-by=mtime:reverse</option>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--subgal-sort-by=<replaceable>ORDER</replaceable></option>
+        </term>
+        <listitem>
+          <para>Sort order for subgalleries, among 'mtime' or
+          'filename' (default is 'filename'). Add ':reverse' to reverse the
+          sort order (e.g. <option>--subgal-sort-by=filename:reverse</option>).
+          </para>
         </listitem>
       </varlistentry>
 

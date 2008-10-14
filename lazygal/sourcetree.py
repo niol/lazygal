@@ -81,6 +81,12 @@ class File(make.FileSimpleDependency):
                 return True
         return False
 
+    def compare_mtime(self, other_file):
+        return int(self.get_mtime() - other_file.get_mtime())
+
+    def compare_filename(self, other_file):
+        return cmp(self.filename, other_file.filename)
+
 
 class ImageFile(File):
 
@@ -122,12 +128,6 @@ class ImageFile(File):
         date2 = time.mktime(other_img.get_date_taken().timetuple())
         delta = date1 - date2
         return int(delta)
-
-    def compare_mtime(self, other_img):
-        return int(self.get_mtime() - other_img.get_mtime())
-
-    def compare_filename(self, other_img):
-        return cmp(self.filename, other_img.filename)
 
     def compare_no_exif_date(self, other_img):
         # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after.

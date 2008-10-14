@@ -37,7 +37,8 @@ CONFIGDEFAULTS = {
     'thumbnail-size': '150x113',
     'make-dir-zip': 'No',
     'thumbs-per-page': '0',
-    'sort-by': 'exif',
+    'pic-sort-by': 'exif',
+    'subgal-sort-by': 'filename',
     'quality': '85',
     'optimize': 'Yes',
     'progressive': 'Yes',
@@ -157,9 +158,12 @@ parser.add_option("", "--progressive",
                   action="store_true",
                   dest="progressive", default=config.getboolean('lazygal', 'progressive'),
                   help=_("Generate Progressive JPEG images."))
-parser.add_option("", "--sort-by",
-                  action="store", default=config.get('lazygal', 'sort-by'), metavar=_('ORDER'),
-                  dest="sort_by", help=_("Sort order for images in a folder: name, mtime, or exif. [name]"))
+parser.add_option("", "--pic-sort-by",
+                  action="store", default=config.get('lazygal', 'pic-sort-by'), metavar=_('ORDER'),
+                  dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))
+parser.add_option("", "--subgal-sort-by",
+                  action="store", default=config.get('lazygal', 'subgal-sort-by'), metavar=_('ORDER'),
+                  dest="subgal_sort_by", help=_("Sort order for images in a folder: filename or mtime. Add ':reverse' to reverse the chosen order."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -194,10 +198,23 @@ for single_def in size_defs:
 x, y = options.thumbnail_size.split('x')
 thumbnail = (int(x), int(y))
 
+def parse_sort(sort_string):
+    try:
+        sort_method, reverse = sort_string.split(':')
+    except ValueError:
+        sort_method = sort_string
+        reverse = False
+    if reverse == 'reverse':
+        return sort_method, True
+    else:
+        return sort_method, False
+
 album = Album(source_dir, thumbnail, sizes, quality=options.quality,
               optimize=options.optimize, progressive=options.progressive,
               thumbs_per_page=options.thumbs_per_page,
-              dirzip=options.dirzip, sort_by=options.sort_by)
+              dirzip=options.dirzip,
+              pic_sort_by=parse_sort(options.pic_sort_by),
+              subgal_sort_by=parse_sort(options.subgal_sort_by))
 
 if options.tpl_vars or config.has_section('template-vars'):
     tpl_vars = {}
