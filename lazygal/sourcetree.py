@@ -153,7 +153,6 @@ class Directory(File):
         File.__init__(self, self._path_to_unicode(source), album)
 
         self.dirnames = map(self._path_to_unicode, dirnames)
-        self.dirnames.sort()
         self.filenames = map(self._path_to_unicode, filenames)
 
     def guess_directory_picture(self, subdir = None):
