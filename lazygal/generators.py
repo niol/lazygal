@@ -720,6 +720,7 @@ class Album:
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
+        self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
         self.thumb_size = thumb_size
         self.browse_sizes = dict(browse_sizes)

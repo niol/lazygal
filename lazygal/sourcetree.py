@@ -32,7 +32,10 @@ class File(make.FileSimpleDependency):
         self.name, self.extension = os.path.splitext(self.filename)
 
     def _path_to_unicode(self, path):
-        return path.decode(sys.getfilesystemencoding())
+        if type(path) is unicode:
+            return path
+        else:
+            return path.decode(sys.getfilesystemencoding())
 
     def strip_root(self, path=None):
         found = False
