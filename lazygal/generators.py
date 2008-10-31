@@ -292,10 +292,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
         tpl_values['prev_link'] =\
             self._gen_other_img_link(self.image.previous_image)
-        tpl_values['prev_link'] = self.url_quote(tpl_values['prev_link'])
         tpl_values['next_link'] =\
             self._gen_other_img_link(self.image.next_image)
-        tpl_values['next_link'] = self.url_quote(tpl_values['next_link'])
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
@@ -313,7 +311,7 @@ class WebalbumBrowsePage(WebalbumPage):
         if self.dir.album.original:
             tpl_values['original_link'] = self.image.filename
             tpl_values['original_link'] =\
-                self.ur_quote(tpl_values['original_link'])
+                self.url_quote(tpl_values['original_link'])
 
         self.page_template.dump(tpl_values, self.page_path)
 
