@@ -484,6 +484,12 @@ class LightWebalbumDir(make.FileMakeObject):
 
         self.dirzip = None
 
+    def get_all_images_count(self):
+        all_images_count = len(self.images_names)
+        for subdir in self.subdirs:
+            all_images_count += subdir.get_all_images_count()
+        return all_images_count
+
     def get_all_images_paths(self):
         all_images_paths = map(lambda fn: os.path.join(self.path, fn),
                                self.images_names)
@@ -915,6 +921,12 @@ class Album:
 
             destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
             light_destgal = LightWebalbumDir(dir, subdirs, self, sane_dest_dir)
+
+            if light_destgal.get_all_images_count() < 1:
+                self.log(_("(%s) and childs have no photos, skipped")
+                           % dir.path)
+                continue
+
             if not dir.is_album_root():
                 container_dirname = os.path.dirname(root)
                 if not dir_heap.has_key(container_dirname):
