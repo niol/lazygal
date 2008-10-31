@@ -155,6 +155,10 @@ class Directory(File):
     def __init__(self, source, dirnames, filenames, album):
         File.__init__(self, self._path_to_unicode(source), album)
 
+        # No breaking up of filename and extension for directories
+        self.name = self.filename
+        self.extension = None
+
         self.dirnames = map(self._path_to_unicode, dirnames)
         self.filenames = map(self._path_to_unicode, filenames)
 
