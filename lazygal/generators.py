@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, glob, sys, string
+import urllib
 import zipfile
 import locale
 
@@ -194,6 +195,7 @@ class WebalbumPage(make.FileMakeObject):
             link_vals = {}
             link_vals['link'] = self._add_size_qualifier(img.name + '.html',
                                                          self.size_name)
+            link_vals['link'] = self.url_quote(link_vals['link'])
             link_vals['thumb'] = self._add_size_qualifier(img.name\
                                                           + img.extension,
                                                           THUMB_SIZE_NAME)
@@ -222,6 +224,7 @@ class WebalbumPage(make.FileMakeObject):
                 osize_info['link'] = self._add_size_qualifier(filename\
                                                               + '.html',
                                                               osize_name)
+                osize_info['link'] = self.url_quote(osize_info['link'])
             osize_index_links.append(osize_info)
 
         return osize_index_links
@@ -231,6 +234,9 @@ class WebalbumPage(make.FileMakeObject):
 
     def _do_not_escape(self, value):
         return genshi.core.Markup(value)
+
+    def url_quote(self, url):
+        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/')
 
 
 class WebalbumBrowsePage(WebalbumPage):
@@ -286,8 +292,10 @@ class WebalbumBrowsePage(WebalbumPage):
 
         tpl_values['prev_link'] =\
             self._gen_other_img_link(self.image.previous_image)
+        tpl_values['prev_link'] = self.url_quote(tpl_values['prev_link'])
         tpl_values['next_link'] =\
             self._gen_other_img_link(self.image.next_image)
+        tpl_values['next_link'] = self.url_quote(tpl_values['next_link'])
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
@@ -304,6 +312,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
         if self.dir.album.original:
             tpl_values['original_link'] = self.image.filename
+            tpl_values['original_link'] =\
+                self.ur_quote(tpl_values['original_link'])
 
         self.page_template.dump(tpl_values, self.page_path)
 
@@ -373,6 +383,7 @@ class WebalbumIndexPage(WebalbumPage):
                 filename = self._get_paginated_name(onum)
                 onum_info['link'] = self._add_size_qualifier(filename + '.html',
                                                              self.size_name)
+                onum_info['link'] = self.url_quote(onum_info['link'])
             onum_index_links.append(onum_info)
 
         return onum_index_links
@@ -400,6 +411,7 @@ class WebalbumIndexPage(WebalbumPage):
                         'link': '/'.join([subdir.source_dir.name,
                                           related_index_fn]),
                        }
+            dir_info['link'] = self.url_quote(dir_info['link'])
             dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
             dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
                                      self.dir.album.get_webalbumpic_filename())
