@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, glob, sys, string
+import os, glob, sys
 import urllib
 import zipfile
 import locale
@@ -851,7 +851,7 @@ class Album:
 
     def _str_humanize(self, text):
         dash_replaced = text.replace('_', ' ')
-        return string.capwords(dash_replaced)
+        return dash_replaced
 
     def is_in_sourcetree(self, path):
         head = path
