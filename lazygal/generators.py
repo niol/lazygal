@@ -917,13 +917,14 @@ class Album:
             else:
                 subdirs = []
 
-            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
             light_destgal = LightWebalbumDir(dir, subdirs, self, sane_dest_dir)
 
             if light_destgal.get_all_images_count() < 1:
                 self.log(_("(%s) and childs have no photos, skipped")
                            % dir.path)
                 continue
+
+            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
 
             if not dir.is_album_root():
                 container_dirname = os.path.dirname(root)
