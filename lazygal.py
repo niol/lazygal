@@ -33,6 +33,7 @@ CONFIGDEFAULTS = {
     'clean-destination': 'No',
     'check-all-dirs': 'No',
     'original': 'No',
+    'orig-base': 'No',
     'image-size': 'small=800x600,medium=1024x768',
     'thumbnail-size': '150x113',
     'make-dir-zip': 'No',
@@ -128,6 +129,11 @@ parser.add_option("-O", "--original",
                   action="store_true",
                   dest="original", default=False,
                   help=_("Include original photos in output."))
+parser.add_option("", "--orig-base",
+                  action="store", type="string",
+                  dest="orig_base",
+                  default=config.get('lazygal', 'orig-base'),
+                  help=_("Do not copy original photos in output directory, instead link them using submitted relative path as base."))
 parser.add_option("", "--puburl",
                   action="store", type="string",
                   dest="pub_url",
@@ -232,7 +238,12 @@ if options.tpl_vars or config.has_section('template-vars'):
     album.set_tpl_vars(tpl_vars)
 
 album.set_theme(options.theme, options.default_style)
-album.set_original(options.original)
+
+orig_base = None
+if options.original and options.orig_base != 'No':
+    orig_base = options.orig_base
+album.set_original(options.original, orig_base)
+
 album.set_webalbumpic(bg=options.webalbumpic_bg)
 
 log_level = None

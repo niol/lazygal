@@ -251,7 +251,7 @@ class WebalbumBrowsePage(WebalbumPage):
             self.add_dependency(ImageOtherSize(self.dir,
                                                self.image,
                                                self.size_name))
-            if self.dir.album.original:
+            if self.dir.album.original and not self.dir.album.orig_base:
                 self.add_dependency(ImageOriginal(self.dir, self.image))
 
         # Depends on source directory in case an image was deleted
@@ -309,7 +309,14 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['comment'] = self.image.info().get_comment()
 
         if self.dir.album.original:
-            tpl_values['original_link'] = self.image.filename
+            if self.dir.album.orig_base:
+                tpl_values['original_link'] = os.path.join(\
+                    self.dir.source_dir.rel_root(),
+                    self.dir.album.orig_base,
+                    self.dir.source_dir.strip_root(),
+                    self.image.filename)
+            else:
+                tpl_values['original_link'] = self.image.filename
             tpl_values['original_link'] =\
                 self.url_quote(tpl_values['original_link'])
 
@@ -747,6 +754,7 @@ class Album:
         self.tpl_loader = None
         self.tpl_vars = {}
         self.original = False
+        self.orig_base = None
         self.thumbs_per_page = thumbs_per_page
         self.dirzip = dirzip
         self.save_options = {}
@@ -804,8 +812,12 @@ class Album:
             styles.append(style)
         return styles
 
-    def set_original(self, original = False):
+    def set_original(self, original=False, orig_base=None):
         self.original = original
+        if self.original and orig_base:
+            self.orig_base = orig_base
+        else:
+            self.orig_base = None
 
     def set_webalbumpic(self, bg='transparent'):
         self.webalbumpic_bg = bg

@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>August 2008</date>">
+  <!ENTITY dhdate      "<date>November 2008</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -203,6 +203,17 @@
         </term>
         <listitem>
           <para>Include original photos in output.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--orig-base=<replaceable>RELATIVE_PATH</replaceable></option>
+        </term>
+        <listitem>
+          <para>Do not copy original photos in output directory, instead
+          link them using <replaceable>RELATIVE_PATH</replaceable> as base
+          for those links (discarded without <option>-O</option>).</para>
         </listitem>
       </varlistentry>
 
