@@ -52,6 +52,7 @@
         <ul id="image_caption_nontech">
             <li py:if="t.comment">$t.comment</li>
             <li>${_('Taken')} $t.image_date</li>
+            <li py:if="t.original_link"><a href="$t.original_link">${_('Original picture')}</a></li>
         </ul>
         <ul class="image_caption_tech">
             <li>$t.image_name</li>
@@ -63,7 +64,6 @@
             <li py:if="t.fnumber">${_('Aperture')} $t.fnumber</li>
             <li py:if="t.flash">${_('Flash')} $t.flash</li>
             <li py:if="t.focal_length">${_('Focal length')} $t.focal_length</li>
-            <li py:if="t.original_link"><a href="$t.original_link">${_('Original picture')}</a></li>
         </ul>
     </div>
 </div>
