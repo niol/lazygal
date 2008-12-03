@@ -169,7 +169,7 @@ parser.add_option("", "--pic-sort-by",
                   dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--subgal-sort-by",
                   action="store", default=config.get('lazygal', 'subgal-sort-by'), metavar=_('ORDER'),
-                  dest="subgal_sort_by", help=_("Sort order for images in a folder: filename or mtime. Add ':reverse' to reverse the chosen order."))
+                  dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: filename or mtime. Add ':reverse' to reverse the chosen order."))
 (options, args) = parser.parse_args()
 
 if options.show_version:

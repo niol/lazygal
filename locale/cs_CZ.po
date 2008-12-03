@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:18+0100\n"
-"PO-Revision-Date: 2008-12-03 16:41+0100\n"
+"POT-Creation-Date: 2008-12-03 16:43+0100\n"
+"PO-Revision-Date: 2008-12-03 16:43+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -38,11 +38,14 @@ msgstr "Vypsat vše, co lazygal provádí."
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
-msgstr "Adresář, kam budou zapsány webové stránky, obrázky a náhledy (výchozí je aktuální adresář)."
+msgstr ""
+"Adresář, kam budou zapsány webové stránky, obrázky a náhledy (výchozí je "
+"aktuální adresář)."
 
 #: ../lazygal.py:89
 msgid "Theme name (looked up in theme directory) or theme full path."
-msgstr "Jméno tématu (vyhledává se v adresáři s tématy) nebo celá cesta k tématu."
+msgstr ""
+"Jméno tématu (vyhledává se v adresáři s tématy) nebo celá cesta k tématu."
 
 #: ../lazygal.py:94
 msgid "Default style to apply to the theme."
@@ -72,7 +75,8 @@ msgid ""
 "medium=1024x768. The special dimensions 0x0 use original size."
 msgstr ""
 "Velikost obrázků, zadejte v podobě <jméno>=<x>x<y>,..., např. male=800x600,"
-"stredni=1024x768. Při zadání 0x0 bude použit původní obrázek beze změny velikosti."
+"stredni=1024x768. Při zadání 0x0 bude použit původní obrázek beze změny "
+"velikosti."
 
 #: ../lazygal.py:122
 msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
@@ -90,7 +94,9 @@ msgstr "Zahrnout původní obrázky ve výstupu."
 msgid ""
 "Do not copy original photos in output directory, instead link them using "
 "submitted relative path as base."
-msgstr "Nekopírovat původní obrázky do výstupu, jen vytvořit sumbolické odkazy pomocí zadané relativní cesty."
+msgstr ""
+"Nekopírovat původní obrázky do výstupu, jen vytvořit sumbolické odkazy "
+"pomocí zadané relativní cesty."
 
 #: ../lazygal.py:140
 msgid "Publication URL (only usefull for feed generation)."
@@ -104,7 +110,9 @@ msgstr "Vytvoří soubory pro popisky alb tam, kde neexistují."
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
-msgstr "Maximální počet náhledů na stránce obsahu. Tímto vynutíte stránkování obsahu (0 znamená žádné omezení)."
+msgstr ""
+"Maximální počet náhledů na stránce obsahu. Tímto vynutíte stránkování obsahu "
+"(0 znamená žádné omezení)."
 
 #: ../lazygal.py:153
 msgid "Make a zip archive of original pictures for each directory."
@@ -114,7 +122,9 @@ msgstr "Vytvořit zip archív s původními obrázky pro každý adresář."
 msgid ""
 "Webalbum picture background color. Default is transparent, and implies the "
 "PNG format. Any other value, e.g. red, white, blue, uses JPEG."
-msgstr "Pozadí obrázku alba. Výchozí je průhledné a obrázek pak bude uložen jako PNG. Jakákoliv jiná barva (např. red, white, blue) použije JPEG."
+msgstr ""
+"Pozadí obrázku alba. Výchozí je průhledné a obrázek pak bude uložen jako "
+"PNG. Jakákoliv jiná barva (např. red, white, blue) použije JPEG."
 
 #: ../lazygal.py:162
 msgid "Run an extra optimization pass an each image."
@@ -132,13 +142,17 @@ msgstr "POŘADÍ"
 msgid ""
 "Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' "
 "to reverse the chosen order."
-msgstr "Pořadí obrázků v adresáři: filename, mtime nebo exif. Přidejte \":reverse\" pro otočení pořadí."
+msgstr ""
+"Pořadí obrázků v adresáři: filename, mtime nebo exif. Přidejte \":reverse\" "
+"pro otočení pořadí."
 
 #: ../lazygal.py:172
 msgid ""
-"Sort order for images in a folder: filename or mtime. Add ':reverse' to "
-"reverse the chosen order."
-msgstr "Pořadí obrázků v adresáři: filename nebo mtime. Přidejte \":reverse\" pro otočení pořadí."
+"Sort order for sub galleries in a folder: filename or mtime. Add ':reverse' "
+"to reverse the chosen order."
+msgstr ""
+"Pořadí alb v adresáři: filename nebo mtime. Přidejte \":reverse\" pro "
+"otočení pořadí."
 
 #: ../lazygal.py:176
 #, python-format
@@ -277,7 +291,8 @@ msgstr "(%s) a podadresáře neobsahují obrázky, byl přeskočen"
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
-"  PŘESKOČENO kvůli mtime, pro zpracování použijte buď touch, nebo parametr --check-all-dirs."
+"  PŘESKOČENO kvůli mtime, pro zpracování použijte buď touch, nebo parametr --"
+"check-all-dirs."
 
 #: ../lazygal/metadata.py:281 ../lazygal/metadata.py:305
 #, python-format

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:18+0100\n"
+"POT-Creation-Date: 2008-12-03 16:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -152,8 +152,8 @@ msgstr ""
 
 #: ../lazygal.py:172
 msgid ""
-"Sort order for images in a folder: filename or mtime. Add ':reverse' to "
-"reverse the chosen order."
+"Sort order for sub galleries in a folder: filename or mtime. Add ':reverse' "
+"to reverse the chosen order."
 msgstr ""
 
 #: ../lazygal.py:176
