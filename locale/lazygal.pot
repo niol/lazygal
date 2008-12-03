@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-07-04 01:10+0200\n"
+"POT-Creation-Date: 2008-12-03 16:18+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,216 +16,261 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:58
+#: ../lazygal.py:67
 msgid "usage: %prog [options] albumdir"
 msgstr ""
 
 #. The help option must be changed to comply with i18n.
-#: ../lazygal.py:62
+#: ../lazygal.py:71
 msgid "Show this help message and exit."
 msgstr ""
 
-#: ../lazygal.py:67
+#: ../lazygal.py:76
 msgid "Don't output anything except for errors."
 msgstr ""
 
-#: ../lazygal.py:71
+#: ../lazygal.py:80
 msgid "Output everything that lazygal is doing."
 msgstr ""
 
-#: ../lazygal.py:75
+#: ../lazygal.py:84
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
 msgstr ""
 
-#: ../lazygal.py:80
+#: ../lazygal.py:89
 msgid "Theme name (looked up in theme directory) or theme full path."
 msgstr ""
 
-#: ../lazygal.py:85
+#: ../lazygal.py:94
 msgid "Default style to apply to the theme."
 msgstr ""
 
-#: ../lazygal.py:90
+#: ../lazygal.py:99
 msgid "Common variables to load all templates with."
 msgstr ""
 
-#: ../lazygal.py:95
+#: ../lazygal.py:104
 msgid "Clean destination directory of files that should not be there."
 msgstr ""
 
-#: ../lazygal.py:99
+#: ../lazygal.py:108
 msgid "Display program version."
 msgstr ""
 
-#: ../lazygal.py:103
+#: ../lazygal.py:112
 msgid ""
 "Exhaustively go through all directories regardless of source modification "
 "time."
 msgstr ""
 
-#: ../lazygal.py:108
+#: ../lazygal.py:117
 msgid ""
 "Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,"
-"medium=1024x768."
-msgstr ""
-
-#: ../lazygal.py:113
-msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
-msgstr ""
-
-#: ../lazygal.py:118
-msgid "Quality of generated JPEG images (default is 85)."
+"medium=1024x768. The special dimensions 0x0 use original size."
 msgstr ""
 
 #: ../lazygal.py:122
+msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
+msgstr ""
+
+#: ../lazygal.py:127
+msgid "Quality of generated JPEG images (default is 85)."
+msgstr ""
+
+#: ../lazygal.py:131
 msgid "Include original photos in output."
 msgstr ""
 
-#: ../lazygal.py:126
+#: ../lazygal.py:136
+msgid ""
+"Do not copy original photos in output directory, instead link them using "
+"submitted relative path as base."
+msgstr ""
+
+#: ../lazygal.py:140
 msgid "Publication URL (only usefull for feed generation)."
 msgstr ""
 
-#: ../lazygal.py:130
+#: ../lazygal.py:144
 msgid "Generate metadata description files where they don't exist."
 msgstr ""
 
-#: ../lazygal.py:135
+#: ../lazygal.py:149
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
 msgstr ""
 
-#: ../lazygal.py:139
+#: ../lazygal.py:153
 msgid "Make a zip archive of original pictures for each directory."
 msgstr ""
 
-#: ../lazygal.py:144
+#: ../lazygal.py:158
 msgid ""
 "Webalbum picture background color. Default is transparent, and implies the "
 "PNG format. Any other value, e.g. red, white, blue, uses JPEG."
 msgstr ""
 
-#: ../lazygal.py:148
+#: ../lazygal.py:162
+msgid "Run an extra optimization pass an each image."
+msgstr ""
+
+#: ../lazygal.py:166
+msgid "Generate Progressive JPEG images."
+msgstr ""
+
+#: ../lazygal.py:168 ../lazygal.py:171
+msgid "ORDER"
+msgstr ""
+
+#: ../lazygal.py:169
+msgid ""
+"Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' "
+"to reverse the chosen order."
+msgstr ""
+
+#: ../lazygal.py:172
+msgid ""
+"Sort order for images in a folder: filename or mtime. Add ':reverse' to "
+"reverse the chosen order."
+msgstr ""
+
+#: ../lazygal.py:176
 #, python-format
 msgid "lazygal version %s"
 msgstr ""
 
-#: ../lazygal.py:153
+#: ../lazygal.py:181
 msgid "Bad command line."
 msgstr ""
 
-#: ../lazygal.py:157
+#: ../lazygal.py:185
 #, python-format
 msgid "Directory %s does not exist."
 msgstr ""
 
-#: ../lazygal/sourcetree.py:50
+#: ../lazygal.py:198
+#, python-format
+msgid "Size name '%s' is reserved for internal processing."
+msgstr ""
+
+#: ../lazygal/sourcetree.py:53
 msgid "Root not found"
 msgstr ""
 
-#: ../lazygal/generators.py:33
+#: ../lazygal/generators.py:36
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
 
-#: ../lazygal/generators.py:122
+#: ../lazygal/generators.py:144
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/generators.py:147
+#: ../lazygal/generators.py:169
 #, python-format
 msgid "  ZIP %s"
 msgstr ""
 
-#: ../lazygal/generators.py:239 ../lazygal/generators.py:356
+#: ../lazygal/generators.py:270 ../lazygal/generators.py:397
 #, python-format
 msgid "  XHTML %s"
 msgstr ""
 
 #. strftime does not work with utf-8...
-#: ../lazygal/generators.py:258
+#: ../lazygal/generators.py:289
 msgid "on %d/%m/%Y at %H:%M"
-msgstr ""
-
-#: ../lazygal/generators.py:415
-#, python-format
-msgid "  Ignoring %s, format not supported."
 msgstr ""
 
 #: ../lazygal/generators.py:466
 #, python-format
+msgid "  Ignoring %s, format not supported."
+msgstr ""
+
+#: ../lazygal/generators.py:523
+#, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:534
+#: ../lazygal/generators.py:563 ../lazygal/generators.py:574
+#, python-format
+msgid "Unknown sorting criterion '%s'"
+msgstr ""
+
+#: ../lazygal/generators.py:611
 msgid "you should "
 msgstr ""
 
-#: ../lazygal/generators.py:535
+#: ../lazygal/generators.py:612
 #, python-format
 msgid "  %sRM %s"
 msgstr ""
 
-#: ../lazygal/generators.py:589
+#: ../lazygal/generators.py:666
 #, python-format
 msgid "FEED %s"
 msgstr ""
 
-#: ../lazygal/generators.py:601
+#: ../lazygal/generators.py:678
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:618
+#: ../lazygal/generators.py:695
 msgid ""
 "We have a template with an extension that does not start with a t. Abording."
 msgstr ""
 
-#: ../lazygal/generators.py:624
+#: ../lazygal/generators.py:701
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:638
+#: ../lazygal/generators.py:715
 msgid "MKDIR %SHAREDDIR%"
 msgstr ""
 
-#: ../lazygal/generators.py:689
+#: ../lazygal/generators.py:779
 #, python-format
 msgid "Theme %s not found"
 msgstr ""
 
-#: ../lazygal/generators.py:784
+#: ../lazygal/generators.py:882
 #, python-format
 msgid "Generating metadata in %s"
 msgstr ""
 
-#: ../lazygal/generators.py:788 ../lazygal/generators.py:824
+#: ../lazygal/generators.py:886 ../lazygal/generators.py:922
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr ""
 
-#: ../lazygal/generators.py:796
+#: ../lazygal/generators.py:894
 msgid "  SKIPPED because metadata exists."
 msgstr ""
 
-#: ../lazygal/generators.py:805
+#: ../lazygal/generators.py:903
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 
-#: ../lazygal/generators.py:807
+#: ../lazygal/generators.py:905
 #, python-format
 msgid "Generating to %s"
 msgstr ""
 
-#: ../lazygal/generators.py:821
+#: ../lazygal/generators.py:919
 #, python-format
 msgid "(%s) has been skipped"
 msgstr ""
 
-#: ../lazygal/generators.py:856
+#: ../lazygal/generators.py:935
+#, python-format
+msgid "(%s) and childs have no photos, skipped"
+msgstr ""
+
+#: ../lazygal/generators.py:959
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
@@ -245,23 +290,23 @@ msgstr ""
 msgid "GEN %s"
 msgstr ""
 
-#: ../lazygal/tpl.py:101
+#: ../lazygal/tpl.py:102
 msgid "Unknown template type"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:27
+#: ../themes/default/dirindex.thtml:28
 msgid "Parent"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:79
+#: ../themes/default/dirindex.thtml:81
 msgid "All full scale picture as an archive, for"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:86 ../themes/default/browse.thtml:75
+#: ../themes/default/dirindex.thtml:88 ../themes/default/browse.thtml:75
 msgid "Generated by"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:86 ../themes/default/browse.thtml:75
+#: ../themes/default/dirindex.thtml:88 ../themes/default/browse.thtml:75
 msgid "on"
 msgstr ""
 
@@ -273,36 +318,36 @@ msgstr ""
 msgid "Taken"
 msgstr ""
 
-#: ../themes/default/browse.thtml:58
-msgid "Using"
+#: ../themes/default/browse.thtml:55
+msgid "Original picture"
 msgstr ""
 
 #: ../themes/default/browse.thtml:59
+msgid "Using"
+msgstr ""
+
+#: ../themes/default/browse.thtml:60
 msgid "with"
 msgstr ""
 
-#: ../themes/default/browse.thtml:61
+#: ../themes/default/browse.thtml:62
 msgid "Exposure"
 msgstr ""
 
-#: ../themes/default/browse.thtml:62
+#: ../themes/default/browse.thtml:63
 msgid "Sensitivity ISO"
 msgstr ""
 
-#: ../themes/default/browse.thtml:63
+#: ../themes/default/browse.thtml:64
 msgid "Aperture"
 msgstr ""
 
-#: ../themes/default/browse.thtml:64
+#: ../themes/default/browse.thtml:65
 msgid "Flash"
 msgstr ""
 
-#: ../themes/default/browse.thtml:65
-msgid "Focal length"
-msgstr ""
-
 #: ../themes/default/browse.thtml:66
-msgid "Original picture"
+msgid "Focal length"
 msgstr ""
 
 #: ../themes/default/feeditem.thtml:4
