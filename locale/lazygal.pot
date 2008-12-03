@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:43+0100\n"
+"POT-Creation-Date: 2008-12-03 16:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,6 +162,11 @@ msgstr ""
 
 #: ../lazygal/generators.py:36
 msgid "Could not find themes dir, check your installation!"
+msgstr ""
+
+#: ../lazygal/generators.py:86
+#, python-format
+msgid "  RESIZE %s"
 msgstr ""
 
 #: ../lazygal/generators.py:144

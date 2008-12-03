@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:43+0100\n"
-"PO-Revision-Date: 2008-12-03 16:43+0100\n"
+"POT-Creation-Date: 2008-12-03 16:45+0100\n"
+"PO-Revision-Date: 2008-12-03 16:45+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -180,6 +180,11 @@ msgstr "Kořenový adresář nebyl nalezen"
 #: ../lazygal/generators.py:36
 msgid "Could not find themes dir, check your installation!"
 msgstr "Nepodařilo se nalézt adresář s tématy, zkontrolujte vaší instalaci!"
+
+#: ../lazygal/generators.py:86
+#, python-format
+msgid "  RESIZE %s"
+msgstr "  ZMENŠIT %s"
 
 #: ../lazygal/generators.py:144
 #, python-format

@@ -83,7 +83,7 @@ class ImageOtherSize(make.FileMakeObject):
         self.add_dependency(self.source_image)
 
     def build(self):
-        self.dir.album.log("  RESIZE %s" % os.path.basename(self.osize_path),
+        self.dir.album.log(_("  RESIZE %s") % os.path.basename(self.osize_path),
                            'info')
         self.dir.album.log("(%s)" % self.osize_path)
 

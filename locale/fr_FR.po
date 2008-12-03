@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:43+0100\n"
+"POT-Creation-Date: 2008-12-03 16:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -183,6 +183,11 @@ msgstr "La racine n'a pas été trouvée"
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
 "Le répertoire des thèmes n'a pas été trouvé, vétifier votre installation!"
+
+#: ../lazygal/generators.py:86
+#, fuzzy, python-format
+msgid "  RESIZE %s"
+msgstr "  DIRPIC %s"
 
 #: ../lazygal/generators.py:144
 #, python-format
