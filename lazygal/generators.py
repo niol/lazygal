@@ -438,7 +438,8 @@ class WebalbumIndexPage(WebalbumPage):
         values['title'] = self.dir.human_name
 
         if self.dir.album.dirzip and self.dir.dirzip:
-            values['dirzip'] = os.path.basename(self.dir.dirzip.path)
+            archive_name = os.path.basename(self.dir.dirzip.path)
+            values['dirzip'] = self.url_quote(archive_name)
 
         self.page_template.dump(values, self.page_path)
 
