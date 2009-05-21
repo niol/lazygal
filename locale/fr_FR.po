@@ -191,7 +191,7 @@ msgstr "La racine n'a pas été trouvée"
 #: ../lazygal/generators.py:36
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
-"Le répertoire des thèmes n'a pas été trouvé, vétifier votre installation!"
+"Le répertoire des thèmes n'a pas été trouvé, vérifier votre installation!"
 
 #: ../lazygal/generators.py:86
 #, fuzzy, python-format
