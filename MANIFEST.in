@@ -1,5 +1,12 @@
+include ChangeLog
 include COPYING
 include README
-include lazygal.1
+include TODO
+include lazygal.1.xml
 recursive-include themes *.thtml
 recursive-include themes *.css
+recursive-include themes *.tcss
+include locale/*.po
+include locale/lazygal.pot
+include locale/POTFILES.in
+include devscripts/*
