@@ -99,6 +99,9 @@ msgid ""
 "Do not copy original photos in output directory, instead link them using "
 "submitted relative path as base."
 msgstr ""
+"Ne pas copier les photos originales dans le répertoire de production de"
+"l'album web, au lieu de cela les référencer directement en utilisant le"
+"chemin relatif de base fourni"
 
 #: ../lazygal.py:140
 msgid "Publication URL (only usefull for feed generation)."
@@ -134,11 +137,11 @@ msgstr ""
 
 #: ../lazygal.py:162
 msgid "Run an extra optimization pass an each image."
-msgstr ""
+msgstr "Lançer une étape supplémentaire d'optimisation pour chaque image."
 
 #: ../lazygal.py:166
 msgid "Generate Progressive JPEG images."
-msgstr ""
+msgstr "Générer des images JPEG à amélioration progressive."
 
 #: ../lazygal.py:168 ../lazygal.py:171
 msgid "ORDER"
@@ -149,12 +152,18 @@ msgid ""
 "Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' "
 "to reverse the chosen order."
 msgstr ""
+"Ordre de classement pour les images dans un dossier : par nom de fichier"
+"'filename', date de modification de fichier 'mtime' ou date de prise de vue"
+"'exif'. Ajouter ':reverse' pour inverser l'ordre'"
 
 #: ../lazygal.py:172
 msgid ""
 "Sort order for sub galleries in a folder: filename or mtime. Add ':reverse' "
 "to reverse the chosen order."
 msgstr ""
+"Ordre de classement pour les sous-galleries : par nom de fichier"
+"'filename' ou date de modification de fichier 'mtime'."
+"Ajouter ':reverse' pour inverser l'ordre'"
 
 #: ../lazygal.py:176
 #, python-format
@@ -173,7 +182,7 @@ msgstr "La répertoire %s n'existe pas."
 #: ../lazygal.py:198
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
-msgstr ""
+msgstr "La taille '%s' est réservée pour le fonctionnement interne."
 
 #: ../lazygal/sourcetree.py:53
 msgid "Root not found"
@@ -222,7 +231,7 @@ msgstr "  MKDIR %%WEBALBUMROOT%%/%s"
 #: ../lazygal/generators.py:563 ../lazygal/generators.py:574
 #, python-format
 msgid "Unknown sorting criterion '%s'"
-msgstr ""
+msgstr "Critère de classement inconnu '%s'"
 
 #: ../lazygal/generators.py:611
 msgid "you should "
