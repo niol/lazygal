@@ -1,3 +1,38 @@
+Lazygal 0.4.1
+  * update TODO
+  * fixed typo in french translation
+  * update french translation
+  * bring MANIFEST.in up to date with current dist
+  * urlencode dirzip urls
+  * Make RESIZE translatable
+  * Fix description of --subgal-sort-by
+  * Czech translation update
+  * POT update
+  * fix parent link tpl var name in default theme
+  * new cmdline option --orig-base (Debian Closes: #504039)
+  * default theme: original link is not technical
+  * do not build destgal if the dir has no photos, thus do not create empty webgal dir
+  * do not capword in str_humanize
+  * fix up typos in previous url_quote patch
+  * no subgals for dirs with no photos
+  * quote most urls in page links
+  * do not break up filename and extension for directories
+  * fix unicode error when source_dir has got non-ascii chars
+  * remove useless sorting of subdir names before options are taken into account
+  * allow subgal sorting and reverse sorting of pics and subgals
+  * make webalbum browsable directly on filesystem
+  * improve sorting when no EXIF data is available and give more sorting options
+  * add progressive and optimize image saving options (thanks to Ian Zimmerman)
+  * add missing default values in a config object (thanks to Ian Zimmerman)
+  * handle EXIF flash values localized by some cameras
+  * fix typo in french translation
+  * generate manpage using docbook
+  * %z in strftime hack for feed generation : add python issue link
+  * -s now understands the special dimensions 0x0 which instructs not to resize for this size
+  * useless typo fix in feed generator
+  * make thumb size name a variable
+  * Handle non-ascii dates
+
 Lazygal 0.4
   * set version to 0.4
   * output tpl gen date in current local to match i18n
