@@ -66,7 +66,7 @@ class build_manpages(Command):
                        xmlmanpage)
                 self.spawn(cmd)
 
-            targetpath = os.path.join("share", "man")
+            targetpath = os.path.join("share", "man", 'man1')
             data_files.append((targetpath, (manpage, ), ))
 
 
@@ -250,8 +250,7 @@ setup(name = 'lazygal',
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
         },
-    data_files = theme_data +
-        [(os.path.join('share','man','man1'), ['lazygal.1'])]
+    data_files = theme_data
     )
 
 # vim: ts=4 sw=4 expandtab
