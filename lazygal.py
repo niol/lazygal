@@ -24,6 +24,7 @@ import ConfigParser
 
 import lazygal
 from lazygal.generators import Album, SOURCEDIR_CONFIGFILE, THUMB_SIZE_NAME
+from lazygal.newsize import is_known_newsizer
 
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
@@ -114,12 +115,12 @@ parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",
                   default=config.get('lazygal', 'image-size'),
-                  help=_("Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,medium=1024x768. The special dimensions 0x0 use original size."))
+                  help=_("Size of images, define as <name>=SIZE,..., eg. small=800x600,medium=1024x768. The special dimensions 0x0 use original size. See manual page for SIZE syntax."))
 parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
                   dest="thumbnail_size",
                   default=config.get('lazygal', 'thumbnail-size'),
-                  help=_("Size of thumbnails, define as <x>x<y>, eg. 150x113."))
+                  help=_("Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE syntax."))
 parser.add_option("-q", "--quality",
                   action="store", type="int",
                   dest="quality",
@@ -190,7 +191,7 @@ sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
 if os.path.isfile(sourcedir_configfile):
     config.read(sourcedir_configfile)
 
-sizes = []
+size_strings = []
 size_defs = options.image_size.split(',')
 for single_def in size_defs:
     name, string_size = single_def.split('=')
@@ -198,11 +199,17 @@ for single_def in size_defs:
         print _("Size name '%s' is reserved for internal processing.")\
                 % THUMB_SIZE_NAME
         sys.exit(1)
-    x, y = string_size.split('x')
-    sizes.append((name, (int(x), int(y))))
+    if not is_known_newsizer(string_size):
+        print _("'%s' for size '%s' does not describe a known size syntax.")\
+                % (string_size, name, )
+        sys.exit(1)
+    size_strings.append((name, string_size))
 
-x, y = options.thumbnail_size.split('x')
-thumbnail = (int(x), int(y))
+thumb_size_string = options.thumbnail_size
+if not is_known_newsizer(thumb_size_string):
+    print _("'%s' for thumb size does not describe a known size syntax.")\
+            % thumb_string_size
+    sys.exit(1)
 
 def parse_sort(sort_string):
     try:
@@ -215,7 +222,8 @@ def parse_sort(sort_string):
     else:
         return sort_method, False
 
-album = Album(source_dir, thumbnail, sizes, quality=options.quality,
+album = Album(source_dir, thumb_size_string, size_strings,
+              quality=options.quality,
               optimize=options.optimize, progressive=options.progressive,
               thumbs_per_page=options.thumbs_per_page,
               dirzip=options.dirzip,

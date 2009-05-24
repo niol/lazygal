@@ -108,7 +108,9 @@ class ImageFile(File):
         if not img_path:
             img_path = self.path
         im = Image.open(img_path)
-        return im.size
+        size = im.size
+        del im
+        return size
 
     def has_exif_date(self):
         exif_date = self.info().get_date()

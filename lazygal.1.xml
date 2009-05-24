@@ -169,7 +169,8 @@
           <replaceable>name</replaceable>=<replaceable>x</replaceable>x<replaceable>y</replaceable>,
           ..., eg.
           small=800x600,medium=1024x768. The special dimensions
-          0x0 use original size.</para>
+          0x0 use original size. Refer to the IMAGE RESIZE DESCRIPTION section
+          for more information on the available syntax.</para>
         </listitem>
       </varlistentry>
 
@@ -180,9 +181,9 @@
           </option>
         </term>
         <listitem>
-          <para>Size of thumbnails, define as
-          <replaceable>x</replaceable>x<replaceable>y</replaceable>,
-          eg. 150x113.</para>
+          <para>Size of thumbnails, eg. 150x113.
+          Refer to the IMAGE RESIZE DESCRIPTION section for more information
+          on the available syntax.</para>
         </listitem>
       </varlistentry>
 
@@ -397,6 +398,94 @@
       </varlistentry>
 
     </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>SIZE DESCRIPTION</title>
+
+    <para>The size string follows the same syntax as ImageMagick's.</para>
+
+      <varlistentry>
+        <term><parameter>scale</parameter>%</term>
+        <listitem>
+            <para>Height and width both scaled by specified percentage.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <parameter>xscale</parameter>%<parameter>yscale</parameter>%
+        </term>
+        <listitem>
+            <para>Height and width individually scaled by specified percentages.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>width</parameter></term>
+        <listitem>
+            <para>Width given, height automatically selected to preserve aspect ratio.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>x<parameter>height</parameter></term>
+        <listitem>
+            <para>Height given, width automatically selected to preserve aspect ratio.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>width</parameter>x<parameter>height</parameter></term>
+        <listitem>
+            <para>Maximum values of height and width given, aspect ratio
+            preserved.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>width</parameter>x<parameter>height</parameter>^</term>
+        <listitem>
+            <para>Minimum values of width and height given, aspect ratio
+            preserved.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>width</parameter>x<parameter>height</parameter>!</term>
+        <listitem>
+            <para>Width and height emphatically given, original aspect ratio ignored.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <parameter>width</parameter>x<parameter>height</parameter>&gt;
+        </term>
+        <listitem>
+            <para>Change as per the supplied dimensions but only if an image
+            dimension exceeds a specified dimension.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <parameter>width</parameter>x<parameter>height</parameter>&lt;
+        </term>
+        <listitem>
+            <para>Change dimensions only if both image dimensions exceed
+            specified dimensions.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><parameter>pixels</parameter>@</term>
+        <listitem>
+            <para>Resize image to have specified area in pixels. Aspect
+            ratio is preserved.</para>
+        </listitem>
+      </varlistentry>
 
   </refsect1>
 

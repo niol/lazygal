@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, glob, sys
+import re
 import urllib
 import zipfile
 import locale
@@ -26,7 +27,9 @@ import ImageFile as PILImageFile
 import genshi
 
 import __init__
-from lazygal import make, sourcetree, tpl, metadata, feeds, eyecandy
+from lazygal import make
+from lazygal import sourcetree, metadata
+from lazygal import newsize, tpl, metadata, feeds, eyecandy
 
 
 DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
@@ -74,27 +77,27 @@ class ImageOtherSize(make.FileMakeObject):
                                                   size_name))
         make.FileMakeObject.__init__(self, self.osize_path)
 
-        self.size_name = size_name
-        if self.size_name == THUMB_SIZE_NAME:
-            self.size = self.dir.album.thumb_size
-        else:
-            self.size = self.dir.album.browse_sizes[size_name]
+        self.newsizer = self.dir.album.newsizers[size_name]
 
         self.add_dependency(self.source_image)
 
     def build(self):
         self.dir.album.log(_("  RESIZE %s") % os.path.basename(self.osize_path),
                            'info')
+
         self.dir.album.log("(%s)" % self.osize_path)
 
         im = Image.open(self.source_image.path)
+
+        new_size = self.newsizer.dest_size(im.size)
+
+        im.draft(None, new_size)
+        im = im.resize(new_size, Image.ANTIALIAS)
 
         # Use EXIF data to rotate target image if available and required
         rotation = self.source_image.info().get_required_rotation()
         if rotation != 0:
             im = im.rotate(rotation)
-
-        im.thumbnail(self.size, Image.ANTIALIAS)
 
         calibrated = False
         while not calibrated:
@@ -214,7 +217,7 @@ class WebalbumPage(make.FileMakeObject):
 
     def _get_osize_links(self, filename):
         osize_index_links = []
-        for osize_name in self.dir.album.browse_sizes.keys():
+        for osize_name in self.dir.album.browse_size_strings.keys():
             osize_info = {}
             if osize_name == self.size_name:
                 # No link if we're on the current page
@@ -245,7 +248,7 @@ class WebalbumBrowsePage(WebalbumPage):
         self.image = image_file
         WebalbumPage.__init__(self, dir, size_name, self.image.name)
 
-        if self.dir.album.browse_sizes[size_name] == (0, 0):
+        if self.dir.album.browse_size_strings[size_name] == '0x0':
             self.add_dependency(ImageOriginal(self.dir, self.image))
         else:
             self.add_dependency(ImageOtherSize(self.dir,
@@ -544,7 +547,7 @@ class WebalbumDir(LightWebalbumDir):
             assert how_many_pages > 1
             self.how_many_pages = how_many_pages
 
-        for size_name in self.album.browse_sizes.keys():
+        for size_name in self.album.browse_size_strings.keys():
             for page_number in range(0, self.how_many_pages):
                 self.add_dependency(WebalbumIndexPage(self, size_name,
                                                       page_number))
@@ -736,9 +739,10 @@ class SharedFiles(make.FileSimpleDependency):
 
 class Album:
 
-    def __init__(self, source_dir, thumb_size, browse_sizes,
-                 optimize=False, progressive=False,
-                 quality=85, thumbs_per_page=0, dirzip=False,
+    def __init__(self, source_dir, thumb_size_string, browse_size_strings,
+                 optimize=False, progressive=False, quality=85,
+                 thumbs_per_page=0,
+                 dirzip=False,
                  pic_sort_by=('exif', False),
                  subgal_sort_by=('filename', False)):
         self.set_logging()
@@ -746,10 +750,15 @@ class Album:
         self.source_dir = os.path.abspath(source_dir)
         self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
-        self.thumb_size = thumb_size
-        self.browse_sizes = dict(browse_sizes)
+        self.thumb_size_string = thumb_size_string
+        self.browse_size_strings = dict(browse_size_strings)
+        self.newsizers = {}
+        for size_name, size_string in self.browse_size_strings.items():
+            self.newsizers[size_name] = newsize.get_newsizer(size_string)
+        self.newsizers[THUMB_SIZE_NAME] = newsize.get_newsizer(self.thumb_size_string)
+
+        self.default_size_name = browse_size_strings[0][0]
         self.quality = quality
-        self.default_size_name = browse_sizes[0][0]
 
         self.templates = {}
         self.tpl_loader = None
@@ -855,8 +864,9 @@ class Album:
         if size_name == self.default_size_name and extension == '.html':
             # Do not append default size name to HTML page filename
             return path
-        elif size_name in self.browse_sizes.keys()\
-        and self.browse_sizes[size_name] == (0, 0) and extension != '.html':
+        elif size_name in self.browse_size_strings.keys()\
+        and self.browse_size_strings[size_name] == '0x0'\
+        and extension != '.html':
             # Do not append size_name to unresized images.
             return path
         else:

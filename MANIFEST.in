@@ -10,3 +10,4 @@ include locale/*.po
 include locale/lazygal.pot
 include locale/POTFILES.in
 include devscripts/*
+include lazygaltest/*py
