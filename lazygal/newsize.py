@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
+import types
 import re
 import math
 
@@ -180,18 +181,12 @@ class Area(_Newsize):
         return (int(math.sqrt(x * area / y)), int(math.sqrt(y * area / x)))
 
 
-resize_patterns = (
-    Scale,
-    XYScale,
-    Width,
-    Height,
-    MaximumWidthHeight,
-    MinimumWidthHeight,
-    MandatoryWidthHeight,
-    WidthHeightIfLarger,
-    WidthHeightIfSmaller,
-    Area,
-)
+resize_patterns = []
+for name, obj in globals().items():
+    if not name.startswith('_')\
+    and isinstance(obj, (type, types.ClassType)) and issubclass(obj, _Newsize):
+        resize_patterns.append(obj)
+
 
 def get_newsizer(resize_string):
     newsizer_it = iter(resize_patterns)
