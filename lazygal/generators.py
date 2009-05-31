@@ -850,6 +850,7 @@ class Album:
     def log(self, msg, level='debug'):
         if self.log_levels.index(level)\
            >= self.log_levels.index(self.log_level):
+            msg = msg.encode(locale.getpreferredencoding())
             if level == 'error':
                 print >> self.log_errpipe, msg
             else:
