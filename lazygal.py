@@ -191,6 +191,25 @@ sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
 if os.path.isfile(sourcedir_configfile):
     config.read(sourcedir_configfile)
 
+    # Load the defaults now that all the config files are red
+    default_from_config = {}
+    # (section template-vars is handled later in the script)
+    for name, value in config.items('lazygal'):
+        # FIXME: Not to proud of the following but config options need a big
+        # refactoring and their proper module, I'll save this for later.
+        if value == 'Yes': value = True
+        elif value == 'No': value = False
+        else:
+            try:
+                value = int(value)
+            except ValueError: pass
+        default_from_config[name.replace('-', '_')] = value
+    parser.set_defaults(**default_from_config)
+
+    # Reparse a second time for the new defaults (from the source directory
+    # config file) to be taken into account.
+    (options, args) = parser.parse_args()
+
 size_strings = []
 size_defs = options.image_size.split(',')
 for single_def in size_defs:

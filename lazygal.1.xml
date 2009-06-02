@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>May 2009</date>">
+  <!ENTITY dhdate      "<date>June 2009</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -387,6 +387,17 @@
         <term><filename>~/.lazygal/config</filename></term>
         <listitem>
             <para>User configuration file. INI like file format.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <filename><parameter>SOURCE_DIR</parameter>/.lazygal</filename>
+        </term>
+        <listitem>
+            <para>Gallery configuration file. INI like file format. Overloads
+            the user configuration file, is overloaded by command line
+            options.</para>
         </listitem>
       </varlistentry>
 
