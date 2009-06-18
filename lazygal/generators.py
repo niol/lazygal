@@ -614,8 +614,8 @@ class WebalbumDir(LightWebalbumDir):
                         os.unlink(rmv_candidate)
                         text = ""
                     else:
-                        text = _("you should ")
-                    self.album.log(_("  %sRM %s") % (text, dest_file), 'info')
+                        text = _("you should")
+                    self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
         make.FileMakeObject.make(self, force)
