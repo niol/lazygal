@@ -930,6 +930,10 @@ class Album:
             if dir.should_be_skipped():
                 self.log(_("(%s) has been skipped") % dir.path)
                 continue
+            if dir.path == os.path.join(sane_dest_dir,
+                                        DEST_SHARED_DIRECTORY_NAME):
+                self.log(_("(%s) has been skipped because its name collides with the shared material directory name") % dir.path, 'error')
+                continue
 
             self.log(_("[Entering %%ALBUMROOT%%/%s]") % dir.strip_root(),
                      'info')
