@@ -860,7 +860,7 @@ class Album:
 
     def _is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
-        return extension.lower() in ['.jpg']
+        return extension.lower() in ['.jpg', '.jpeg']
 
     def _add_size_qualifier(self, path, size_name):
         filename, extension = os.path.splitext(path)
