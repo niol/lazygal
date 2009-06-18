@@ -62,16 +62,54 @@ class File(make.FileSimpleDependency):
 
     def rel_root(self):
         if os.path.isdir(self.path):
+            path = self.path
+        else:
+            path = os.path.dirname(self.path)
+        return self.rel_path(path, self.album.source_dir)
+
+    def rel_path(self, from_dir, path=None):
+        try:
+            from_dir = from_dir.path
+        except AttributeError:
+            pass
+
+        if path is None:
+            path = self.path
+
+        rel_path = ""
+        common_path = from_dir
+        while common_path != self.album.source_dir\
+        and not self.is_subdir_of(common_path, path):
+            common_path, tail = os.path.split(common_path)
+            rel_path = os.path.join('..', rel_path)
+            if common_path == '/':
+                raise Exception(_("Root not found"))
+
+        if self.is_subdir_of(common_path, path):
+            rel_path = os.path.join(rel_path, path[len(common_path)+1:])
+
+        return rel_path
+
+    def is_subdir_of(self, dir, path=None):
+        if path is None:
+            path = self.path
+
+        try:
+            return path.startswith(dir.path)
+        except AttributeError:
+            return path.startswith(dir)
+
+    def get_album_level(self):
+        if os.path.isdir(self.path):
             cur_path = self.path
         else:
             cur_path = os.path.dirname(self.path)
 
-        rel_root = ""
-
+        album_level = 0
         while cur_path != self.album.source_dir:
             cur_path, tail = os.path.split(cur_path)
-            rel_root = os.path.join('..', rel_root)
-        return rel_root
+            album_level += 1
+        return album_level
 
     SKIPPED_DIRS = ('.svn', '_darcs', '.bzr', '.git', '.hg', 'CVS', )
 

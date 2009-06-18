@@ -67,25 +67,42 @@ class ImageOriginal(make.FileCopy):
         make.FileCopy.build(self)
 
 
-class ImageOtherSize(make.FileMakeObject):
+class WebalbumFile(make.FileMakeObject):
+
+    def __init__(self, path, dir):
+        make.FileMakeObject.__init__(self, path)
+        self.dir = dir
+        self.path = path
+
+    def _rel_path(self, dir=None):
+        rel_path = os.path.basename(self.path)
+        if dir is None or dir is self.dir:
+            return rel_path
+        else:
+            dir_in = dir.source_dir
+            rel_dir_in = self.dir.source_dir.rel_path(dir_in)
+            return os.path.join(rel_dir_in, rel_path)
+
+
+class ImageOtherSize(WebalbumFile):
 
     def __init__(self, dir, source_image, size_name):
         self.dir = dir
         self.source_image = source_image
-        self.osize_path = os.path.join(self.dir.path,
+        path = os.path.join(self.dir.path,
                self.dir.album._add_size_qualifier(self.source_image.filename,
                                                   size_name))
-        make.FileMakeObject.__init__(self, self.osize_path)
+        WebalbumFile.__init__(self, path, dir)
 
         self.newsizer = self.dir.album.newsizers[size_name]
 
         self.add_dependency(self.source_image)
 
     def build(self):
-        self.dir.album.log(_("  RESIZE %s") % os.path.basename(self.osize_path),
-                           'info')
+        img_rel_path = self._rel_path(self.dir.flattening_dir)
+        self.dir.album.log(_("  RESIZE %s") % img_rel_path, 'info')
 
-        self.dir.album.log("(%s)" % self.osize_path)
+        self.dir.album.log("(%s)" % self.path)
 
         im = Image.open(self.source_image.path)
 
@@ -102,7 +119,7 @@ class ImageOtherSize(make.FileMakeObject):
         calibrated = False
         while not calibrated:
             try:
-                im.save(self.osize_path, quality = self.dir.album.quality, **self.dir.album.save_options)
+                im.save(self.path, quality = self.dir.album.quality, **self.dir.album.save_options)
             except IOError, e:
                 if str(e).startswith('encoder error'):
                     PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
@@ -149,14 +166,13 @@ class WebalbumPicture(make.FileMakeObject):
         self.dirpic.write(self.path)
 
 
-class WebalbumArchive(make.FileMakeObject):
+class WebalbumArchive(WebalbumFile):
 
     def __init__(self, lightdir):
         self.path = os.path.join(lightdir.path,
                                  lightdir.source_dir.name + '.zip')
-        make.FileMakeObject.__init__(self, self.path)
+        WebalbumFile.__init__(self, self.path, lightdir)
 
-        self.dir = lightdir
         self.album = self.dir.album
 
         self.dir.dirzip = self
@@ -169,7 +185,8 @@ class WebalbumArchive(make.FileMakeObject):
             self.add_file_dependency(pic)
 
     def build(self):
-        self.album.log(_("  ZIP %s") % os.path.basename(self.path), 'info')
+        zip_rel_path = self._rel_path(self.dir.flattening_dir)
+        self.album.log(_("  ZIP %s") % zip_rel_path, 'info')
         self.album.log("(%s)" % self.path)
 
         archive = zipfile.ZipFile(self.path, mode='w')
@@ -182,7 +199,7 @@ class WebalbumArchive(make.FileMakeObject):
         archive.close()
 
 
-class WebalbumPage(make.FileMakeObject):
+class WebalbumPage(WebalbumFile):
 
     def __init__(self, dir, size_name, base_name):
         self.dir = dir
@@ -190,20 +207,28 @@ class WebalbumPage(make.FileMakeObject):
 
         page_filename = self._add_size_qualifier(base_name + '.html',
                                                  self.size_name)
-        self.page_path = os.path.join(self.dir.path, page_filename)
-        make.FileMakeObject.__init__(self, self.page_path)
+        self.page_path = os.path.join(dir.path, page_filename)
+        WebalbumFile.__init__(self, self.page_path, dir)
 
-    def _gen_other_img_link(self, img):
+    def _gen_other_img_link(self, img, dir=None):
         if img:
-            link_vals = {}
-            link_vals['link'] = self._add_size_qualifier(img.name + '.html',
-                                                         self.size_name)
-            link_vals['link'] = self.url_quote(link_vals['link'])
-            link_vals['thumb'] = self._add_size_qualifier(img.name\
-                                                          + img.extension,
-                                                          THUMB_SIZE_NAME)
+            if dir is None:
+                dir = self.dir
+                img_rel_path = ''
+            else:
+                img_rel_path = dir.source_dir.rel_path(self.dir.source_dir) + '/'
 
-            thumb = os.path.join(self.dir.path,
+            link_vals = {}
+            link_vals['link'] = img_rel_path
+            link_vals['link'] += self._add_size_qualifier(img.name + '.html',
+                                                          self.size_name)
+            link_vals['link'] = self.url_quote(link_vals['link'])
+            link_vals['thumb'] = img_rel_path
+            link_vals['thumb'] += self._add_size_qualifier(img.filename,
+                                                          THUMB_SIZE_NAME)
+            link_vals['thumb'] = self.url_quote(link_vals['thumb'])
+
+            thumb = os.path.join(dir.path,
                                  self._add_size_qualifier(img.filename,
                                                           THUMB_SIZE_NAME))
             link_vals['thumb_width'],\
@@ -270,8 +295,8 @@ class WebalbumBrowsePage(WebalbumPage):
                                                    THUMB_SIZE_NAME))
 
     def build(self):
-        self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
-                           'info')
+        page_rel_path = self._rel_path(self.dir.flattening_dir)
+        self.dir.album.log(_("  XHTML %s") % page_rel_path, 'info')
         self.dir.album.log("(%s)" % self.page_path)
 
         tpl_values = {}
@@ -297,8 +322,13 @@ class WebalbumBrowsePage(WebalbumPage):
             self._gen_other_img_link(self.image.previous_image)
         tpl_values['next_link'] =\
             self._gen_other_img_link(self.image.next_image)
+
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
+        if self.dir.should_be_flattened():
+            index_rel_dir = self.dir.flattening_dir.source_dir.rel_path(self.dir.source_dir)
+            tpl_values['index_link'] = index_rel_dir + tpl_values['index_link']
+
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
@@ -336,37 +366,65 @@ class WebalbumIndexPage(WebalbumPage):
 
         self.page_number = page_number
 
-        if self.dir.album.thumbs_per_page == 0:
-            # No pagination
-            self.images = dir.images
-            self.dirnames = dir.source_dir.dirnames
-            self.subdirs = dir.subdirs
-        else:
-            step = self.page_number * self.dir.album.thumbs_per_page
-            self.images = dir.images[step:step+self.dir.album.thumbs_per_page]
+        self.subdirs, self.galleries = self.presented_elements()
 
-            # subgal links only for first page
-            if self.page_number == 0:
-                self.dirnames = dir.source_dir.dirnames
-                self.subdirs = dir.subdirs
+        for dir, images in self.galleries:
+            self.add_dependency(dir.metadata)
+            if dir is not self.dir:
+                dir.flattening_dir = self.dir
+                self.add_dependency(dir.webgal_dir)
+
+            for image in images:
+                thumb_dep = ImageOtherSize(dir, image, THUMB_SIZE_NAME)
+                self.add_dependency(thumb_dep)
+                browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
+                self.add_dependency(browse_page_dep)
+
+            if self.dir.album.dirzip and dir.get_image_count() > 1:
+                self.add_dependency(WebalbumArchive(dir))
+
+    def presented_elements(self):
+        galleries = []
+        if self.dir.album.thumbs_per_page == 0: # No pagination
+            galleries.append((self.dir, self.dir.images))
+            if self.dir.flatten_below():
+                subdirs = []
+                for dir in self.dir.get_all_subdirs():
+                    galleries.append((dir, dir.webgal_dir.images))
             else:
-                self.dirnames = []
-                self.subdirs = []
+                subdirs = self.dir.subdirs
+        else:
+            if self.dir.flatten_below(): # Loose pagination not breaking subgals
+                subdirs = [] # No subdir links as they are flattened
 
-        for image in self.images:
-            thumb_dep = ImageOtherSize(self.dir, image, THUMB_SIZE_NAME)
-            self.add_dependency(thumb_dep)
-            image_dep = WebalbumBrowsePage(self.dir, size_name, image)
-            self.add_dependency(image_dep)
+                how_many_images = 0
+                subdirs_it = iter([self.dir] + self.dir.get_all_subdirs())
+                try:
+                    # Skip galleries of previous pages.
+                    while how_many_images <\
+                          self.page_number * self.dir.album.thumbs_per_page:
+                        subdir = subdirs_it.next()
+                        how_many_images += subdir.get_image_count()
+                    # While we're still complying with image quota, add
+                    # galleries.
+                    how_many_images = 0
+                    while how_many_images < self.dir.album.thumbs_per_page:
+                        subdir = subdirs_it.next()
+                        how_many_images += subdir.get_image_count()
+                        galleries.append((subdir, subdir.webgal_dir.images))
+                except StopIteration:
+                    pass
+            else: # Real pagination
+                step = self.page_number * self.dir.album.thumbs_per_page
+                images = self.dir.images[step:step+self.dir.album.thumbs_per_page]
+                galleries.append((self.dir, images))
+                # subgal links only for first page
+                if self.page_number == 0:
+                    subdirs = self.dir.subdirs
+                else:
+                    subdirs = []
 
-        for subdir in self.subdirs:
-            self.add_dependency(subdir)
-            self.add_dependency(subdir.metadata)
-
-        self.page_template = self.dir.album.templates['dirindex.thtml']
-        self.add_file_dependency(self.page_template.path)
-
-        self.add_dependency(dir.metadata)
+        return subdirs, galleries
 
     def _get_paginated_name(self, page_number=None):
         if page_number == None:
@@ -378,6 +436,11 @@ class WebalbumIndexPage(WebalbumPage):
         else:
             return '_'.join([WebalbumIndexPage.FILENAME_BASE_STRING,
                              str(page_number)])
+
+    def _get_related_index_fn(self):
+        return self._add_size_qualifier(\
+                            WebalbumIndexPage.FILENAME_BASE_STRING + '.html',
+                            self.size_name)
 
     def _get_onum_links(self):
         onum_index_links = []
@@ -396,6 +459,40 @@ class WebalbumIndexPage(WebalbumPage):
 
         return onum_index_links
 
+    def _get_dir_info(self, dir=None):
+        if dir is None:
+            dir = self.dir
+
+        dir_info = {}
+        if dir.metadata:
+            dir_info.update(dir.metadata.get())
+            if 'album_description' in dir_info.keys():
+                dir_info['album_description'] =\
+                    self._do_not_escape(dir_info['album_description'])
+
+        if 'album_name' not in dir_info.keys():
+            dir_info['album_name'] = dir.human_name
+
+        if self.dir.album.dirzip and dir.dirzip:
+            archive_rel_path = dir.dirzip._rel_path(self.dir)
+            dir_info['dirzip'] = self.url_quote(archive_rel_path)
+
+        dir_info['is_main'] = dir is self.dir
+
+        return dir_info
+
+    def _get_subgal_links(self):
+        subgal_links = []
+        for subdir in self.subdirs:
+            dir_info = self._get_dir_info(subdir)
+            dir_info['link'] = '/'.join([subdir.source_dir.name,
+                                         self._get_related_index_fn()])
+            dir_info['link'] = self.url_quote(dir_info['link'])
+            dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
+                                     self.dir.album.get_webalbumpic_filename())
+            subgal_links.append(dir_info)
+        return subgal_links
+
     def build(self):
         self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
                            'info')
@@ -403,46 +500,30 @@ class WebalbumIndexPage(WebalbumPage):
 
         values = {}
 
-        related_index_fn = self._add_size_qualifier(\
-                            WebalbumIndexPage.FILENAME_BASE_STRING + '.html',
-                            self.size_name)
         if not self.dir.source_dir.is_album_root():
             # Parent index link not for album root
-            values['parent_index_link'] = related_index_fn
+            values['parent_index_link'] = self._get_related_index_fn()
 
         values['osize_index_links'] = self._get_osize_links(self._get_paginated_name())
         values['onum_index_links'] = self._get_onum_links()
 
-        subgal_links = []
-        for subdir in self.subdirs:
-            dir_info = {'name': subdir.human_name,
-                        'link': '/'.join([subdir.source_dir.name,
-                                          related_index_fn]),
-                       }
-            dir_info['link'] = self.url_quote(dir_info['link'])
-            dir_info.update(self.dir.metadata.get(subdir.source_dir.name))
-            dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
-                                     self.dir.album.get_webalbumpic_filename())
-            if 'album_description' in dir_info.keys():
-                dir_info['album_description'] =\
-                             self._do_not_escape(dir_info['album_description'])
-            subgal_links.append(dir_info)
-        values['subgal_links'] = subgal_links
-        if self.dir.metadata:
-            values.update(self.dir.metadata.get())
-            if 'album_description' in values.keys():
-                values['album_description'] =\
-                             self._do_not_escape(values['album_description'])
+        if self.dir.flatten_below():
+            values['subgal_links'] = []
+        else:
+            values['subgal_links'] = self._get_subgal_links()
 
-        values['images'] = map(self._gen_other_img_link, self.images)
+        values['images'] = []
+        for subdir, images in self.galleries:
+            info = self._get_dir_info(subdir)
+            img_links = map(lambda x:\
+                                self._gen_other_img_link(x, subdir.webgal_dir),
+                            images)
+            values['images'].append((info, img_links, ))
+
+        values.update(self._get_dir_info())
 
         values['rel_root'] = self.dir.source_dir.rel_root()
         values['rel_path'] = self.dir.source_dir.strip_root()
-        values['title'] = self.dir.human_name
-
-        if self.dir.album.dirzip and self.dir.dirzip:
-            archive_name = os.path.basename(self.dir.dirzip.path)
-            values['dirzip'] = self.url_quote(archive_name)
 
         self.page_template.dump(values, self.page_path)
 
@@ -460,6 +541,9 @@ class LightWebalbumDir(make.FileMakeObject):
         self.album = album
         self.human_name = self.album._str_humanize(self.source_dir.name)
 
+        self.webgal_dir = None
+        self.flattening_dir = None
+
         self.images_names = []
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
@@ -471,9 +555,6 @@ class LightWebalbumDir(make.FileMakeObject):
                                    % filename, 'info')
                     self.album.log("(%s)" % os.path.join(self.source_dir.path,
                                                          filename))
-
-        self.image_count = len(self.images_names)
-        self.subgal_count = len(self.subdirs)
 
         self.metadata = metadata.DirectoryMetadata(self.source_dir)
         md = self.metadata.get()
@@ -493,6 +574,15 @@ class LightWebalbumDir(make.FileMakeObject):
 
         self.dirzip = None
 
+    def get_image_count(self):
+        return len(self.images_names)
+
+    def get_subgal_count(self):
+        if self.flatten_below():
+            return 0
+        else:
+            len(self.subdirs)
+
     def get_all_images_count(self):
         all_images_count = len(self.images_names)
         for subdir in self.subdirs:
@@ -506,6 +596,26 @@ class LightWebalbumDir(make.FileMakeObject):
             all_images_paths.extend(subdir.get_all_images_paths())
         return all_images_paths
 
+    def get_all_subdirs(self):
+        all_subdirs = list(self.subdirs) # We want a copy here.
+        for subdir in self.subdirs:
+            all_subdirs.extend(subdir.get_all_subdirs())
+        return all_subdirs
+
+    def should_be_flattened(self):
+        return self.album.dir_flattening_depth is not False\
+        and self.source_dir.get_album_level() > self.album.dir_flattening_depth
+
+    def flatten_below(self):
+        if self.album.dir_flattening_depth is False:
+            return False
+        elif len(self.subdirs) > 0:
+            # As all subdirs are at the same level, if one should be flattened,
+            # all should.
+            return self.subdirs[0].should_be_flattened()
+        else:
+            return False
+
     def build(self):
         # This one does not build anything.
         pass
@@ -513,8 +623,13 @@ class LightWebalbumDir(make.FileMakeObject):
 
 class WebalbumDir(LightWebalbumDir):
 
-    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
-        LightWebalbumDir.__init__(self, dir, subdirs, album, album_dest_dir)
+    def __init__(self, light_webgal_dir, album_dest_dir, clean_dest):
+        LightWebalbumDir.__init__(self, light_webgal_dir.source_dir,
+                                        light_webgal_dir.subdirs,
+                                        light_webgal_dir.album,
+                                        album_dest_dir)
+        self.webgal_dir = self
+        light_webgal_dir.webgal_dir = self
 
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
@@ -529,21 +644,43 @@ class WebalbumDir(LightWebalbumDir):
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
-        self.images = map(lambda fn:\
-                 sourcetree.ImageFile(os.path.join(self.source_dir.path, fn),
-                                      album),
-                                      self.images_names)
+        self.images = []
+        for fn in self.images_names:
+            image = sourcetree.ImageFile(os.path.join(self.source_dir.path, fn),
+                                         self.album)
+            self.images.append(image)
 
+        if not self.should_be_flattened():
+            self.__init_index_pages_build()
+
+    def __init_index_pages_build(self):
         self.how_many_pages = None
         if self.album.thumbs_per_page == 0\
-        or self.image_count <= self.album.thumbs_per_page:
+        or (not self.flatten_below()\
+            and self.get_image_count() <= self.album.thumbs_per_page)\
+        or (self.flatten_below()\
+            and self.get_all_images_count() <= self.album.thumbs_per_page):
             # No pagination (requested or needed)
             self.how_many_pages = 1
         else:
             # Pagination requested and needed
-            how_many_pages = self.image_count / self.album.thumbs_per_page
-            if self.image_count % self.album.thumbs_per_page > 0:
-                how_many_pages = how_many_pages + 1
+            if self.flatten_below(): # Loose pagination not breaking subgals
+                how_many_pages = 0
+                image_count = 0
+                new_page = True
+                for subdir in [self] + self.get_all_subdirs():
+                    if new_page:
+                        how_many_pages += 1
+                        new_page = False
+                    image_count += subdir.get_image_count()
+                    if image_count >= self.album.thumbs_per_page:
+                        image_count = 0
+                        new_page = True
+            else: # Real pagination
+                how_many_pages = self.get_image_count()\
+                                 / self.album.thumbs_per_page
+                if self.get_image_count() % self.album.thumbs_per_page > 0:
+                    how_many_pages = how_many_pages + 1
             assert how_many_pages > 1
             self.how_many_pages = how_many_pages
 
@@ -553,8 +690,6 @@ class WebalbumDir(LightWebalbumDir):
                                                       page_number))
 
         self.add_dependency(WebalbumPicture(self))
-        if self.album.dirzip and self.image_count > 1:
-            self.add_dependency(WebalbumArchive(self))
 
     def prepare(self):
         if self.album.subgal_sort_by[0] == 'mtime':
@@ -650,7 +785,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.description = description
 
     def push_dir(self, webalbumdir):
-        if webalbumdir.image_count > 0:
+        if webalbumdir.get_image_count() > 0:
             self.add_dependency(webalbumdir)
             self.__add_item(webalbumdir)
 
@@ -660,8 +795,8 @@ class WebalbumFeed(make.FileMakeObject):
         desc_values = {}
         desc_values['album_pic_path'] = os.path.join(url,
                                           self.album.get_webalbumpic_filename())
-        desc_values['subgal_count'] = webalbumdir.subgal_count
-        desc_values['picture_count'] = webalbumdir.image_count
+        desc_values['subgal_count'] = webalbumdir.get_subgal_count()
+        desc_values['picture_count'] = webalbumdir.get_image_count()
         desc_values['desc'] = webalbumdir.desc
         desc = self.item_template.instanciate(desc_values)
 
@@ -743,7 +878,7 @@ class Album:
 
     def __init__(self, source_dir, thumb_size_string, browse_size_strings,
                  optimize=False, progressive=False, quality=85,
-                 thumbs_per_page=0,
+                 dir_flattening_depth=False, thumbs_per_page=0,
                  dirzip=False,
                  pic_sort_by=('exif', False),
                  subgal_sort_by=('filename', False)):
@@ -768,6 +903,7 @@ class Album:
         self.original = False
         self.orig_base = None
         self.thumbs_per_page = thumbs_per_page
+        self.dir_flattening_depth = dir_flattening_depth
         self.dirzip = dirzip
         self.save_options = {}
         if optimize:
@@ -954,7 +1090,7 @@ class Album:
                            % dir.path)
                 continue
 
-            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
+            destgal = WebalbumDir(light_destgal, sane_dest_dir, clean_dest)
 
             if not dir.is_album_root():
                 container_dirname = os.path.dirname(root)

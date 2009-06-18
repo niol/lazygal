@@ -33,6 +33,7 @@ CONFIGDEFAULTS = {
     'default-style': 'default',
     'clean-destination': 'No',
     'check-all-dirs': 'No',
+    'dir-flattening-depth': 'No',
     'original': 'No',
     'orig-base': 'No',
     'image-size': 'small=800x600,medium=1024x768',
@@ -111,6 +112,11 @@ parser.add_option("", "--check-all-dirs",
                   action="store_true",
                   dest="check_all_dirs", default=config.getboolean('lazygal', 'check-all-dirs'),
                   help=_("Exhaustively go through all directories regardless of source modification time."))
+parser.add_option("", "--dir-flattening-depth",
+                  action="store", type="int",
+                  dest="dir_flattening_depth",
+                  default=config.getboolean('lazygal', 'dir-flattening-depth'),
+                  help=_("Level below witch the directory tree is flattened. Default is 0 which is unlimited."))
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",
@@ -243,6 +249,7 @@ def parse_sort(sort_string):
 
 album = Album(source_dir, thumb_size_string, size_strings,
               quality=options.quality,
+              dir_flattening_depth=options.dir_flattening_depth,
               optimize=options.optimize, progressive=options.progressive,
               thumbs_per_page=options.thumbs_per_page,
               dirzip=options.dirzip,
