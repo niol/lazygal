@@ -598,13 +598,15 @@ class WebalbumDir(LightWebalbumDir):
             extra_files.append(os.path.join(self.path,
                                             DEST_SHARED_DIRECTORY_NAME))
 
+        expected_dirs = map(lambda dn: os.path.join(self.path, dn),
+                            self.source_dir.dirnames)
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
             if not isinstance(dest_file, unicode):
                 # No clue why this happens, but it happens!
                 dest_file = dest_file.decode(sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
-               dest_file not in self.source_dir.dirnames:
+               dest_file not in expected_dirs:
                 text = ''
                 if dest_file not in extra_files:
                     rmv_candidate = os.path.join(self.path, dest_file)
