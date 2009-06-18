@@ -288,7 +288,7 @@ class WebalbumBrowsePage(WebalbumPage):
             tpl_values['img_height'] = self.image.get_size(browse_image_path)
 
         img_date = self.image.get_date_taken()
-        # strftime does not work with utf-8...
+        # strftime does not work with unicode...
         time_format = _("on %d/%m/%Y at %H:%M").encode(locale.getpreferredencoding())
         time_str = img_date.strftime(time_format)
         tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
