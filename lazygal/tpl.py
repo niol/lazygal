@@ -16,12 +16,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, time
+from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
+from genshi.input import XMLParser
 import __init__
 import locale
 
 
 class LazygalTemplate(object):
+
+    def __init__(self, tpl_path, genshi_tpl, common_values=None):
+        self.path = tpl_path
+        self.common_values = common_values or {}
+        self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
         values.update(self.common_values)
@@ -37,8 +44,7 @@ class LazygalTemplate(object):
         # The cryptic _=_ is the way to pass the gettext translation function
         # to the templates : the _() callable is assigned to the '_' keyword
         # arg.
-        return self.generate(t=values, _=_)
-
+        return self.genshi_tpl.generate(t=values, _=_)
 
     def instanciate(self, values):
         self.__complement_values(values)
@@ -56,21 +62,44 @@ class LazygalTemplate(object):
         page.close()
 
 
-class XmlTemplate(LazygalTemplate, MarkupTemplate):
+class XmlTemplate(LazygalTemplate):
 
     serialization_method = 'xhtml'
+    genshi_tpl_class = MarkupTemplate
+
+    def subtemplates(self, path=None):
+        if path is None:
+            path = self.path
+
+        subtemplate_paths = []
+        f = open(path, 'r')
+        try:
+            for kind, data, pos in XMLParser(f, filename=path):
+                if kind is START:
+                    tag, attrib = data
+                    if tag.namespace == 'http://www.w3.org/2001/XInclude'\
+                    and tag.localname == 'include':
+                        subtemplate_paths.append(attrib.get('href'))
+        finally:
+            f.close()
+
+        for subtemplate_path in subtemplate_paths:
+            subtemplate_paths.extend(self.subtemplates(subtemplate_path))
+
+        return subtemplate_paths
 
 
 class PlainTemplate(LazygalTemplate, TextTemplate):
 
     serialization_method = 'text'
+    genshi_tpl_class = TextTemplate
 
 
 class TplFactory(TemplateLoader):
 
     known_exts = {
-        '.thtml': XmlTemplate,
-        '.tcss'  : PlainTemplate
+        '.thtml':  XmlTemplate,
+        '.tcss'  : PlainTemplate,
     }
 
     common_values = None
@@ -92,12 +121,10 @@ class TplFactory(TemplateLoader):
     def load(self, tpl_file):
         if self.is_known_template_type(tpl_file):
             filename, ext = os.path.splitext(os.path.basename(tpl_file))
-            tpl = TemplateLoader.load(self, tpl_file, cls=self.known_exts[ext])
-            if self.common_values:
-                tpl.common_values = self.common_values
-            else:
-                tpl.common_values = {}
-            return tpl
+            tpl_class = self.known_exts[ext]
+            tpl = TemplateLoader.load(self, tpl_file,
+                                      cls=tpl_class.genshi_tpl_class)
+            return tpl_class(tpl_file, tpl, self.common_values)
         else:
             raise ValueError(_('Unknown template type'))
 

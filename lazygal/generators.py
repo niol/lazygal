@@ -210,6 +210,14 @@ class WebalbumPage(WebalbumFile):
         self.page_path = os.path.join(dir.path, page_filename)
         WebalbumFile.__init__(self, self.page_path, dir)
 
+        self.page_template = None
+
+    def set_template(self, tpl):
+        self.page_template = tpl
+        self.add_file_dependency(self.page_template.path)
+        for subtpl in self.page_template.subtemplates():
+            self.add_file_dependency(subtpl.path)
+
     def _gen_other_img_link(self, img, dir=None):
         if img:
             if dir is None:
@@ -285,8 +293,7 @@ class WebalbumBrowsePage(WebalbumPage):
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
 
-        self.page_template = self.dir.album.templates['browse.thtml']
-        self.add_file_dependency(self.page_template.path)
+        self.set_template(self.dir.album.templates['browse.thtml'])
 
     def prepare(self):
         for prevnext in [self.image.previous_image, self.image.next_image]:
@@ -382,6 +389,8 @@ class WebalbumIndexPage(WebalbumPage):
 
             if self.dir.album.dirzip and dir.get_image_count() > 1:
                 self.add_dependency(WebalbumArchive(dir))
+
+        self.set_template(self.dir.album.templates['dirindex.thtml'])
 
     def presented_elements(self):
         galleries = []
