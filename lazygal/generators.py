@@ -220,7 +220,7 @@ class WebalbumPage(WebalbumFile):
 
     def _gen_other_img_link(self, img, dir=None):
         if img:
-            if dir is None:
+            if dir is None or dir is self.dir:
                 dir = self.dir
                 img_rel_path = ''
             else:
