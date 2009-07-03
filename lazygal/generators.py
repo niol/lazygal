@@ -17,6 +17,7 @@
 
 import os, glob, sys
 import re
+import gc
 import urllib
 import zipfile
 import locale
@@ -1120,6 +1121,10 @@ class Album:
                 destgal.make()
             else:
                 self.log(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
+
+            # Force some memory cleanups, this is usefull for big albums.
+            del destgal
+            gc.collect()
 
         if feed:
             feed.make()

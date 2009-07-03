@@ -26,6 +26,7 @@ import lazygal
 from lazygal.generators import Album, SOURCEDIR_CONFIGFILE, THUMB_SIZE_NAME
 from lazygal.newsize import is_known_newsizer
 
+
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
     'quiet': 'No',
