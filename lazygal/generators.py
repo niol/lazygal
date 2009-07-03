@@ -524,8 +524,7 @@ class WebalbumIndexPage(WebalbumPage):
         values['images'] = []
         for subdir, images in self.galleries:
             info = self._get_dir_info(subdir)
-            img_links = map(lambda x:\
-                                self._gen_other_img_link(x, subdir.webgal_dir),
+            img_links = map(lambda x: self._gen_other_img_link(x, subdir),
                             images)
             values['images'].append((info, img_links, ))
 
