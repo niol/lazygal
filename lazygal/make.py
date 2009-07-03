@@ -34,7 +34,8 @@ class MakeObject:
         if self in dependency.deps:
             raise CircularDependency("%s <-> %s" % (self, dependency))
         self.deps.append(dependency)
-        self.output_items.extend(dependency.output_items)
+        if issubclass(dependency.__class__, FileMakeObject):
+            self.output_items.extend(dependency.output_items)
 
     def add_file_dependency(self, file_path):
         self.add_dependency(FileSimpleDependency(file_path))
