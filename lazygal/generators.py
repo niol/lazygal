@@ -637,7 +637,6 @@ class WebalbumDir(LightWebalbumDir):
                                         light_webgal_dir.album,
                                         album_dest_dir)
         self.webgal_dir = self
-        light_webgal_dir.webgal_dir = self
 
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
@@ -658,7 +657,9 @@ class WebalbumDir(LightWebalbumDir):
                                          self.album)
             self.images.append(image)
 
-        if not self.should_be_flattened():
+        if self.should_be_flattened():
+            light_webgal_dir.webgal_dir = self
+        else:
             self.__init_index_pages_build()
 
     def __init_index_pages_build(self):
