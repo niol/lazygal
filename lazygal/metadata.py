@@ -190,7 +190,7 @@ class ExifTags(pyexiv2.Image):
         im = Image.open(self.image_path)
         try:
             return self.__fallback_to_encoding(im.app['COM'])
-        except KeyError:
+        except (KeyError, AttributeError):
             return ''
 
     def get_exif_usercomment(self):
