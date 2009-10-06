@@ -98,7 +98,7 @@ class PlainTemplate(LazygalTemplate, TextTemplate):
 class TplFactory(TemplateLoader):
 
     known_exts = {
-        '.thtml':  XmlTemplate,
+        '.thtml' : XmlTemplate,
         '.tcss'  : PlainTemplate,
     }
 
