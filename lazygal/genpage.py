@@ -235,14 +235,16 @@ class WebalbumIndexPage(WebalbumPage):
             if self.dir.flatten_below(): # Loose pagination not breaking subgals
                 subdirs = [] # No subdir links as they are flattened
 
-                how_many_images = 0
+                page_number = 0
                 subdirs_it = iter([self.dir] + self.dir.get_all_subdirs())
                 try:
                     # Skip galleries of previous pages.
-                    while how_many_images <\
-                          self.page_number * self.dir.album.thumbs_per_page:
-                        subdir = subdirs_it.next()
-                        how_many_images += subdir.get_image_count()
+                    while page_number < self.page_number:
+                        how_many_images = 0
+                        while how_many_images < self.dir.album.thumbs_per_page:
+                            subdir = subdirs_it.next()
+                            how_many_images += subdir.get_image_count()
+                        page_number += 1
                     # While we're still complying with image quota, add
                     # galleries.
                     how_many_images = 0
