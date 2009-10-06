@@ -253,16 +253,15 @@ class WebalbumDir(LightWebalbumDir):
                 # No clue why this happens, but it happens!
                 dest_file = dest_file.decode(sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
-               dest_file not in expected_dirs:
+               dest_file not in expected_dirs and\
+               dest_file not in extra_files:
                 text = ''
-                if dest_file not in extra_files:
-                    rmv_candidate = os.path.join(self.path, dest_file)
-                    if self.clean_dest and not os.path.isdir(rmv_candidate):
-                        os.unlink(rmv_candidate)
-                        text = ""
-                    else:
-                        text = _("you should")
-                    self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
+                if self.clean_dest and not os.path.isdir(rmv_candidate):
+                    os.unlink(dest_file)
+                    text = ""
+                else:
+                    text = _("you should")
+                self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
         make.FileMakeObject.make(self, force)
