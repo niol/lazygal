@@ -319,6 +319,9 @@ class WebalbumIndexPage(WebalbumPage):
 
         dir_info['is_main'] = dir is self.dir
 
+        dir_info['image_count'] = dir.get_image_count()
+        dir_info['subgal_count'] = len(dir.subdirs)
+
         return dir_info
 
     def _get_subgal_links(self):

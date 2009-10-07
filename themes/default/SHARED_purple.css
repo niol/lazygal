@@ -37,6 +37,10 @@ div.subgal_description p{
 		text-align:justify;
 }
 
+div.subgal_stats{
+		font-size: x-small;
+}
+
 #subgal_links li {
     margin: 0.5em;
 }

@@ -59,6 +59,16 @@
             <div py:if="subgal_link.album_description" class="subgal_description">
                 <p>$subgal_link.album_description</p>
             </div>
+            <div py:if="subgal_link.image_count > 0 or subgal_link.subgal_count > 0"
+                 class="subgal_stats">
+                <py:if test="subgal_link.image_count > 0">
+                    $subgal_link.image_count ${_('photos')}
+                    <py:if test="subgal_link.subgal_count > 0">, </py:if>
+                </py:if>
+                <py:if test="subgal_link.subgal_count > 0">
+                    $subgal_link.subgal_count ${_('sub-galleries')}
+                </py:if>
+            </div>
         </div>
     </div>
 </div>
