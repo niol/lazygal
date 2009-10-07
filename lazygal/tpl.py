@@ -37,14 +37,11 @@ class LazygalTemplate(object):
         return values
 
     def __generate(self, values):
-        # We use here a 't' variable to hold all of the template values, which
-        # explains why every single template value is called with the '$t.'
-        # prefix.
-        #
-        # The cryptic _=_ is the way to pass the gettext translation function
-        # to the templates : the _() callable is assigned to the '_' keyword
-        # arg.
-        return self.genshi_tpl.generate(t=values, _=_)
+        # The cryptic values['_'] = _ is the way to pass the gettext
+        # translation function to the templates : the _() callable is assigned
+        # to the '_' keyword arg.
+        values['_'] = _
+        return self.genshi_tpl.generate(**values)
 
     def instanciate(self, values):
         self.__complement_values(values)

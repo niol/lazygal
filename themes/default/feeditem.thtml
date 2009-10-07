@@ -1,5 +1,5 @@
 <div xmlns:py="http://genshi.edgewall.org/">
-    <p py:if="t.desc" py:content="t.desc"></p>
-    <p><img src="$t.album_pic_path" alt="album picture"/></p>
-    <p>$t.subgal_count ${_('sub-galleries')}, $t.picture_count ${_('photos')}</p>
+    <p py:if="desc" py:content="desc"></p>
+    <p><img src="$album_pic_path" alt="album picture"/></p>
+    <p>$subgal_count ${_('sub-galleries')}, $picture_count ${_('photos')}</p>
 </div>

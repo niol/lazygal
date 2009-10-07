@@ -1,12 +1,12 @@
-#if t.bgcolor
+#if bgcolor
 body{
-		background-color:${t.bgcolor}
+		background-color:${bgcolor}
 }
 #end
 
-#if t.txtcolor
+#if txtcolor
 body{
-		color:${t.txtcolor}
+		color:${txtcolor}
 }
 #end
 
@@ -15,16 +15,16 @@ p{
 }
 
 a{
-#if t.lnkcolor
-		color:${t.lnkcolor};
+#if lnkcolor
+		color:${lnkcolor};
 #end
-#if not t.lnkcolor
+#if not lnkcolor
 		color:blue;
 #end
-#if t.lnkdecoration
-		text-decoration:${t.lnkdecoration};
+#if lnkdecoration
+		text-decoration:${lnkdecoration};
 #end
-#if not t.lnkdecoration
+#if not lnkdecoration
 		text-decoration:none;
 #end
 }

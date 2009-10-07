@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>June 2009</date>">
+  <!ENTITY dhdate      "<date>October 2009</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -368,8 +368,11 @@
     <para>Each file which extension starts with <parameter>t</parameter>
     is processed through the Genshi text template engine before being copied.
     See
-    <filename>http://http://genshi.edgewall.org/wiki/Documentation/text-templates.html</filename>
+    <filename>http://genshi.edgewall.org/wiki/Documentation/text-templates.html</filename>
     for syntax.</para>
+
+    <para>Please refer to the examples supplied in
+    <filename>/usr/share/lazygal/themes</filename></para>
 
   </refsect1>
 
