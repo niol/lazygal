@@ -420,8 +420,10 @@ class Album:
             msg = msg.encode(locale.getpreferredencoding())
             if level == 'error':
                 print >> self.log_errpipe, msg
+                self.log_errpipe.flush()
             else:
                 print >> self.log_outpipe, msg
+                self.log_outpipe.flush()
 
     def _is_ext_supported(self, filename):
         filename, extension = os.path.splitext(filename)
