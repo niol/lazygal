@@ -473,6 +473,11 @@ class Album:
             md_data = md.get()
             if 'album_description' in md_data.keys() or 'album_name' in md_data.keys():
                 self.log(_("  SKIPPED because metadata exists."))
+            elif not dir.guess_directory_picture():
+                # FIXME: This whole generate_default_medatada() should be
+                # partially rewritten to use lazygal.make and
+                # lazygal.generators.WebalbumDir.
+                self.log(_("  SKIPPED because directory does not contain images."))
             else:
                 md.generate()
 
