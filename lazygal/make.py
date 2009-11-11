@@ -27,7 +27,6 @@ class MakeObject:
     def __init__(self):
         self.deps = []
         self.output_items = []
-        self.builder = None
         self.__prepared = False
 
     def add_dependency(self, dependency):
@@ -66,13 +65,7 @@ class MakeObject:
         pass
 
     def build(self):
-        if self.builder:
-            self.builder()
-        else:
-            raise NotImplementedError
-
-    def register_builder(self, builder_func):
-        self.builder = builder_func
+        raise NotImplementedError
 
     def register_output(self, output):
         """This provides a facility to register within the makefile machinery what items are built from the task."""
