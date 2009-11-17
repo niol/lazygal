@@ -15,19 +15,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, shutil
+import os
+import time
+import shutil
 
 
 class CircularDependency(Exception):
     pass
 
 
-class MakeObject:
+class MakeTask(object):
+    """
+    A simple task that remembers the last time it was built.
+    """
 
     def __init__(self):
         self.deps = []
         self.output_items = []
         self.__prepared = False
+        self.last_built_time = None
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -40,9 +46,12 @@ class MakeObject:
         self.add_dependency(FileSimpleDependency(file_path))
 
     def get_mtime(self):
-        raise NotImplementedError
+        return self.__last_built_time
 
     def needs_build(self):
+        if self.last_built_time is None:
+            return True
+
         for dependency in self.deps:
             if dependency.get_mtime() > self.get_mtime()\
             or dependency.needs_build():
@@ -58,13 +67,26 @@ class MakeObject:
             d.make() # dependency building is not forced, regardless of current
                      # target.
         if self.needs_build() or force:
-            self.build()
+            self.call_build()
+
+    def call_build(self):
+        """
+        This method is really simple in this implementation, but it can be
+        overridden with more complicated things in subclasses. The purpose is
+        to setup some state before and/or after build.
+        """
+        self.build()
+        self.__last_built_time = time.time()
 
     def prepare(self):
         """Method called before make, this is usefull if you want to build in your target internals stuff needed by dependencies."""
         pass
 
     def build(self):
+        """
+        This method should be implemented in subclasses to define what the
+        task should do.
+        """
         raise NotImplementedError
 
     def register_output(self, output):
@@ -72,12 +94,16 @@ class MakeObject:
         self.output_items.append(output)
 
 
-class FileSimpleDependency(MakeObject):
+class FileSimpleDependency(MakeTask):
     """Simple file dependency that needn't build. It just should be there."""
 
     def __init__(self, path):
-        MakeObject.__init__(self)
+        MakeTask.__init__(self)
         self._path = path
+        try:
+            self.last_built_time = self.get_mtime()
+        except OSError:
+            pass
 
     def get_mtime(self):
         return os.path.getmtime(self._path)
@@ -107,7 +133,7 @@ class FileMakeObject(FileSimpleDependency):
         return mtime
 
     def build(self):
-        MakeObject.build(self)
+        MakeTask.build(self)
 
 
 class FileCopy(FileMakeObject):

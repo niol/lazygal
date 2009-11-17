@@ -121,18 +121,21 @@ class WebalbumBrowsePage(WebalbumPage):
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
 
-        self.set_template(self.dir.album.templates['browse.thtml'])
+        self.add_dependency(self.dir.sort_task)
 
-    def prepare(self):
-        for prevnext in [self.image.previous_image, self.image.next_image]:
-            if prevnext:
-                self.add_dependency(genmedia.ImageOtherSize(self.dir, prevnext,
-                                                      genmedia.THUMB_SIZE_NAME))
+        self.set_template(self.dir.album.templates['browse.thtml'])
 
     def build(self):
         page_rel_path = self._rel_path(self.dir.flattening_dir)
         self.dir.album.log(_("  XHTML %s") % page_rel_path, 'info')
         self.dir.album.log("(%s)" % self.page_path)
+
+        # Previous and next image thumbs are required at this time
+        for prevnext in [self.image.previous_image, self.image.next_image]:
+            if prevnext:
+                othumb = genmedia.ImageOtherSize(self.dir, prevnext,
+                                                 genmedia.THUMB_SIZE_NAME)
+                othumb.make()
 
         tpl_values = {}
         tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
@@ -213,7 +216,7 @@ class WebalbumIndexPage(WebalbumPage):
                 thumb_dep = genmedia.ImageOtherSize(dir, image,
                                                     genmedia.THUMB_SIZE_NAME)
                 self.add_dependency(thumb_dep)
-                browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
+                browse_page_dep = WebalbumBrowsePage(dir.webgal_dir, size_name, image)
                 self.add_dependency(browse_page_dep)
 
             if self.dir.album.dirzip and dir.get_image_count() > 1:

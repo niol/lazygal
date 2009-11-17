@@ -39,6 +39,48 @@ DEST_SHARED_DIRECTORY_NAME = 'shared'
 SOURCEDIR_CONFIGFILE = '.lazygal'
 
 
+class SubgalSort(make.MakeTask):
+
+    def __init__(self, webgal_dir):
+        make.MakeTask.__init__(self)
+        self.webgal_dir = webgal_dir
+        self.album = self.webgal_dir.album
+
+    def build(self):
+        self.album.log(_("SORTING pics"), 'info')
+
+        if self.album.subgal_sort_by[0] == 'mtime':
+            subgal_sorter = lambda x, y:\
+                                x.source_dir.compare_mtime(y.source_dir)
+        elif self.album.subgal_sort_by[0] == 'filename':
+            subgal_sorter = lambda x, y:\
+                                x.source_dir.compare_filename(y.source_dir)
+        else:
+            raise ValueError(_("Unknown sorting criterion '%s'")\
+                             % self.album.subgal_sort_by[0])
+        self.webgal_dir.subdirs.sort(subgal_sorter,
+                                     reverse=self.album.subgal_sort_by[1])
+
+        if self.album.pic_sort_by[0] == 'exif':
+            sorter = lambda x, y: x.compare_to_sort(y)
+        elif self.album.pic_sort_by[0] == 'mtime':
+            sorter = lambda x, y: x.compare_mtime(y)
+        elif self.album.pic_sort_by[0] == 'filename':
+            sorter = lambda x, y: x.compare_filename(y)
+        else:
+            raise ValueError(_("Unknown sorting criterion '%s'")\
+                             % self.album.pic_sort_by[0])
+        self.webgal_dir.images.sort(sorter, reverse=self.album.pic_sort_by[1])
+
+        # chain images
+        previous_image = None
+        for image in self.webgal_dir.images:
+            if previous_image:
+                previous_image.next_image = image
+                image.previous_image = previous_image
+            previous_image = image
+
+
 class LightWebalbumDir(make.FileMakeObject):
     """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data, and does not build anything."""
 
@@ -135,6 +177,8 @@ class LightWebalbumDir(make.FileMakeObject):
 class WebalbumDir(LightWebalbumDir):
 
     def __init__(self, light_webgal_dir, album_dest_dir, clean_dest):
+        self.__mtime = None
+
         LightWebalbumDir.__init__(self, light_webgal_dir.source_dir,
                                         light_webgal_dir.subdirs,
                                         light_webgal_dir.album,
@@ -143,7 +187,7 @@ class WebalbumDir(LightWebalbumDir):
 
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
-        self.__mtime = LightWebalbumDir.get_mtime(self)
+        self.__mtime = self.get_mtime()
 
         self.clean_dest = clean_dest
 
@@ -159,6 +203,8 @@ class WebalbumDir(LightWebalbumDir):
             image = sourcetree.ImageFile(os.path.join(self.source_dir.path, fn),
                                          self.album)
             self.images.append(image)
+
+        self.sort_task = SubgalSort(self)
 
         if self.should_be_flattened():
             light_webgal_dir.webgal_dir = self
@@ -198,45 +244,15 @@ class WebalbumDir(LightWebalbumDir):
 
         for size_name in self.album.browse_size_strings.keys():
             for page_number in range(0, self.how_many_pages):
-                self.add_dependency(genpage.WebalbumIndexPage(self, size_name,
-                                                              page_number))
+                page = genpage.WebalbumIndexPage(self, size_name, page_number)
+                page.add_dependency(self.sort_task)
+                self.add_dependency(page)
 
         self.add_dependency(genmedia.WebalbumPicture(self))
 
-    def prepare(self):
-        if self.album.subgal_sort_by[0] == 'mtime':
-            subgal_sorter = lambda x, y:\
-                                x.source_dir.compare_mtime(y.source_dir)
-        elif self.album.subgal_sort_by[0] == 'filename':
-            subgal_sorter = lambda x, y:\
-                                x.source_dir.compare_filename(y.source_dir)
-        else:
-            raise ValueError(_("Unknown sorting criterion '%s'")\
-                             % self.album.subgal_sort_by[0])
-        self.subdirs.sort(subgal_sorter, reverse=self.album.subgal_sort_by[1])
-
-        if self.album.pic_sort_by[0] == 'exif':
-            sorter = lambda x, y: x.compare_to_sort(y)
-        elif self.album.pic_sort_by[0] == 'mtime':
-            sorter = lambda x, y: x.compare_mtime(y)
-        elif self.album.pic_sort_by[0] == 'filename':
-            sorter = lambda x, y: x.compare_filename(y)
-        else:
-            raise ValueError(_("Unknown sorting criterion '%s'")\
-                             % self.album.pic_sort_by[0])
-        self.images.sort(sorter, reverse=self.album.pic_sort_by[1])
-
-        # chain images
-        previous_image = None
-        for image in self.images:
-            if previous_image:
-                previous_image.next_image = image
-                image.previous_image = previous_image
-            previous_image = image
-
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()
-        return self.__mtime
+        return self.__mtime or super(WebalbumDir, self).get_mtime()
 
     def build(self):
         # Check dest for junk files
