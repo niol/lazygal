@@ -32,7 +32,6 @@ class MakeTask(object):
     def __init__(self):
         self.deps = []
         self.output_items = []
-        self.__prepared = False
         self.last_built_time = None
 
     def add_dependency(self, dependency):
@@ -59,10 +58,6 @@ class MakeTask(object):
         return False
 
     def make(self, force=False):
-        if not self.__prepared:
-            self.prepare()
-            self.__prepared = True
-
         for d in self.deps:
             d.make() # dependency building is not forced, regardless of current
                      # target.
@@ -77,10 +72,6 @@ class MakeTask(object):
         """
         self.build()
         self.__last_built_time = time.time()
-
-    def prepare(self):
-        """Method called before make, this is usefull if you want to build in your target internals stuff needed by dependencies."""
-        pass
 
     def build(self):
         """
