@@ -47,7 +47,8 @@ class SubgalSort(make.MakeTask):
         self.album = self.webgal_dir.album
 
     def build(self):
-        self.album.log(_("SORTING pics"), 'info')
+        self.album.log(_("  SORTING pics in '%s'") % self.webgal_dir.path,
+                       'info')
 
         if self.album.subgal_sort_by[0] == 'mtime':
             subgal_sorter = lambda x, y:\
