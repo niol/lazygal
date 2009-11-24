@@ -61,10 +61,10 @@ class WebalbumFile(make.FileMakeObject):
 
 class WebalbumArchive(WebalbumFile):
 
-    def __init__(self, lightdir):
-        self.path = os.path.join(lightdir.path,
-                                 lightdir.source_dir.name + '.zip')
-        WebalbumFile.__init__(self, self.path, lightdir)
+    def __init__(self, webgal_dir):
+        self.path = os.path.join(webgal_dir.path,
+                                 webgal_dir.source_dir.name + '.zip')
+        WebalbumFile.__init__(self, self.path, webgal_dir)
 
         self.album = self.dir.album
 

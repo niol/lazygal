@@ -80,28 +80,28 @@ class WebalbumPicture(make.FileMakeObject):
 
     BASEFILENAME = 'index'
 
-    def __init__(self, lightdir):
-        self.album = lightdir.album
-        self.path = os.path.join(lightdir.path,
+    def __init__(self, webgal_dir):
+        self.album = webgal_dir.album
+        self.path = os.path.join(webgal_dir.path,
                                  self.album.get_webalbumpic_filename())
         make.FileMakeObject.__init__(self, self.path)
 
-        self.add_dependency(lightdir.source_dir)
+        self.add_dependency(webgal_dir.source_dir)
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
         pics = map(lambda path: self.album._add_size_qualifier(path,
                                                                THUMB_SIZE_NAME),
-                   lightdir.get_all_images_paths())
+                   webgal_dir.get_all_images_paths())
 
         for pic in pics:
             self.add_file_dependency(pic)
 
-        if lightdir.album_picture:
+        if webgal_dir.album_picture:
             md_dirpic_thumb = self.album._add_size_qualifier(\
-                                           lightdir.album_picture,
+                                           webgal_dir.album_picture,
                                            THUMB_SIZE_NAME)
-            md_dirpic_thumb = os.path.join(lightdir.path, md_dirpic_thumb)
+            md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None
         self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb,

@@ -210,13 +210,13 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_dependency(dir.metadata)
             if dir is not self.dir:
                 dir.flattening_dir = self.dir
-                self.add_dependency(dir.webgal_dir)
+                self.add_dependency(dir)
 
             for image in images:
                 thumb_dep = genmedia.ImageOtherSize(dir, image,
                                                     genmedia.THUMB_SIZE_NAME)
                 self.add_dependency(thumb_dep)
-                browse_page_dep = WebalbumBrowsePage(dir.webgal_dir, size_name, image)
+                browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
                 self.add_dependency(browse_page_dep)
 
             if self.dir.album.dirzip and dir.get_image_count() > 1:
@@ -231,7 +231,7 @@ class WebalbumIndexPage(WebalbumPage):
             if self.dir.flatten_below():
                 subdirs = []
                 for dir in self.dir.get_all_subdirs():
-                    galleries.append((dir, dir.webgal_dir.images))
+                    galleries.append((dir, dir.images))
             else:
                 subdirs = self.dir.subdirs
         else:
@@ -254,7 +254,7 @@ class WebalbumIndexPage(WebalbumPage):
                     while how_many_images < self.dir.album.thumbs_per_page:
                         subdir = subdirs_it.next()
                         how_many_images += subdir.get_image_count()
-                        galleries.append((subdir, subdir.webgal_dir.images))
+                        galleries.append((subdir, subdir.images))
                 except StopIteration:
                     pass
             else: # Real pagination

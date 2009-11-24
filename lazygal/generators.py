@@ -82,10 +82,14 @@ class SubgalSort(make.MakeTask):
             previous_image = image
 
 
-class LightWebalbumDir(make.FileMakeObject):
-    """This is a lighter WebalbumDir object which considers filenames instead of pictures objects with EXIF data, and does not build anything."""
+class WebalbumDir(make.FileMakeObject):
+    """
+    This is a built web gallery with its files, thumbs and reduced pics.
+    """
 
-    def __init__(self, dir, subdirs, album, album_dest_dir):
+    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
+        self.__mtime = None
+
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         make.FileMakeObject.__init__(self, self.path)
@@ -95,20 +99,22 @@ class LightWebalbumDir(make.FileMakeObject):
         self.album = album
         self.human_name = self.album._str_humanize(self.source_dir.name)
 
-        self.webgal_dir = None
         self.flattening_dir = None
 
+        self.images = []
         self.images_names = []
         for filename in self.source_dir.filenames:
             if self.album._is_ext_supported(filename):
+                image_path = os.path.join(self.source_dir.path, filename)
+                image = sourcetree.ImageFile(image_path, self.album)
                 self.images_names.append(filename)
+                self.images.append(image)
             elif filename not in (metadata.MATEW_METADATA,
                                   SOURCEDIR_CONFIGFILE):
-                if self.__class__.__name__ != 'LightWebalbumDir':
-                    self.album.log(_("  Ignoring %s, format not supported.")\
-                                   % filename, 'info')
-                    self.album.log("(%s)" % os.path.join(self.source_dir.path,
-                                                         filename))
+                self.album.log(_("  Ignoring %s, format not supported.")\
+                               % filename, 'info')
+                self.album.log("(%s)" % os.path.join(self.source_dir.path,
+                                                     filename))
 
         self.metadata = metadata.DirectoryMetadata(self.source_dir)
         md = self.metadata.get()
@@ -128,64 +134,6 @@ class LightWebalbumDir(make.FileMakeObject):
 
         self.dirzip = None
 
-    def get_image_count(self):
-        return len(self.images_names)
-
-    def get_subgal_count(self):
-        if self.flatten_below():
-            return 0
-        else:
-            len(self.subdirs)
-
-    def get_all_images_count(self):
-        all_images_count = len(self.images_names)
-        for subdir in self.subdirs:
-            all_images_count += subdir.get_all_images_count()
-        return all_images_count
-
-    def get_all_images_paths(self):
-        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
-                               self.images_names)
-        for subdir in self.subdirs:
-            all_images_paths.extend(subdir.get_all_images_paths())
-        return all_images_paths
-
-    def get_all_subdirs(self):
-        all_subdirs = list(self.subdirs) # We want a copy here.
-        for subdir in self.subdirs:
-            all_subdirs.extend(subdir.get_all_subdirs())
-        return all_subdirs
-
-    def should_be_flattened(self):
-        return self.album.dir_flattening_depth is not False\
-        and self.source_dir.get_album_level() > self.album.dir_flattening_depth
-
-    def flatten_below(self):
-        if self.album.dir_flattening_depth is False:
-            return False
-        elif len(self.subdirs) > 0:
-            # As all subdirs are at the same level, if one should be flattened,
-            # all should.
-            return self.subdirs[0].should_be_flattened()
-        else:
-            return False
-
-    def build(self):
-        # This one does not build anything.
-        pass
-
-
-class WebalbumDir(LightWebalbumDir):
-
-    def __init__(self, light_webgal_dir, album_dest_dir, clean_dest):
-        self.__mtime = None
-
-        LightWebalbumDir.__init__(self, light_webgal_dir.source_dir,
-                                        light_webgal_dir.subdirs,
-                                        light_webgal_dir.album,
-                                        album_dest_dir)
-        self.webgal_dir = self
-
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
         self.__mtime = self.get_mtime()
@@ -199,17 +147,9 @@ class WebalbumDir(LightWebalbumDir):
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
-        self.images = []
-        for fn in self.images_names:
-            image = sourcetree.ImageFile(os.path.join(self.source_dir.path, fn),
-                                         self.album)
-            self.images.append(image)
-
         self.sort_task = SubgalSort(self)
 
-        if self.should_be_flattened():
-            light_webgal_dir.webgal_dir = self
-        else:
+        if not self.should_be_flattened():
             self.__init_index_pages_build()
 
     def __init_index_pages_build(self):
@@ -254,6 +194,48 @@ class WebalbumDir(LightWebalbumDir):
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()
         return self.__mtime or super(WebalbumDir, self).get_mtime()
+
+    def get_image_count(self):
+        return len(self.images_names)
+
+    def get_subgal_count(self):
+        if self.flatten_below():
+            return 0
+        else:
+            len(self.subdirs)
+
+    def get_all_images_count(self):
+        all_images_count = len(self.images_names)
+        for subdir in self.subdirs:
+            all_images_count += subdir.get_all_images_count()
+        return all_images_count
+
+    def get_all_images_paths(self):
+        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
+                               self.images_names)
+        for subdir in self.subdirs:
+            all_images_paths.extend(subdir.get_all_images_paths())
+        return all_images_paths
+
+    def get_all_subdirs(self):
+        all_subdirs = list(self.subdirs) # We want a copy here.
+        for subdir in self.subdirs:
+            all_subdirs.extend(subdir.get_all_subdirs())
+        return all_subdirs
+
+    def should_be_flattened(self):
+        return self.album.dir_flattening_depth is not False\
+        and self.source_dir.get_album_level() > self.album.dir_flattening_depth
+
+    def flatten_below(self):
+        if self.album.dir_flattening_depth is False:
+            return False
+        elif len(self.subdirs) > 0:
+            # As all subdirs are at the same level, if one should be flattened,
+            # all should.
+            return self.subdirs[0].should_be_flattened()
+        else:
+            return False
 
     def build(self):
         # Check dest for junk files
@@ -536,20 +518,18 @@ class Album:
             else:
                 subdirs = []
 
-            light_destgal = LightWebalbumDir(dir, subdirs, self, sane_dest_dir)
+            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
 
-            if light_destgal.get_all_images_count() < 1:
+            if destgal.get_all_images_count() < 1:
                 self.log(_("(%s) and childs have no photos, skipped")
                            % dir.path)
                 continue
-
-            destgal = WebalbumDir(light_destgal, sane_dest_dir, clean_dest)
 
             if not dir.is_album_root():
                 container_dirname = os.path.dirname(root)
                 if not dir_heap.has_key(container_dirname):
                     dir_heap[container_dirname] = []
-                dir_heap[container_dirname].append(light_destgal)
+                dir_heap[container_dirname].append(destgal)
 
             if feed and dir.is_album_root():
                 feed.set_title(dir.name)
@@ -559,7 +539,7 @@ class Album:
                 destgal.register_output(feed.path)
 
             if feed:
-                feed.push_dir(light_destgal)
+                feed.push_dir(destgal)
             if destgal.needs_build() or check_all_dirs:
                 destgal.make()
             else:
