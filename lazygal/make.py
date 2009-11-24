@@ -32,7 +32,7 @@ class MakeTask(object):
     def __init__(self):
         self.deps = []
         self.output_items = []
-        self.last_built_time = None
+        self._last_built_time = None
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -45,10 +45,10 @@ class MakeTask(object):
         self.add_dependency(FileSimpleDependency(file_path))
 
     def get_mtime(self):
-        return self.__last_built_time
+        return self._last_built_time
 
     def needs_build(self):
-        if self.last_built_time is None:
+        if self._last_built_time is None:
             return True
 
         for dependency in self.deps:
@@ -71,7 +71,7 @@ class MakeTask(object):
         to setup some state before and/or after build.
         """
         self.build()
-        self.__last_built_time = time.time()
+        self._last_built_time = time.time()
 
     def build(self):
         """
@@ -92,7 +92,7 @@ class FileSimpleDependency(MakeTask):
         MakeTask.__init__(self)
         self._path = path
         try:
-            self.last_built_time = self.get_mtime()
+            self._last_built_time = self.get_mtime()
         except OSError:
             pass
 
