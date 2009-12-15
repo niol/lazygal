@@ -74,7 +74,6 @@ class MakeTask(object):
         overridden with more complicated things in subclasses. The purpose is
         to setup some state before and/or after build.
         """
-        self.dump_dep_info()
         self.build()
         self.stamp_build()
 
@@ -86,12 +85,17 @@ class MakeTask(object):
         raise NotImplementedError
 
     def register_output(self, output):
-        """This provides a facility to register within the makefile machinery what items are built from the task."""
+        """
+        This provides a facility to register within the makefile machinery what
+        items are built from the task.
+        """
         self.output_items.append(output)
 
 
 class FileSimpleDependency(MakeTask):
-    """Simple file dependency that needn't build. It just should be there."""
+    """
+    Simple file dependency that needn't build. It just should be there.
+    """
 
     def __init__(self, path):
         MakeTask.__init__(self)
@@ -135,7 +139,9 @@ class FileMakeObject(FileSimpleDependency):
 
 
 class FileCopy(FileMakeObject):
-    """Simple file copy make target."""
+    """
+    Simple file copy make target.
+    """
 
     def __init__(self, src, dst):
         self.src = src

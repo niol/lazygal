@@ -40,6 +40,9 @@ SOURCEDIR_CONFIGFILE = '.lazygal'
 
 
 class SubgalSort(make.MakeTask):
+    """
+    This task sorts the image within a gallery according to the chosen rule.
+    """
 
     def __init__(self, webgal_dir):
         make.MakeTask.__init__(self)
