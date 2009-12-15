@@ -134,6 +134,8 @@ class ImageFile(File):
     def __init__(self, path, album):
         File.__init__(self, path, album)
         self.__exif = None
+        self.broken = False
+
         self.previous_image = None
         self.next_image = None
 
@@ -201,28 +203,6 @@ class Directory(File):
 
         self.dirnames = map(self._path_to_unicode, dirnames)
         self.filenames = map(self._path_to_unicode, filenames)
-
-    def guess_directory_picture(self, subdir = None):
-        '''
-        Guesses picture for directory by finding first suitable image.
-        '''
-        directory = self.path
-        relpath = ''
-
-        if subdir is not None:
-            directory = os.path.join(directory, subdir)
-            relpath = subdir
-
-        for root, dirs, files in os.walk(directory):
-            subdirs = root[len(directory):]
-            if len(subdirs) > 0 and subdirs[0] == '/':
-                subdirs = subdirs[1:]
-            for file in files:
-                if self.album._is_ext_supported(file):
-                    picture = os.path.join(relpath, subdirs, file)
-                    return picture
-
-        return None
 
     def is_album_root(self):
         return self.path == self._path_to_unicode(self.album.source_dir)

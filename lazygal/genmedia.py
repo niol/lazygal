@@ -50,8 +50,19 @@ class ImageOtherSize(genfile.WebalbumFile):
 
         self.dir.album.log("(%s)" % self.path)
 
-        im = Image.open(self.source_image.path)
+        try:
+            if not self.source_image.broken:
+                im = Image.open(self.source_image.path)
+                self.__build_other_size(im)
+            else:
+                raise IOError
+        except IOError:
+            self.dir.album.log(_("  %s is BROKEN, skipped")\
+                               % self.source_image.filename,
+                               'error')
+            self.source_image.broken = True
 
+    def __build_other_size(self, im):
         new_size = self.newsizer.dest_size(im.size)
 
         im.draft(None, new_size)
@@ -90,12 +101,10 @@ class WebalbumPicture(make.FileMakeObject):
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
-        pics = map(lambda path: self.album._add_size_qualifier(path,
-                                                               THUMB_SIZE_NAME),
-                   webgal_dir.get_all_images_paths())
+        thumbs = [image.thumb for image in webgal_dir.get_all_images()]
 
-        for pic in pics:
-            self.add_file_dependency(pic)
+        for thumb in thumbs:
+            self.add_dependency(thumb)
 
         if webgal_dir.album_picture:
             md_dirpic_thumb = self.album._add_size_qualifier(\
@@ -104,6 +113,8 @@ class WebalbumPicture(make.FileMakeObject):
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None
+
+        pics = [thumb.path for thumb in thumbs]
         self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb,
                                            bg=self.album.webalbumpic_bg)
 

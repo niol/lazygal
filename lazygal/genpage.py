@@ -64,10 +64,11 @@ class WebalbumPage(genfile.WebalbumFile):
                                                      genmedia.THUMB_SIZE_NAME)
             link_vals['thumb'] = self.url_quote(link_vals['thumb'])
 
-            thumb = os.path.join(dir.path,
-                                 self._add_size_qualifier(img.filename,
+            if not img.broken:
+                thumb = os.path.join(dir.path,
+                                     self._add_size_qualifier(img.filename,
                                                      genmedia.THUMB_SIZE_NAME))
-            link_vals['thumb_width'],\
+                link_vals['thumb_width'],\
                 link_vals['thumb_height'] = img.get_size(thumb)
 
             link_vals['thumb_name'] = self.dir.album._str_humanize(img.name)
@@ -130,13 +131,6 @@ class WebalbumBrowsePage(WebalbumPage):
         self.dir.album.log(_("  XHTML %s") % page_rel_path, 'info')
         self.dir.album.log("(%s)" % self.page_path)
 
-        # Previous and next image thumbs are required at this time
-        for prevnext in [self.image.previous_image, self.image.next_image]:
-            if prevnext:
-                othumb = genmedia.ImageOtherSize(self.dir, prevnext,
-                                                 genmedia.THUMB_SIZE_NAME)
-                othumb.make()
-
         tpl_values = {}
         tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
                                                          self.size_name)
@@ -147,7 +141,9 @@ class WebalbumBrowsePage(WebalbumPage):
         browse_image_path = os.path.join(self.dir.path,
                                          self._add_size_qualifier(\
                                            self.image.filename, self.size_name))
-        tpl_values['img_width'],\
+
+        if not self.image.broken:
+            tpl_values['img_width'],\
             tpl_values['img_height'] = self.image.get_size(browse_image_path)
 
         img_date = self.image.get_date_taken()
@@ -212,10 +208,11 @@ class WebalbumIndexPage(WebalbumPage):
                 dir.flattening_dir = self.dir
                 self.add_dependency(dir)
 
+            self.add_dependency(dir.source_dir)
+            self.add_dependency(dir.sort_task)
+
             for image in images:
-                thumb_dep = genmedia.ImageOtherSize(dir, image,
-                                                    genmedia.THUMB_SIZE_NAME)
-                self.add_dependency(thumb_dep)
+                self.add_dependency(image.thumb)
                 browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
                 self.add_dependency(browse_page_dep)
 

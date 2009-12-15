@@ -98,9 +98,18 @@ class PictureMess:
 
     def __build_picture_mess(self):
         self.picture_mess = Image.new("RGBA", self.RESULT_SIZE, self.bg)
+        added_one_thumb = False
         for image_path in self.images_paths:
-            mess_thumb = self.__build_mess_thumb(image_path)
-            self.__add_img_to_mess_top(mess_thumb)
+            try:
+                mess_thumb = self.__build_mess_thumb(image_path)
+            except IOError:
+                # Do not add this thumb to the picture mess
+                pass
+            else:
+                self.__add_img_to_mess_top(mess_thumb)
+                added_one_thumb = True
+        if not added_one_thumb:
+            raise ValueError("No readable image found in submitted list.")
 
     def write(self, output_file):
         self.__build_picture_mess()

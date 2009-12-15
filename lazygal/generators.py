@@ -110,8 +110,21 @@ class WebalbumDir(make.FileMakeObject):
             if self.album._is_ext_supported(filename):
                 image_path = os.path.join(self.source_dir.path, filename)
                 image = sourcetree.ImageFile(image_path, self.album)
-                self.images_names.append(filename)
-                self.images.append(image)
+                try:
+                    # Try to preload image EXIF to detect broken images.
+                    # (this is not a problem for performance because EXIF info
+                    # is probed anyway later)
+                    image.info()
+                except IOError:
+                    self.album.log(_("  %s is BROKEN, skipped")\
+                                   % image.filename,
+                                   'error')
+                    image.broken = True
+                else:
+                    image.thumb = genmedia.ImageOtherSize(self, image,
+                                                      genmedia.THUMB_SIZE_NAME)
+                    self.images_names.append(filename)
+                    self.images.append(image)
             elif filename not in (metadata.MATEW_METADATA,
                                   SOURCEDIR_CONFIGFILE):
                 self.album.log(_("  Ignoring %s, format not supported.")\
@@ -119,7 +132,7 @@ class WebalbumDir(make.FileMakeObject):
                 self.album.log("(%s)" % os.path.join(self.source_dir.path,
                                                      filename))
 
-        self.metadata = metadata.DirectoryMetadata(self.source_dir)
+        self.metadata = metadata.DirectoryMetadata(self)
         md = self.metadata.get()
         if 'album_name' in md.keys():
             self.title = md['album_name']
@@ -213,11 +226,15 @@ class WebalbumDir(make.FileMakeObject):
             all_images_count += subdir.get_all_images_count()
         return all_images_count
 
-    def get_all_images_paths(self):
-        all_images_paths = map(lambda fn: os.path.join(self.path, fn),
-                               self.images_names)
+    def get_all_images(self):
+        all_images = list(self.images) # We want a copy here.
         for subdir in self.subdirs:
-            all_images_paths.extend(subdir.get_all_images_paths())
+            all_images.extend(subdir.get_all_images())
+        return all_images
+
+    def get_all_images_paths(self):
+        all_images_paths = map(lambda im: os.path.join(self.path, im.filename),
+                               self.get_all_images())
         return all_images_paths
 
     def get_all_subdirs(self):

@@ -320,7 +320,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
 
     def __init__(self, dir):
         self.dir = dir
-        self.directory_path = self.dir.path
+        self.directory_path = self.dir.source_dir.path
         make.FileSimpleDependency.__init__(self, self.directory_path)
 
         self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)
@@ -378,7 +378,10 @@ class DirectoryMetadata(make.FileSimpleDependency):
 
         # Add album picture
         if not result.has_key('album_picture'):
-            picture = self.dir.guess_directory_picture(subdir)
+            try:
+                picture = self.dir.get_all_images_paths()[0]
+            except IndexError:
+                picture = None
             if picture is not None:
                 result['album_picture'] = picture
 
