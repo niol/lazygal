@@ -155,6 +155,9 @@ class WebalbumDir(make.FileMakeObject):
         if not self.should_be_flattened():
             self.__init_index_pages_build()
 
+            self.webgal_pic = genmedia.WebalbumPicture(self)
+            self.add_dependency(self.webgal_pic)
+
     def __init_index_pages_build(self):
         self.how_many_pages = None
         if self.album.thumbs_per_page == 0\
@@ -190,8 +193,6 @@ class WebalbumDir(make.FileMakeObject):
             for page_number in range(0, self.how_many_pages):
                 page = genpage.WebalbumIndexPage(self, size_name, page_number)
                 self.add_dependency(page)
-
-        self.add_dependency(genmedia.WebalbumPicture(self))
 
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()
