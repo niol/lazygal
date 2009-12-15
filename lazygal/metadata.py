@@ -326,6 +326,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
         self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)
         if os.path.isfile(self.description_filename):
             self.description_file = self.description_filename
+            self.add_file_dependency(self.description_filename)
         else:
             self.description_file = None
 

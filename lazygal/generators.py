@@ -186,7 +186,6 @@ class WebalbumDir(make.FileMakeObject):
         for size_name in self.album.browse_size_strings.keys():
             for page_number in range(0, self.how_many_pages):
                 page = genpage.WebalbumIndexPage(self, size_name, page_number)
-                page.add_dependency(self.sort_task)
                 self.add_dependency(page)
 
         self.add_dependency(genmedia.WebalbumPicture(self))

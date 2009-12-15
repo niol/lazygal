@@ -32,7 +32,8 @@ class MakeTask(object):
     def __init__(self):
         self.deps = []
         self.output_items = []
-        self._last_built_time = None
+        self.__last_build_time = -1 # older than oldest epoch
+        self.__built_once = False
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -45,12 +46,15 @@ class MakeTask(object):
         self.add_dependency(FileSimpleDependency(file_path))
 
     def get_mtime(self):
-        return self._last_built_time
+        return self.__last_build_time
+
+    def stamp_build(self, build_time=None):
+        if not build_time:
+            build_time = time.time()
+        self.__last_build_time = build_time
+        self.__built_once = True
 
     def needs_build(self):
-        if self._last_built_time is None:
-            return True
-
         for dependency in self.deps:
             if dependency.get_mtime() > self.get_mtime()\
             or dependency.needs_build():
@@ -70,8 +74,9 @@ class MakeTask(object):
         overridden with more complicated things in subclasses. The purpose is
         to setup some state before and/or after build.
         """
+        self.dump_dep_info()
         self.build()
-        self._last_built_time = time.time()
+        self.stamp_build()
 
     def build(self):
         """
@@ -92,9 +97,11 @@ class FileSimpleDependency(MakeTask):
         MakeTask.__init__(self)
         self._path = path
         try:
-            self._last_built_time = self.get_mtime()
+            mtime = self.get_mtime()
         except OSError:
             pass
+        else:
+            self.stamp_build(mtime)
 
     def get_mtime(self):
         return os.path.getmtime(self._path)
