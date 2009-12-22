@@ -222,6 +222,8 @@ class WebalbumIndexPage(WebalbumPage):
         self.set_template(self.dir.album.templates['dirindex.thtml'])
 
     def presented_elements(self):
+        # FIXME: This algorithm is a repeat of the one in
+        # Webalbumdir.__init_index_pages_build() ...
         galleries = []
         if self.dir.album.thumbs_per_page == 0: # No pagination
             galleries.append((self.dir, self.dir.source_dir.images))
