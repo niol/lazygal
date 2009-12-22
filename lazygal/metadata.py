@@ -387,17 +387,40 @@ class DirectoryMetadata(make.FileSimpleDependency):
 
         return result
 
-    def generate(self):
+
+class DefaultMetadata(make.FileMakeObject):
+    """
+    This is a the building of the default metadata file in the source directory.
+    """
+
+    def __init__(self, source_dir, album):
+        self.source_dir = source_dir
+
+        metadata_path = os.path.join(self.source_dir.path, MATEW_METADATA)
+        super(DefaultMetadata, self).__init__(metadata_path)
+
+        self.album = album
+
+    def build(self):
+        md = DirectoryMetadata(self.source_dir)
+
+        md_data = md.get()
+        if 'album_description' in md_data.keys()\
+        or 'album_name' in md_data.keys():
+            self.log(_("  SKIPPED because metadata exists."))
+        elif self.source_dir.get_all_images_count() < 1:
+            self.log(_("  SKIPPED because directory does not contain images."))
+        else:
+            self.generate(md_data)
+
+    def generate(self, md):
         '''
         Generates new metadata file with default values.
         '''
 
-        self.dir.album.log(_("GEN %s") %
-                self.description_filename, 'info')
+        self.album.log(_("GEN %s") % self._path, 'info')
 
-        md = self.get()
-
-        f = file(self.description_filename, 'w')
+        f = file(self._path, 'w')
         f.write('# Directory metadata for lazygal, Matew format\n')
         f.write('Album name ""\n');
         f.write('Album description ""\n');

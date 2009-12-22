@@ -425,23 +425,13 @@ class Album:
         self.log(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
-            dir = sourcetree.Directory(root, dirnames, filenames, self)
-            self.log(_("[Entering %%ALBUMROOT%%/%s]") % dir.strip_root(),
+            source_dir = sourcetree.Directory(root, [], filenames, self)
+            self.log(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
                      'info')
-            self.log("(%s)" % dir.path)
+            self.log("(%s)" % source_dir.path)
 
-            md = metadata.DirectoryMetadata(dir)
+            metadata.DefaultMetadata(source_dir, self).make()
 
-            md_data = md.get()
-            if 'album_description' in md_data.keys() or 'album_name' in md_data.keys():
-                self.log(_("  SKIPPED because metadata exists."))
-            elif not dir.guess_directory_picture():
-                # FIXME: This whole generate_default_medatada() should be
-                # partially rewritten to use lazygal.make and
-                # lazygal.generators.WebalbumDir.
-                self.log(_("  SKIPPED because directory does not contain images."))
-            else:
-                md.generate()
 
     def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):
