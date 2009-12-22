@@ -320,7 +320,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
 
     def __init__(self, dir):
         self.dir = dir
-        self.directory_path = self.dir.source_dir.path
+        self.directory_path = self.dir.path
         make.FileSimpleDependency.__init__(self, self.directory_path)
 
         self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)

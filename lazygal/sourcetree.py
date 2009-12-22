@@ -21,6 +21,9 @@ import Image
 from lazygal import make, metadata
 
 
+SOURCEDIR_CONFIGFILE = '.lazygal'
+
+
 class File(make.FileSimpleDependency):
 
     def __init__(self, path, album):
@@ -194,18 +197,87 @@ class ImageFile(File):
 
 class Directory(File):
 
-    def __init__(self, source, dirnames, filenames, album):
+    def __init__(self, source, subdirs, filenames, album):
         File.__init__(self, self._path_to_unicode(source), album)
 
         # No breaking up of filename and extension for directories
         self.name = self.filename
         self.extension = None
 
-        self.dirnames = map(self._path_to_unicode, dirnames)
+        self.subdirs = subdirs
         self.filenames = map(self._path_to_unicode, filenames)
+
+        self.human_name = self.album._str_humanize(self.name)
+
+        self.images = []
+        self.images_names = []
+        for filename in self.filenames:
+            if self.album._is_ext_supported(filename):
+                image_path = os.path.join(self.path, filename)
+                image = ImageFile(image_path, self.album)
+                try:
+                    # Try to preload image EXIF to detect broken images.
+                    # (this is not a problem for performance because EXIF info
+                    # is probed anyway later)
+                    image.info()
+                except IOError:
+                    self.album.log(_("  %s is BROKEN, skipped")\
+                                   % image.filename,
+                                   'error')
+                    image.broken = True
+                else:
+                    self.images_names.append(filename)
+                    self.images.append(image)
+            elif filename not in (metadata.MATEW_METADATA,
+                                  SOURCEDIR_CONFIGFILE):
+                self.album.log(_("  Ignoring %s, format not supported.")\
+                               % filename, 'info')
+                self.album.log("(%s)" % os.path.join(self.path, filename))
+
+        self.metadata = metadata.DirectoryMetadata(self)
+        md = self.metadata.get()
+        if 'album_name' in md.keys():
+            self.title = md['album_name']
+        else:
+            self.title = self.human_name
+        if 'album_description' in md.keys():
+            self.desc = md['album_description']
+        else:
+            self.desc = None
+
+        if 'album_picture' in md.keys():
+            self.album_picture = md['album_picture']
+        else:
+            self.album_picture = None
 
     def is_album_root(self):
         return self.path == self._path_to_unicode(self.album.source_dir)
+
+    def get_image_count(self):
+        return len(self.images_names)
+
+    def get_all_images_count(self):
+        all_images_count = len(self.images_names)
+        for subdir in self.subdirs:
+            all_images_count += subdir.get_all_images_count()
+        return all_images_count
+
+    def get_all_images(self):
+        all_images = list(self.images) # We want a copy here.
+        for subdir in self.subdirs:
+            all_images.extend(subdir.get_all_images())
+        return all_images
+
+    def get_all_images_paths(self):
+        all_images_paths = map(lambda im: os.path.join(self.path, im.filename),
+                               self.get_all_images())
+        return all_images_paths
+
+    def get_all_subdirs(self):
+        all_subdirs = list(self.subdirs) # We want a copy here.
+        for subdir in self.subdirs:
+            all_subdirs.extend(subdir.get_all_subdirs())
+        return all_subdirs
 
 
 # vim: ts=4 sw=4 expandtab

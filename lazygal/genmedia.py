@@ -101,14 +101,15 @@ class WebalbumPicture(make.FileMakeObject):
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
-        thumbs = [image.thumb for image in webgal_dir.get_all_images()]
+        thumbs = [image.thumb\
+                  for image in webgal_dir.source_dir.get_all_images()]
 
         for thumb in thumbs:
             self.add_dependency(thumb)
 
-        if webgal_dir.album_picture:
+        if webgal_dir.source_dir.album_picture:
             md_dirpic_thumb = self.album._add_size_qualifier(\
-                                           webgal_dir.album_picture,
+                                           webgal_dir.source_dir.album_picture,
                                            THUMB_SIZE_NAME)
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
         else:

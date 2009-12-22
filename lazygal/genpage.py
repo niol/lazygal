@@ -200,10 +200,10 @@ class WebalbumIndexPage(WebalbumPage):
 
         self.page_number = page_number
 
-        self.subdirs, self.galleries = self.presented_elements()
+        self.subgals, self.galleries = self.presented_elements()
 
         for dir, images in self.galleries:
-            self.add_dependency(dir.metadata)
+            self.add_dependency(dir.source_dir.metadata)
             if dir is not self.dir:
                 dir.flattening_dir = self.dir
                 self.add_dependency(dir)
@@ -216,7 +216,7 @@ class WebalbumIndexPage(WebalbumPage):
                 browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
                 self.add_dependency(browse_page_dep)
 
-            if self.dir.album.dirzip and dir.get_image_count() > 1:
+            if self.dir.album.dirzip and dir.source_dir.get_image_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
         self.set_template(self.dir.album.templates['dirindex.thtml'])
@@ -224,47 +224,49 @@ class WebalbumIndexPage(WebalbumPage):
     def presented_elements(self):
         galleries = []
         if self.dir.album.thumbs_per_page == 0: # No pagination
-            galleries.append((self.dir, self.dir.images))
+            galleries.append((self.dir, self.dir.source_dir.images))
             if self.dir.flatten_below():
-                subdirs = []
-                for dir in self.dir.get_all_subdirs():
-                    galleries.append((dir, dir.images))
+                subgals = []
+                for dir in self.dir.get_all_subgals():
+                    galleries.append((dir, dir.source_dir.images))
             else:
-                subdirs = self.dir.subdirs
+                subgals = self.dir.subgals
         else:
             if self.dir.flatten_below(): # Loose pagination not breaking subgals
-                subdirs = [] # No subdir links as they are flattened
+                subgals = [] # No subgal links as they are flattened
 
                 page_number = 0
-                subdirs_it = iter([self.dir] + self.dir.get_all_subdirs())
+                subgals_it = iter([self.dir] + self.dir.get_all_subgals())
                 try:
                     # Skip galleries of previous pages.
                     while page_number < self.page_number:
                         how_many_images = 0
                         while how_many_images < self.dir.album.thumbs_per_page:
-                            subdir = subdirs_it.next()
+                            subdir = subgals_it.next().source_dir
                             how_many_images += subdir.get_image_count()
                         page_number += 1
                     # While we're still complying with image quota, add
                     # galleries.
                     how_many_images = 0
                     while how_many_images < self.dir.album.thumbs_per_page:
-                        subdir = subdirs_it.next()
+                        subgal = subgals_it.next()
+                        subdir = subgal.source_dir
                         how_many_images += subdir.get_image_count()
-                        galleries.append((subdir, subdir.images))
+                        galleries.append((subgal, subdir.images))
                 except StopIteration:
                     pass
             else: # Real pagination
                 step = self.page_number * self.dir.album.thumbs_per_page
-                images = self.dir.images[step:step+self.dir.album.thumbs_per_page]
+                end_index = step + self.dir.album.thumbs_per_page
+                images = self.dir.source_dir.images[step:end_index]
                 galleries.append((self.dir, images))
                 # subgal links only for first page
                 if self.page_number == 0:
-                    subdirs = self.dir.subdirs
+                    subgals = self.dir.subgals
                 else:
-                    subdirs = []
+                    subgals = []
 
-        return subdirs, galleries
+        return subgals, galleries
 
     def _get_paginated_name(self, page_number=None):
         if page_number == None:
@@ -304,14 +306,14 @@ class WebalbumIndexPage(WebalbumPage):
             dir = self.dir
 
         dir_info = {}
-        if dir.metadata:
-            dir_info.update(dir.metadata.get())
+        if dir.source_dir.metadata:
+            dir_info.update(dir.source_dir.metadata.get())
             if 'album_description' in dir_info.keys():
                 dir_info['album_description'] =\
                     self._do_not_escape(dir_info['album_description'])
 
         if 'album_name' not in dir_info.keys():
-            dir_info['album_name'] = dir.human_name
+            dir_info['album_name'] = dir.source_dir.human_name
 
         if self.dir.album.dirzip and dir.dirzip:
             archive_rel_path = dir.dirzip._rel_path(self.dir)
@@ -319,19 +321,19 @@ class WebalbumIndexPage(WebalbumPage):
 
         dir_info['is_main'] = dir is self.dir
 
-        dir_info['image_count'] = dir.get_image_count()
-        dir_info['subgal_count'] = len(dir.subdirs)
+        dir_info['image_count'] = dir.source_dir.get_image_count()
+        dir_info['subgal_count'] = len(dir.source_dir.subdirs)
 
         return dir_info
 
     def _get_subgal_links(self):
         subgal_links = []
-        for subdir in self.subdirs:
-            dir_info = self._get_dir_info(subdir)
-            dir_info['link'] = '/'.join([subdir.source_dir.name,
+        for subgal in self.dir.subgals:
+            dir_info = self._get_dir_info(subgal)
+            dir_info['link'] = '/'.join([subgal.source_dir.name,
                                          self._get_related_index_fn()])
             dir_info['link'] = self.url_quote(dir_info['link'])
-            dir_info['album_picture'] = os.path.join(subdir.source_dir.name,
+            dir_info['album_picture'] = os.path.join(subgal.source_dir.name,
                                      self.dir.album.get_webalbumpic_filename())
             subgal_links.append(dir_info)
         return subgal_links
@@ -392,7 +394,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.description = description
 
     def push_dir(self, webalbumdir):
-        if webalbumdir.get_image_count() > 0:
+        if webalbumdir.source_dir.get_image_count() > 0:
             self.add_dependency(webalbumdir)
             self.__add_item(webalbumdir)
 
@@ -403,11 +405,11 @@ class WebalbumFeed(make.FileMakeObject):
         desc_values['album_pic_path'] = os.path.join(url,
                                           self.album.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
-        desc_values['picture_count'] = webalbumdir.get_image_count()
-        desc_values['desc'] = webalbumdir.desc
+        desc_values['picture_count'] = webalbumdir.source_dir.get_image_count()
+        desc_values['desc'] = webalbumdir.source_dir.desc
         desc = self.item_template.instanciate(desc_values)
 
-        self.feed.push_item(webalbumdir.title, url, desc,
+        self.feed.push_item(webalbumdir.source_dir.title, url, desc,
                             webalbumdir.source_dir.get_mtime())
 
     def build(self):

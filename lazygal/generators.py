@@ -24,6 +24,8 @@ import make
 import sourcetree, tpl, feeds, newsize, metadata
 import genpage, genmedia, genfile
 
+from sourcetree import SOURCEDIR_CONFIGFILE
+
 
 DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 if not os.path.exists(os.path.join(DATAPATH, 'themes')):
@@ -35,8 +37,6 @@ THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
-
-SOURCEDIR_CONFIGFILE = '.lazygal'
 
 
 class SubgalSort(make.MakeTask):
@@ -90,7 +90,7 @@ class WebalbumDir(make.FileMakeObject):
     This is a built web gallery with its files, thumbs and reduced pics.
     """
 
-    def __init__(self, dir, subdirs, album, album_dest_dir, clean_dest):
+    def __init__(self, dir, subgals, album, album_dest_dir, clean_dest):
         self.__mtime = None
 
         self.source_dir = dir
@@ -98,55 +98,14 @@ class WebalbumDir(make.FileMakeObject):
         make.FileMakeObject.__init__(self, self.path)
 
         self.add_dependency(self.source_dir)
-        self.subdirs = subdirs
+        self.subgals = subgals
         self.album = album
-        self.human_name = self.album._str_humanize(self.source_dir.name)
 
         self.flattening_dir = None
 
-        self.images = []
-        self.images_names = []
-        for filename in self.source_dir.filenames:
-            if self.album._is_ext_supported(filename):
-                image_path = os.path.join(self.source_dir.path, filename)
-                image = sourcetree.ImageFile(image_path, self.album)
-                try:
-                    # Try to preload image EXIF to detect broken images.
-                    # (this is not a problem for performance because EXIF info
-                    # is probed anyway later)
-                    image.info()
-                except IOError:
-                    self.album.log(_("  %s is BROKEN, skipped")\
-                                   % image.filename,
-                                   'error')
-                    image.broken = True
-                else:
-                    image.thumb = genmedia.ImageOtherSize(self, image,
-                                                      genmedia.THUMB_SIZE_NAME)
-                    self.images_names.append(filename)
-                    self.images.append(image)
-            elif filename not in (metadata.MATEW_METADATA,
-                                  SOURCEDIR_CONFIGFILE):
-                self.album.log(_("  Ignoring %s, format not supported.")\
-                               % filename, 'info')
-                self.album.log("(%s)" % os.path.join(self.source_dir.path,
-                                                     filename))
-
-        self.metadata = metadata.DirectoryMetadata(self)
-        md = self.metadata.get()
-        if 'album_name' in md.keys():
-            self.title = md['album_name']
-        else:
-            self.title = self.human_name
-        if 'album_description' in md.keys():
-            self.desc = md['album_description']
-        else:
-            self.desc = None
-
-        if 'album_picture' in md.keys():
-            self.album_picture = md['album_picture']
-        else:
-            self.album_picture = None
+        for image in self.source_dir.images:
+            image.thumb = genmedia.ImageOtherSize(self, image,
+                                                  genmedia.THUMB_SIZE_NAME)
 
         self.dirzip = None
 
@@ -175,9 +134,11 @@ class WebalbumDir(make.FileMakeObject):
         self.how_many_pages = None
         if self.album.thumbs_per_page == 0\
         or (not self.flatten_below()\
-            and self.get_image_count() <= self.album.thumbs_per_page)\
+            and self.source_dir.get_image_count()\
+                <=self.album.thumbs_per_page)\
         or (self.flatten_below()\
-            and self.get_all_images_count() <= self.album.thumbs_per_page):
+            and self.source_dir.get_all_images_count()\
+                <= self.album.thumbs_per_page):
             # No pagination (requested or needed)
             self.how_many_pages = 1
         else:
@@ -186,7 +147,8 @@ class WebalbumDir(make.FileMakeObject):
                 how_many_pages = 0
                 image_count = 0
                 new_page = True
-                for subdir in [self] + self.get_all_subdirs():
+                for subdir in [self.source_dir]\
+                              + self.source_dir.get_all_subdirs():
                     if new_page:
                         how_many_pages += 1
                         new_page = False
@@ -195,9 +157,10 @@ class WebalbumDir(make.FileMakeObject):
                         image_count = 0
                         new_page = True
             else: # Real pagination
-                how_many_pages = self.get_image_count()\
+                how_many_pages = self.source_dir.get_image_count()\
                                  / self.album.thumbs_per_page
-                if self.get_image_count() % self.album.thumbs_per_page > 0:
+                if self.source_dir.get_image_count()\
+                   % self.album.thumbs_per_page > 0:
                     how_many_pages = how_many_pages + 1
             assert how_many_pages > 1
             self.how_many_pages = how_many_pages
@@ -211,37 +174,17 @@ class WebalbumDir(make.FileMakeObject):
         # Use the saved mtime that was initialized once, in self.__init__()
         return self.__mtime or super(WebalbumDir, self).get_mtime()
 
-    def get_image_count(self):
-        return len(self.images_names)
-
     def get_subgal_count(self):
         if self.flatten_below():
             return 0
         else:
-            len(self.subdirs)
+            len(self.source_dir.subdirs)
 
-    def get_all_images_count(self):
-        all_images_count = len(self.images_names)
-        for subdir in self.subdirs:
-            all_images_count += subdir.get_all_images_count()
-        return all_images_count
-
-    def get_all_images(self):
-        all_images = list(self.images) # We want a copy here.
-        for subdir in self.subdirs:
-            all_images.extend(subdir.get_all_images())
-        return all_images
-
-    def get_all_images_paths(self):
-        all_images_paths = map(lambda im: os.path.join(self.path, im.filename),
-                               self.get_all_images())
-        return all_images_paths
-
-    def get_all_subdirs(self):
-        all_subdirs = list(self.subdirs) # We want a copy here.
-        for subdir in self.subdirs:
-            all_subdirs.extend(subdir.get_all_subdirs())
-        return all_subdirs
+    def get_all_subgals(self):
+        all_subgals = list(self.subgals) # We want a copy here.
+        for subgal in self.subgals:
+            all_subgals.extend(subgal.get_all_subgals())
+        return all_subgals
 
     def should_be_flattened(self):
         return self.album.dir_flattening_depth is not False\
@@ -250,10 +193,10 @@ class WebalbumDir(make.FileMakeObject):
     def flatten_below(self):
         if self.album.dir_flattening_depth is False:
             return False
-        elif len(self.subdirs) > 0:
+        elif len(self.source_dir.subdirs) > 0:
             # As all subdirs are at the same level, if one should be flattened,
             # all should.
-            return self.subdirs[0].should_be_flattened()
+            return self.subgals[0].should_be_flattened()
         else:
             return False
 
@@ -264,8 +207,8 @@ class WebalbumDir(make.FileMakeObject):
             extra_files.append(os.path.join(self.path,
                                             DEST_SHARED_DIRECTORY_NAME))
 
-        expected_dirs = map(lambda dn: os.path.join(self.path, dn),
-                            self.source_dir.dirnames)
+        dirnames = [d.name for d in self.source_dir.subdirs]
+        expected_dirs = map(lambda dn: os.path.join(self.path, dn), dirnames)
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
             if not isinstance(dest_file, unicode):
@@ -518,42 +461,46 @@ class Album:
         for root, dirnames, filenames in os.walk(self.source_dir,
                                                  topdown=False):
 
-            dir = sourcetree.Directory(root, dirnames, filenames, self)
-
-            if dir.should_be_skipped():
-                self.log(_("(%s) has been skipped") % dir.path)
-                continue
-            if dir.path == os.path.join(sane_dest_dir,
-                                        DEST_SHARED_DIRECTORY_NAME):
-                self.log(_("(%s) has been skipped because its name collides with the shared material directory name") % dir.path, 'error')
-                continue
-
-            self.log(_("[Entering %%ALBUMROOT%%/%s]") % dir.strip_root(),
-                     'info')
-            self.log("(%s)" % dir.path)
-
             if dir_heap.has_key(root):
-                subdirs = dir_heap[root]
+                subdirs, subgals = dir_heap[root]
                 del dir_heap[root] # No need to keep it there
             else:
                 subdirs = []
+                subgals = []
 
-            destgal = WebalbumDir(dir, subdirs, self, sane_dest_dir, clean_dest)
+            source_dir = sourcetree.Directory(root, subdirs, filenames, self)
 
-            if destgal.get_all_images_count() < 1:
-                self.log(_("(%s) and childs have no photos, skipped")
-                           % dir.path)
+            if source_dir.should_be_skipped():
+                self.log(_("(%s) has been skipped") % source_dir.path)
+                continue
+            if source_dir.path == os.path.join(sane_dest_dir,
+                                               DEST_SHARED_DIRECTORY_NAME):
+                self.log(_("(%s) has been skipped because its name collides with the shared material directory name") % source_dir.path, 'error')
                 continue
 
-            if not dir.is_album_root():
+            self.log(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
+                     'info')
+            self.log("(%s)" % source_dir.path)
+
+            if source_dir.get_all_images_count() < 1:
+                self.log(_("(%s) and childs have no photos, skipped")
+                           % source_dir.path)
+                continue
+
+            destgal = WebalbumDir(source_dir, subgals, self,
+                                  sane_dest_dir, clean_dest)
+
+            if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
                 if not dir_heap.has_key(container_dirname):
-                    dir_heap[container_dirname] = []
-                dir_heap[container_dirname].append(destgal)
+                    dir_heap[container_dirname] = ([], [])
+                container_subdirs, container_subgals = dir_heap[container_dirname]
+                container_subdirs.append(source_dir)
+                container_subgals.append(destgal)
 
-            if feed and dir.is_album_root():
-                feed.set_title(dir.name)
-                md = destgal.metadata.get()
+            if feed and source_dir.is_album_root():
+                feed.set_title(source_dir.human_name)
+                md = destgal.source_dir.metadata.get()
                 if 'album_description' in md.keys():
                     feed.set_description(md['album_description'])
                 destgal.register_output(feed.path)
