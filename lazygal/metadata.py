@@ -422,7 +422,7 @@ class DefaultMetadata(make.FileMakeObject):
 
         f = file(self._path, 'w')
         f.write('# Directory metadata for lazygal, Matew format\n')
-        f.write('Album name ""\n');
+        f.write('Album name "%s"\n' % self.source_dir.human_name);
         f.write('Album description ""\n');
         f.write('Album image identifier "%s"\n' % md['album_picture']);
         f.close()
