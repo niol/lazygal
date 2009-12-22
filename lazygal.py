@@ -150,7 +150,7 @@ parser.add_option("", "--puburl",
 parser.add_option("-m", "--generate-metadata",
                   action="store_true",
                   dest="metadata", default=False,
-                  help=_("Generate metadata description files where they don't exist."))
+                  help=_("Generate metadata description files where they don't exist instead of generating the web gallery."))
 parser.add_option("-n", "--thumbs-per-page",
                   action="store", type="int",
                   dest="thumbs_per_page",

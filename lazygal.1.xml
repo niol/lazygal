@@ -253,7 +253,8 @@
         </term>
         <listitem>
           <para>Generate metadata description files where they don't
-          exist.</para>
+          exist in the source tree instead of generating the web gallery.
+          This disables all other options.</para>
         </listitem>
       </varlistentry>
 
