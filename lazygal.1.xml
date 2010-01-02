@@ -242,7 +242,7 @@
           <option>--puburl=<replaceable>PUB_URL</replaceable></option>
         </term>
         <listitem>
-          <para>Publication URL (only usefull for feed generation).</para>
+          <para>Publication URL (only useful for feed generation).</para>
         </listitem>
       </varlistentry>
 
@@ -363,7 +363,7 @@
 
     <para>Each file which name starts with <parameter>SHARED_</parameter> is
     copied to the web album destination under the directory
-    <parameter>shared</parameter> and is aimed at being a shared ressource
+    <parameter>shared</parameter> and is aimed at being a shared resource
     accross your web album (CSS stylesheet, button, etc.).</para>
 
     <para>Each file which extension starts with <parameter>t</parameter>
