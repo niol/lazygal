@@ -144,16 +144,20 @@ class ImageFile(File):
 
     def __init__(self, path, album):
         File.__init__(self, path, album)
-        self.__exif = None
         self.broken = False
 
         self.previous_image = None
         self.next_image = None
 
+        self.date_taken = None
+        self.exif_date = None
+        self.__date_probed = False
+
     def info(self):
-        if not self.__exif:
-            self.__exif = metadata.ExifTags(self.path)
-        return self.__exif
+        exif = metadata.ExifTags(self.path)
+        self.exif_date = exif.get_date()
+        self.__date_probed = True
+        return exif
 
     def get_size(self, img_path=None):
         if not img_path:
@@ -164,16 +168,20 @@ class ImageFile(File):
         return size
 
     def has_exif_date(self):
-        exif_date = self.info().get_date()
-        if exif_date:
+        if not self.__date_probed:
+            self.info()
+
+        if self.exif_date:
             return True
         else:
             return False
 
     def get_date_taken(self):
-        exif_date = self.info().get_date()
-        if exif_date:
-            self.date_taken = exif_date
+        if not self.__date_probed:
+            self.info()
+
+        if self.exif_date:
+            self.date_taken = self.exif_date
         else:
             # No date available in EXIF, or bad format, use file mtime
             self.date_taken = datetime.datetime.fromtimestamp(self.get_mtime())
