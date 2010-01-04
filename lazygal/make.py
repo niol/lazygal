@@ -34,6 +34,7 @@ class MakeTask(object):
         self.output_items = []
         self.__last_build_time = -1 # older than oldest epoch
         self.__built_once = False
+        self.__dep_only = False
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -48,6 +49,18 @@ class MakeTask(object):
     def get_mtime(self):
         return self.__last_build_time
 
+    def set_dep_only(self):
+        """
+        Set this task to being only used as an intermediate work, its output
+        is not required in the end. It won't be taken into account when
+        computing whether a depending task should be built, even if it is
+        older. But make() will be called if the depending task is built.
+        """
+        self.__dep_only = True
+
+    def is_dep_only(self):
+        return self.__dep_only
+
     def stamp_build(self, build_time=None):
         if not build_time:
             build_time = time.time()
@@ -55,17 +68,20 @@ class MakeTask(object):
         self.__built_once = True
 
     def needs_build(self):
+        if not self.__built_once:
+            return True
+
         for dependency in self.deps:
             if dependency.get_mtime() > self.get_mtime()\
             or dependency.needs_build():
-                return True
+                if not dependency.is_dep_only():
+                    return True
         return False
 
     def make(self, force=False):
-        for d in self.deps:
-            d.make() # dependency building is not forced, regardless of current
-                     # target.
         if self.needs_build() or force:
+            for d in self.deps:
+                d.make() # dependency building not forced
             self.call_build()
 
     def call_build(self):

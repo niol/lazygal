@@ -46,6 +46,7 @@ class SubgalSort(make.MakeTask):
 
     def __init__(self, webgal_dir):
         make.MakeTask.__init__(self)
+        self.set_dep_only()
         self.webgal_dir = webgal_dir
         self.album = self.webgal_dir.album
 
@@ -124,6 +125,9 @@ class WebalbumDir(make.FileMakeObject):
             os.makedirs(self.path, mode = 0755)
 
         self.sort_task = SubgalSort(self)
+        self.sort_task.add_dependency(self.source_dir)
+        for image in self.source_dir.images:
+            self.sort_task.add_dependency(image)
 
         if not self.should_be_flattened():
             self.__init_index_pages_build()
