@@ -62,7 +62,7 @@ class SubgalSort(make.MakeTask):
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
                              % self.album.subgal_sort_by[0])
-        self.webgal_dir.subdirs.sort(subgal_sorter,
+        self.webgal_dir.subgals.sort(subgal_sorter,
                                      reverse=self.album.subgal_sort_by[1])
 
         if self.album.pic_sort_by[0] == 'exif':
@@ -74,11 +74,12 @@ class SubgalSort(make.MakeTask):
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
                              % self.album.pic_sort_by[0])
-        self.webgal_dir.images.sort(sorter, reverse=self.album.pic_sort_by[1])
+        self.webgal_dir.source_dir.images.sort(sorter,
+                                              reverse=self.album.pic_sort_by[1])
 
         # chain images
         previous_image = None
-        for image in self.webgal_dir.images:
+        for image in self.webgal_dir.source_dir.images:
             if previous_image:
                 previous_image.next_image = image
                 image.previous_image = previous_image
