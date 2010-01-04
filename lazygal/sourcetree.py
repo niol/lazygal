@@ -79,6 +79,11 @@ class File(make.FileSimpleDependency):
         if path is None:
             path = self.path
 
+        if not os.path.isdir(path):
+            path, fn = os.path.split(path)
+        else:
+            fn = None
+
         rel_path = ""
         common_path = from_dir
         while common_path != self.album.source_dir\
@@ -90,6 +95,9 @@ class File(make.FileSimpleDependency):
 
         if self.is_subdir_of(common_path, path):
             rel_path = os.path.join(rel_path, path[len(common_path)+1:])
+
+        if fn:
+            rel_path = os.path.join(rel_path, fn)
 
         return rel_path
 
@@ -246,7 +254,7 @@ class Directory(File):
             self.desc = None
 
         if 'album_picture' in md.keys():
-            self.album_picture = md['album_picture']
+            self.album_picture = self.rel_path(self, md['album_picture'])
         else:
             self.album_picture = None
 

@@ -358,6 +358,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
+                        data = os.path.join(self.dir.path, data)
                     metadata[tag] = data.decode(locale.getpreferredencoding())
                     break
 
