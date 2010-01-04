@@ -164,7 +164,6 @@ class ImageFile(File):
             img_path = self.path
         im = Image.open(img_path)
         size = im.size
-        del im
         return size
 
     def has_exif_date(self):
