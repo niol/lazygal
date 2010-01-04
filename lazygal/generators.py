@@ -218,7 +218,7 @@ class WebalbumDir(make.FileMakeObject):
                dest_file not in expected_dirs and\
                dest_file not in extra_files:
                 text = ''
-                if self.clean_dest and not os.path.isdir(rmv_candidate):
+                if self.clean_dest and not os.path.isdir(dest_file):
                     os.unlink(dest_file)
                     text = ""
                 else:
