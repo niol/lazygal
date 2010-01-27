@@ -229,8 +229,8 @@ class Directory(File):
                 image = ImageFile(image_path, self.album)
                 try:
                     # Try to preload image EXIF to detect broken images.
-                    # (this is not a problem for performance because EXIF info
-                    # is probed anyway later)
+                    # FIXME: This is a problem for performance because EXIF
+                    # data is red even if a directory does not need build.
                     image.info()
                 except IOError:
                     self.album.log(_("  %s is BROKEN, skipped")\
