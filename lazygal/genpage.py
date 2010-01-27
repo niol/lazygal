@@ -166,14 +166,15 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['osize_links'] = self._get_osize_links(self.image.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
-        tpl_values['camera_name'] = self.image.info().get_camera_name()
-        tpl_values['lens_name'] = self.image.info().get_lens_name()
-        tpl_values['flash'] = self.image.info().get_flash()
-        tpl_values['exposure'] = self.image.info().get_exposure()
-        tpl_values['iso'] = self.image.info().get_iso()
-        tpl_values['fnumber'] = self.image.info().get_fnumber()
-        tpl_values['focal_length'] = self.image.info().get_focal_length()
-        tpl_values['comment'] = self.image.info().get_comment()
+        image_info = self.image.info()
+        tpl_values['camera_name'] = image_info.get_camera_name()
+        tpl_values['lens_name'] = image_info.get_lens_name()
+        tpl_values['flash'] = image_info.get_flash()
+        tpl_values['exposure'] = image_info.get_exposure()
+        tpl_values['iso'] = image_info.get_iso()
+        tpl_values['fnumber'] = image_info.get_fnumber()
+        tpl_values['focal_length'] = image_info.get_focal_length()
+        tpl_values['comment'] = image_info.get_comment()
 
         if self.dir.album.original:
             if self.dir.album.orig_base:
