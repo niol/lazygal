@@ -51,8 +51,7 @@ class SubgalSort(make.MakeTask):
         self.album = self.webgal_dir.album
 
     def build(self):
-        self.album.log(_("  SORTING pics in '%s'") % self.webgal_dir.path,
-                       'info')
+        self.album.log(_("  SORTING pics and subdirs"), 'info')
 
         if self.album.subgal_sort_by[0] == 'mtime':
             subgal_sorter = lambda x, y:\
@@ -67,24 +66,158 @@ class SubgalSort(make.MakeTask):
                                      reverse=self.album.subgal_sort_by[1])
 
         if self.album.pic_sort_by[0] == 'exif':
-            sorter = lambda x, y: x.compare_to_sort(y)
+            sorter = lambda x, y: x.image.compare_to_sort(y.image)
         elif self.album.pic_sort_by[0] == 'mtime':
-            sorter = lambda x, y: x.compare_mtime(y)
+            sorter = lambda x, y: x.image.compare_mtime(y.image)
         elif self.album.pic_sort_by[0] == 'filename':
-            sorter = lambda x, y: x.compare_filename(y)
+            sorter = lambda x, y: x.image.compare_filename(y.image)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
                              % self.album.pic_sort_by[0])
-        self.webgal_dir.source_dir.images.sort(sorter,
-                                              reverse=self.album.pic_sort_by[1])
+        self.webgal_dir.images.sort(sorter, reverse=self.album.pic_sort_by[1])
 
         # chain images
         previous_image = None
-        for image in self.webgal_dir.source_dir.images:
+        for image in self.webgal_dir.images:
             if previous_image:
-                previous_image.next_image = image
-                image.previous_image = previous_image
+                previous_image.set_next(image)
+                image.set_previous(previous_image)
             previous_image = image
+
+
+class SubgalBreak(make.MakeTask):
+    """
+    This task breaks galleries into multiple pages.
+    """
+
+    def __init__(self, webgal_dir):
+        make.MakeTask.__init__(self)
+        self.webgal_dir = webgal_dir
+        self.album = self.webgal_dir.album
+
+        self.__last_page_number = -1
+
+    def next_page_number(self):
+        self.__last_page_number += 1
+        return self.__last_page_number
+
+    def how_many_pages(self):
+        return self.__last_page_number + 1
+
+    def build(self):
+        self.album.log(_("  BREAKING web gallery into multiple pages"), 'info')
+
+        if self.album.thumbs_per_page == 0:
+            self.__fill_no_pagination()
+        else:
+            if self.webgal_dir.flatten_below():
+                self.__fill_loose_pagination()
+            else:
+                self.__fill_real_pagination()
+
+    def __fill_no_pagination(self):
+        galleries = []
+        galleries.append((self.webgal_dir, self.webgal_dir.images))
+        if self.webgal_dir.flatten_below():
+            subgals = []
+            for dir in self.webgal_dir.get_all_subgals():
+                galleries.append((dir, dir.images))
+        else:
+            subgals = self.webgal_dir.subgals
+        self.webgal_dir.add_index_page(subgals, galleries)
+
+    def __fill_loose_pagination(self):
+        """
+        Loose pagination not breaking subgals (chosen if subgals are flattened).
+        """
+        subgals = [] # No subgal links as they are flattened
+
+        galleries = []
+        how_many_images = 0
+        subgals_it = iter([self.webgal_dir] + self.webgal_dir.get_all_subgals())
+        try:
+            while True:
+                subgal = subgals_it.next()
+                how_many_images += subgal.source_dir.get_image_count()
+                galleries.append((subgal, subgal.images))
+                if how_many_images > self.webgal_dir.album.thumbs_per_page:
+                    self.webgal_dir.add_index_page(subgals, galleries)
+                    galleries = []
+                    how_many_images = 0
+        except StopIteration:
+            if len(galleries) > 0:
+                self.webgal_dir.add_index_page(subgals, galleries)
+
+    def __fill_real_pagination(self):
+        how_many_pages = len(self.webgal_dir.images)\
+                          / self.webgal_dir.album.thumbs_per_page + 1
+        for page_number in range(0, how_many_pages):
+            step = page_number * self.webgal_dir.album.thumbs_per_page
+            end_index = step + self.webgal_dir.album.thumbs_per_page
+            shown_images = self.webgal_dir.images[step:end_index]
+            galleries = [(self.webgal_dir, shown_images)]
+
+            # subgal links only for first page
+            if page_number == 0:
+                subgals = self.webgal_dir.subgals
+            else:
+                subgals = []
+
+            self.webgal_dir.add_index_page(subgals, galleries)
+
+
+class WebalbumImageTask(make.GroupTask):
+    """
+    This task builds all items related to one picture.
+    """
+
+    def __init__(self, webgal, image, album):
+        make.MakeTask.__init__(self)
+
+        self.album = album
+        self.webgal = webgal
+        self.image = image
+
+        self.previous_image = None
+        self.next_image = None
+
+        self.thumb = genmedia.ImageOtherSize(self.webgal, self.image,
+                                             genmedia.THUMB_SIZE_NAME)
+        self.add_dependency(self.thumb)
+
+        self.original = None
+        self.resized = {}
+        self.browse_pages = {}
+        for size_name in self.album.browse_size_strings.keys():
+            if self.album.browse_size_strings[size_name] == '0x0':
+                self.resized[size_name] = self.__get_original()
+            else:
+                self.resized[size_name] = genmedia.ImageOtherSize(self.webgal,
+                                                        self.image, size_name)
+            self.add_dependency(self.resized[size_name])
+
+            if self.album.original and not self.album.orig_base:
+                self.add_dependency(self.__get_original())
+
+            bpage = genpage.WebalbumBrowsePage(self.webgal, size_name, self)
+            self.browse_pages[size_name] = bpage
+
+    def __get_original(self):
+        if not self.original:
+            self.original = genfile.ImageOriginal(self.webgal, self.image)
+        return self.original
+
+    def set_next(self, image):
+        self.next_image = image
+        if image:
+            for bpage in self.browse_pages.values():
+                bpage.add_dependency(image.thumb)
+
+    def set_previous(self, image):
+        self.previous_image = image
+        if image:
+            for bpage in self.browse_pages.values():
+                bpage.add_dependency(image.thumb)
 
 
 class WebalbumDir(make.FileMakeObject):
@@ -105,12 +238,6 @@ class WebalbumDir(make.FileMakeObject):
 
         self.flattening_dir = None
 
-        for image in self.source_dir.images:
-            image.thumb = genmedia.ImageOtherSize(self, image,
-                                                  genmedia.THUMB_SIZE_NAME)
-
-        self.dirzip = None
-
         # mtime for directories must be saved, because the WebalbumDir gets
         # updated as its dependencies are built.
         self.__mtime = self.get_mtime()
@@ -124,56 +251,37 @@ class WebalbumDir(make.FileMakeObject):
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
+        self.images = []
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
         for image in self.source_dir.images:
             self.sort_task.add_dependency(image)
 
+            image_task = WebalbumImageTask(self, image, self.album)
+            self.images.append(image_task)
+            self.add_dependency(image_task)
+
+        self.dirzip = None
+
         if not self.should_be_flattened():
-            self.__init_index_pages_build()
+            self.break_task = SubgalBreak(self)
+            self.add_dependency(self.break_task)
+
+            if self.album.thumbs_per_page > 0:
+                # FIXME: If pagination is 'on', galleries need to be sorted
+                # before being broken on multiple pages, and thus this slows
+                # down a lot the checking of a directory's need to be built.
+                self.break_task.add_dependency(self.sort_task)
 
             self.webgal_pic = genmedia.WebalbumPicture(self)
             self.add_dependency(self.webgal_pic)
 
-    def __init_index_pages_build(self):
-        self.how_many_pages = None
-        if self.album.thumbs_per_page == 0\
-        or (not self.flatten_below()\
-            and self.source_dir.get_image_count()\
-                <=self.album.thumbs_per_page)\
-        or (self.flatten_below()\
-            and self.source_dir.get_all_images_count()\
-                <= self.album.thumbs_per_page):
-            # No pagination (requested or needed)
-            self.how_many_pages = 1
-        else:
-            # Pagination requested and needed
-            if self.flatten_below(): # Loose pagination not breaking subgals
-                how_many_pages = 0
-                image_count = 0
-                new_page = True
-                for subdir in [self.source_dir]\
-                              + self.source_dir.get_all_subdirs():
-                    if new_page:
-                        how_many_pages += 1
-                        new_page = False
-                    image_count += subdir.get_image_count()
-                    if image_count >= self.album.thumbs_per_page:
-                        image_count = 0
-                        new_page = True
-            else: # Real pagination
-                how_many_pages = self.source_dir.get_image_count()\
-                                 / self.album.thumbs_per_page
-                if self.source_dir.get_image_count()\
-                   % self.album.thumbs_per_page > 0:
-                    how_many_pages = how_many_pages + 1
-            assert how_many_pages > 1
-            self.how_many_pages = how_many_pages
-
+    def add_index_page(self, subgals, galleries):
+        page_number = self.break_task.next_page_number()
         for size_name in self.album.browse_size_strings.keys():
-            for page_number in range(0, self.how_many_pages):
-                page = genpage.WebalbumIndexPage(self, size_name, page_number)
-                self.add_dependency(page)
+            page = genpage.WebalbumIndexPage(self, size_name, page_number,
+                                             subgals, galleries)
+            self.add_dependency(page)
 
     def get_mtime(self):
         # Use the saved mtime that was initialized once, in self.__init__()
@@ -190,6 +298,12 @@ class WebalbumDir(make.FileMakeObject):
         for subgal in self.subgals:
             all_subgals.extend(subgal.get_all_subgals())
         return all_subgals
+
+    def get_all_images_tasks(self):
+        all_images = list(self.images) # We want a copy here.
+        for subgal in self.subgals:
+            all_images.extend(subgal.get_all_images_tasks())
+        return all_images
 
     def should_be_flattened(self):
         return self.album.dir_flattening_depth is not False\
@@ -510,6 +624,9 @@ class Album:
             # Force some memory cleanups, this is usefull for big albums.
             del destgal
             gc.collect()
+
+            self.log(_("[Leaving  %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
+                     'info')
 
         if feed:
             feed.make()

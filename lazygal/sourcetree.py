@@ -146,9 +146,6 @@ class ImageFile(File):
         File.__init__(self, path, album)
         self.broken = False
 
-        self.previous_image = None
-        self.next_image = None
-
         self.date_taken = None
         self.exif_date = None
         self.__date_probed = False

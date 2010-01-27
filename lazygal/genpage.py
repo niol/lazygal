@@ -106,18 +106,14 @@ class WebalbumPage(genfile.WebalbumFile):
 
 class WebalbumBrowsePage(WebalbumPage):
 
-    def __init__(self, dir, size_name, image_file):
-        self.image = image_file
+    def __init__(self, dir, size_name, webalbum_image):
+        self.webalbum_image = webalbum_image
+        self.image = self.webalbum_image.image
         WebalbumPage.__init__(self, dir, size_name, self.image.name)
 
-        if self.dir.album.browse_size_strings[size_name] == '0x0':
-            self.add_dependency(genfile.ImageOriginal(self.dir, self.image))
-        else:
-            self.add_dependency(genmedia.ImageOtherSize(self.dir,
-                                                        self.image,
-                                                        self.size_name))
-            if self.dir.album.original and not self.dir.album.orig_base:
-                self.add_dependency(genfile.ImageOriginal(self.dir, self.image))
+        self.add_dependency(self.webalbum_image.resized[size_name])
+        if webalbum_image.original:
+            self.add_dependency(self.webalbum_image.original)
 
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
@@ -152,10 +148,13 @@ class WebalbumBrowsePage(WebalbumPage):
         time_str = img_date.strftime(time_format)
         tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
 
-        tpl_values['prev_link'] =\
-            self._gen_other_img_link(self.image.previous_image)
-        tpl_values['next_link'] =\
-            self._gen_other_img_link(self.image.next_image)
+        prev = self.webalbum_image.previous_image
+        if prev:
+            tpl_values['prev_link']  = self._gen_other_img_link(prev.image)
+
+        next = self.webalbum_image.next_image
+        if next:
+            tpl_values['next_link'] = self._gen_other_img_link(next.image)
 
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
@@ -195,13 +194,13 @@ class WebalbumIndexPage(WebalbumPage):
 
     FILENAME_BASE_STRING = 'index'
 
-    def __init__(self, dir, size_name, page_number=0):
+    def __init__(self, dir, size_name, page_number, subgals, galleries):
         page_paginated_name = self._get_paginated_name(page_number)
         WebalbumPage.__init__(self, dir, size_name, page_paginated_name)
 
         self.page_number = page_number
-
-        self.subgals, self.galleries = self.presented_elements()
+        self.subgals = subgals
+        self.galleries = galleries
 
         for dir, images in self.galleries:
             self.add_dependency(dir.source_dir.metadata)
@@ -214,62 +213,15 @@ class WebalbumIndexPage(WebalbumPage):
 
             for image in images:
                 self.add_dependency(image.thumb)
-                browse_page_dep = WebalbumBrowsePage(dir, size_name, image)
-                self.add_dependency(browse_page_dep)
+                self.add_dependency(image.browse_pages[size_name])
+                # Ensure dir depends on browse page (usefull for cleanup checks
+                # when dir is flattenend).
+                dir.add_dependency(image.browse_pages[size_name])
 
             if self.dir.album.dirzip and dir.source_dir.get_image_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
         self.set_template(self.dir.album.templates['dirindex.thtml'])
-
-    def presented_elements(self):
-        # FIXME: This algorithm is a repeat of the one in
-        # Webalbumdir.__init_index_pages_build() ...
-        galleries = []
-        if self.dir.album.thumbs_per_page == 0: # No pagination
-            galleries.append((self.dir, self.dir.source_dir.images))
-            if self.dir.flatten_below():
-                subgals = []
-                for dir in self.dir.get_all_subgals():
-                    galleries.append((dir, dir.source_dir.images))
-            else:
-                subgals = self.dir.subgals
-        else:
-            if self.dir.flatten_below(): # Loose pagination not breaking subgals
-                subgals = [] # No subgal links as they are flattened
-
-                page_number = 0
-                subgals_it = iter([self.dir] + self.dir.get_all_subgals())
-                try:
-                    # Skip galleries of previous pages.
-                    while page_number < self.page_number:
-                        how_many_images = 0
-                        while how_many_images < self.dir.album.thumbs_per_page:
-                            subdir = subgals_it.next().source_dir
-                            how_many_images += subdir.get_image_count()
-                        page_number += 1
-                    # While we're still complying with image quota, add
-                    # galleries.
-                    how_many_images = 0
-                    while how_many_images < self.dir.album.thumbs_per_page:
-                        subgal = subgals_it.next()
-                        subdir = subgal.source_dir
-                        how_many_images += subdir.get_image_count()
-                        galleries.append((subgal, subdir.images))
-                except StopIteration:
-                    pass
-            else: # Real pagination
-                step = self.page_number * self.dir.album.thumbs_per_page
-                end_index = step + self.dir.album.thumbs_per_page
-                images = self.dir.source_dir.images[step:end_index]
-                galleries.append((self.dir, images))
-                # subgal links only for first page
-                if self.page_number == 0:
-                    subgals = self.dir.subgals
-                else:
-                    subgals = []
-
-        return subgals, galleries
 
     def _get_paginated_name(self, page_number=None):
         if page_number == None:
@@ -289,7 +241,7 @@ class WebalbumIndexPage(WebalbumPage):
 
     def _get_onum_links(self):
         onum_index_links = []
-        for onum in range(0, self.dir.how_many_pages):
+        for onum in range(0, self.dir.break_task.how_many_pages()):
             onum_info = {}
             if onum == self.page_number:
                 # No link if we're on the current page
@@ -363,7 +315,7 @@ class WebalbumIndexPage(WebalbumPage):
         values['images'] = []
         for subdir, images in self.galleries:
             info = self._get_dir_info(subdir)
-            img_links = map(lambda x: self._gen_other_img_link(x, subdir),
+            img_links = map(lambda x: self._gen_other_img_link(x.image, subdir),
                             images)
             values['images'].append((info, img_links, ))
 

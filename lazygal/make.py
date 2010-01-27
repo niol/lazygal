@@ -109,6 +109,20 @@ class MakeTask(object):
             self.output_items.append(output)
 
 
+class GroupTask(MakeTask):
+    """
+    A class that builds nothing but groups subtasks.
+    """
+
+    def build(self):
+        pass
+
+    def add_dependency(self, dependency):
+        super(GroupTask, self).add_dependency(dependency)
+        if dependency.get_mtime() > self.get_mtime():
+            self.stamp_build(dependency.get_mtime())
+
+
 class FileSimpleDependency(MakeTask):
     """
     Simple file dependency that needn't build. It just should be there.
