@@ -143,11 +143,10 @@ class FileMakeObject(FileSimpleDependency):
 
     def get_mtime(self):
         try:
-            mtime = FileSimpleDependency.get_mtime(self)
+            mtime = super(FileMakeObject, self).get_mtime()
         except OSError:
-            # Let's tell that the file is very old, older than 1.1.1970 if it
-            # does not exist.
-            return -1
+            # Return last built time
+            mtime = super(FileSimpleDependency, self).get_mtime()
         return mtime
 
     def build(self):
