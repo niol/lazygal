@@ -54,13 +54,21 @@ class ImageOtherSize(genfile.WebalbumFile):
             if not self.source_image.broken:
                 im = Image.open(self.source_image.path)
                 self.__build_other_size(im)
-            else:
-                raise IOError
         except IOError:
             self.dir.album.log(_("  %s is BROKEN, skipped")\
                                % self.source_image.filename,
                                'error')
             self.source_image.broken = True
+            raise
+
+    def call_build(self):
+        try:
+            self.build()
+        except IOError:
+            # Make the system believe the file was built a long time ago.
+            self.stamp_build(0)
+        else:
+            self.stamp_build()
 
     def __build_other_size(self, im):
         new_size = self.newsizer.dest_size(im.size)
