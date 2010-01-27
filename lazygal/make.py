@@ -40,8 +40,8 @@ class MakeTask(object):
         if self in dependency.deps:
             raise CircularDependency("%s <-> %s" % (self, dependency))
         self.deps.append(dependency)
-        if issubclass(dependency.__class__, FileMakeObject):
-            self.output_items.extend(dependency.output_items)
+        for output_item in dependency.output_items:
+            self.register_output(output_item)
 
     def add_file_dependency(self, file_path):
         self.add_dependency(FileSimpleDependency(file_path))
@@ -105,7 +105,8 @@ class MakeTask(object):
         This provides a facility to register within the makefile machinery what
         items are built from the task.
         """
-        self.output_items.append(output)
+        if not output in self.output_items:
+            self.output_items.append(output)
 
 
 class FileSimpleDependency(MakeTask):
@@ -134,8 +135,7 @@ class FileMakeObject(FileSimpleDependency):
 
     def __init__(self, path):
         FileSimpleDependency.__init__(self, path)
-        # The built file is a forced output of this target
-        self.register_output(path)
+        self.register_output(self._path)
 
     def needs_build(self):
         return FileSimpleDependency.needs_build(self)\
