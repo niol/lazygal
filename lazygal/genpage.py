@@ -106,21 +106,27 @@ class WebalbumPage(genfile.WebalbumFile):
 
 class WebalbumBrowsePage(WebalbumPage):
 
-    def __init__(self, dir, size_name, webalbum_image):
-        self.webalbum_image = webalbum_image
-        self.image = self.webalbum_image.image
-        WebalbumPage.__init__(self, dir, size_name, self.image.name)
+    def __init__(self, dir, size_name, webalbum_media):
+        self.webalbum_media = webalbum_media
+        self.media = self.webalbum_media.media
+        WebalbumPage.__init__(self, dir, size_name, self.media.name)
 
-        self.add_dependency(self.webalbum_image.resized[size_name])
-        if webalbum_image.original:
-            self.add_dependency(self.webalbum_image.original)
+        self.add_dependency(self.webalbum_media.resized[size_name])
+        if webalbum_media.original:
+            self.add_dependency(self.webalbum_media.original)
 
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
 
         self.add_dependency(self.dir.sort_task)
 
-        self.set_template(self.dir.album.templates['browse.thtml'])
+
+class WebalbumImagePage(WebalbumBrowsePage):
+
+    def __init__(self, dir, size_name, webalbum_image):
+        WebalbumBrowsePage.__init__(self, dir, size_name, webalbum_image)
+        self.image = self.media
+        self.set_template(self.dir.album.templates['browseimage.thtml'])
 
     def build(self):
         page_rel_path = self._rel_path(self.dir.flattening_dir)
@@ -148,13 +154,13 @@ class WebalbumBrowsePage(WebalbumPage):
         time_str = img_date.strftime(time_format)
         tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
 
-        prev = self.webalbum_image.previous_image
+        prev = self.webalbum_media.previous
         if prev:
-            tpl_values['prev_link']  = self._gen_other_img_link(prev.image)
+            tpl_values['prev_link']  = self._gen_other_img_link(prev.media)
 
-        next = self.webalbum_image.next_image
+        next = self.webalbum_media.next
         if next:
-            tpl_values['next_link'] = self._gen_other_img_link(next.image)
+            tpl_values['next_link'] = self._gen_other_img_link(next.media)
 
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
@@ -276,7 +282,7 @@ class WebalbumIndexPage(WebalbumPage):
 
         dir_info['is_main'] = dir is self.dir
 
-        dir_info['image_count'] = dir.source_dir.get_image_count()
+        dir_info['image_count'] = dir.source_dir.get_media_count('image')
         dir_info['subgal_count'] = len(dir.source_dir.subdirs)
 
         return dir_info
@@ -313,10 +319,10 @@ class WebalbumIndexPage(WebalbumPage):
             values['subgal_links'] = self._get_subgal_links()
 
         values['images'] = []
-        for subdir, images in self.galleries:
+        for subdir, medias in self.galleries:
             info = self._get_dir_info(subdir)
-            img_links = map(lambda x: self._gen_other_img_link(x.image, subdir),
-                            images)
+            img_links = map(lambda x: self._gen_other_img_link(x.media, subdir),
+                            medias)
             values['images'].append((info, img_links, ))
 
         values.update(self._get_dir_info())
@@ -349,7 +355,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.description = description
 
     def push_dir(self, webalbumdir):
-        if webalbumdir.source_dir.get_image_count() > 0:
+        if webalbumdir.source_dir.get_media_count() > 0:
             self.add_dependency(webalbumdir)
             self.__add_item(webalbumdir)
 
@@ -360,7 +366,7 @@ class WebalbumFeed(make.FileMakeObject):
         desc_values['album_pic_path'] = os.path.join(url,
                                           self.album.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
-        desc_values['picture_count'] = webalbumdir.source_dir.get_image_count()
+        desc_values['picture_count'] = webalbumdir.source_dir.get_media_count('image')
         desc_values['desc'] = webalbumdir.source_dir.desc
         desc = self.item_template.instanciate(desc_values)
 

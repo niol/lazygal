@@ -41,7 +41,7 @@ DEST_SHARED_DIRECTORY_NAME = 'shared'
 
 class SubgalSort(make.MakeTask):
     """
-    This task sorts the image within a gallery according to the chosen rule.
+    This task sorts the medias within a gallery according to the chosen rule.
     """
 
     def __init__(self, webgal_dir):
@@ -66,23 +66,23 @@ class SubgalSort(make.MakeTask):
                                      reverse=self.album.subgal_sort_by[1])
 
         if self.album.pic_sort_by[0] == 'exif':
-            sorter = lambda x, y: x.image.compare_to_sort(y.image)
+            sorter = lambda x, y: x.media.compare_to_sort(y.media)
         elif self.album.pic_sort_by[0] == 'mtime':
-            sorter = lambda x, y: x.image.compare_mtime(y.image)
+            sorter = lambda x, y: x.media.compare_mtime(y.media)
         elif self.album.pic_sort_by[0] == 'filename':
-            sorter = lambda x, y: x.image.compare_filename(y.image)
+            sorter = lambda x, y: x.media.compare_filename(y.media)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
                              % self.album.pic_sort_by[0])
-        self.webgal_dir.images.sort(sorter, reverse=self.album.pic_sort_by[1])
+        self.webgal_dir.medias.sort(sorter, reverse=self.album.pic_sort_by[1])
 
-        # chain images
-        previous_image = None
-        for image in self.webgal_dir.images:
-            if previous_image:
-                previous_image.set_next(image)
-                image.set_previous(previous_image)
-            previous_image = image
+        # chain medias
+        previous = None
+        for media in self.webgal_dir.medias:
+            if previous:
+                previous.set_next(media)
+                media.set_previous(previous)
+            previous = media
 
 
 class SubgalBreak(make.MakeTask):
@@ -117,11 +117,11 @@ class SubgalBreak(make.MakeTask):
 
     def __fill_no_pagination(self):
         galleries = []
-        galleries.append((self.webgal_dir, self.webgal_dir.images))
+        galleries.append((self.webgal_dir, self.webgal_dir.medias))
         if self.webgal_dir.flatten_below():
             subgals = []
             for dir in self.webgal_dir.get_all_subgals():
-                galleries.append((dir, dir.images))
+                galleries.append((dir, dir.medias))
         else:
             subgals = self.webgal_dir.subgals
         self.webgal_dir.add_index_page(subgals, galleries)
@@ -133,29 +133,29 @@ class SubgalBreak(make.MakeTask):
         subgals = [] # No subgal links as they are flattened
 
         galleries = []
-        how_many_images = 0
+        how_many_medias = 0
         subgals_it = iter([self.webgal_dir] + self.webgal_dir.get_all_subgals())
         try:
             while True:
                 subgal = subgals_it.next()
-                how_many_images += subgal.source_dir.get_image_count()
-                galleries.append((subgal, subgal.images))
-                if how_many_images > self.webgal_dir.album.thumbs_per_page:
+                how_many_medias += subgal.source_dir.get_media_count()
+                galleries.append((subgal, subgal.medias))
+                if how_many_medias > self.webgal_dir.album.thumbs_per_page:
                     self.webgal_dir.add_index_page(subgals, galleries)
                     galleries = []
-                    how_many_images = 0
+                    how_many_medias = 0
         except StopIteration:
             if len(galleries) > 0:
                 self.webgal_dir.add_index_page(subgals, galleries)
 
     def __fill_real_pagination(self):
-        how_many_pages = len(self.webgal_dir.images)\
+        how_many_pages = len(self.webgal_dir.medias)\
                           / self.webgal_dir.album.thumbs_per_page + 1
         for page_number in range(0, how_many_pages):
             step = page_number * self.webgal_dir.album.thumbs_per_page
             end_index = step + self.webgal_dir.album.thumbs_per_page
-            shown_images = self.webgal_dir.images[step:end_index]
-            galleries = [(self.webgal_dir, shown_images)]
+            shown_medias = self.webgal_dir.medias[step:end_index]
+            galleries = [(self.webgal_dir, shown_medias)]
 
             # subgal links only for first page
             if page_number == 0:
@@ -166,58 +166,72 @@ class SubgalBreak(make.MakeTask):
             self.webgal_dir.add_index_page(subgals, galleries)
 
 
-class WebalbumImageTask(make.GroupTask):
+class WebalbumMediaTask(make.GroupTask):
+
+    def __init__(self, webgal, media, album):
+        make.MakeTask.__init__(self)
+
+        self.album = album
+        self.webgal = webgal
+        self.media = media
+
+        self.previous = None
+        self.next = None
+
+        self.original = None
+        self.resized = {}
+        self.browse_pages = {}
+
+        for size_name in self.album.browse_size_strings.keys():
+            if self.album.browse_size_strings[size_name] == '0x0':
+                self.resized[size_name] = self.get_original()
+            else:
+                self.resized[size_name] = self.get_resized(size_name)
+            self.add_dependency(self.resized[size_name])
+
+            if self.album.original and not self.album.orig_base:
+                self.add_dependency(self.get_original())
+
+            self.browse_pages[size_name] = self.get_browse_page(size_name)
+
+    def set_next(self, media):
+        self.next = media
+        if media:
+            for bpage in self.browse_pages.values():
+                bpage.add_dependency(media.thumb)
+
+    def set_previous(self, media):
+        self.previous = media
+        if media:
+            for bpage in self.browse_pages.values():
+                bpage.add_dependency(media.thumb)
+
+
+class WebalbumImageTask(WebalbumMediaTask):
     """
     This task builds all items related to one picture.
     """
 
     def __init__(self, webgal, image, album):
-        make.MakeTask.__init__(self)
+        WebalbumMediaTask.__init__(self, webgal, image, album)
 
-        self.album = album
-        self.webgal = webgal
-        self.image = image
-
-        self.previous_image = None
-        self.next_image = None
-
-        self.thumb = genmedia.ImageOtherSize(self.webgal, self.image,
+        self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
                                              genmedia.THUMB_SIZE_NAME)
         self.add_dependency(self.thumb)
 
-        self.original = None
-        self.resized = {}
-        self.browse_pages = {}
-        for size_name in self.album.browse_size_strings.keys():
-            if self.album.browse_size_strings[size_name] == '0x0':
-                self.resized[size_name] = self.__get_original()
-            else:
-                self.resized[size_name] = genmedia.ImageOtherSize(self.webgal,
-                                                        self.image, size_name)
-            self.add_dependency(self.resized[size_name])
-
-            if self.album.original and not self.album.orig_base:
-                self.add_dependency(self.__get_original())
-
-            bpage = genpage.WebalbumBrowsePage(self.webgal, size_name, self)
-            self.browse_pages[size_name] = bpage
-
-    def __get_original(self):
+    def get_original(self):
         if not self.original:
-            self.original = genfile.ImageOriginal(self.webgal, self.image)
+            self.original = genfile.ImageOriginal(self.webgal, self.media)
         return self.original
 
-    def set_next(self, image):
-        self.next_image = image
-        if image:
-            for bpage in self.browse_pages.values():
-                bpage.add_dependency(image.thumb)
+    def get_resized(self, size_name):
+        if self.album.browse_size_strings[size_name] == '0x0':
+            return genfile.ImageOriginal(self.webgal, self.media)
+        else:
+            return genmedia.ImageOtherSize(self.webgal, self.media, size_name)
 
-    def set_previous(self, image):
-        self.previous_image = image
-        if image:
-            for bpage in self.browse_pages.values():
-                bpage.add_dependency(image.thumb)
+    def get_browse_page(self, size_name):
+        return genpage.WebalbumImagePage(self.webgal, size_name, self)
 
 
 class WebalbumDir(make.FileMakeObject):
@@ -251,15 +265,19 @@ class WebalbumDir(make.FileMakeObject):
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
-        self.images = []
+        self.medias = []
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
-        for image in self.source_dir.images:
-            self.sort_task.add_dependency(image)
+        for media in self.source_dir.medias:
+            self.sort_task.add_dependency(media)
 
-            image_task = WebalbumImageTask(self, image, self.album)
-            self.images.append(image_task)
-            self.add_dependency(image_task)
+            if media.type == 'image':
+                media_task = WebalbumImageTask(self, media, self.album)
+            else:
+                raise NotImplementedError("Unknonwn media type '%s'"\
+                                          % media.type)
+            self.medias.append(media_task)
+            self.add_dependency(media_task)
 
         self.dirzip = None
 
@@ -299,11 +317,11 @@ class WebalbumDir(make.FileMakeObject):
             all_subgals.extend(subgal.get_all_subgals())
         return all_subgals
 
-    def get_all_images_tasks(self):
-        all_images = list(self.images) # We want a copy here.
+    def get_all_medias_tasks(self):
+        all_medias = list(self.medias) # We want a copy here.
         for subgal in self.subgals:
-            all_images.extend(subgal.get_all_images_tasks())
-        return all_images
+            all_medias.extend(subgal.get_all_medias_tasks())
+        return all_medias
 
     def should_be_flattened(self):
         return self.album.dir_flattening_depth is not False\
@@ -506,10 +524,6 @@ class Album:
                 print >> self.log_outpipe, msg
                 self.log_outpipe.flush()
 
-    def _is_ext_supported(self, filename):
-        filename, extension = os.path.splitext(filename)
-        return extension.lower() in ['.jpg', '.jpeg']
-
     def _add_size_qualifier(self, path, size_name):
         filename, extension = os.path.splitext(path)
         if size_name == self.default_size_name and extension == '.html':
@@ -591,8 +605,8 @@ class Album:
                      'info')
             self.log("(%s)" % source_dir.path)
 
-            if source_dir.get_all_images_count() < 1:
-                self.log(_("(%s) and childs have no photos, skipped")
+            if source_dir.get_all_medias_count() < 1:
+                self.log(_("(%s) and childs have no knonw medias, skipped")
                            % source_dir.path)
                 continue
 

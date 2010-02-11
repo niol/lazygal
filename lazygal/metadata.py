@@ -380,7 +380,7 @@ class DirectoryMetadata(make.FileSimpleDependency):
         # Add album picture
         if not result.has_key('album_picture'):
             try:
-                picture = self.dir.get_all_images_paths()[0]
+                picture = self.dir.get_all_medias_paths()[0]
             except IndexError:
                 picture = None
             if picture is not None:

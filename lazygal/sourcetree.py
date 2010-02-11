@@ -140,11 +140,18 @@ class File(make.FileSimpleDependency):
         return cmp(self.filename, other_file.filename)
 
 
-class ImageFile(File):
+class MediaFile(File):
 
     def __init__(self, path, album):
         File.__init__(self, path, album)
         self.broken = False
+
+
+class ImageFile(MediaFile):
+    type = 'image'
+
+    def __init__(self, path, album):
+        MediaFile.__init__(self, path, album)
 
         self.date_taken = None
         self.exif_date = None
@@ -207,6 +214,24 @@ class ImageFile(File):
             return self.compare_no_exif_date(other_img)
 
 
+class MediaHandler(object):
+
+    FORMATS = { '.jpeg' : ImageFile,
+                '.jpg'  : ImageFile,
+              }
+
+    def __init__(self, album):
+        self.album = album
+
+    def get_media(self, path):
+        filename, extension = os.path.splitext(path)
+        extension = extension.lower()
+        if extension in MediaHandler.FORMATS.keys():
+            return MediaHandler.FORMATS[extension](path, self.album)
+        else:
+            return None
+
+
 class Directory(File):
 
     def __init__(self, source, subdirs, filenames, album):
@@ -221,25 +246,26 @@ class Directory(File):
 
         self.human_name = self.album._str_humanize(self.name)
 
-        self.images = []
-        self.images_names = []
+        media_handler = MediaHandler(self.album)
+        self.medias = []
+        self.medias_names = []
         for filename in self.filenames:
-            if self.album._is_ext_supported(filename):
-                image_path = os.path.join(self.path, filename)
-                image = ImageFile(image_path, self.album)
+            media_path = os.path.join(self.path, filename)
+            media = media_handler.get_media(media_path)
+            if media:
                 try:
                     # Try to preload image EXIF to detect broken images.
                     # FIXME: This is a problem for performance because EXIF
                     # data is red even if a directory does not need build.
-                    image.info()
+                    media.info()
                 except IOError:
                     self.album.log(_("  %s is BROKEN, skipped")\
-                                   % image.filename,
+                                   % media.filename,
                                    'error')
-                    image.broken = True
+                    media.broken = True
                 else:
-                    self.images_names.append(filename)
-                    self.images.append(image)
+                    self.medias_names.append(filename)
+                    self.medias.append(media)
             elif filename not in (metadata.MATEW_METADATA,
                                   SOURCEDIR_CONFIGFILE):
                 self.album.log(_("  Ignoring %s, format not supported.")\
@@ -265,25 +291,32 @@ class Directory(File):
     def is_album_root(self):
         return self.path == self._path_to_unicode(self.album.source_dir)
 
-    def get_image_count(self):
-        return len(self.images_names)
+    def get_media_count(self, media_type=None):
+        if media_type is None:
+            return len(self.medias_names)
+        else:
+            typed_media_count = 0
+            for media in self.medias:
+                if media.type == media_type:
+                    typed_media_count += 1
+            return typed_media_count
 
-    def get_all_images_count(self):
-        all_images_count = len(self.images_names)
+    def get_all_medias_count(self, media_type=None):
+        all_medias_count = self.get_media_count(media_type)
         for subdir in self.subdirs:
-            all_images_count += subdir.get_all_images_count()
-        return all_images_count
+            all_medias_count += subdir.get_all_medias_count(media_type)
+        return all_medias_count
 
-    def get_all_images(self):
-        all_images = list(self.images) # We want a copy here.
+    def get_all_medias(self):
+        all_medias = list(self.medias) # We want a copy here.
         for subdir in self.subdirs:
-            all_images.extend(subdir.get_all_images())
-        return all_images
+            all_medias.extend(subdir.get_all_medias())
+        return all_medias
 
-    def get_all_images_paths(self):
-        all_images_paths = map(lambda im: os.path.join(self.path, im.filename),
-                               self.get_all_images())
-        return all_images_paths
+    def get_all_medias_paths(self):
+        all_medias_paths = map(lambda im: os.path.join(self.path, im.filename),
+                               self.get_all_medias())
+        return all_medias_paths
 
     def get_all_subdirs(self):
         all_subdirs = list(self.subdirs) # We want a copy here.

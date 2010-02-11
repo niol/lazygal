@@ -110,7 +110,7 @@ class WebalbumPicture(make.FileMakeObject):
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
         thumbs = [image.thumb\
-                  for image in webgal_dir.get_all_images_tasks()]
+                  for image in webgal_dir.get_all_medias_tasks()]
 
         for thumb in thumbs:
             self.add_dependency(thumb)
