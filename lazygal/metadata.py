@@ -239,7 +239,12 @@ class ExifTags(pyexiv2.Image):
                 if ret == '':
                     raise ValueError
             except (ValueError, KeyError):
-                ret = self.get_jpeg_comment()
+                try:
+                    ret = self.get_exif_string('Iptc.Application2.ObjectName')
+                    if ret == '':
+                        raise ValueError
+                except (ValueError, KeyError):
+                    ret = self.get_jpeg_comment()
         return ret
 
     def get_flash(self):
