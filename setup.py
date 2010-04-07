@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 # Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2009 Michal Čihař, Mickaël Royer, Alexandre Rossi
+# Copyright (C) 2007-2010 Michal Čihař, Mickaël Royer, Alexandre Rossi
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
