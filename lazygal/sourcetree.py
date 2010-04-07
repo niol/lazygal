@@ -29,7 +29,7 @@ class File(make.FileSimpleDependency):
     def __init__(self, path, album):
         make.FileSimpleDependency.__init__(self, path)
 
-        self.path = path
+        self.path = self._path_to_unicode(path)
         self.album = album
         self.filename = os.path.basename(self.path)
         self.name, self.extension = os.path.splitext(self.filename)
@@ -235,7 +235,7 @@ class MediaHandler(object):
 class Directory(File):
 
     def __init__(self, source, subdirs, filenames, album):
-        File.__init__(self, self._path_to_unicode(source), album)
+        File.__init__(self, source, album)
 
         # No breaking up of filename and extension for directories
         self.name = self.filename
