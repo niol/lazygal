@@ -73,7 +73,7 @@ class WebalbumArchive(WebalbumFile):
         self.add_dependency(self.dir.source_dir)
 
         self.pics = map(lambda x: os.path.join(self.dir.source_dir.path, x),
-                        self.dir.source_dir.images_names)
+                        self.dir.source_dir.medias_names)
         for pic in self.pics:
             self.add_file_dependency(pic)
 

@@ -414,7 +414,7 @@ class DefaultMetadata(make.FileMakeObject):
         if 'album_description' in md_data.keys()\
         or 'album_name' in md_data.keys():
             self.log(_("  SKIPPED because metadata exists."))
-        elif self.source_dir.get_all_images_count() < 1:
+        elif self.source_dir.get_all_medias_count() < 1:
             self.log(_("  SKIPPED because directory does not contain images."))
         else:
             self.generate(md_data)

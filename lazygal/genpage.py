@@ -224,7 +224,7 @@ class WebalbumIndexPage(WebalbumPage):
                 # when dir is flattenend).
                 dir.add_dependency(image.browse_pages[size_name])
 
-            if self.dir.album.dirzip and dir.source_dir.get_image_count() > 1:
+            if self.dir.album.dirzip and dir.source_dir.get_media_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
         self.set_template(self.dir.album.templates['dirindex.thtml'])
