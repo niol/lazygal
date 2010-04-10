@@ -29,25 +29,10 @@ MATEW_TAGS = {
 MATEW_METADATA = 'album_description'
 
 
-class ExifTags(pyexiv2.Image):
+class _ImageInfoTags(object):
 
     def __init__(self, image_path):
-        pyexiv2.Image.__init__(self,
-                               image_path.encode(sys.getfilesystemencoding()))
-        self.readMetadata()
-
         self.image_path = image_path
-
-    def get_exif_date(self, name):
-        '''
-        Parses date from EXIF information.
-        '''
-        exif_date = str(self[name])
-        date, time = exif_date.split(' ')
-        year, month, day = date.split('-')
-        hour, minute, second = time.split(':')
-        return datetime.datetime(int(year), int(month), int(day),
-                           int(hour), int(minute), int(second))
 
     def get_date(self):
         '''
@@ -56,20 +41,20 @@ class ExifTags(pyexiv2.Image):
         software when editing photos later.
         '''
         try:
-            return self.get_exif_date('Exif.Photo.DateTimeDigitized')
+            return self.get_tag_value('Exif.Photo.DateTimeDigitized')
         except (IndexError, ValueError, KeyError):
             try:
-                return self.get_exif_date('Exif.Photo.DateTimeOriginal')
+                return self.get_tag_value('Exif.Photo.DateTimeOriginal')
             except (IndexError, ValueError, KeyError):
                 try:
-                    return self.get_exif_date('Exif.Image.DateTime')
+                    return self.get_tag_value('Exif.Image.DateTime')
                 except (IndexError, ValueError, KeyError):
                     # No date available in EXIF
                     return None
 
     def get_required_rotation(self):
         try:
-            orientation_code = int(self['Exif.Image.Orientation'])
+            orientation_code = self.get_tag_value('Exif.Image.Orientation')
             if orientation_code == 8:
                 return 90
             elif orientation_code == 6:
@@ -86,13 +71,13 @@ class ExifTags(pyexiv2.Image):
         vendors put different information to both tags.
         '''
         try:
-            model = str(self['Exif.Image.Model']).strip()
+            model = str(self._metadata['Exif.Image.Model']).strip()
             # Terminate string at \x00
             pos = model.find('\x00')
             if pos != -1:
                 model = model[:14]
             try:
-                vendor = str(self['Exif.Image.Make']).strip()
+                vendor = str(self._metadata['Exif.Image.Make']).strip()
                 vendor_l = vendor.lower()
                 model_l = model.lower()
                 # Split vendor to words and check whether they are
@@ -117,58 +102,43 @@ class ExifTags(pyexiv2.Image):
         support can be added here.
         '''
 
-        ret = self.get_exif_value('Exif.Pentax.LensType')
-        if ret != '':
-            return ret
-        ret = self.get_exif_value('Exif.Nikon3.Lens')
-        if ret != '':
-            ret2 = self.get_exif_value('Exif.Nikon3.LensType')
-            if ret2 != '':
-                return '%s %s' % (ret, ret2)
-            return ret
-        ret = self.get_exif_value('Exif.Minolta.LensID')
-        if ret != '':
-            return ret
-
-        return ''
-
-    def get_exif_value(self, name):
-        '''
-        Reads interpreted string from EXIF information, returns empty
-        string if key is not found.
-        '''
         try:
-            return self.interpretedExifValue(name)
+            return self.get_tag_value('Exif.Pentax.LensType')
         except (IndexError, ValueError, KeyError):
-            return ''
+            try:
+                ret = self.get_tag_value('Exif.Nikon3.Lens')
+                try:
+                    ret2 = self.get_tag_value('Exif.Nikon3.LensType')
+                except (IndexError, ValueError, KeyError):
+                    return ret
+                else:
+                    return '%s %s' % (ret, ret2)
+            except (IndexError, ValueError, KeyError):
+                try:
+                    return self.get_tag_value('Exif.Minolta.LensID')
+                except (IndexError, ValueError, KeyError):
+                    return ''
 
     def get_exif_string(self, name):
         '''
-        Reads string from EXIF information, returns empty string if key
-        is not found.
+        Reads string from EXIF information.
         '''
-        try:
-            return str(self[name]).strip(' ')
-        except (IndexError, ValueError, KeyError):
-            return ''
+        return str(self.get_tag_value(name)).strip(' ')
 
     def get_exif_float(self, name):
         '''
         Reads float number from EXIF information (where it is stored as
-        fraction). Returns empty string if key is not found.
+        fraction).
         '''
-        try:
-            val = self.get_exif_float_value(name)
-            return str(round(val, 1))
-        except (IndexError, KeyError):
-            return ''
+        val = self.get_exif_float_value(name)
+        return str(round(val, 1))
 
     def get_exif_float_value(self, name):
         '''
         Reads float number from EXIF information (where it is stored as
         fraction or int).
         '''
-        val = self[name]
+        val = self.get_tag_value(name)
         if type(val) == int:
             return float(val)
         elif type(val) == tuple:
@@ -176,7 +146,7 @@ class ExifTags(pyexiv2.Image):
         else:
             return float(val.numerator) / float(val.denominator)
 
-    def __fallback_to_encoding(self, encoded_string, encoding='utf-8'):
+    def _fallback_to_encoding(self, encoded_string, encoding='utf-8'):
         try:
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:
@@ -189,7 +159,7 @@ class ExifTags(pyexiv2.Image):
         '''
         im = Image.open(self.image_path)
         try:
-            return self.__fallback_to_encoding(im.app['COM'])
+            return self._fallback_to_encoding(im.app['COM'])
         except (KeyError, AttributeError):
             return ''
 
@@ -215,7 +185,7 @@ class ExifTags(pyexiv2.Image):
             elif endian == 'II':
                 encoding = 'utf-16le'
             else:
-                return ''
+                raise ValueError
 
         elif cset == 'Ascii':
             encoding = 'ascii'
@@ -226,7 +196,7 @@ class ExifTags(pyexiv2.Image):
             # distributions.
             encoding = 'utf-8'
 
-        return self.__fallback_to_encoding(text, encoding).strip('\0')
+        return self._fallback_to_encoding(text, encoding).strip('\0')
 
     def get_comment(self):
         try:
@@ -236,23 +206,22 @@ class ExifTags(pyexiv2.Image):
         except (ValueError, KeyError):
             try:
                 ret = self.get_exif_string('Exif.Image.ImageDescription')
-                if ret == '':
-                    raise ValueError
             except (ValueError, KeyError):
                 try:
                     ret = self.get_exif_string('Iptc.Application2.ObjectName')
-                    if ret == '':
-                        raise ValueError
                 except (ValueError, KeyError):
                     ret = self.get_jpeg_comment()
         return ret
 
     def get_flash(self):
-        return self.get_exif_value('Exif.Photo.Flash').decode('utf-8')
+        try:
+            return self.get_tag_value('Exif.Photo.Flash')
+        except KeyError:
+            return ''
 
     def get_exposure(self):
         try:
-            exposure = self['Exif.Photo.ExposureTime']
+            exposure = self.get_tag_value('Exif.Photo.ExposureTime')
             if type(exposure) == tuple:
                 if exposure[1] == 1:
                     return "%d s" % exposure[0]
@@ -267,31 +236,41 @@ class ExifTags(pyexiv2.Image):
             return ''
 
     def get_iso(self):
-        return self.get_exif_string('Exif.Photo.ISOSpeedRatings')
+        try:
+            return self.get_exif_string('Exif.Photo.ISOSpeedRatings')
+        except KeyError:
+            return ''
 
     def get_fnumber(self):
-        val = self.get_exif_float('Exif.Photo.FNumber')
-        if val == '':
+        try:
+            val = self.get_exif_float('Exif.Photo.FNumber')
+        except KeyError:
             return ''
-        return 'f/%s' % val
+        else:
+            return 'f/%s' % val
 
     def get_focal_length(self):
-        flen = self.get_exif_float('Exif.Photo.FocalLength')
-        if flen == '':
+        try:
+            flen = self.get_exif_float('Exif.Photo.FocalLength')
+        except KeyError:
             return ''
-        flen = '%s mm' % flen
+        else:
+            flen = '%s mm' % flen
 
-        flen35 = self.get_exif_float('Exif.Photo.FocalLengthIn35mmFilm')
-        if flen35 != '':
+        try:
+            flen35 = self.get_exif_float('Exif.Photo.FocalLengthIn35mmFilm')
+        except KeyError:
+            pass
+        else:
             flen += _(' (35 mm equivalent: %s mm)') % flen35
             return flen
 
         try:
             try:
-                iwidth = float(str(self['Exif.Photo.ImageWidth']))
+                iwidth = float(str(self._metadata['Exif.Photo.ImageWidth']))
             except IndexError:
-                iwidth = float(str(self['Exif.Photo.PixelXDimension']))
-            fresunit = str(self['Exif.Photo.FocalPlaneResolutionUnit'])
+                iwidth = float(str(self._metadata['Exif.Photo.PixelXDimension']))
+            fresunit = str(self._metadata['Exif.Photo.FocalPlaneResolutionUnit'])
             factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
             try:
                 fresfactor = factors[fresunit]
@@ -312,6 +291,86 @@ class ExifTags(pyexiv2.Image):
             return flen
 
         return flen
+
+
+class _Tags_PyExiv2_Legacy(_ImageInfoTags):
+    """
+    Wrapper for pyexiv2 0.1
+    """
+
+    def __init__(self, image_path):
+        _ImageInfoTags.__init__(self, image_path)
+
+        self._metadata = pyexiv2.Image(image_path.encode(sys.getfilesystemencoding()))
+        self._metadata.readMetadata()
+
+    def get_exif_date(self, name):
+        '''
+        Parses date from EXIF information.
+        '''
+        exif_date = str(self._metadata[name])
+        date, time = exif_date.split(' ')
+        year, month, day = date.split('-')
+        hour, minute, second = time.split(':')
+        return datetime.datetime(int(year), int(month), int(day),
+                                 int(hour), int(minute), int(second))
+
+    def get_int(self, name):
+        return int(self._metadata[name])
+
+    def get_interpreted_value(self, name):
+        return self._metadata.interpretedExifValue(name)
+
+    def get_decoded_utf8(self, name):
+        return self.get_interpreted_value(name).decode('utf-8')
+
+    TAG_PYTRANSLATORS = {
+        'Exif.Photo.DateTimeDigitized' : 'get_exif_date',
+        'Exif.Photo.DateTimeOriginal'  : 'get_exif_date',
+        'Exif.Image.DateTime'          : 'get_exif_date',
+        'Exif.Image.Orientation'       : 'get_int',
+        'Exif.Pentax.LensType'         : 'get_interpreted_value',
+        'Exif.Nikon3.Lens'             : 'get_interpreted_value',
+        'Exif.Nikon3.LensType'         : 'get_interpreted_value',
+        'Exif.Minolta.LensID'          : 'get_interpreted_value',
+        'Exif.Photo.Flash'             : 'get_decoded_utf8',
+    }
+
+    def get_tag_value(self, name, raw=False):
+        if not raw and name in _Tags_PyExiv2_Legacy.TAG_PYTRANSLATORS.keys():
+            translator = getattr(self.__class__,
+                                 _Tags_PyExiv2_Legacy.TAG_PYTRANSLATORS[name])
+            return translator(self, name)
+        else:
+            return self._metadata[name]
+
+
+class _Tags_PyExiv2(_ImageInfoTags):
+    """
+    Wrapper for pyexiv2 0.2
+    """
+
+    def __init__(self, image_path):
+        _ImageInfoTags.__init__(self, image_path)
+
+        self._metadata = pyexiv2.ImageMetadata(image_path)
+        self._metadata.read()
+
+    def get_tag_value(self, name, raw=False):
+        if raw:
+            return self._metadata[name].raw_value
+        else:
+            return self._metadata[name].value
+
+
+if 'ImageMetadata' in dir(pyexiv2):
+    # pyexiv2 0.2
+    ImageInfoTags = _Tags_PyExiv2
+elif 'Image' in dir(pyexiv2):
+    # pyexiv2 0.1
+    ImageInfoTags = _Tags_PyExiv2_Legacy
+else:
+    raise ImportError('Unrecognized pyexiv2 version.')
 
 
 class NoMetadata(Exception):

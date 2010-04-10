@@ -158,7 +158,7 @@ class ImageFile(MediaFile):
         self.__date_probed = False
 
     def info(self):
-        exif = metadata.ExifTags(self.path)
+        exif = metadata.ImageInfoTags(self.path)
         self.exif_date = exif.get_date()
         self.__date_probed = True
         return exif
