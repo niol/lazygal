@@ -54,9 +54,20 @@ class LazygalTemplate(object):
         self.__complement_values(values)
 
         page = open(dest, 'w')
-        self.__generate(values).render(method=self.serialization_method,
-                                       out=page, encoding='utf-8')
-        page.close()
+        try:
+            self.__generate(values).render(method=self.serialization_method,
+                                           out=page, encoding='utf-8')
+        except UnicodeDecodeError:
+            problematic_vars = []
+            for key, value in values.items():
+                try:
+                    str(value).decode('utf-8')
+                except UnicodeDecodeError:
+                    problematic_vars.append(key)
+            print 'Problematic template vars : %s' % ', '.join(problematic_vars)
+            raise
+        finally:
+            page.close()
 
 
 class XmlTemplate(LazygalTemplate):
