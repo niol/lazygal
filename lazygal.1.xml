@@ -48,6 +48,20 @@
     program. This program is a static web gallery generator written in
     Python.</para>
 
+    <para><command>&dhpackage;</command> works so: you should have
+    an original store of files - possibly containg subdirectories
+    (their names serving as headings if not using the album metadata
+    feature). This is the source file hierarchy. It will never be modified
+    by <command>&dhpackage;</command>. Then, when launching:</para>
+
+    <para><literal>$ lazygal -o /var/www/MyAlbum
+    /home/user/SourceDir</literal></para>
+
+    <para><command>&dhpackage;</command> will analyze the contents of the
+    source hierarchy and will (re)create the target hierarchy, but with
+    all the bells and whistles defined by the templates. Only missing
+    parts or parts that are not up to date will be generated.</para>
+
   </refsect1>
   <refsect1>
     <title>OPTIONS</title>
