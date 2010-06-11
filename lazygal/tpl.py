@@ -87,7 +87,12 @@ class XmlTemplate(LazygalTemplate):
                     tag, attrib = data
                     if tag.namespace == 'http://www.w3.org/2001/XInclude'\
                     and tag.localname == 'include':
-                        subtemplate_paths.append(attrib.get('href'))
+                        subtpl = attrib.get('href')
+                        tpldir = os.path.dirname(path)
+                        # This is to rule out includes on filenames constructed
+                        # from a template variable.
+                        if os.path.isfile(os.path.join(path, subtpl)):
+                            subtemplate_paths.append(attrib.get('href'))
         finally:
             f.close()
 
@@ -103,7 +108,7 @@ class PlainTemplate(LazygalTemplate, TextTemplate):
     genshi_tpl_class = TextTemplate
 
 
-class TplFactory(TemplateLoader):
+class TplFactory(object):
 
     known_exts = {
         '.thtml' : XmlTemplate,
@@ -116,8 +121,7 @@ class TplFactory(TemplateLoader):
         # We use lenient mode here because we want an easy way to check whether
         # a template variable is defined, or the empty string, thus defined()
         # will only work for the 'whether it is defined' part of the test.
-        super(TplFactory, self).__init__([tpl_dir],
-                                         variable_lookup='lenient')
+        self.loader = TemplateLoader([tpl_dir], variable_lookup='lenient')
 
     def set_common_values(self, values):
         self.common_values = values
@@ -130,11 +134,10 @@ class TplFactory(TemplateLoader):
         if self.is_known_template_type(tpl_file):
             filename, ext = os.path.splitext(os.path.basename(tpl_file))
             tpl_class = self.known_exts[ext]
-            tpl = TemplateLoader.load(self, tpl_file,
-                                      cls=tpl_class.genshi_tpl_class)
+            tpl = self.loader.load(tpl_file, cls=tpl_class.genshi_tpl_class)
             return tpl_class(tpl_file, tpl, self.common_values)
         else:
-            raise ValueError(_('Unknown template type'))
+            raise ValueError(_('Unknown template type for %s' % tpl_file))
 
 
 # vim: ts=4 sw=4 expandtab
