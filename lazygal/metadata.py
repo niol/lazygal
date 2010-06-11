@@ -16,7 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime, locale
-import pyexiv2, Image
+import Image
+
+import pyexiv2
 
 from lazygal import make
 
@@ -151,17 +153,6 @@ class _ImageInfoTags(object):
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:
             return encoded_string.decode(encoding, 'replace')
-
-    def get_jpeg_comment(self):
-        '''
-        Reads JPEG comment field, returns empty string if key is not
-        found.
-        '''
-        im = Image.open(self.image_path)
-        try:
-            return self._fallback_to_encoding(im.app['COM'])
-        except (KeyError, AttributeError):
-            return ''
 
     def get_exif_usercomment(self):
         ret = self.get_exif_string('Exif.Photo.UserComment')
@@ -344,6 +335,12 @@ class _Tags_PyExiv2_Legacy(_ImageInfoTags):
         else:
             return self._metadata[name]
 
+    def get_jpeg_comment(self):
+        try:
+            return self._fallback_to_encoding(self._metadata.getComment())
+        except (KeyError, AttributeError):
+            return ''
+
 
 class _Tags_PyExiv2(_ImageInfoTags):
     """
@@ -361,6 +358,18 @@ class _Tags_PyExiv2(_ImageInfoTags):
             return self._metadata[name].raw_value
         else:
             return self._metadata[name].value
+
+    def get_jpeg_comment(self):
+        try:
+            return self._fallback_to_encoding(self._metadata.comment)
+        except AttributeError:
+            try:
+                # comment appeared in pyexiv2 0.2.2, so use PIL if this does
+                # not work.
+                im = Image.open(self.image_path)
+                return self._fallback_to_encoding(im.app['COM'])
+            except (KeyError, AttributeError):
+                return ''
 
 
 if 'ImageMetadata' in dir(pyexiv2):
