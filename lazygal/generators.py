@@ -646,7 +646,7 @@ class Album:
             self.log("(%s)" % source_dir.path)
 
             if source_dir.get_all_medias_count() < 1:
-                self.log(_("(%s) and childs have no knonw medias, skipped")
+                self.log(_("(%s) and childs have no known medias, skipped")
                            % source_dir.path)
                 continue
 
