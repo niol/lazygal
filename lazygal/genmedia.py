@@ -25,6 +25,7 @@ import ImageFile as PILImageFile
 import make
 import genfile
 import eyecandy
+import mediautils
 
 
 THUMB_SIZE_NAME = 'thumb'
@@ -110,7 +111,7 @@ class WebalbumPicture(make.FileMakeObject):
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
         thumbs = [image.thumb\
-                  for image in webgal_dir.get_all_medias_tasks()]
+                  for image in webgal_dir.get_all_medias_tasks() if image.thumb]
 
         for thumb in thumbs:
             self.add_dependency(thumb)
@@ -130,7 +131,34 @@ class WebalbumPicture(make.FileMakeObject):
     def build(self):
         self.album.log(_("  DIRPIC %s") % os.path.basename(self.path), 'info')
         self.album.log("(%s)" % self.path)
-        self.dirpic.write(self.path)
+        try:
+            self.dirpic.write(self.path)
+        except ValueError, ex:
+            self.album.log(str(ex), 'error')
+
+
+
+class WebVideo(genfile.WebalbumFile):
+
+    def __init__(self, webgal, source_video):
+        self.webgal = webgal
+        self.source_video = source_video
+        path = os.path.join(self.webgal.path, source_video.name+'.ogg')
+        genfile.WebalbumFile.__init__(self, path, webgal)
+
+        self.add_dependency(self.source_video)
+
+    def build(self):
+        vid_rel_path = self._rel_path(self.webgal.flattening_dir)
+        self.webgal.album.log(_("  TRANSCODE %s") % vid_rel_path, 'info')
+
+        transcoder = self.webgal.album.get_transcoder()
+        try:
+            transcoder.convert(self.source_video.path, self.path)
+        except mediautils.TranscodeError:
+            self.dir.album.log(_("  %s is BROKEN, skipped")\
+                               % self.source_video.filename,
+                               'error')
 
 
 # vim: ts=4 sw=4 expandtab

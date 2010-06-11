@@ -158,8 +158,14 @@ class ImageFile(MediaFile):
         self.__date_probed = False
 
     def info(self):
-        exif = metadata.ImageInfoTags(self.path)
-        self.exif_date = exif.get_date()
+        if self.broken: return None
+        try:
+            exif = metadata.ImageInfoTags(self.path)
+        except IOError:
+            exif = None
+            self.broken = True
+        else:
+            self.exif_date = exif.get_date()
         self.__date_probed = True
         return exif
 
@@ -203,21 +209,42 @@ class ImageFile(MediaFile):
         else:
             return -1
 
-    def compare_to_sort(self, other_img):
-        if self.has_exif_date() and other_img.has_exif_date():
-            return self.compare_date_taken(other_img)
-        elif not self.has_exif_date() and not other_img.has_exif_date():
-            return self.compare_filename(other_img)
+    def compare_to_sort(self, other_media):
+        if self.has_exif_date() and other_media.has_exif_date():
+            return self.compare_date_taken(other_media)
+        elif not self.has_exif_date() and not other_media.has_exif_date():
+            return self.compare_filename(other_media)
         else:
             # One of the picture has no EXIF date, so we arbitrary sort it
             # before the one with EXIF.
-            return self.compare_no_exif_date(other_img)
+            return self.compare_no_exif_date(other_media)
+
+
+class VideoFile(MediaFile):
+    type = 'video'
+
+    def has_exif_date(self):
+        return False
+
+    def compare_to_sort(self, other_media):
+        return self.compare_filename(other_media)
+
+    def get_size(self, path=None):
+        size = (400, 300)
+        if path:
+            # Assume for now this is a thumb
+            return self.album.newsizers['thumb'].dest_size(size)
+        else:
+            return size
 
 
 class MediaHandler(object):
 
     FORMATS = { '.jpeg' : ImageFile,
                 '.jpg'  : ImageFile,
+                '.mov'  : VideoFile,
+                '.avi'  : VideoFile,
+                '.mp4'  : VideoFile,
               }
 
     def __init__(self, album):
@@ -227,7 +254,10 @@ class MediaHandler(object):
         filename, extension = os.path.splitext(path)
         extension = extension.lower()
         if extension in MediaHandler.FORMATS.keys():
-            return MediaHandler.FORMATS[extension](path, self.album)
+            media_class = MediaHandler.FORMATS[extension]
+            if media_class == VideoFile and not self.album.get_transcoder():
+                return None
+            return media_class(path, self.album)
         else:
             return None
 
@@ -253,19 +283,8 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
             media = media_handler.get_media(media_path)
             if media:
-                try:
-                    # Try to preload image EXIF to detect broken images.
-                    # FIXME: This is a problem for performance because EXIF
-                    # data is red even if a directory does not need build.
-                    media.info()
-                except IOError:
-                    self.album.log(_("  %s is BROKEN, skipped")\
-                                   % media.filename,
-                                   'error')
-                    media.broken = True
-                else:
-                    self.medias_names.append(filename)
-                    self.medias.append(media)
+                self.medias_names.append(filename)
+                self.medias.append(media)
             elif filename not in (metadata.MATEW_METADATA,
                                   SOURCEDIR_CONFIGFILE):
                 self.album.log(_("  Ignoring %s, format not supported.")\

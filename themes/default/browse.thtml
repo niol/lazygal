@@ -2,7 +2,8 @@
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
 <head>
   <title py:content="name"></title>
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -44,29 +45,7 @@
     <a href="$next_link.link"><img src="$next_link.thumb" width="$next_link.thumb_width" height="$next_link.thumb_height" alt="Next" /></a>
 </div>
 
-<div id="image">
-    <div id="image_img">
-        <p><img src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" /></p>
-    </div>
-    <div id="image_caption">
-        <ul id="image_caption_nontech">
-            <li py:if="comment">$comment</li>
-            <li>${_('Taken')} $image_date</li>
-            <li py:if="original_link"><a href="$original_link">${_('Original picture')}</a></li>
-        </ul>
-        <ul class="image_caption_tech">
-            <li>$image_name</li>
-            <li py:if="camera_name">${_('Using')} $camera_name
-                <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
-	        </li>
-            <li py:if="exposure">${_('Exposure')} $exposure</li>
-            <li py:if="iso">${_('Sensitivity ISO')} $iso</li>
-            <li py:if="fnumber">${_('Aperture')} $fnumber</li>
-            <li py:if="flash">${_('Flash')} $flash</li>
-            <li py:if="focal_length">${_('Focal length')} $focal_length</li>
-        </ul>
-    </div>
-</div>
+<xi:include href="${mediatype}.thtml" />
 
 <div class="footer" py:if="footer" py:content="footer">
 </div>

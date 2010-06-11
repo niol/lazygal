@@ -73,8 +73,8 @@
     </div>
 </div>
 
-<py:for each="subdir, images in images">
-    <div py:if="images" class="image_links">
+<py:for each="subdir, medias in medias">
+    <div py:if="medias" class="media_links">
         <py:if test="not subdir.is_main">
             <h2>$subdir.album_name</h2>
             <div py:if="subdir.album_description" class="subgal_description">
@@ -83,11 +83,11 @@
         </py:if>
 
         <p>
-            <a py:for="image in images" href="$image.link">
-                <img src="$image.thumb"
-                     width="$image.thumb_width"
-                     height="$image.thumb_height"
-                     alt="$image.thumb_name thumb" />
+            <a py:for="media in medias" href="$media.link">
+                <img src="$media.thumb"
+                     width="$media.thumb_width"
+                     height="$media.thumb_height"
+                     alt="$media.thumb_name thumb" />
             </a>
         </p>
 

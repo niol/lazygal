@@ -21,7 +21,7 @@ import locale
 import gc
 
 import make
-import sourcetree, tpl, feeds, newsize, metadata
+import sourcetree, tpl, feeds, newsize, metadata, mediautils
 import genpage, genmedia, genfile
 
 from sourcetree import SOURCEDIR_CONFIGFILE
@@ -198,13 +198,13 @@ class WebalbumMediaTask(make.GroupTask):
         self.next = media
         if media:
             for bpage in self.browse_pages.values():
-                bpage.add_dependency(media.thumb)
+                if media.thumb: bpage.add_dependency(media.thumb)
 
     def set_previous(self, media):
         self.previous = media
         if media:
             for bpage in self.browse_pages.values():
-                bpage.add_dependency(media.thumb)
+                if media.thumb: bpage.add_dependency(media.thumb)
 
 
 class WebalbumImageTask(WebalbumMediaTask):
@@ -232,6 +232,34 @@ class WebalbumImageTask(WebalbumMediaTask):
 
     def get_browse_page(self, size_name):
         return genpage.WebalbumImagePage(self.webgal, size_name, self)
+
+
+class WebalbumVideoTask(WebalbumMediaTask):
+    """
+    This task builds all items related to one video.
+    """
+
+    def __init__(self, webgal, video, album):
+        self.webvideo = None
+
+        WebalbumMediaTask.__init__(self, webgal, video, album)
+
+        self.thumb = None # none yet
+
+        self.add_dependency(self.webvideo)
+
+    def get_original(self):
+        if not self.original:
+            self.original = genfile.VideoOriginal(self.webgal, self.media)
+        return self.original
+
+    def get_browse_page(self, size_name):
+        return genpage.WebalbumVideoPage(self.webgal, size_name, self)
+
+    def get_resized(self, size_name):
+        if not self.webvideo:
+            self.webvideo = genmedia.WebVideo(self.webgal, self.media)
+        return self.webvideo
 
 
 class WebalbumDir(make.FileMakeObject):
@@ -273,6 +301,8 @@ class WebalbumDir(make.FileMakeObject):
 
             if media.type == 'image':
                 media_task = WebalbumImageTask(self, media, self.album)
+            elif media.type == 'video':
+                media_task = WebalbumVideoTask(self, media, self.album)
             else:
                 raise NotImplementedError("Unknonwn media type '%s'"\
                                           % media.type)
@@ -442,6 +472,9 @@ class Album:
         self.pic_sort_by = pic_sort_by
         self.subgal_sort_by = subgal_sort_by
 
+        self.transcoder = None
+        self.videothumb = None
+
     def set_theme(self, theme='default', default_style=None):
         self.theme = theme
         self.templates.clear()
@@ -465,6 +498,14 @@ class Album:
                 self.templates[filename] = self.tpl_loader.load(tpl_file)
                 self.templates[filename].path = os.path.join(self.tpl_dir,
                                                              tpl_file)
+
+    def get_transcoder(self):
+        if self.transcoder is None:
+            if mediautils.HAVE_GST:
+                self.transcoder = mediautils.OggTheoraTranscoder()
+            else:
+                self.transcoder = False
+        return self.transcoder
 
     def set_tpl_vars(self, tpl_vars=None):
         if tpl_vars is not None:
@@ -564,7 +605,6 @@ class Album:
             self.log("(%s)" % source_dir.path)
 
             metadata.DefaultMetadata(source_dir, self).make()
-
 
     def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):

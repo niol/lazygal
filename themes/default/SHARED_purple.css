@@ -45,11 +45,11 @@ div.subgal_stats{
     margin: 0.5em;
 }
 
-.image_links p{
+.media_links p{
     text-align:justify;
 }
 
-.image_links{
+.media_links{
     padding-left:7em;
     padding-right:7em;
 }
@@ -69,10 +69,6 @@ div.subgal_stats{
 img {
     border:solid black 1px;
     margin:1em;
-}
-
-.image_links p{
-    text-align:justify;
 }
 
 .image_caption li{

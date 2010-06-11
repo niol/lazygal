@@ -42,38 +42,68 @@ class WebalbumPage(genfile.WebalbumFile):
 
     def set_template(self, tpl):
         self.page_template = tpl
-        self.add_file_dependency(self.page_template.path)
-        for subtpl in self.page_template.subtemplates():
+        self.add_tpl_dep(self.page_template)
+
+    def add_tpl_dep(self, tpl):
+        self.add_file_dependency(tpl.path)
+        for subtpl in tpl.subtemplates():
             self.add_file_dependency(subtpl.path)
 
-    def _gen_other_img_link(self, img, dir=None):
-        if img:
-            if dir is None or dir is self.dir:
-                dir = self.dir
-                img_rel_path = ''
-            else:
-                img_rel_path = dir.source_dir.rel_path(self.dir.source_dir) + '/'
-
-            link_vals = {}
-            link_vals['link'] = img_rel_path
-            link_vals['link'] += self._add_size_qualifier(img.name + '.html',
-                                                          self.size_name)
-            link_vals['link'] = self.url_quote(link_vals['link'])
-            link_vals['thumb'] = img_rel_path
-            link_vals['thumb'] += self._add_size_qualifier(img.filename,
+    def _gen_other_img_link(self, img, dir=None, img_rel_path=None):
+        link_vals = {}
+        link_vals['link'] = img_rel_path
+        link_vals['link'] += self._add_size_qualifier(img.name + '.html',
+                                                      self.size_name)
+        link_vals['link'] = self.url_quote(link_vals['link'])
+        link_vals['thumb'] = img_rel_path
+        link_vals['thumb'] += self._add_size_qualifier(img.filename,
                                                      genmedia.THUMB_SIZE_NAME)
-            link_vals['thumb'] = self.url_quote(link_vals['thumb'])
+        link_vals['thumb'] = self.url_quote(link_vals['thumb'])
 
-            if not img.broken:
-                thumb = os.path.join(dir.path,
-                                     self._add_size_qualifier(img.filename,
+        if not img.broken:
+            thumb = os.path.join(dir.path,
+                                 self._add_size_qualifier(img.filename,
                                                      genmedia.THUMB_SIZE_NAME))
-                link_vals['thumb_width'],\
+            link_vals['thumb_width'],\
                 link_vals['thumb_height'] = img.get_size(thumb)
 
             link_vals['thumb_name'] = self.dir.album._str_humanize(img.name)
 
-            return link_vals
+        return link_vals
+
+    def _gen_other_video_link(self, video, dir=None, vid_rel_path=None):
+        link_vals = {}
+        link_vals['link'] = vid_rel_path
+        link_vals['link'] += self._add_size_qualifier(video.name + '.html',
+                                                      self.size_name)
+        link_vals['link'] = self.url_quote(link_vals['link'])
+        link_vals['thumb'] = os.path.join(self.dir.source_dir.rel_root(),
+                                          'shared', 'videothumb.png')
+        link_vals['thumb'] = self.url_quote(link_vals['thumb'])
+
+        if not video.broken:
+            link_vals['thumb_width'],\
+                link_vals['thumb_height'] = video.get_size(True)
+
+            link_vals['thumb_name'] = self.dir.album._str_humanize(video.name)
+
+        return link_vals
+
+    def _gen_other_media_link(self, media, dir=None):
+        if media:
+            if dir is None or dir is self.dir:
+                dir = self.dir
+                media_rel_path = ''
+            else:
+                media_rel_path = dir.source_dir.rel_path(self.dir.source_dir)\
+                                 + '/'
+
+            if media.type == 'image':
+                return self._gen_other_img_link(media, dir, media_rel_path)
+            elif media.type == 'video':
+                return self._gen_other_video_link(media, dir, media_rel_path)
+            else:
+                return None
         else:
             return None
 
@@ -120,13 +150,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
         self.add_dependency(self.dir.sort_task)
 
-
-class WebalbumImagePage(WebalbumBrowsePage):
-
-    def __init__(self, dir, size_name, webalbum_image):
-        WebalbumBrowsePage.__init__(self, dir, size_name, webalbum_image)
-        self.image = self.media
-        self.set_template(self.dir.album.templates['browseimage.thtml'])
+        self.set_template(self.dir.album.templates['browse.thtml'])
+        self.add_tpl_dep(self.dir.album.templates[self.media.type+'.thtml'])
 
     def build(self):
         page_rel_path = self._rel_path(self.dir.flattening_dir)
@@ -134,10 +159,53 @@ class WebalbumImagePage(WebalbumBrowsePage):
         self.dir.album.log("(%s)" % self.page_path)
 
         tpl_values = {}
+        tpl_values['name'] = self.media.filename
+        tpl_values['mediatype'] = self.media.type
+        tpl_values['dir'] = self.dir.source_dir.strip_root()
+
+        prev = self.webalbum_media.previous
+        if prev:
+            tpl_values['prev_link']  = self._gen_other_media_link(prev.media)
+
+        next = self.webalbum_media.next
+        if next:
+            tpl_values['next_link'] = self._gen_other_media_link(next.media)
+
+        tpl_values['index_link'] = self._add_size_qualifier('index.html',
+                                                            self.size_name)
+        if self.dir.should_be_flattened():
+            index_rel_dir = self.dir.flattening_dir.source_dir.rel_path(self.dir.source_dir)
+            tpl_values['index_link'] = index_rel_dir + tpl_values['index_link']
+
+        tpl_values['osize_links'] = self._get_osize_links(self.media.name)
+        tpl_values['rel_root'] = self.dir.source_dir.rel_root()
+
+        if self.dir.album.original:
+            if self.dir.album.orig_base:
+                tpl_values['original_link'] = os.path.join(\
+                    self.dir.source_dir.rel_root(),
+                    self.dir.album.orig_base,
+                    self.dir.source_dir.strip_root(),
+                    self.media.filename)
+            else:
+                tpl_values['original_link'] = self.image.filename
+            tpl_values['original_link'] =\
+                self.url_quote(tpl_values['original_link'])
+
+        self.add_extra_vals(tpl_values)
+
+        self.page_template.dump(tpl_values, self.page_path)
+
+
+class WebalbumImagePage(WebalbumBrowsePage):
+
+    def __init__(self, dir, size_name, webalbum_image):
+        WebalbumBrowsePage.__init__(self, dir, size_name, webalbum_image)
+        self.image = self.media
+
+    def add_extra_vals(self, tpl_values):
         tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
                                                          self.size_name)
-        tpl_values['name'] = self.image.filename
-        tpl_values['dir'] = self.dir.source_dir.strip_root()
         tpl_values['image_name'] = self.image.filename
 
         browse_image_path = os.path.join(self.dir.path,
@@ -154,46 +222,26 @@ class WebalbumImagePage(WebalbumBrowsePage):
         time_str = img_date.strftime(time_format)
         tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
 
-        prev = self.webalbum_media.previous
-        if prev:
-            tpl_values['prev_link']  = self._gen_other_img_link(prev.media)
-
-        next = self.webalbum_media.next
-        if next:
-            tpl_values['next_link'] = self._gen_other_img_link(next.media)
-
-        tpl_values['index_link'] = self._add_size_qualifier('index.html',
-                                                            self.size_name)
-        if self.dir.should_be_flattened():
-            index_rel_dir = self.dir.flattening_dir.source_dir.rel_path(self.dir.source_dir)
-            tpl_values['index_link'] = index_rel_dir + tpl_values['index_link']
-
-        tpl_values['osize_links'] = self._get_osize_links(self.image.name)
-        tpl_values['rel_root'] = self.dir.source_dir.rel_root()
-
         image_info = self.image.info()
-        tpl_values['camera_name'] = image_info.get_camera_name()
-        tpl_values['lens_name'] = image_info.get_lens_name()
-        tpl_values['flash'] = image_info.get_flash()
-        tpl_values['exposure'] = image_info.get_exposure()
-        tpl_values['iso'] = image_info.get_iso()
-        tpl_values['fnumber'] = image_info.get_fnumber()
-        tpl_values['focal_length'] = image_info.get_focal_length()
-        tpl_values['comment'] = image_info.get_comment()
+        if image_info:
+            tpl_values['camera_name'] = image_info.get_camera_name()
+            tpl_values['lens_name'] = image_info.get_lens_name()
+            tpl_values['flash'] = image_info.get_flash()
+            tpl_values['exposure'] = image_info.get_exposure()
+            tpl_values['iso'] = image_info.get_iso()
+            tpl_values['fnumber'] = image_info.get_fnumber()
+            tpl_values['focal_length'] = image_info.get_focal_length()
+            tpl_values['comment'] = image_info.get_comment()
 
-        if self.dir.album.original:
-            if self.dir.album.orig_base:
-                tpl_values['original_link'] = os.path.join(\
-                    self.dir.source_dir.rel_root(),
-                    self.dir.album.orig_base,
-                    self.dir.source_dir.strip_root(),
-                    self.image.filename)
-            else:
-                tpl_values['original_link'] = self.image.filename
-            tpl_values['original_link'] =\
-                self.url_quote(tpl_values['original_link'])
 
-        self.page_template.dump(tpl_values, self.page_path)
+class WebalbumVideoPage(WebalbumBrowsePage):
+
+    def __init__(self, webgal, size_name, webalbum_video):
+        WebalbumBrowsePage.__init__(self, webgal, size_name, webalbum_video)
+        self.video = self.media
+
+    def add_extra_vals(self, tpl_values):
+        tpl_values['video_src'] = self.video.name + '.ogg'
 
 
 class WebalbumIndexPage(WebalbumPage):
@@ -208,7 +256,7 @@ class WebalbumIndexPage(WebalbumPage):
         self.subgals = subgals
         self.galleries = galleries
 
-        for dir, images in self.galleries:
+        for dir, medias in self.galleries:
             self.add_dependency(dir.source_dir.metadata)
             if dir is not self.dir:
                 dir.flattening_dir = self.dir
@@ -217,12 +265,12 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_dependency(dir.source_dir)
             self.add_dependency(dir.sort_task)
 
-            for image in images:
-                self.add_dependency(image.thumb)
-                self.add_dependency(image.browse_pages[size_name])
+            for media in medias:
+                if media.thumb: self.add_dependency(media.thumb)
+                self.add_dependency(media.browse_pages[size_name])
                 # Ensure dir depends on browse page (usefull for cleanup checks
                 # when dir is flattenend).
-                dir.add_dependency(image.browse_pages[size_name])
+                dir.add_dependency(media.browse_pages[size_name])
 
             if self.dir.album.dirzip and dir.source_dir.get_media_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
@@ -318,12 +366,13 @@ class WebalbumIndexPage(WebalbumPage):
         else:
             values['subgal_links'] = self._get_subgal_links()
 
-        values['images'] = []
+        values['medias'] = []
         for subdir, medias in self.galleries:
             info = self._get_dir_info(subdir)
-            img_links = map(lambda x: self._gen_other_img_link(x.media, subdir),
-                            medias)
-            values['images'].append((info, img_links, ))
+            media_links = map(lambda x: self._gen_other_media_link(x.media,
+                                                                   subdir),
+                              medias)
+            values['medias'].append((info, media_links, ))
 
         values.update(self._get_dir_info())
 
