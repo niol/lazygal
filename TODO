@@ -11,20 +11,15 @@ Ideas to improve Lazygal (in no particular order)
   os.fork() would be a better alternative.
     Work to be done mostly in lazygal/make.py
 
-* Have some generic methods on WebalbumDir to provide metadata.
-
 * Add some styles to the default theme.
 
 * Delete half made stuff on KeyInterrupt
      Work to do to be mostly in lazygal/make.py but should uncover some bugs in
      output items computations.
 
-* Video support with embedded flash player.
-     - include a flash video player (maybe http://flowplayer.org/)
-     - convert videos in flv, and point the player in generated pages to
-       this converted video.
-
 * Remove feed rel link in templates when there is no feed.
 
-* Use includes in templates. See
-  http://genshi.edgewall.org/wiki/Documentation/xml-templates.html#id10
+* Integrate Gallerific
+
+* Better video thumbnails :
+  http://www.crocodile.org/lord/thumbextraction/vthumb.py
