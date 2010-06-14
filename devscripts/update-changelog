@@ -1,13 +1,19 @@
 #!/bin/bash
-# Small script to easily generate a ChangeLog from darcs changes.
+# Small script to easily generate a ChangeLog from hg log.
 
 project=Lazygal
 
-DARCS=$(which darcs)
+HG=$(which hg)
 AWK=$(which awk)
 
 repo=$(dirname $0)/..
 
-$DARCS changes --repo $repo |\
-    $AWK "/\ \ \*/ {print \$0} /\ \ tagged/ {print \"\n\" \"$project \" \$2}"\
+$HG log -R $repo |\
+    $AWK -F'     '\
+        '/^summary:/ {print "  * " $2}\
+         /^tag:/ {gsub(/^tag:/,"");\
+                  gsub(/\_/,".");\
+                  gsub(/ /,"");
+                  print "\nLazygal " $0
+                 }'\
     > $repo/ChangeLog
