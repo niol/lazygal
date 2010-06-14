@@ -52,9 +52,13 @@ def update_po():
     oldpath = os.getcwd()
 
     need_tpl_update = False
-    for filename in infiles:
-        if newer(filename, pot_file):
-            need_tpl_update = True
+
+    if newer(infilename, pot_file):
+        need_tpl_update = True
+    else:
+        for filename in infiles:
+            if newer(filename, pot_file):
+                need_tpl_update = True
 
     if need_tpl_update:
         update_template(po_dir, po_package)
