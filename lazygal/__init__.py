@@ -15,38 +15,26 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, re
+import os
 
 
 __all__ = [
         'generators',
         ]
 
-def get_darcs_lastdate():
+def get_hg_rev():
     try:
         lazygal_dir = os.path.join(os.path.dirname(__file__), '..')
-        inventory = os.path.join(lazygal_dir, '_darcs', 'inventory')
-        sk = max(0, os.path.getsize(inventory)-200)
-        inventoryf = open(inventory, 'r')
-        inventoryf.seek(sk)
-        last_lines = inventoryf.readlines()
-        inventoryf.close()
-
-        date_re = re.compile("\\*\\*\\d+")
-        last_date = None
-        for last_line in last_lines:
-            perhaps_match = date_re.search(last_line)
-            if perhaps_match != None:
-                last_date = perhaps_match.group()[2:]
-
-        if not last_date:
+        if not os.path.isdir(os.path.join(lazygal_dir, '.hg')):
             raise IOError
 
-        return "+darcs%s" % last_date[:8]
-    except (IOError, OSError):
+        import mercurial.hg, mercurial.ui, mercurial.node
+        repo = mercurial.hg.repository(mercurial.ui.ui(), lazygal_dir)
+        return mercurial.node.short(repo.changelog.tip())
+    except (IOError, OSError, ImportError):
         return ''
 
 
-__version__ = '0.4.1' + get_darcs_lastdate()
+__version__ = '0.4.1' + get_hg_rev()
 
 # vim: ts=4 sw=4 expandtab
