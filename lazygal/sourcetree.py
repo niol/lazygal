@@ -133,6 +133,9 @@ class File(make.FileSimpleDependency):
                 return True
         return False
 
+    def get_datetime(self):
+        return datetime.datetime.fromtimestamp(self.get_mtime())
+
     def compare_mtime(self, other_file):
         return int(self.get_mtime() - other_file.get_mtime())
 
@@ -146,6 +149,31 @@ class MediaFile(File):
         File.__init__(self, path, album)
         self.broken = False
 
+    def compare_date_taken(self, other_img):
+        date1 = time.mktime(self.get_date_taken().timetuple())
+        date2 = time.mktime(other_img.get_date_taken().timetuple())
+        delta = date1 - date2
+        return int(delta)
+
+    def compare_no_reliable_date(self, other_img):
+        # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after
+        # (reliable here means encoded by the camera).
+        if self.has_reliable_date():
+            return 1
+        else:
+            return -1
+
+    def compare_to_sort(self, other_media):
+        if self.has_reliable_date() and other_media.has_reliable_date():
+            return self.compare_date_taken(other_media)
+        elif not self.has_reliable_date()\
+        and not other_media.has_reliable_date():
+            return self.compare_filename(other_media)
+        else:
+            # One of the picture has no EXIF date, so we arbitrary sort it
+            # before the one with EXIF.
+            return self.compare_no_reliable_date(other_media)
+
 
 class ImageFile(MediaFile):
     type = 'image'
@@ -154,7 +182,7 @@ class ImageFile(MediaFile):
         MediaFile.__init__(self, path, album)
 
         self.date_taken = None
-        self.exif_date = None
+        self.reliable_date = None
         self.__date_probed = False
 
     def info(self):
@@ -165,7 +193,7 @@ class ImageFile(MediaFile):
             exif = None
             self.broken = True
         else:
-            self.exif_date = exif.get_date()
+            self.reliable_date = exif.get_date()
         self.__date_probed = True
         return exif
 
@@ -176,11 +204,11 @@ class ImageFile(MediaFile):
         size = im.size
         return size
 
-    def has_exif_date(self):
+    def has_reliable_date(self):
         if not self.__date_probed:
             self.info()
 
-        if self.exif_date:
+        if self.reliable_date:
             return True
         else:
             return False
@@ -189,45 +217,22 @@ class ImageFile(MediaFile):
         if not self.__date_probed:
             self.info()
 
-        if self.exif_date:
-            self.date_taken = self.exif_date
+        if self.reliable_date:
+            self.date_taken = self.reliable_date
         else:
             # No date available in EXIF, or bad format, use file mtime
-            self.date_taken = datetime.datetime.fromtimestamp(self.get_mtime())
+            self.date_taken = self.get_datetime()
         return self.date_taken
-
-    def compare_date_taken(self, other_img):
-        date1 = time.mktime(self.get_date_taken().timetuple())
-        date2 = time.mktime(other_img.get_date_taken().timetuple())
-        delta = date1 - date2
-        return int(delta)
-
-    def compare_no_exif_date(self, other_img):
-        # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after.
-        if self.has_exif_date():
-            return 1
-        else:
-            return -1
-
-    def compare_to_sort(self, other_media):
-        if self.has_exif_date() and other_media.has_exif_date():
-            return self.compare_date_taken(other_media)
-        elif not self.has_exif_date() and not other_media.has_exif_date():
-            return self.compare_filename(other_media)
-        else:
-            # One of the picture has no EXIF date, so we arbitrary sort it
-            # before the one with EXIF.
-            return self.compare_no_exif_date(other_media)
 
 
 class VideoFile(MediaFile):
     type = 'video'
 
-    def has_exif_date(self):
+    def has_reliable_date(self):
         return False
 
-    def compare_to_sort(self, other_media):
-        return self.compare_filename(other_media)
+    def get_date_taken(self):
+        return self.get_datetime()
 
     def get_size(self, path=None):
         size = (400, 300)
