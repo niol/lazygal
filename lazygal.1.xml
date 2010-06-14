@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>October 2009</date>">
+  <!ENTITY dhdate      "<date>June 2010</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -19,7 +19,7 @@
     <address>
     </address>
     <copyright>
-      <year>2009</year>
+      <year>2010</year>
       <holder></holder>
     </copyright>
     &dhdate;
