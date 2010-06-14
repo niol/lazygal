@@ -3,8 +3,13 @@ lazygal/sourcetree.py
 lazygal/generators.py
 lazygal/metadata.py
 lazygal/tpl.py
+lazygal/genfile.py
+lazygal/genmedia.py
+lazygal/genpage.py
 themes/default/dirindex.thtml
 themes/default/browse.thtml
+themes/default/image.thtml
+themes/default/video.thtml
 themes/default/feeditem.thtml
 themes/image-index/browse.thtml
 themes/image-index/dirindex.thtml
