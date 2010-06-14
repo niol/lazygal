@@ -373,7 +373,10 @@
 
     <para>This must be valid XML. See
     <filename>http://genshi.edgewall.org/wiki/Documentation/xml-templates.html</filename>
-    for syntax.</para>
+    for syntax. Dependencies for statically included templates (i.e. with
+    filenames not computed from variables) are automatically computed: when
+    an included template is modified, the software will automatically figure
+    out which pages to re-generate.</para>
 
     <para>Each file which name starts with <parameter>SHARED_</parameter> is
     copied to the web album destination under the directory
