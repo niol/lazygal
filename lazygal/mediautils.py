@@ -79,6 +79,7 @@ class GstVideoOpener(object):
                 self.pipeline.set_state(gst.STATE_NULL)
                 finished = True
             elif message.type == gst.MESSAGE_ERROR:
+                self.pipeline.set_state(gst.STATE_NULL)
                 raise TranscodeError(message.parse_error())
 
 
