@@ -6,6 +6,7 @@ include lazygal.1.xml
 recursive-include themes *.thtml
 recursive-include themes *.css
 recursive-include themes *.tcss
+recursive-include themes *.png
 include locale/*.po
 include locale/lazygal.pot
 include locale/POTFILES.in
