@@ -30,6 +30,12 @@ def get_hg_rev():
 
         import mercurial.hg, mercurial.ui, mercurial.node
         repo = mercurial.hg.repository(mercurial.ui.ui(), lazygal_dir)
+
+        rev_minusone = repo.changelog.parents(repo.changelog.tip())[0]
+        for tag, rev in repo.tags().items():
+            if tag != 'tip' and rev == rev_minusone:
+                # This is a tagged revision, assume this is a release.
+                return ''
         return mercurial.node.short(repo.changelog.tip())
     except (IOError, OSError, ImportError):
         return ''
