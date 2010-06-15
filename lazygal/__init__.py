@@ -35,6 +35,9 @@ def get_hg_rev():
         return ''
 
 
-__version__ = '0.4.1' + get_hg_rev()
+__version__ = '0.4.1'
+
+hg_rev = get_hg_rev()
+if hg_rev: __version__ += '+hg' + hg_rev
 
 # vim: ts=4 sw=4 expandtab
