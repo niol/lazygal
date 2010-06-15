@@ -324,7 +324,7 @@ msgstr " (équivalent 35 mm: %s mm)"
 #: ../lazygal/metadata.py:416
 #, python-format
 msgid "Could not open metadata file %s"
-msgstr "Impossible d'ouvrir le fichier de description."
+msgstr "Impossible d'ouvrir le fichier de description %s"
 
 #: ../lazygal/metadata.py:484
 msgid "  SKIPPED because metadata exists."
