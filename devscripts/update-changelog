@@ -9,11 +9,11 @@ AWK=$(which awk)
 repo=$(dirname $0)/..
 
 $HG log -R $repo |\
-    $AWK -F'     '\
-        '/^summary:/ {print "  * " $2}\
-         /^tag:/ {gsub(/^tag:/,"");\
-                  gsub(/\_/,".");\
-                  gsub(/ /,"");
-                  print "\nLazygal " $0
-                 }'\
+    $AWK -F':\ \ +'\
+        '/^summary/ {if($2 !~ /^Added\ tag\ .+\ for\ changeset/ )\
+                        print "  * " $2\
+                    }\
+         /^tag/     {gsub(/\_/,".");\
+                     if( $2 !~ /tip/ ) print "\nLazygal " $2
+                    }'\
     > $repo/ChangeLog
