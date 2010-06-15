@@ -41,7 +41,7 @@ def get_hg_rev():
         return ''
 
 
-__version__ = '0.4.1'
+__version__ = '0.5'
 
 hg_rev = get_hg_rev()
 if hg_rev: __version__ += '+hg' + hg_rev

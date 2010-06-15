@@ -1,4 +1,96 @@
+
+Lazygal tip
+  * to not append hg revision if last commit is a tag
+  * separate lazygal version and hg rev
+  * add png files to theme data
+  * retrieve hg rev from VCS if available
+  * update manpages dates
+  * update changelog generation script for mercurial
+  * reprocess all source files if translated source file list has changed
+  * update translated file list
+  * update potfile
+  * update french translation
+  * update TODO
+  * add some documentation for included templates
+  * fix video ordering which messed up pic ordering
+  * reset GStreamer pipeline when decoding has failed
+  * update TODO
+  * avoid using PIL for JPEG comment when pyexiv2 can do the job
+  * fix typo in error msg
+  * also generate web pages for videos (ogg/theora)
+  * improve included tpls handling
+  * describe high level mode of operation in manual page
+  * more usefull debug output for template decoding errors
+  * support new pyexiv2 0.2 API
+  * fix some function names due to video preparation patch
+  * always store file paths in unicode
+  * bring dates in 2010
+  * update tags
+  * Read IPTC metadata
+  * multi media support (preparation for video support)
+  * improve broken img handling
+  * probing EXIF data unconditionaly is indeed a perf problem
+  * add a separate task for the breaking of galleries into multiple pages
+  * fix issues with file make objs last built time
+  * improve task output registering
+  * only read EXIF info once per page
+  * do not sort the galleries when nothing needs to be built
+  * fix SubgalSort task according to recent refactoring
+  * record FIXME in unicode path issue
+  * fix typo in webgal dir cleanup
+  * remove useless del im
+  * do not keep EXIF data in memory, reread from file when needed (not that often)
+  * no subgal count in feed item if no subgals
+  * fix album picture path by always recording abs path
+  * Fix typos
+  * correctly initialize album name when generating default metadata
+  * improve description of -m
+  * fix the generating of default metadata
+  * add a FIXME to the second implementation of the same alg
+  * try to fix up the mess that comes from the confusion between a Directory and a WebalbumDir
+  * better handling of broken image files
+  * move webgalpic init out of index page init
+  * some __doc__ enhancements
+  * update TODO
+  * fix sorting of pics in already generated webgals
+  * simplify code by removing the LightWebgal
+  * fix mixups in _last_built_time variable
+  * improve SORTING task debug line
+  * remove prepare() in make machinery
+  * make the sorting of pictures in a gallery a separate task
+  * remove useless regsiter_builder() stuff
+  * add dirty script to set an EXIF comment, to be improved later
+  * fix failure of directory metadata generation on dirs without pics
+  * update homepage url
+  * add subgal and image count on subgal links in default theme
+  * flush out pipes after message print to make sure msg are displayed even when output is piped (ssh, less)
+  * get rid of the "$t." prefix in templates
+  * simplify a bit the file file cleanup code
+  * fix code disalignement
+  * fix presented elements computation when --thumbs-per-page is used with --flatten-below
+  * split the now big generators.py file
+  * return empty jpeg comment whenever field is missing from jpeg file for some reason
+  * memory improvement: only automatically populate outputed items for make objects that produce files
+  * force the cleanup of circular references by the gc after each dir
+  * only set full featured webgal_dir object link if flattening below
+  * light subdir is enough for other img link
+  * fixed thumb links regression in index page
+  * support for templates include and deps
+  * Flatten directory structure below a certain depth
+  * also include jpEg
+  * add missing space in verbose output
+  * fixed issue with dir cleanup wich showed up album dirs
+  * comment typo
+  * skip galleries whose name collide with shared material (e.g. CSS)
+  * fixed gallery conf file not taken into account except for tpl vars
+  * fixed output not in a pipe (less, ssh, etc) that raised a unicode decode error
+  * automatically populate newsize definition plugins list
+  * more control over image resize
+  * bring dates in 2009
+  * fix manpage installation
+
 Lazygal 0.4.1
+  * set version to 0.4.1
   * update TODO
   * fixed typo in french translation
   * update french translation
@@ -36,7 +128,7 @@ Lazygal 0.4.1
 Lazygal 0.4
   * set version to 0.4
   * output tpl gen date in current local to match i18n
-  * use new out parameter in genshi templates generation (genshi >=0.5)
+  * use new out parameter in genshi templates generation (genshi >
   * add french translation
   * support for an additionnal config file in source_dir
   * do not output format not supported message twice
