@@ -73,13 +73,13 @@ class _ImageInfoTags(object):
         vendors put different information to both tags.
         '''
         try:
-            model = str(self._metadata['Exif.Image.Model']).strip()
+            model = self.get_tag_value('Exif.Image.Model').strip()
             # Terminate string at \x00
             pos = model.find('\x00')
             if pos != -1:
                 model = model[:14]
             try:
-                vendor = str(self._metadata['Exif.Image.Make']).strip()
+                vendor = self.get_tag_value('Exif.Image.Make').strip()
                 vendor_l = vendor.lower()
                 model_l = model.lower()
                 # Split vendor to words and check whether they are
