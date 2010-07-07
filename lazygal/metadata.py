@@ -197,9 +197,11 @@ class _ImageInfoTags(object):
         except (ValueError, KeyError):
             try:
                 ret = self.get_exif_string('Exif.Image.ImageDescription')
+                ret = self._fallback_to_encoding(ret)
             except (ValueError, KeyError):
                 try:
                     ret = self.get_exif_string('Iptc.Application2.ObjectName')
+                    ret = self._fallback_to_encoding(ret)
                 except (ValueError, KeyError):
                     ret = self.get_jpeg_comment()
         return ret
