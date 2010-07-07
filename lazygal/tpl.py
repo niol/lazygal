@@ -60,10 +60,11 @@ class LazygalTemplate(object):
         except UnicodeDecodeError:
             problematic_vars = []
             for key, value in values.items():
-                try:
-                    str(value).decode('utf-8')
-                except UnicodeDecodeError:
-                    problematic_vars.append(key)
+                if type(value) is not unicode:
+                    try:
+                        str(value).decode('utf-8')
+                    except UnicodeDecodeError:
+                        problematic_vars.append(key)
             print 'Problematic template vars : %s' % ', '.join(problematic_vars)
             raise
         finally:
