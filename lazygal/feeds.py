@@ -18,17 +18,7 @@
 
 import os, time
 import sys, urllib
-try:
-    # python >= 2.5
-    from xml.etree import cElementTree as ET
-    HAVE_ETREE = True
-except ImportError:
-    try:
-        # python 2.4 external module
-        import cElementTree as ET
-        HAVE_ETREE = True
-    except ImportError:
-        HAVE_ETREE = False
+from xml.etree import cElementTree as ET
 
 
 class RSS20:

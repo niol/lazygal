@@ -615,7 +615,7 @@ class Album:
 
         self.log(_("Generating to %s") % sane_dest_dir)
 
-        if pub_url and feeds.HAVE_ETREE:
+        if pub_url:
             feed = genpage.WebalbumFeed(self, sane_dest_dir, pub_url)
         else:
             feed = None
