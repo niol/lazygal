@@ -249,9 +249,7 @@ class WebalbumVideoTask(WebalbumMediaTask):
         self.add_dependency(self.webvideo)
 
     def get_original(self):
-        if not self.original:
-            self.original = genfile.VideoOriginal(self.webgal, self.media)
-        return self.original
+        return self.get_resized("0x0")
 
     def get_browse_page(self, size_name):
         return genpage.WebalbumVideoPage(self.webgal, size_name, self)
