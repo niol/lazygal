@@ -21,7 +21,11 @@ try:
     import gobject
     import pygst
     pygst.require('0.10')
+    # http://29a.ch/tags/pygst
+    argv = sys.argv
+    sys.argv = []
     import gst
+    sys.argv = argv
 except ImportError:
     HAVE_GST = False
 else:
