@@ -606,6 +606,7 @@ class Album:
 
     def generate(self, dest_dir, pub_url=None,
                  check_all_dirs=False, clean_dest=False):
+        dest_dir = dest_dir.decode(sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(dest_dir)
 
         if self.is_in_sourcetree(sane_dest_dir):
