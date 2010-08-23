@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime, locale
+import codecs
 import Image
 
 import pyexiv2
@@ -497,10 +498,13 @@ class DefaultMetadata(make.FileMakeObject):
         self.album.log(_("GEN %s") % self._path, 'info')
 
         f = file(self._path, 'w')
+        f.write(codecs.BOM_UTF8)
         f.write('# Directory metadata for lazygal, Matew format\n')
-        f.write('Album name "%s"\n' % self.source_dir.human_name);
+        f.write('Album name "%s"\n'\
+                % self.source_dir.human_name.encode('utf-8'));
         f.write('Album description ""\n');
-        f.write('Album image identifier "%s"\n' % md['album_picture']);
+        f.write('Album image identifier "%s"\n'\
+                % md['album_picture'].encode('utf-8'));
         f.close()
 
 
