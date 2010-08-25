@@ -2,7 +2,8 @@
      PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-      xmlns:py="http://genshi.edgewall.org/">
+      xmlns:py="http://genshi.edgewall.org/"
+      xmlns:xi="http://www.w3.org/2001/XInclude">
 <head>
   <title py:content="album_name" />
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -45,32 +46,9 @@
 </p>
 
 <div id="subgal_links">
-    <div py:for="subgal_link in subgal_links" class="subgal_link">
-        <div py:if="subgal_link.album_picture" class="subgal_image">
-            <a href="$subgal_link.link">
-                <img src="$subgal_link.album_picture" alt="$subgal_link.album_name album picture" />
-            </a>
-        </div>
-        <div class="subgal_name">
-            <h4 class="subgal_name">
-                <a href="$subgal_link.link"
-                   py:content="subgal_link.album_name" />
-            </h4>
-            <div py:if="subgal_link.album_description" class="subgal_description">
-                <p>$subgal_link.album_description</p>
-            </div>
-            <div py:if="subgal_link.image_count > 0 or subgal_link.subgal_count > 0"
-                 class="subgal_stats">
-                <py:if test="subgal_link.image_count > 0">
-                    $subgal_link.image_count ${_('photos')}
-                    <py:if test="subgal_link.subgal_count > 0">, </py:if>
-                </py:if>
-                <py:if test="subgal_link.subgal_count > 0">
-                    $subgal_link.subgal_count ${_('sub-galleries')}
-                </py:if>
-            </div>
-        </div>
-    </div>
+    <py:for each="subgal_link in subgal_links">
+        <xi:include href="gallerylink.thtml" />
+    </py:for>
 </div>
 
 <py:for each="subdir, medias in medias">
