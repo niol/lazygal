@@ -17,16 +17,21 @@
 
 import os, time
 from genshi.core import START
-from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
+from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate,\
+                            TemplateNotFound
 from genshi.input import XMLParser
 import __init__
 import locale
 
 
+DEFAULT_TEMPLATE = 'default'
+
+
 class LazygalTemplate(object):
 
-    def __init__(self, tpl_path, genshi_tpl, common_values=None):
-        self.path = tpl_path
+    def __init__(self, loader, genshi_tpl, common_values=None):
+        self.loader = loader
+        self.path = genshi_tpl.filepath
         self.common_values = common_values or {}
         self.genshi_tpl = genshi_tpl
 
@@ -76,31 +81,36 @@ class XmlTemplate(LazygalTemplate):
     serialization_method = 'xhtml'
     genshi_tpl_class = MarkupTemplate
 
-    def subtemplates(self, path=None):
-        if path is None:
-            path = self.path
+    def subtemplates(self, tpl=None):
+        if tpl is None:
+            tpl = self
 
-        subtemplate_paths = []
-        f = open(path, 'r')
+        subtemplates = []
+        f = open(tpl.path, 'r')
         try:
-            for kind, data, pos in XMLParser(f, filename=path):
+            for kind, data, pos in XMLParser(f, filename=tpl.path):
                 if kind is START:
                     tag, attrib = data
                     if tag.namespace == 'http://www.w3.org/2001/XInclude'\
                     and tag.localname == 'include':
-                        subtpl = attrib.get('href')
-                        tpldir = os.path.dirname(path)
-                        # This is to rule out includes on filenames constructed
-                        # from a template variable.
-                        if os.path.isfile(os.path.join(path, subtpl)):
-                            subtemplate_paths.append(attrib.get('href'))
+                        subtpl_ident = attrib.get('href')
+                        try:
+                            subtpl = self.loader.load(subtpl_ident)
+                        except TemplateNotFound:
+                            # This will fail later, here we just need to ignore
+                            # template idents that are dynamically computed.
+                            pass
+                        else:
+                            subtemplates.append(subtpl)
         finally:
             f.close()
 
-        for subtemplate_path in subtemplate_paths:
-            subtemplate_paths.extend(self.subtemplates(subtemplate_path))
+        for subtemplate in subtemplates:
+            for new_subtpl in self.subtemplates(subtemplate):
+                if new_subtpl not in subtemplates:
+                    subtemplates.append(new_subtpl)
 
-        return subtemplate_paths
+        return subtemplates
 
 
 class PlainTemplate(LazygalTemplate, TextTemplate):
@@ -118,11 +128,12 @@ class TplFactory(object):
 
     common_values = None
 
-    def __init__(self, tpl_dir):
+    def __init__(self, default_tpl_dir, tpl_dir):
         # We use lenient mode here because we want an easy way to check whether
         # a template variable is defined, or the empty string, thus defined()
         # will only work for the 'whether it is defined' part of the test.
-        self.loader = TemplateLoader([tpl_dir], variable_lookup='lenient')
+        self.loader = TemplateLoader([tpl_dir, default_tpl_dir],
+                                      variable_lookup='lenient')
 
     def set_common_values(self, values):
         self.common_values = values
@@ -131,12 +142,12 @@ class TplFactory(object):
         filename, ext = os.path.splitext(os.path.basename(file))
         return ext in self.known_exts.keys()
 
-    def load(self, tpl_file):
-        if self.is_known_template_type(tpl_file):
-            filename, ext = os.path.splitext(os.path.basename(tpl_file))
+    def load(self, tpl_ident):
+        if self.is_known_template_type(tpl_ident):
+            filename, ext = os.path.splitext(os.path.basename(tpl_ident))
             tpl_class = self.known_exts[ext]
-            tpl = self.loader.load(tpl_file, cls=tpl_class.genshi_tpl_class)
-            return tpl_class(tpl_file, tpl, self.common_values)
+            tpl = self.loader.load(tpl_ident, cls=tpl_class.genshi_tpl_class)
+            return tpl_class(self, tpl, self.common_values)
         else:
             raise ValueError(_('Unknown template type for %s' % tpl_file))
 

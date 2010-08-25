@@ -453,7 +453,6 @@ class Album:
         self.default_size_name = browse_size_strings[0][0]
         self.quality = quality
 
-        self.templates = {}
         self.tpl_loader = None
         self.tpl_vars = {}
         self.original = False
@@ -473,9 +472,8 @@ class Album:
         self.transcoder = None
         self.videothumb = None
 
-    def set_theme(self, theme='default', default_style=None):
+    def set_theme(self, theme=tpl.DEFAULT_TEMPLATE, default_style=None):
         self.theme = theme
-        self.templates.clear()
 
         # First try user directory
         self.tpl_dir = os.path.join(USER_THEME_DIR, self.theme)
@@ -485,17 +483,19 @@ class Album:
             if not os.path.exists(self.tpl_dir):
                 raise ValueError(_('Theme %s not found') % self.theme)
 
-        self.tpl_loader = tpl.TplFactory(self.tpl_dir)
-        self.tpl_vars.update({'styles' : self.get_avail_styles(self.theme,
-                                                               default_style)})
+        self.tpl_loader = tpl.TplFactory(os.path.join(THEME_DIR,
+                                                      tpl.DEFAULT_TEMPLATE),
+                                         self.tpl_dir)
+
+        styles = self.get_avail_styles(self.theme, default_style)
+        self.tpl_vars.update({'styles' : styles})
         self.set_tpl_vars()
 
-        for tpl_file in os.listdir(self.tpl_dir):
-            if self.tpl_loader.is_known_template_type(tpl_file):
-                filename = os.path.basename(tpl_file)
-                self.templates[filename] = self.tpl_loader.load(tpl_file)
-                self.templates[filename].path = os.path.join(self.tpl_dir,
-                                                             tpl_file)
+        # Load styles templates
+        for style in styles:
+            style_filename = style['filename']
+            if self.tpl_loader.is_known_template_type(style_filename):
+                self.tpl_loader.load(style_filename)
 
     def get_transcoder(self):
         if self.transcoder is None:

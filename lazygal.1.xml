@@ -3,7 +3,7 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>June 2010</date>">
+  <!ENTITY dhdate      "<date>August 2010</date>">
   <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
        allowed: see man(7), man(1). -->
   <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
@@ -348,8 +348,7 @@
   <refsect1>
     <title>THEMES</title>
 
-    <para>A theme maps to a directory that contains at least the following
-    items:</para>
+    <para>A theme maps to a directory that contains the following items:</para>
 
     <variablelist>
 
@@ -370,6 +369,9 @@
       </varlistentry>
 
     </variablelist>
+
+    <para>Missing template files will be searched for in the
+    <parameter>default</parameter> theme.</para>
 
     <para>This must be valid XML. See
     <filename>http://genshi.edgewall.org/wiki/Documentation/xml-templates.html</filename>

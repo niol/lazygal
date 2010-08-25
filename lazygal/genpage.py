@@ -40,14 +40,15 @@ class WebalbumPage(genfile.WebalbumFile):
 
         self.page_template = None
 
-    def set_template(self, tpl):
-        self.page_template = tpl
-        self.add_tpl_dep(self.page_template)
+    def set_template(self, tpl_ident):
+        self.page_template = self.load_tpl(tpl_ident)
 
-    def add_tpl_dep(self, tpl):
+    def load_tpl(self, tpl_ident):
+        tpl = self.dir.album.tpl_loader.load(tpl_ident)
         self.add_file_dependency(tpl.path)
         for subtpl in tpl.subtemplates():
             self.add_file_dependency(subtpl.path)
+        return tpl
 
     def _gen_other_img_link(self, img, dir=None, img_rel_path=None):
         link_vals = {}
@@ -150,8 +151,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
         self.add_dependency(self.dir.sort_task)
 
-        self.set_template(self.dir.album.templates['browse.thtml'])
-        self.add_tpl_dep(self.dir.album.templates[self.media.type+'.thtml'])
+        self.set_template('browse.thtml')
+        self.load_tpl(self.media.type+'.thtml')
 
     def build(self):
         page_rel_path = self._rel_path(self.dir.flattening_dir)
@@ -275,7 +276,7 @@ class WebalbumIndexPage(WebalbumPage):
             if self.dir.album.dirzip and dir.source_dir.get_media_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
-        self.set_template(self.dir.album.templates['dirindex.thtml'])
+        self.set_template('dirindex.thtml')
 
     def _get_paginated_name(self, page_number=None):
         if page_number == None:
@@ -432,7 +433,7 @@ class SharedFileTemplate(make.FileMakeObject):
 
     def __init__(self, album, shared_tpl_name, shared_file_dest_tplname):
         self.album = album
-        self.tpl = self.album.templates[os.path.basename(shared_tpl_name)]
+        self.tpl = self.album.tpl_loader.load(shared_tpl_name)
 
         # Remove the 't' from the beginning of ext
         filename, ext = os.path.splitext(shared_file_dest_tplname)
