@@ -9,32 +9,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-03 16:45+0100\n"
+"POT-Creation-Date: 2010-08-26 13:51+0200\n"
 "PO-Revision-Date: 2008-12-03 16:45+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:67
+#: ../lazygal.py:71
 msgid "usage: %prog [options] albumdir"
 msgstr "použití: %prog [parametry] adresářsalbem"
 
 #. The help option must be changed to comply with i18n.
-#: ../lazygal.py:71
+#: ../lazygal.py:75
 msgid "Show this help message and exit."
 msgstr "Zobrazí tuto nápovědu a ukončí program."
 
-#: ../lazygal.py:76
+#: ../lazygal.py:80
 msgid "Don't output anything except for errors."
 msgstr "Nebude vypisovat nic kromě chyb."
 
-#: ../lazygal.py:80
+#: ../lazygal.py:84
 msgid "Output everything that lazygal is doing."
 msgstr "Vypsat vše, co lazygal provádí."
 
-#: ../lazygal.py:84
+#: ../lazygal.py:88
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
@@ -42,55 +43,66 @@ msgstr ""
 "Adresář, kam budou zapsány webové stránky, obrázky a náhledy (výchozí je "
 "aktuální adresář)."
 
-#: ../lazygal.py:89
+#: ../lazygal.py:93
 msgid "Theme name (looked up in theme directory) or theme full path."
 msgstr ""
 "Jméno tématu (vyhledává se v adresáři s tématy) nebo celá cesta k tématu."
 
-#: ../lazygal.py:94
+#: ../lazygal.py:98
 msgid "Default style to apply to the theme."
 msgstr "Výchozí styl použitý pro téma."
 
-#: ../lazygal.py:99
+#: ../lazygal.py:103
 msgid "Common variables to load all templates with."
 msgstr "Společné proměnné, které budou předány šablonám."
 
-#: ../lazygal.py:104
+#: ../lazygal.py:108
 msgid "Clean destination directory of files that should not be there."
 msgstr "Vymazat z výstupního adresáře soubory, které v něm nemají být."
 
-#: ../lazygal.py:108
+#: ../lazygal.py:112
 msgid "Display program version."
 msgstr "Zobrazí verzi programu."
 
-#: ../lazygal.py:112
+#: ../lazygal.py:116
 msgid ""
 "Exhaustively go through all directories regardless of source modification "
 "time."
 msgstr "Projít všechny adresáře bez ohledu na jejich čas změny."
 
-#: ../lazygal.py:117
+#: ../lazygal.py:121
 msgid ""
-"Size of images, define as <name>=<x>x<y>,..., eg. small=800x600,"
-"medium=1024x768. The special dimensions 0x0 use original size."
+"Level below witch the directory tree is flattened. Default is 0 which is "
+"unlimited."
+msgstr ""
+
+#: ../lazygal.py:126
+#, fuzzy
+msgid ""
+"Size of images, define as <name>=SIZE,..., eg. small=800x600,"
+"medium=1024x768. The special dimensions 0x0 use original size. See manual "
+"page for SIZE syntax."
 msgstr ""
 "Velikost obrázků, zadejte v podobě <jméno>=<x>x<y>,..., např. male=800x600,"
 "stredni=1024x768. Při zadání 0x0 bude použit původní obrázek beze změny "
 "velikosti."
 
-#: ../lazygal.py:122
-msgid "Size of thumbnails, define as <x>x<y>, eg. 150x113."
+#: ../lazygal.py:131
+#, fuzzy
+msgid ""
+"Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE "
+"syntax."
 msgstr "Velikost náhledů, zadejte v podobě <x>x<y>, např. 150x113."
 
-#: ../lazygal.py:127
+#: ../lazygal.py:136
 msgid "Quality of generated JPEG images (default is 85)."
 msgstr "Kvalita generovaných JPEG obrázků (výchozí je 85)."
 
-#: ../lazygal.py:131
+#: ../lazygal.py:140
 msgid "Include original photos in output."
 msgstr "Zahrnout původní obrázky ve výstupu."
 
-#: ../lazygal.py:136
+#: ../lazygal.py:145
 msgid ""
 "Do not copy original photos in output directory, instead link them using "
 "submitted relative path as base."
@@ -98,15 +110,18 @@ msgstr ""
 "Nekopírovat původní obrázky do výstupu, jen vytvořit sumbolické odkazy "
 "pomocí zadané relativní cesty."
 
-#: ../lazygal.py:140
+#: ../lazygal.py:149
 msgid "Publication URL (only usefull for feed generation)."
 msgstr "URL, kde bude album generováno (je potřebné pro vytváření RSS zdrojů)."
 
-#: ../lazygal.py:144
-msgid "Generate metadata description files where they don't exist."
+#: ../lazygal.py:153
+#, fuzzy
+msgid ""
+"Generate metadata description files where they don't exist instead of "
+"generating the web gallery."
 msgstr "Vytvoří soubory pro popisky alb tam, kde neexistují."
 
-#: ../lazygal.py:149
+#: ../lazygal.py:158
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
@@ -114,11 +129,11 @@ msgstr ""
 "Maximální počet náhledů na stránce obsahu. Tímto vynutíte stránkování obsahu "
 "(0 znamená žádné omezení)."
 
-#: ../lazygal.py:153
+#: ../lazygal.py:162
 msgid "Make a zip archive of original pictures for each directory."
 msgstr "Vytvořit zip archív s původními obrázky pro každý adresář."
 
-#: ../lazygal.py:158
+#: ../lazygal.py:167
 msgid ""
 "Webalbum picture background color. Default is transparent, and implies the "
 "PNG format. Any other value, e.g. red, white, blue, uses JPEG."
@@ -126,19 +141,19 @@ msgstr ""
 "Pozadí obrázku alba. Výchozí je průhledné a obrázek pak bude uložen jako "
 "PNG. Jakákoliv jiná barva (např. red, white, blue) použije JPEG."
 
-#: ../lazygal.py:162
+#: ../lazygal.py:171
 msgid "Run an extra optimization pass an each image."
 msgstr "Provést další optimalizaci pro každý obrázek."
 
-#: ../lazygal.py:166
+#: ../lazygal.py:175
 msgid "Generate Progressive JPEG images."
 msgstr "Vytvářet progresivní JPEG."
 
-#: ../lazygal.py:168 ../lazygal.py:171
+#: ../lazygal.py:177 ../lazygal.py:180
 msgid "ORDER"
 msgstr "POŘADÍ"
 
-#: ../lazygal.py:169
+#: ../lazygal.py:178
 msgid ""
 "Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' "
 "to reverse the chosen order."
@@ -146,7 +161,7 @@ msgstr ""
 "Pořadí obrázků v adresáři: filename, mtime nebo exif. Přidejte \":reverse\" "
 "pro otočení pořadí."
 
-#: ../lazygal.py:172
+#: ../lazygal.py:181
 msgid ""
 "Sort order for sub galleries in a folder: filename or mtime. Add ':reverse' "
 "to reverse the chosen order."
@@ -154,231 +169,279 @@ msgstr ""
 "Pořadí alb v adresáři: filename nebo mtime. Přidejte \":reverse\" pro "
 "otočení pořadí."
 
-#: ../lazygal.py:176
+#: ../lazygal.py:185
 #, python-format
 msgid "lazygal version %s"
 msgstr "lazygal verze %s"
 
-#: ../lazygal.py:181
+#: ../lazygal.py:190
 msgid "Bad command line."
 msgstr "Chybná příkazová řádka."
 
-#: ../lazygal.py:185
+#: ../lazygal.py:194
 #, python-format
 msgid "Directory %s does not exist."
 msgstr "Adresář %s neexistuje."
 
-#: ../lazygal.py:198
+#: ../lazygal.py:226
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr "Velikost pojmenovaná '%s' je rezervovaná pro vnitřní potřebu."
 
-#: ../lazygal/sourcetree.py:53
+#: ../lazygal.py:230
+#, python-format
+msgid "'%s' for size '%s' does not describe a known size syntax."
+msgstr ""
+
+#: ../lazygal.py:237
+#, python-format
+msgid "'%s' for thumb size does not describe a known size syntax."
+msgstr ""
+
+#: ../lazygal/sourcetree.py:56 ../lazygal/sourcetree.py:94
 msgid "Root not found"
 msgstr "Kořenový adresář nebyl nalezen"
 
-#: ../lazygal/generators.py:36
-msgid "Could not find themes dir, check your installation!"
-msgstr "Nepodařilo se nalézt adresář s tématy, zkontrolujte vaší instalaci!"
-
-#: ../lazygal/generators.py:86
-#, python-format
-msgid "  RESIZE %s"
-msgstr "  ZMENŠIT %s"
-
-#: ../lazygal/generators.py:144
-#, python-format
-msgid "  DIRPIC %s"
-msgstr "  ADROBR %s"
-
-#: ../lazygal/generators.py:169
-#, python-format
-msgid "  ZIP %s"
-msgstr "  ZIP %s"
-
-#: ../lazygal/generators.py:270 ../lazygal/generators.py:397
-#, python-format
-msgid "  XHTML %s"
-msgstr "  XHTML %s"
-
-#. strftime does not work with utf-8...
-#: ../lazygal/generators.py:289
-msgid "on %d/%m/%Y at %H:%M"
-msgstr "dne %d/%m/%Y v %H:%M"
-
-#: ../lazygal/generators.py:466
+#: ../lazygal/sourcetree.py:295
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  Ignoruji %s, formát není podporovaný."
 
-#: ../lazygal/generators.py:523
-#, python-format
-msgid "  MKDIR %%WEBALBUMROOT%%/%s"
-msgstr "  ADRESÁŘ %%WEBALBUMROOT%%/%s"
+#: ../lazygal/generators.py:34
+msgid "Could not find themes dir, check your installation!"
+msgstr "Nepodařilo se nalézt adresář s tématy, zkontrolujte vaší instalaci!"
 
-#: ../lazygal/generators.py:563 ../lazygal/generators.py:574
+#: ../lazygal/generators.py:54
+msgid "  SORTING pics and subdirs"
+msgstr ""
+
+#: ../lazygal/generators.py:63 ../lazygal/generators.py:75
 #, python-format
 msgid "Unknown sorting criterion '%s'"
 msgstr "Neznámý typ řazení '%s'"
 
-#: ../lazygal/generators.py:611
-msgid "you should "
+#: ../lazygal/generators.py:108
+msgid "  BREAKING web gallery into multiple pages"
+msgstr ""
+
+#: ../lazygal/generators.py:289
+#, python-format
+msgid "  MKDIR %%WEBALBUMROOT%%/%s"
+msgstr "  ADRESÁŘ %%WEBALBUMROOT%%/%s"
+
+#: ../lazygal/generators.py:390
+#, fuzzy
+msgid "you should"
 msgstr "měli byste"
 
-#: ../lazygal/generators.py:612
-#, python-format
-msgid "  %sRM %s"
+#: ../lazygal/generators.py:391
+#, fuzzy, python-format
+msgid "  %s RM %s"
 msgstr "  %sRM %s"
 
-#: ../lazygal/generators.py:666
-#, python-format
-msgid "FEED %s"
-msgstr "ZDROJ %s"
-
-#: ../lazygal/generators.py:678
-#, python-format
-msgid "CP %%SHAREDDIR%%/%s"
-msgstr "CP %%SHAREDDIR%%/%s"
-
-#: ../lazygal/generators.py:695
-msgid ""
-"We have a template with an extension that does not start with a t. Abording."
-msgstr "Nalezena šablona s příponou, která nezačíná na t. Končím."
-
-#: ../lazygal/generators.py:701
-#, python-format
-msgid "TPL %%SHAREDDIR%%/%s"
-msgstr "ŠAB %%SHAREDDIR%%/%s"
-
-#: ../lazygal/generators.py:715
+#: ../lazygal/generators.py:412
 msgid "MKDIR %SHAREDDIR%"
 msgstr "ADRESÁŘ %SHAREDDIR%"
 
-#: ../lazygal/generators.py:779
+#: ../lazygal/generators.py:484
 #, python-format
 msgid "Theme %s not found"
 msgstr "Téma %s nebylo nalezeno"
 
-#: ../lazygal/generators.py:882
+#: ../lazygal/generators.py:597
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Vytvářím popisky v %s"
 
-#: ../lazygal/generators.py:886 ../lazygal/generators.py:922
+#: ../lazygal/generators.py:601 ../lazygal/generators.py:643
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Vstupuji do %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:894
-msgid "  SKIPPED because metadata exists."
-msgstr "  PŘESKOČENO protože metadata existují."
-
-#: ../lazygal/generators.py:903
+#: ../lazygal/generators.py:613
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr "Chyba, adresář pro uložení alba je ve zdrojovém adresáři."
 
-#: ../lazygal/generators.py:905
+#: ../lazygal/generators.py:615
 #, python-format
 msgid "Generating to %s"
 msgstr "Generuji do %s"
 
-#: ../lazygal/generators.py:919
+#: ../lazygal/generators.py:636
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) byl přeskočen"
 
-#: ../lazygal/generators.py:935
+#: ../lazygal/generators.py:640
 #, python-format
-msgid "(%s) and childs have no photos, skipped"
+msgid ""
+"(%s) has been skipped because its name collides with the shared material "
+"directory name"
+msgstr ""
+
+#: ../lazygal/generators.py:648
+#, fuzzy, python-format
+msgid "(%s) and childs have no known medias, skipped"
 msgstr "(%s) a podadresáře neobsahují obrázky, byl přeskočen"
 
-#: ../lazygal/generators.py:959
+#: ../lazygal/generators.py:675
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 "  PŘESKOČENO kvůli mtime, pro zpracování použijte buď touch, nebo parametr --"
 "check-all-dirs."
 
-#: ../lazygal/metadata.py:281 ../lazygal/metadata.py:305
+#: ../lazygal/generators.py:681
+#, fuzzy, python-format
+msgid "[Leaving  %%ALBUMROOT%%/%s]"
+msgstr "[Vstupuji do %%ALBUMROOT%%/%s]"
+
+#: ../lazygal/metadata.py:259 ../lazygal/metadata.py:283
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (ekvivalent 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:342
+#: ../lazygal/metadata.py:419
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Nepodařilo se otevřít soubor s popisky %s"
 
-#: ../lazygal/metadata.py:391
+#: ../lazygal/metadata.py:487
+msgid "  SKIPPED because metadata exists."
+msgstr "  PŘESKOČENO protože metadata existují."
+
+#: ../lazygal/metadata.py:489
+#, fuzzy
+msgid "  SKIPPED because directory does not contain images."
+msgstr "  PŘESKOČENO protože metadata existují."
+
+#: ../lazygal/metadata.py:498
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
 
-#: ../lazygal/tpl.py:102
-msgid "Unknown template type"
+#: ../lazygal/tpl.py:152
+#, fuzzy, python-format
+msgid "Unknown template type for %s"
 msgstr "Neznámý typ šablony"
 
-#: ../themes/default/dirindex.thtml:28
+#: ../lazygal/genfile.py:82
+#, python-format
+msgid "  ZIP %s"
+msgstr "  ZIP %s"
+
+#: ../lazygal/genfile.py:102
+#, python-format
+msgid "CP %%SHAREDDIR%%/%s"
+msgstr "CP %%SHAREDDIR%%/%s"
+
+#: ../lazygal/genmedia.py:50
+#, python-format
+msgid "  RESIZE %s"
+msgstr "  ZMENŠIT %s"
+
+#: ../lazygal/genmedia.py:59 ../lazygal/genmedia.py:159
+#, python-format
+msgid "  %s is BROKEN, skipped"
+msgstr ""
+
+#: ../lazygal/genmedia.py:132
+#, python-format
+msgid "  DIRPIC %s"
+msgstr "  ADROBR %s"
+
+#: ../lazygal/genmedia.py:153
+#, fuzzy, python-format
+msgid "  TRANSCODE %s"
+msgstr "  ZMENŠIT %s"
+
+#: ../lazygal/genpage.py:159 ../lazygal/genpage.py:352
+#, python-format
+msgid "  XHTML %s"
+msgstr "  XHTML %s"
+
+#. strftime does not work with unicode...
+#: ../lazygal/genpage.py:222
+msgid "on %d/%m/%Y at %H:%M"
+msgstr "dne %d/%m/%Y v %H:%M"
+
+#: ../lazygal/genpage.py:427
+#, python-format
+msgid "FEED %s"
+msgstr "ZDROJ %s"
+
+#: ../lazygal/genpage.py:443
+msgid ""
+"We have a template with an extension that does not start with a t. Abording."
+msgstr "Nalezena šablona s příponou, která nezačíná na t. Končím."
+
+#: ../lazygal/genpage.py:449
+#, python-format
+msgid "TPL %%SHAREDDIR%%/%s"
+msgstr "ŠAB %%SHAREDDIR%%/%s"
+
+#: ../themes/default/dirindex.thtml:27
 msgid "Parent"
 msgstr "Nahoru"
 
-#: ../themes/default/dirindex.thtml:81
+#: ../themes/default/dirindex.thtml:73
 msgid "All full scale picture as an archive, for"
 msgstr "Všechny obrázky v původním rozlišení v archívu pro"
 
-#: ../themes/default/dirindex.thtml:88 ../themes/default/browse.thtml:75
+#: ../themes/default/dirindex.thtml:81 ../themes/default/browse.thtml:54
 msgid "Generated by"
 msgstr "Vygeneroval"
 
-#: ../themes/default/dirindex.thtml:88 ../themes/default/browse.thtml:75
+#: ../themes/default/dirindex.thtml:81 ../themes/default/browse.thtml:54
 msgid "on"
 msgstr "dne"
 
-#: ../themes/default/browse.thtml:25
+#: ../themes/default/browse.thtml:26
 msgid "Gallery index"
 msgstr "Obsah alba"
 
-#: ../themes/default/browse.thtml:54
+#: ../themes/default/image.thtml:9
 msgid "Taken"
 msgstr "Vyfoceno"
 
-#: ../themes/default/browse.thtml:55
+#: ../themes/default/image.thtml:10
 msgid "Original picture"
 msgstr "Původní obrázek"
 
-#: ../themes/default/browse.thtml:59
+#: ../themes/default/image.thtml:14
 msgid "Using"
 msgstr "Použito"
 
-#: ../themes/default/browse.thtml:60
+#: ../themes/default/image.thtml:15
 msgid "with"
 msgstr "s"
 
-#: ../themes/default/browse.thtml:62
+#: ../themes/default/image.thtml:17
 msgid "Exposure"
 msgstr "Expozice"
 
-#: ../themes/default/browse.thtml:63
+#: ../themes/default/image.thtml:18
 msgid "Sensitivity ISO"
 msgstr "Citlivost ISO"
 
-#: ../themes/default/browse.thtml:64
+#: ../themes/default/image.thtml:19
 msgid "Aperture"
 msgstr "Clona"
 
-#: ../themes/default/browse.thtml:65
+#: ../themes/default/image.thtml:20
 msgid "Flash"
 msgstr "Blesk"
 
-#: ../themes/default/browse.thtml:66
+#: ../themes/default/image.thtml:21
 msgid "Focal length"
 msgstr "Ohnisková vzdálenost"
 
-#: ../themes/default/feeditem.thtml:4
+#: ../themes/default/feeditem.thtml:5 ../themes/default/gallerylink.thtml:21
+#: ../themes/image-index/gallerylink.thtml:30
 msgid "sub-galleries"
 msgstr "vložená alba"
 
-#: ../themes/default/feeditem.thtml:4
+#: ../themes/default/feeditem.thtml:6 ../themes/default/gallerylink.thtml:17
+#: ../themes/image-index/gallerylink.thtml:26
 msgid "photos"
 msgstr "fotografie"
-

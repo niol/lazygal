@@ -1,5 +1,25 @@
 
-Lazygal 0.5
+Lazygal 0.5.1 (2010-08-26)
+  * another fix forPOTFILES list
+  * add new input theme potfiles
+  * simplify changelog gen script a bit using hg log templates
+  * fix image-index theme
+  * have missing theme files being searched in the default theme
+  * fix metadata generation root path decoding
+  * fix root path decoding
+  * fix metadata generation error logging
+  * fix failure with videos when a size for original pics is set
+  * work around pygst bug that steals help command line swith
+  * improve debug output for tpl decoding errors
+  * fix decoding of Exif.Image.ImageDescription and Iptc.Application2.ObjectName
+  * drop python < 2.5 support (as a consequence of Debian bug #588262)
+  * the t template var trick has disapeared
+  * fix camera model name retrieval with pyexiv2 0.2+
+  * fix fr translation
+  * fix changelog generation script which was showing the tip tag
+  * Added tag 0_5 for changeset c4ad2afab2c7
+
+Lazygal 0.5 (2010-06-15)
   * set version to 0.5
   * to not append hg revision if last commit is a tag
   * separate lazygal version and hg rev
@@ -90,7 +110,7 @@ Lazygal 0.5
   * bring dates in 2009
   * fix manpage installation
 
-Lazygal 0.4.1
+Lazygal 0.4.1 (2009-05-21)
   * set version to 0.4.1
   * update TODO
   * fixed typo in french translation
@@ -126,7 +146,7 @@ Lazygal 0.4.1
   * make thumb size name a variable
   * Handle non-ascii dates
 
-Lazygal 0.4
+Lazygal 0.4 (2008-07-04)
   * set version to 0.4
   * output tpl gen date in current local to match i18n
   * use new out parameter in genshi templates generation (genshi >
@@ -176,7 +196,7 @@ Lazygal 0.4
   * Another int conversion
   * Force int conversion
 
-Lazygal 0.3.1
+Lazygal 0.3.1 (2008-03-27)
   * set version to 0.3.1
   * add a script that builds a changelog from the darcs history
   * better description of touch instead of --check-all-dirs in man page
@@ -186,7 +206,7 @@ Lazygal 0.3.1
   * rebuild webalbumpic when pics get removed from dir
   * use static var instead of instance var for configurable webalbumpic fn
 
-Lazygal 0.3
+Lazygal 0.3 (2008-03-08)
   * set version to 0.3
   * sort subdirs for nice ordering when displayed
   * better and simplet title for index page
@@ -231,7 +251,7 @@ Lazygal 0.3
   * use the new copy target for ImageOriginal
   * make shared files generation a make target
 
-Lazygal 0.2
+Lazygal 0.2 (2008-01-24)
   * bump version number
   * do not complain if elementtree is not here
   * advertise RSS feed in templates now that it seems to work
@@ -268,7 +288,7 @@ Lazygal 0.2
   * warn about manually removing ungenerated directories in dest
   * Allow to include original pictures in generated album
 
-Lazygal 0.1
+Lazygal 0.1 (2007-10-26)
   * bump version number
   * make default theme CSS be intepreted by template engine and escape #
   * Make default theme accepts same template vars.

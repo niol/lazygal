@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-14 23:16+0200\n"
+"POT-Creation-Date: 2010-08-26 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -242,104 +242,105 @@ msgstr "Critère de classement inconnu '%s'"
 msgid "  BREAKING web gallery into multiple pages"
 msgstr "  PAGINATION de la gallerie web"
 
-#: ../lazygal/generators.py:291
+#: ../lazygal/generators.py:289
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr "  MKDIR %%WEBALBUMROOT%%/%s"
 
-#: ../lazygal/generators.py:392
+#: ../lazygal/generators.py:390
 msgid "you should"
 msgstr "vous devriez"
 
-#: ../lazygal/generators.py:393
+#: ../lazygal/generators.py:391
 #, python-format
 msgid "  %s RM %s"
 msgstr "  %s RM %s"
 
-#: ../lazygal/generators.py:414
+#: ../lazygal/generators.py:412
 msgid "MKDIR %SHAREDDIR%"
 msgstr "MKDIR %SHAREDDIR%"
 
-#: ../lazygal/generators.py:488
+#: ../lazygal/generators.py:484
 #, python-format
 msgid "Theme %s not found"
 msgstr "Thème %s non trouvé"
 
-#: ../lazygal/generators.py:599
+#: ../lazygal/generators.py:597
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Génération des fichiers de description dans %s"
 
-#: ../lazygal/generators.py:603 ../lazygal/generators.py:644
+#: ../lazygal/generators.py:601 ../lazygal/generators.py:643
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Entrée dans %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:614
+#: ../lazygal/generators.py:613
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 "Erreur fatale, le répertoire de génération se trouve sous le répertoire "
 "source."
 
-#: ../lazygal/generators.py:616
+#: ../lazygal/generators.py:615
 #, python-format
 msgid "Generating to %s"
 msgstr "Génération dans %s"
 
-#: ../lazygal/generators.py:637
+#: ../lazygal/generators.py:636
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) a été ignoré"
 
-#: ../lazygal/generators.py:641
+#: ../lazygal/generators.py:640
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
 "directory name"
-msgstr "(%s) a été ignoré car son nom est le même que celui du répertoire "
-"contenant les fichiers partagés par toutes les pages de l'album"
+msgstr ""
+"(%s) a été ignoré car son nom est le même que celui du répertoire contenant "
+"les fichiers partagés par toutes les pages de l'album"
 
-#: ../lazygal/generators.py:649
+#: ../lazygal/generators.py:648
 #, python-format
 msgid "(%s) and childs have no known medias, skipped"
 msgstr "(%s) et ses sous-répertoires n'ont pas de médias connus, ignoré"
 
-#: ../lazygal/generators.py:676
+#: ../lazygal/generators.py:675
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 "  IGNORE à cause de la mtime, utiliser touch ou --check-all-dirs pour "
 "débrayer."
 
-#: ../lazygal/generators.py:682
+#: ../lazygal/generators.py:681
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr "[Sortie de %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/metadata.py:256 ../lazygal/metadata.py:280
+#: ../lazygal/metadata.py:259 ../lazygal/metadata.py:283
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (équivalent 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:416
+#: ../lazygal/metadata.py:419
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Impossible d'ouvrir le fichier de description %s"
 
-#: ../lazygal/metadata.py:484
+#: ../lazygal/metadata.py:487
 msgid "  SKIPPED because metadata exists."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:486
+#: ../lazygal/metadata.py:489
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:495
+#: ../lazygal/metadata.py:498
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
 
-#: ../lazygal/tpl.py:140
+#: ../lazygal/tpl.py:152
 #, python-format
 msgid "Unknown template type for %s"
 msgstr "Type de modèle inconnu %s"
@@ -355,9 +356,9 @@ msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
 #: ../lazygal/genmedia.py:50
-#, fuzzy, python-format
+#, python-format
 msgid "  RESIZE %s"
-msgstr "  DIRPIC %s"
+msgstr "  REDIMENSIONNE %s"
 
 #: ../lazygal/genmedia.py:59 ../lazygal/genmedia.py:159
 #, python-format
@@ -370,57 +371,49 @@ msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
 #: ../lazygal/genmedia.py:153
-#, fuzzy, python-format
+#, python-format
 msgid "  TRANSCODE %s"
-msgstr "  DIRPIC %s"
+msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genpage.py:158 ../lazygal/genpage.py:351
+#: ../lazygal/genpage.py:159 ../lazygal/genpage.py:352
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
 #. strftime does not work with unicode...
-#: ../lazygal/genpage.py:221
+#: ../lazygal/genpage.py:222
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "le %d/%m/%Y à %H:%M"
 
-#: ../lazygal/genpage.py:426
+#: ../lazygal/genpage.py:427
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:442
+#: ../lazygal/genpage.py:443
 msgid ""
 "We have a template with an extension that does not start with a t. Abording."
 msgstr ""
 "Il y a un modèle avec une extension qui ne commence par par t. Abandon."
 
-#: ../lazygal/genpage.py:448
+#: ../lazygal/genpage.py:449
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
 
-#: ../themes/default/dirindex.thtml:26
+#: ../themes/default/dirindex.thtml:27
 msgid "Parent"
 msgstr "Remonter d'un niveau"
 
-#: ../themes/default/dirindex.thtml:65 ../themes/default/feeditem.thtml:6
-msgid "photos"
-msgstr "photos"
-
-#: ../themes/default/dirindex.thtml:69 ../themes/default/feeditem.thtml:5
-msgid "sub-galleries"
-msgstr "sous-galleries"
-
-#: ../themes/default/dirindex.thtml:95
+#: ../themes/default/dirindex.thtml:73
 msgid "All full scale picture as an archive, for"
 msgstr "Toutes les images en haute résolution dans une archive, pour"
 
-#: ../themes/default/dirindex.thtml:103 ../themes/default/browse.thtml:54
+#: ../themes/default/dirindex.thtml:81 ../themes/default/browse.thtml:54
 msgid "Generated by"
 msgstr "Généré par"
 
-#: ../themes/default/dirindex.thtml:103 ../themes/default/browse.thtml:54
+#: ../themes/default/dirindex.thtml:81 ../themes/default/browse.thtml:54
 msgid "on"
 msgstr "le"
 
@@ -463,3 +456,13 @@ msgstr "Flash"
 #: ../themes/default/image.thtml:21
 msgid "Focal length"
 msgstr "Focale"
+
+#: ../themes/default/feeditem.thtml:5 ../themes/default/gallerylink.thtml:21
+#: ../themes/image-index/gallerylink.thtml:30
+msgid "sub-galleries"
+msgstr "sous-galleries"
+
+#: ../themes/default/feeditem.thtml:6 ../themes/default/gallerylink.thtml:17
+#: ../themes/image-index/gallerylink.thtml:26
+msgid "photos"
+msgstr "photos"
