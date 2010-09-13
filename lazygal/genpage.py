@@ -396,7 +396,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.path = os.path.join(dest_dir, 'index.xml')
         make.FileMakeObject.__init__(self, self.path)
         self.feed = feeds.RSS20(self.pub_url)
-        self.item_template = self.album.templates['feeditem.thtml']
+        self.item_template = self.album.tpl_loader.load('feeditem.thtml')
 
     def set_title(self, title):
         self.feed.title = title
