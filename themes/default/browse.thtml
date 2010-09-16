@@ -17,6 +17,8 @@
     </py:if>
   </py:for>
   <link rel="alternate" type="application/rss+xml" title="Recent galleries" href="${rel_root}index.xml" />
+  <script type="text/javascript" src="${rel_root}shared/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="${rel_root}shared/scripts.js"></script>
 </head>
 
 <body>
