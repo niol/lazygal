@@ -1,5 +1,10 @@
+Lazygal 0.5.1 (2010-09-16)
+  * fix RSS feed item tpl loading which broke feed generation
+  * update TODO
+  * Added tag 0_5_1 for changeset 2dae25a96d5d
 
 Lazygal 0.5.1 (2010-08-26)
+  * set version to 0.5.1
   * another fix forPOTFILES list
   * add new input theme potfiles
   * simplify changelog gen script a bit using hg log templates
