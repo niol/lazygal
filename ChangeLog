@@ -1,4 +1,4 @@
-Lazygal 0.5.1 (2010-09-16)
+Lazygal 0.5.2 (2010-09-16)
   * fix RSS feed item tpl loading which broke feed generation
   * update TODO
   * Added tag 0_5_1 for changeset 2dae25a96d5d
