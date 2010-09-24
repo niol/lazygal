@@ -7,6 +7,7 @@ recursive-include themes *.thtml
 recursive-include themes *.css
 recursive-include themes *.tcss
 recursive-include themes *.png
+recursive-include themes *.js
 include locale/*.po
 include locale/lazygal.pot
 include locale/POTFILES.in
