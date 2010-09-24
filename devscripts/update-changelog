@@ -10,10 +10,13 @@ repo=$(dirname $0)/..
 
 $HG log --template '{tags}|{date|shortdate}|{desc|firstline}\n' -R $repo |\
     $AWK -F'|'\
-        '/^tip\|/ { print "  * " $3 }\
+        '/^\|.*\|Added tag [0-9\_]+ for changeset /    { next }\
          /^\|/    { print "  * " $3 }\
+         /^tip\|/ { print "\nLazygal ##DEVELOPMENT VERSION## (" $2 ")";\
+                    print "  * " $3\
+                  }
          /^[0-9]/ { gsub(/\_/,".",$1);\
-                    print "\nLazygal " $1 " (" $2 ")";
+                    print "\nLazygal " $1 " (" $2 ")";\
                     print "  * " $3\
                   }'\
     > $repo/ChangeLog
