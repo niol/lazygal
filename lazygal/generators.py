@@ -432,7 +432,8 @@ class SharedFiles(make.FileSimpleDependency):
 
 class Album:
 
-    def __init__(self, source_dir, thumb_size_string, browse_size_strings,
+    def __init__(self, source_dir,
+                 thumb_size_string='150x113', browse_size_strings=None,
                  optimize=False, progressive=False, quality=85,
                  dir_flattening_depth=False, thumbs_per_page=0,
                  dirzip=False,
@@ -444,13 +445,19 @@ class Album:
         self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
         self.thumb_size_string = thumb_size_string
-        self.browse_size_strings = dict(browse_size_strings)
+        if browse_size_strings is not None:
+            self.browse_size_strings = dict(browse_size_strings)
+            self.default_size_name = browse_size_strings[0][0]
+        else:
+            self.browse_size_strings = {'small': '800x600',
+                                        'medium': '1024x768'}
+            self.default_size_name = 'small'
+
         self.newsizers = {}
         for size_name, size_string in self.browse_size_strings.items():
             self.newsizers[size_name] = newsize.get_newsizer(size_string)
         self.newsizers[genmedia.THUMB_SIZE_NAME] = newsize.get_newsizer(self.thumb_size_string)
 
-        self.default_size_name = browse_size_strings[0][0]
         self.quality = quality
 
         self.tpl_loader = None
