@@ -398,10 +398,50 @@
 
   <refsect1>
     <title>ALBUM METADATA</title>
+
     <para>If a directory from the source album contains a file named
     <filename>album_description</filename>, it is processed as a source
     of album metadata. See <filename>/usr/share/doc/lazygal/README</filename>
     for more information.</para>
+
+    <para>Otherwise, the user can provide metadata in the following
+    files.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><filename><parameter>SOURCE_DIR</parameter>/album-name</filename></term>
+        <listitem>
+            <para>The title to use for this album directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename><parameter>SOURCE_DIR</parameter>/album-description</filename></term>
+        <listitem>
+            <para>The description for this album directory. HTML tags are
+            used verbatim from this file.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename><parameter>SOURCE_DIR</parameter>/album-picture</filename></term>
+        <listitem>
+            <para>The image to use at the top of the album picture stack.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><filename><parameter>SOURCE_DIR</parameter>/<parameter>PICTURE_FILENAME</parameter>.comment</filename></term>
+        <listitem>
+            <para>The description to use for this particular image. Please
+            note that HTML tags are taken as provided in this file for
+            output in the templates.</para>
+        </listitem>
+      </varlistentry>
+
+   </variablelist>
+
   </refsect1>
 
   <refsect1>

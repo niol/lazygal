@@ -604,6 +604,8 @@ class Album:
         self.log(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in os.walk(self.source_dir):
+            filenames.sort() # This is required for the ignored files
+                             # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
             self.log(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
                      'info')

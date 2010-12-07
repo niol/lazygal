@@ -31,6 +31,36 @@ MATEW_TAGS = {
 }
 MATEW_METADATA = 'album_description'
 
+FILE_METADATA = ('album-name', 'album-description', 'album-picture', )
+FILE_METADATA_MEDIA_SUFFIX = '.comment'
+
+
+class FileMetadata(object):
+
+    def __init__(self, path):
+        self.path = path
+
+    def contents(self, splitter=None):
+        try:
+            with codecs.open(self.path, 'r',
+                             locale.getpreferredencoding()) as f:
+
+                # Not sure why codecs.open() does not skip the UTF-8 BOM. Maybe
+                # this is because the BOM is not required and utf-8-sig handles
+                # this in a better way. Anyway, the following code skips the
+                # UTF-8 BOM if it is present.
+                maybe_bom = f.read(1).encode(locale.getpreferredencoding())
+                if maybe_bom != codecs.BOM_UTF8: f.seek(0)
+
+                c = f.read()
+        except IOError:
+            return None
+
+        if splitter is not None:
+            return map(lambda s: s.strip('\n '), c.split(splitter))
+        else:
+            return c.strip('\n ')
+
 
 class _ImageInfoTags(object):
 
@@ -190,11 +220,17 @@ class _ImageInfoTags(object):
 
         return self._fallback_to_encoding(text, encoding).strip('\0')
 
+    def get_file_comment(self):
+        fmd = FileMetadata(self.image_path + FILE_METADATA_MEDIA_SUFFIX)
+        return fmd.contents()
+
     def get_comment(self):
         try:
-            ret = self.get_exif_usercomment()
-            if ret == '':
-                raise ValueError
+            ret = self.get_file_comment()
+            if ret is None:
+                ret = self.get_exif_usercomment()
+                if ret == '':
+                    raise ValueError
         except (ValueError, KeyError):
             try:
                 ret = self.get_exif_string('Exif.Image.ImageDescription')
@@ -406,6 +442,12 @@ class DirectoryMetadata(make.FileSimpleDependency):
         else:
             self.description_file = None
 
+            # Add dependency to "file metadata" files if they exist.
+            for file_md_fn in FILE_METADATA:
+                file_md_path = os.path.join(self.directory_path, file_md_fn)
+                if os.path.isfile(file_md_path):
+                    self.add_file_dependency(file_md_path)
+
     def get_matew_metadata(self, metadata, subdir = None):
         '''
         Return dictionary with meta data parsed from Matew like format.
@@ -440,6 +482,30 @@ class DirectoryMetadata(make.FileSimpleDependency):
 
         return metadata
 
+    def get_file_metadata(self, metadata, subdir=None):
+        '''
+        Returns the file metadata that could be found in the directory.
+        '''
+
+        if subdir is None: subdir = self.directory_path
+
+        if 'album_name' not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, 'album-name')).contents()
+            if fmd is not None:
+                metadata['album_name'] = fmd
+
+        if 'album_description' not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, 'album-description')).contents()
+            if fmd is not None:
+                metadata['album_description'] = fmd
+
+        if 'album_picture' not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, 'album-picture')).contents(splitter='\n')
+            if fmd is not None:
+                metadata['album_picture'] = fmd[0]
+
+        return metadata
+
     def get(self, subdir = None):
         '''
         Returns directory meta data. First tries to parse known formats
@@ -452,6 +518,8 @@ class DirectoryMetadata(make.FileSimpleDependency):
             result = self.get_matew_metadata(result, subdir)
         except NoMetadata:
             pass
+
+        result = self.get_file_metadata(result, subdir)
 
         # Add album picture
         if not result.has_key('album_picture'):

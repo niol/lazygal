@@ -149,6 +149,12 @@ class MediaFile(File):
         File.__init__(self, path, album)
         self.broken = False
 
+        comment_file_path = self.path + metadata.FILE_METADATA_MEDIA_SUFFIX
+        if os.path.isfile(comment_file_path):
+            self.comment_file_path = comment_file_path
+        else:
+            self.comment_file_path = None
+
     def compare_date_taken(self, other_img):
         date1 = time.mktime(self.get_date_taken().timetuple())
         date2 = time.mktime(other_img.get_date_taken().timetuple())
@@ -255,6 +261,11 @@ class MediaHandler(object):
     def __init__(self, album):
         self.album = album
 
+    def is_known_media(self, path):
+        filename, extension = os.path.splitext(path)
+        extension = extension.lower()
+        return extension in MediaHandler.FORMATS.keys()
+
     def get_media(self, path):
         filename, extension = os.path.splitext(path)
         extension = extension.lower()
@@ -290,8 +301,8 @@ class Directory(File):
             if media:
                 self.medias_names.append(filename)
                 self.medias.append(media)
-            elif filename not in (metadata.MATEW_METADATA,
-                                  SOURCEDIR_CONFIGFILE):
+            elif not self.is_metadata(filename)and\
+                 filename != SOURCEDIR_CONFIGFILE:
                 self.album.log(_("  Ignoring %s, format not supported.")\
                                % filename, 'info')
                 self.album.log("(%s)" % os.path.join(self.path, filename))
@@ -314,6 +325,20 @@ class Directory(File):
 
     def is_album_root(self):
         return self.path == self._path_to_unicode(self.album.source_dir)
+
+    def is_metadata(self, filename):
+        if filename == metadata.MATEW_METADATA: return True
+        if filename in metadata.FILE_METADATA: return True
+
+        # Check for media metadata
+        related_media = filename[:-len(metadata.FILE_METADATA_MEDIA_SUFFIX)]
+        # As the list self.medias_names is being constructed while this
+        # check takes place, the following is only reliable if the filenames
+        # list is sorted (thus t.jpg.comment is after t.jpg, and t.jpg is
+        # already in self.medias_names), which is the case.
+        if related_media in self.medias_names: return True
+
+        return False
 
     def get_media_count(self, media_type=None):
         if media_type is None:

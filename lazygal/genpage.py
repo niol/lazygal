@@ -149,6 +149,10 @@ class WebalbumBrowsePage(WebalbumPage):
         # Depends on source directory in case an image was deleted
         self.add_dependency(self.dir.source_dir)
 
+        # Depend on the comment file if it exists.
+        if self.webalbum_media.media.comment_file_path is not None:
+            self.add_file_dependency(self.webalbum_media.media.comment_file_path)
+
         self.add_dependency(self.dir.sort_task)
 
         self.set_template('browse.thtml')
@@ -232,7 +236,7 @@ class WebalbumImagePage(WebalbumBrowsePage):
             tpl_values['iso'] = image_info.get_iso()
             tpl_values['fnumber'] = image_info.get_fnumber()
             tpl_values['focal_length'] = image_info.get_focal_length()
-            tpl_values['comment'] = image_info.get_comment()
+            tpl_values['comment'] = self._do_not_escape(image_info.get_comment())
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
