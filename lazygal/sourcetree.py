@@ -125,10 +125,9 @@ class File(make.FileSimpleDependency):
     SKIPPED_DIRS = ('.svn', '_darcs', '.bzr', '.git', '.hg', 'CVS', )
 
     def should_be_skipped(self):
-        head = None
-        tail = self.strip_root()
+        head = self.strip_root()
         while head != '':
-            head, tail = os.path.split(tail)
+            head, tail = os.path.split(head)
             if tail in Directory.SKIPPED_DIRS:
                 return True
         return False
