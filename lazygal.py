@@ -221,7 +221,12 @@ if os.path.isfile(sourcedir_configfile):
 size_strings = []
 size_defs = options.image_size.split(',')
 for single_def in size_defs:
-    name, string_size = single_def.split('=')
+    try:
+        name, string_size = single_def.split('=')
+        if name == '': raise ValueError
+    except ValueError:
+        print _("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\".")
+        sys.exit(1)
     if name == THUMB_SIZE_NAME:
         print _("Size name '%s' is reserved for internal processing.")\
                 % THUMB_SIZE_NAME
