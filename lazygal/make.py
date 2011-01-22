@@ -182,4 +182,21 @@ class FileCopy(FileMakeObject):
         shutil.copy(self.src, self.dst)
 
 
+class FileSymlink(FileMakeObject):
+    """
+    Simple file symlink make target.
+    """
+
+    def __init__(self, src, dst):
+        self.src = src
+        self.dst = dst
+        FileMakeObject.__init__(self, dst)
+        self.add_file_dependency(self.src)
+
+    def build(self):
+        if os.access(self.dst, os.F_OK):
+            os.remove(self.dst)
+        os.symlink(self.src, self.dst)
+
+
 # vim: ts=4 sw=4 expandtab

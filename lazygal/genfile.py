@@ -42,6 +42,25 @@ class ImageOriginal(make.FileCopy):
         make.FileCopy.build(self)
 
 
+class SymlinkImageOriginal(make.FileSymlink):
+
+    def __init__(self, dir, source_image, size_name=None):
+        self.dir = dir
+
+        dest_name = source_image.filename
+        if size_name:
+            dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
+
+        self.path = os.path.join(self.dir.path, dest_name)
+        make.FileSymlink.__init__(self, source_image.path, self.path)
+
+    def build(self):
+        self.dir.album.log("  SYMLINK %s" % os.path.basename(self.path),
+                           'info')
+        self.dir.album.log("(%s)" % self.path)
+        make.FileSymlink.build(self)
+
+
 class WebalbumFile(make.FileMakeObject):
 
     def __init__(self, path, dir):

@@ -38,6 +38,7 @@ CONFIGDEFAULTS = {
     'dir-flattening-depth': 'No',
     'original': 'No',
     'orig-base': 'No',
+    'orig-symlink': 'No',
     'image-size': 'small=800x600,medium=1024x768',
     'thumbnail-size': '150x113',
     'make-dir-zip': 'No',
@@ -143,6 +144,11 @@ parser.add_option("", "--orig-base",
                   dest="orig_base",
                   default=config.get('lazygal', 'orig-base'),
                   help=_("Do not copy original photos in output directory, instead link them using submitted relative path as base."))
+parser.add_option("", "--orig-symlink",
+                  action="store_true",
+                  dest="orig_symlink",
+                  default=config.get('lazygal', 'orig-symlink'),
+                  help=_("Do not copy original photos in output directory, instead link them using submitted relative path as base."))
 parser.add_option("", "--puburl",
                   action="store", type="string",
                   dest="pub_url",
@@ -193,6 +199,13 @@ source_dir = args[0]
 if not os.path.isdir(source_dir):
     print _("Directory %s does not exist.") % source_dir
     sys.exit(1)
+
+if options.orig_symlink:
+    try:
+        _ = os.symlink
+    except AttributeError:
+        print _("Option --orig-symlink is not available on this platform.")
+        sys.exit(1)
 
 # Load a config file in the source_dir root
 sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
@@ -283,7 +296,7 @@ album.set_theme(options.theme, options.default_style)
 orig_base = None
 if options.original and options.orig_base != 'No':
     orig_base = options.orig_base
-album.set_original(options.original, orig_base)
+album.set_original(options.original, orig_base, options.orig_symlink)
 
 album.set_webalbumpic(bg=options.webalbumpic_bg)
 

@@ -234,6 +234,27 @@
 
       <varlistentry>
         <term>
+          <option>--orig-symlink</option>
+        </term>
+        <listitem>
+          <para>Do not copy original photos in output directory, instead
+          create symlinks to their original locations.  This is useful
+          when you plan transferring the whole directory which
+          <command>&dhpackage;</command> generated to some other
+          location, perhaps with <command>rsync</command>, and you wish
+          to avoid creating an extra copy of each photo.</para>
+
+          <caution>
+            <para>This option is not available on Windows; if you try to
+            use it on that operating system,
+            <command>&dhpackage;</command> will immediately exit with an
+            exit status of 1. </para>
+          </caution>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
           <option>--optimize</option>
         </term>
         <listitem>

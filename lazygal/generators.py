@@ -219,14 +219,20 @@ class WebalbumImageTask(WebalbumMediaTask):
                                              genmedia.THUMB_SIZE_NAME)
         self.add_dependency(self.thumb)
 
+    def get_original_or_symlink(self):
+        if not self.album.orig_symlink:
+            return genfile.ImageOriginal(self.webgal, self.media)
+        else:
+            return genfile.SymlinkImageOriginal(self.webgal, self.media)
+
     def get_original(self):
         if not self.original:
-            self.original = genfile.ImageOriginal(self.webgal, self.media)
+            self.original = self.get_original_or_symlink()
         return self.original
 
     def get_resized(self, size_name):
         if self.album.browse_size_strings[size_name] == '0x0':
-            return genfile.ImageOriginal(self.webgal, self.media)
+            return self.get_original_or_symlink()
         else:
             return genmedia.ImageOtherSize(self.webgal, self.media, size_name)
 
@@ -464,6 +470,7 @@ class Album:
         self.tpl_vars = {}
         self.original = False
         self.orig_base = None
+        self.orig_symlink = False
         self.thumbs_per_page = thumbs_per_page
         self.dir_flattening_depth = dir_flattening_depth
         self.dirzip = dirzip
@@ -534,9 +541,10 @@ class Album:
             styles.append(style)
         return styles
 
-    def set_original(self, original=False, orig_base=None):
+    def set_original(self, original=False, orig_base=None, orig_symlink=False):
         self.original = original
-        if self.original and orig_base:
+        self.orig_symlink = orig_symlink
+        if self.original and orig_base and not orig_symlink:
             self.orig_base = orig_base
         else:
             self.orig_base = None
