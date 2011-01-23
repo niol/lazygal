@@ -149,7 +149,7 @@ class TplFactory(object):
             tpl = self.loader.load(tpl_ident, cls=tpl_class.genshi_tpl_class)
             return tpl_class(self, tpl, self.common_values)
         else:
-            raise ValueError(_('Unknown template type for %s' % tpl_file))
+            raise ValueError(_('Unknown template type for %s' % tpl_ident))
 
 
 # vim: ts=4 sw=4 expandtab
