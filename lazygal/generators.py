@@ -21,7 +21,7 @@ import locale
 import gc
 
 import make
-import sourcetree, tpl, feeds, newsize, metadata, mediautils
+import sourcetree, tpl, newsize, metadata, mediautils
 import genpage, genmedia, genfile
 
 from sourcetree import SOURCEDIR_CONFIGFILE
