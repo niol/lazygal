@@ -52,4 +52,26 @@ class LazygalTest(unittest.TestCase):
             shutil.rmtree(wd)
 
 
+# Workaround for __import__ behavior, see
+# http://docs.python.org/lib/built-in-funcs.html
+def my_import(name):
+    mod = __import__(name)
+    components = name.split('.')
+    for comp in components[1:]:
+        mod = getattr(mod, comp)
+    return mod
+
+
+def run():
+    import glob
+    suitelist = []
+    for fn in glob.glob(os.path.join(os.path.dirname(__file__),
+                                           "test_*.py")):
+        module_path = '.'.join(['lazygaltest', os.path.basename(fn[:-3])])
+        m = my_import(module_path)
+        suitelist.append(unittest.defaultTestLoader.loadTestsFromModule(m))
+    runner = unittest.TextTestRunner(verbosity = 2)
+    runner.run(unittest.TestSuite(suitelist))
+
+
 # vim: ts=4 sw=4 expandtab

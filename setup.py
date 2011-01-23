@@ -30,6 +30,21 @@ import lazygal
 from stat import ST_MODE
 
 
+class test_lazygal(Command):
+
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import lazygaltest
+        lazygaltest.run()
+
+
 class build_manpages(Command):
     manpages = None
     db2mans = [
@@ -249,6 +264,7 @@ setup(name = 'lazygal',
         'build_scripts' : build_scripts_lazygal,
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
+        'tests'         : test_lazygal,
         },
     data_files = theme_data
     )
