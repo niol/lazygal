@@ -486,6 +486,8 @@ class Album:
         self.transcoder = None
         self.videothumb = None
 
+        self.set_webalbumpic()
+
     def set_theme(self, theme=tpl.DEFAULT_TEMPLATE, default_style=None):
         self.theme = theme
 
