@@ -32,7 +32,6 @@ class PictureMess:
     THUMB_SIZE = [3*max(RESULT_SIZE)/5 for i in range(2)]
 
     def __init__(self, images_paths, top_image_path=None, bg='transparent'):
-        random.seed(time.time())
         if len(images_paths) > self.THUMB_HOW_MANY:
             self.images_paths = random.sample(images_paths, self.THUMB_HOW_MANY)
         else:
@@ -75,7 +74,6 @@ class PictureMess:
             mt = mt.convert('RGBA')
         mt.putalpha(mt.split()[3])
 
-        random.seed(time.time())
         rotation = random.randint(-self.THUMB_MAX_ROTATE_ANGLE,
                                   self.THUMB_MAX_ROTATE_ANGLE)
         rotated = mt.rotate(rotation, expand=True)
@@ -86,7 +84,6 @@ class PictureMess:
         return random.randint(0, holding_coord - coord)
 
     def __place_thumb_box(self, thumb):
-        random.seed(time.time())
         x_to_fit = self.__rand_coord_with_step(thumb.size[0],
                                                self.picture_mess.size[0])
         y_to_fit = self.__rand_coord_with_step(thumb.size[1],
@@ -117,8 +114,18 @@ class PictureMess:
 
 
 if __name__ == '__main__':
-    import sys
-    PictureMess(sys.argv[1:]).write('test.png')
+    from optparse import OptionParser
+
+    parser = OptionParser();
+    parser.add_option("-s", "--seed", type="int", dest="seed")
+    parser.add_option("-b", "--background", type="string",
+                      dest="color", default="transparent")
+    (options, args) = parser.parse_args()
+
+    if options.seed:
+        random.seed(options.seed)
+
+    PictureMess(args[0:], bg=options.color).write('test.png')
 
 
 # vim: ts=4 sw=4 expandtab
