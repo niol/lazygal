@@ -17,7 +17,7 @@
 
 
 import random, time
-import Image, ImageDraw
+import Image, ImageDraw, ImageChops
 
 
 class Color:
@@ -90,8 +90,29 @@ class PictureMess:
                                                self.picture_mess.size[1])
         return (x_to_fit, y_to_fit)
 
+    def __paste_img_to_mess_top(self, img, pos):
+        # http://www.mail-archive.com/image-sig@python.org/msg03387.html
+        img_without_alpha = img.convert('RGB')
+
+        if self.picture_mess.mode == 'RGBA':
+            invert_alpha = ImageChops.invert(
+                Image.merge('L', self.picture_mess.split()[3:]))
+            if invert_alpha.size != img.size:
+                w, h = img.size
+                box = pos + (pos[0] + w, pos[1] + h)
+                invert_alpha = invert_alpha.crop(box)
+        else:
+            invert_alpha = None
+
+        self.picture_mess.paste(img_without_alpha, pos, img)
+
+        if invert_alpha:
+            dest_alpha = Image.merge('L', self.picture_mess.split()[3:])
+            self.picture_mess.paste(img_without_alpha, pos, invert_alpha)
+            self.picture_mess.putalpha(dest_alpha)
+
     def __add_img_to_mess_top(self, img):
-        self.picture_mess.paste(img, self.__place_thumb_box(img), mask=img)
+        self.__paste_img_to_mess_top(img, self.__place_thumb_box(img))
 
     def __build_picture_mess(self):
         self.picture_mess = Image.new("RGBA", self.RESULT_SIZE, self.bg)
