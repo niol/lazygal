@@ -17,7 +17,7 @@
 
 
 import random, time
-import Image, ImageDraw, ImageChops
+import Image, ImageDraw, ImageChops, ImageFilter
 
 
 class Color:
@@ -27,9 +27,11 @@ class Color:
 class PictureMess:
 
     RESULT_SIZE = (200, 150)
+    STEP = 5
     THUMB_HOW_MANY = 5
     THUMB_MAX_ROTATE_ANGLE = 40
     THUMB_SIZE = [3*max(RESULT_SIZE)/5 for i in range(2)]
+    THUMB_WHITE_WIDTH = 5
 
     def __init__(self, images_paths, top_image_path=None, bg='transparent'):
         if len(images_paths) > self.THUMB_HOW_MANY:
@@ -48,40 +50,32 @@ class PictureMess:
 
         self.picture_mess = None
 
-    def __frame(self, img, color='black', width=2):
-        d = ImageDraw.Draw(img)
-        w = width/2
-        d.line(((w, w), (w, img.size[1]-w),
-                (img.size[0]-w, img.size[1]-w), (img.size[0]-w, w), (w, w), ),
-                fill=color, width=width)
-        del d
-
     def __build_mess_thumb(self, image_path):
-        mt = Image.open(image_path)
+        img = Image.open(image_path)
+        img.thumbnail(self.THUMB_SIZE, Image.ANTIALIAS)
 
-        # Make the picture smaller to avoid rotating a big picture and at the
-        # same time have some good quality in rotated image.
-        acceptable_working_size = map(lambda x: x*2, self.THUMB_SIZE)
-        if mt.size[0] > acceptable_working_size[0]\
-        or mt.size[1] > acceptable_working_size[1]:
-            mt.thumbnail(map(lambda x: x*2, self.THUMB_SIZE), Image.ANTIALIAS)
+        white_size = [ x + 2*self.THUMB_WHITE_WIDTH for x in img.size ]
 
-        self.__frame(mt, 'white', 5)
-        self.__frame(mt, 'black', 1)
+        white = Image.new('RGB', white_size, 'white')
+        white.paste(img, (self.THUMB_WHITE_WIDTH, self.THUMB_WHITE_WIDTH))
 
-        # Add an alpha channel to the pic
-        if mt.mode != 'RGBA':
-            mt = mt.convert('RGBA')
-        mt.putalpha(mt.split()[3])
+        maxi = 2*max(white_size)
+
+        thumb = Image.new('RGBA', (maxi, maxi))
+
+        thumb.paste(white, ((maxi - white_size[0])/ 2,
+                            (maxi - white_size[1])/ 2))
 
         rotation = random.randint(-self.THUMB_MAX_ROTATE_ANGLE,
                                   self.THUMB_MAX_ROTATE_ANGLE)
-        rotated = mt.rotate(rotation, expand=True)
-        rotated.thumbnail(self.THUMB_SIZE, Image.ANTIALIAS)
-        return rotated
+        thumb = thumb.rotate(rotation, resample=Image.BILINEAR)
+
+        thumb = thumb.crop(thumb.getbbox())
+        thumb.thumbnail(self.THUMB_SIZE, Image.ANTIALIAS)
+        return thumb
 
     def __rand_coord_with_step(self, coord, holding_coord):
-        return random.randint(0, holding_coord - coord)
+        return random.randint(0 + self.STEP, holding_coord - coord - self.STEP)
 
     def __place_thumb_box(self, thumb):
         x_to_fit = self.__rand_coord_with_step(thumb.size[0],
@@ -115,7 +109,7 @@ class PictureMess:
         self.__paste_img_to_mess_top(img, self.__place_thumb_box(img))
 
     def __build_picture_mess(self):
-        self.picture_mess = Image.new("RGBA", self.RESULT_SIZE, self.bg)
+        self.picture_mess = Image.new("RGBA", self.RESULT_SIZE)
         added_one_thumb = False
         for image_path in self.images_paths:
             try:
@@ -131,6 +125,16 @@ class PictureMess:
 
     def write(self, output_file):
         self.__build_picture_mess()
+
+        shadow = Image.new('RGBA', self.picture_mess.size, self.bg)
+
+        shadow.paste('black', None, self.picture_mess)
+        shadow = shadow.filter(ImageFilter.BLUR)
+
+        tmp = self.picture_mess
+        self.picture_mess = shadow
+
+        self.__paste_img_to_mess_top(tmp, (0,0))
         self.picture_mess.save(output_file)
 
 
