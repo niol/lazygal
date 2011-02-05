@@ -202,12 +202,21 @@ class _ImageInfoTags(object):
             text = ret
 
         if cset == 'Unicode':
-            im = Image.open(self.image_path)
-            endian = im.app['APP1'][6:8]
-            if endian == 'MM':
-                encoding = 'utf-16be'
-            elif endian == 'II':
-                encoding = 'utf-16le'
+            encoding = None
+            # Starting from 0.20, exiv2 converts unicode comments to UTF-8
+            try:
+                ret.decode('utf-8')
+            except UnicodeDecodeError:
+                # Decoding failed, maybe we can assume we are with
+                # exiv2 << 0.20
+                im = Image.open(self.image_path)
+                endian = im.app['APP1'][6:8]
+                if endian == 'MM':
+                    encoding = 'utf-16be'
+                elif endian == 'II':
+                    encoding = 'utf-16le'
+                else:
+                    raise ValueError
             else:
                 raise ValueError
 
