@@ -82,17 +82,22 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         '''
+        date = None
         try:
-            return self.get_tag_value('Exif.Photo.DateTimeDigitized')
+            date = self.get_tag_value('Exif.Photo.DateTimeDigitized')
         except (IndexError, ValueError, KeyError):
             try:
-                return self.get_tag_value('Exif.Photo.DateTimeOriginal')
+                date = self.get_tag_value('Exif.Photo.DateTimeOriginal')
             except (IndexError, ValueError, KeyError):
                 try:
-                    return self.get_tag_value('Exif.Image.DateTime')
+                    date = self.get_tag_value('Exif.Image.DateTime')
                 except (IndexError, ValueError, KeyError):
                     # No date available in EXIF
-                    return None
+                    pass
+        # Some pics give a zeroed date which is not recognized by pyexiv2 as a
+        # date.
+        if date == '0000:00:00 00:00:00': date = None
+        return date
 
     def get_required_rotation(self):
         try:
