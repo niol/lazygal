@@ -88,6 +88,14 @@ class TestSourceTree(LazygalTest):
         def long(): return dest_image['Exif.GPSInfo.GPSLatitude'].value
         self.assertRaises(KeyError, long)
 
+    def test_feed(self):
+        img_path = self.add_img(self.source_dir, 'img01.jpg')
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir, 'http://example.com/album/')
+
+        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'index.xml')),
+                         True)
+
 
 if __name__ == '__main__':
     unittest.main()
