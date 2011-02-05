@@ -15,12 +15,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, sys, datetime, locale
+import os, locale
 import codecs
 import Image
 
-import pyexiv2
-
+from lazygal import pyexiv2api as pyexiv2
 from lazygal import make
 
 
@@ -62,10 +61,20 @@ class FileMetadata(object):
             return c.strip('\n ')
 
 
-class _ImageInfoTags(object):
+class ImageInfoTags(object):
 
     def __init__(self, image_path):
         self.image_path = image_path
+        self._metadata = pyexiv2.ImageMetadata(self.image_path)
+        self._metadata.read()
+
+    def get_tag_value(self, name):
+        if name.startswith('Iptc.'):
+            # Iptc tags are always lists, so, for now, return the first
+            # element.
+            return self._metadata[name].values[0]
+        else:
+            return self._metadata[name].value
 
     def get_date(self):
         '''
@@ -186,7 +195,7 @@ class _ImageInfoTags(object):
             return encoded_string.decode(encoding, 'replace')
 
     def get_exif_usercomment(self):
-        ret = self.get_exif_string('Exif.Photo.UserComment')
+        ret = self.get_tag_value('Exif.Photo.UserComment').strip(' \x00')
         # This field can contain charset information
         # FIXME : All this stuff should really go in pyexiv2.
         if type(ret) is unicode:
@@ -332,103 +341,11 @@ class _ImageInfoTags(object):
 
         return flen
 
-
-class _Tags_PyExiv2_Legacy(_ImageInfoTags):
-    """
-    Wrapper for pyexiv2 0.1
-    """
-
-    def __init__(self, image_path):
-        _ImageInfoTags.__init__(self, image_path)
-
-        self._metadata = pyexiv2.Image(image_path.encode(sys.getfilesystemencoding()))
-        self._metadata.readMetadata()
-
-    def get_exif_date(self, name):
-        '''
-        Parses date from EXIF information.
-        '''
-        exif_date = str(self._metadata[name])
-        date, time = exif_date.split(' ')
-        year, month, day = date.split('-')
-        hour, minute, second = time.split(':')
-        return datetime.datetime(int(year), int(month), int(day),
-                                 int(hour), int(minute), int(second))
-
-    def get_int(self, name):
-        return int(self._metadata[name])
-
-    def get_interpreted_value(self, name):
-        return self._metadata.interpretedExifValue(name)
-
-    def get_decoded_utf8(self, name):
-        return self.get_interpreted_value(name).decode('utf-8')
-
-    TAG_PYTRANSLATORS = {
-        'Exif.Photo.DateTimeDigitized' : 'get_exif_date',
-        'Exif.Photo.DateTimeOriginal'  : 'get_exif_date',
-        'Exif.Image.DateTime'          : 'get_exif_date',
-        'Exif.Image.Orientation'       : 'get_int',
-        'Exif.Pentax.LensType'         : 'get_interpreted_value',
-        'Exif.Nikon3.Lens'             : 'get_interpreted_value',
-        'Exif.Nikon3.LensType'         : 'get_interpreted_value',
-        'Exif.Minolta.LensID'          : 'get_interpreted_value',
-        'Exif.Photo.Flash'             : 'get_decoded_utf8',
-    }
-
-    def get_tag_value(self, name, raw=False):
-        if not raw and name in _Tags_PyExiv2_Legacy.TAG_PYTRANSLATORS.keys():
-            translator = getattr(self.__class__,
-                                 _Tags_PyExiv2_Legacy.TAG_PYTRANSLATORS[name])
-            return translator(self, name)
-        else:
-            return self._metadata[name]
-
-    def get_jpeg_comment(self):
-        try:
-            return self._fallback_to_encoding(self._metadata.getComment())
-        except (KeyError, AttributeError):
-            return ''
-
-
-class _Tags_PyExiv2(_ImageInfoTags):
-    """
-    Wrapper for pyexiv2 0.2
-    """
-
-    def __init__(self, image_path):
-        _ImageInfoTags.__init__(self, image_path)
-
-        self._metadata = pyexiv2.ImageMetadata(image_path)
-        self._metadata.read()
-
-    def get_tag_value(self, name, raw=False):
-        if raw:
-            return self._metadata[name].raw_value
-        else:
-            return self._metadata[name].value
-
     def get_jpeg_comment(self):
         try:
             return self._fallback_to_encoding(self._metadata.comment)
         except AttributeError:
-            try:
-                # comment appeared in pyexiv2 0.2.2, so use PIL if this does
-                # not work.
-                im = Image.open(self.image_path)
-                return self._fallback_to_encoding(im.app['COM'])
-            except (KeyError, AttributeError):
-                return ''
-
-
-if 'ImageMetadata' in dir(pyexiv2):
-    # pyexiv2 0.2
-    ImageInfoTags = _Tags_PyExiv2
-elif 'Image' in dir(pyexiv2):
-    # pyexiv2 0.1
-    ImageInfoTags = _Tags_PyExiv2_Legacy
-else:
-    raise ImportError('Unrecognized pyexiv2 version.')
+            return ''
 
 
 class NoMetadata(Exception):
