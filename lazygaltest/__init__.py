@@ -22,7 +22,8 @@ import tempfile
 import unittest
 
 
-SAMPLE_IMG = os.path.join(os.path.dirname(__file__), 'sample.jpg')
+SAMPLES_DIR = os.path.dirname(__file__)
+SAMPLE_IMG = os.path.join(SAMPLES_DIR, 'sample.jpg')
 
 
 # Init i18n
@@ -41,6 +42,9 @@ class LazygalTest(unittest.TestCase):
         new_wd = tempfile.mkdtemp()
         self.__workdirs.append(new_wd)
         return new_wd
+
+    def get_sample_path(self, sample):
+        return os.path.join(SAMPLES_DIR, sample)
 
     def add_img(self, dest_dir, name):
         img_path = os.path.join(dest_dir, name)
