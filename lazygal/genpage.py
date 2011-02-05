@@ -238,9 +238,9 @@ class WebalbumImagePage(WebalbumBrowsePage):
             tpl_values['focal_length'] = image_info.get_focal_length()
             comment = image_info.get_comment()
             if comment == '' or comment is None:
-                tpl_values['comment'] = self._do_not_escape(comment)
-            else:
                 tpl_values['comment'] = None
+            else:
+                tpl_values['comment'] = self._do_not_escape(comment)
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
