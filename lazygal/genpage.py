@@ -236,7 +236,11 @@ class WebalbumImagePage(WebalbumBrowsePage):
             tpl_values['iso'] = image_info.get_iso()
             tpl_values['fnumber'] = image_info.get_fnumber()
             tpl_values['focal_length'] = image_info.get_focal_length()
-            tpl_values['comment'] = self._do_not_escape(image_info.get_comment())
+            comment = image_info.get_comment()
+            if comment == '' or comment is None:
+                tpl_values['comment'] = self._do_not_escape(comment)
+            else:
+                tpl_values['comment'] = None
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
