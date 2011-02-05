@@ -26,6 +26,7 @@ import make
 import genfile
 import eyecandy
 import mediautils
+from lazygal import pyexiv2api as pyexiv2
 
 
 THUMB_SIZE_NAME = 'thumb'
@@ -71,6 +72,13 @@ class ImageOtherSize(genfile.WebalbumFile):
         else:
             self.stamp_build()
 
+    PRIVATE_IMAGE_TAGS = (
+        'Exif.GPSInfo.GPSLongitude',
+        'Exif.GPSInfo.GPSLatitude',
+        'Exif.GPSInfo.GPSDestLongitude',
+        'Exif.GPSInfo.GPSDestLatitude',
+    )
+
     def __build_other_size(self, im):
         new_size = self.newsizer.dest_size(im.size)
 
@@ -94,6 +102,22 @@ class ImageOtherSize(genfile.WebalbumFile):
                 else:
                     raise
             calibrated = True
+
+        # Copy exif tags to reduced img
+        imgtags = pyexiv2.ImageMetadata(self.source_image.path)
+        imgtags.read()
+        dest_imgtags = pyexiv2.ImageMetadata(self.path)
+        dest_imgtags.read()
+        imgtags.copy(dest_imgtags)
+        dest_imgtags['Exif.Photo.PixelXDimension'] = new_size[0]
+        dest_imgtags['Exif.Photo.PixelYDimension'] = new_size[1]
+        # Those are removed from published pics due to pivacy concerns
+        for tag in self.PRIVATE_IMAGE_TAGS:
+            try:
+                del dest_imgtags[tag]
+            except KeyError:
+                pass
+        dest_imgtags.write()
 
 
 class WebalbumPicture(make.FileMakeObject):
