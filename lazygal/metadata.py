@@ -218,8 +218,7 @@ class _ImageInfoTags(object):
                 else:
                     raise ValueError
             else:
-                raise ValueError
-
+                encoding = 'utf-8'
         elif cset == 'Ascii':
             encoding = 'ascii'
         elif cset == 'Jis':
