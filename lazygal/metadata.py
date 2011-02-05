@@ -189,6 +189,8 @@ class _ImageInfoTags(object):
         ret = self.get_exif_string('Exif.Photo.UserComment')
         # This field can contain charset information
         # FIXME : All this stuff should really go in pyexiv2.
+        if type(ret) is unicode:
+            return ret
         if ret.startswith('charset='):
             tokens = ret.split(' ')
             csetfield = tokens[0]
