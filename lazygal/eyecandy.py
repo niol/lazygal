@@ -1,5 +1,5 @@
 # Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2010 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
