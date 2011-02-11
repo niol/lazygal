@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
+import os
 import random, time
 import Image, ImageDraw, ImageChops, ImageFilter
 
@@ -114,6 +115,7 @@ class PictureMess:
         self.picture_mess = Image.new("RGBA", self.RESULT_SIZE)
         added_one_thumb = False
         for image_path in self.images_paths:
+            assert os.path.isfile(image_path)
             try:
                 mess_thumb = self.__build_mess_thumb(image_path)
             except IOError:
