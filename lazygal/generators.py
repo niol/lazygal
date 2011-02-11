@@ -607,7 +607,7 @@ class Album:
             head, tail = os.path.split(head)
         return False
 
-    def generate_default_medatada(self):
+    def generate_default_metadata(self):
         '''
         Generate default metada files if no exists.
         '''

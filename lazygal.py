@@ -309,7 +309,7 @@ if log_level != None:
     album.set_logging(log_level)
 
 if options.metadata:
-    album.generate_default_medatada()
+    album.generate_default_metadata()
 else:
     album.generate(options.dest_dir, options.pub_url,
                    options.check_all_dirs, options.clean_dest)
