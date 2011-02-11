@@ -40,9 +40,11 @@ class PictureMess:
             self.images_paths = images_paths
 
         if top_image_path:
+            # Put the top image as the last in the list (the top of the image
+            # stack).
             if top_image_path in self.images_paths:
                 self.images_paths.remove(top_image_path)
-            else:
+            elif len(self.images_paths) >= self.THUMB_HOW_MANY:
                 self.images_paths.pop()
             self.images_paths.append(top_image_path)
 
