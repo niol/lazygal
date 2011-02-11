@@ -362,9 +362,7 @@ class Directory(File):
         return all_medias
 
     def get_all_medias_paths(self):
-        all_medias_paths = map(lambda im: os.path.join(self.path, im.filename),
-                               self.get_all_medias())
-        return all_medias_paths
+        return [m.path for m in self.get_all_medias()]
 
     def get_all_subdirs(self):
         all_subdirs = list(self.subdirs) # We want a copy here.
