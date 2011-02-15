@@ -141,13 +141,13 @@ class _ImageMetadata_0_1(object):
     def __try_copy_tag_to(self, tag_key, dest_imgtags):
         try:
             dest_imgtags._metadata[tag_key] = self[tag_key]
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
     def copy(self, dest_imgtags):
         try:
             self._metadata.copyMetadataTo(dest_imgtags._metadata)
-        except ValueError:
+        except (ValueError, TypeError):
             # Sometimes pyexiv2 (<< 0.2) fails during the copy on a badly
             # formatted tag, so we try a manual copy here for each tag.
             for tag_key in self.exif_keys:
