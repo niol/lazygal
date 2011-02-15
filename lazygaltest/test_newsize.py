@@ -38,9 +38,9 @@ class TestSizeParser(unittest.TestCase):
     def assert_ratio_matches(self, orig_size, new_size):
         forig_size = map(float, orig_size)
         fnew_size = map(float, new_size)
-        orig_ratio = round(forig_size[1] / forig_size[0], 2)
-        new_ratio = round(fnew_size[1] / fnew_size[0], 2)
-        self.assertEqual(orig_ratio, new_ratio)
+        orig_ratio = forig_size[1] / forig_size[0]
+        new_ratio = fnew_size[1] / fnew_size[0]
+        self.assertAlmostEqual(orig_ratio, new_ratio, 2)
 
     def check(self, orig_size, size_string, expected_new_size, ratiocheck=True):
         newsizer = newsize.get_newsizer(size_string)
