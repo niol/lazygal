@@ -21,6 +21,9 @@ import shutil
 import tempfile
 import unittest
 
+from lazygal.sourcetree import Directory
+from lazygal.generators import Album
+
 
 SAMPLES_DIR = os.path.dirname(__file__)
 SAMPLE_IMG = os.path.join(SAMPLES_DIR, 'sample.jpg')
@@ -54,6 +57,27 @@ class LazygalTest(unittest.TestCase):
     def tearDown(self):
         for wd in self.__workdirs:
             shutil.rmtree(wd)
+
+
+class LazygalTestGen(LazygalTest):
+
+    def setUp(self):
+        super(LazygalTestGen, self).setUp()
+
+        self.tmpdir = self.get_working_path()
+        self.source_dir = os.path.join(self.tmpdir, 'src')
+        os.mkdir(self.source_dir)
+        self.album = Album(self.source_dir)
+        self.album.set_logging('error')
+        self.album.set_theme()
+
+    def setup_subgal(self, name, pic_names):
+        subgal_path = os.path.join(self.source_dir, 'subgal')
+        os.mkdir(subgal_path)
+        for pic_name in pic_names:
+            self.add_img(subgal_path, pic_name)
+
+        return Directory(subgal_path, [], pic_names, self.album)
 
 
 # Workaround for __import__ behavior, see
