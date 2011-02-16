@@ -36,6 +36,7 @@ class TestSourceTree(LazygalTest):
         Returns a directory object inside the test album root.
         """
         dpath = os.path.join(self.source_dir, drpath)
+        os.makedirs(dpath)
         return Directory(dpath, [], [], self.album)
 
     def test_skipped(self):
