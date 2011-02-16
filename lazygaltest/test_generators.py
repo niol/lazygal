@@ -20,21 +20,34 @@ import unittest
 import os
 import datetime
 
-from __init__ import LazygalTest
-from lazygal.generators import Album
+from __init__ import LazygalTestGen
+from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal import pyexiv2api as pyexiv2
 
 
-class TestSourceTree(LazygalTest):
+class TestSourceTree(LazygalTestGen):
 
-    def setUp(self):
-        super(TestSourceTree, self).setUp()
+    def test_genfile_filelayout(self):
+        source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
 
-        self.source_dir = self.get_working_path()
-        self.album = Album(self.source_dir)
-        self.album.set_logging('error')
-        self.album.set_theme()
+        dest_path = self.get_working_path()
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
+
+        self.album.generate(dest_path)
+
+        # Check root dir contents
+        self.assertTrue(os.path.isdir(dest_path))
+        for fn in ('index.html', 'index_medium.html'):
+            self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)))
+
+        # Check subgal dir contents
+        self.assertTrue(os.path.isdir(dest_subgal.path))
+        for fn in ('index.html', 'index_medium.html',
+                   'subgal_img.html', 'subgal_img_medium.html',
+                   'subgal_img_thumb.jpg', 'subgal_img_small.jpg',
+                   'subgal_img_medium.jpg'):
+            self.assertTrue(os.path.isfile(os.path.join(dest_subgal.path, fn)))
 
     def test_originals_symlinks(self):
         img_path = self.add_img(self.source_dir, 'symlink_target.jpg')
