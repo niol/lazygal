@@ -67,15 +67,28 @@ class MakeTask(object):
         self.__last_build_time = build_time
         self.__built_once = True
 
-    def needs_build(self):
-        if not self.__built_once:
-            return True
+    def needs_build(self, return_culprit=False):
+        if not self.built_once():
+            if return_culprit:
+                return 'never built'
+            else:
+                return True
 
         for dependency in self.deps:
             if dependency.get_mtime() > self.get_mtime()\
             or dependency.needs_build():
                 if not dependency.is_dep_only():
-                    return True
+                    if return_culprit:
+                        mtime_gap = dependency.get_mtime() - mtime
+                        if mtime_gap > 0:
+                            reason = 'dep newer by %s s' % mtime_gap
+                        elif dependency.needs_build():
+                            reason = dependency.needs_build(True)
+                        else:
+                            raise RuntimeError # should never go here
+                        return dependency, reason
+                    else:
+                        return True
         return False
 
     def make(self, force=False):
@@ -107,6 +120,16 @@ class MakeTask(object):
         """
         if not output in self.output_items:
             self.output_items.append(output)
+
+    def print_dep_tree(self):
+        # FIXME: pass depth level in parameter
+        print self, self.get_mtime()
+        for d in self.deps:
+            print '\t', d, d.get_mtime()
+            for e in d.deps:
+                print '\t\t', e, e.get_mtime()
+                for f in e.deps:
+                    print '\t\t\t', f, f.get_mtime()
 
 
 class GroupTask(MakeTask):
