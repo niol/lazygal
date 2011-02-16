@@ -200,49 +200,10 @@ class ImageInfoTags(object):
             return encoded_string.decode(encoding, 'replace')
 
     def get_exif_usercomment(self):
-        ret = self.get_tag_value('Exif.Photo.UserComment').strip(' \x00')
-        # This field can contain charset information
-        # FIXME : All this stuff should really go in pyexiv2.
-        if type(ret) is unicode:
-            return ret
-        if ret.startswith('charset='):
-            tokens = ret.split(' ')
-            csetfield = tokens[0]
-            text = ' '.join(tokens[1:])
-            ignore, cset = csetfield.split('=')
-            cset = cset.strip('"')
-        else:
-            cset = None
-            text = ret
-
-        if cset == 'Unicode':
-            encoding = None
-            # Starting from 0.20, exiv2 converts unicode comments to UTF-8
-            try:
-                ret.decode('utf-8')
-            except UnicodeDecodeError:
-                # Decoding failed, maybe we can assume we are with
-                # exiv2 << 0.20
-                im = Image.open(self.image_path)
-                endian = im.app['APP1'][6:8]
-                if endian == 'MM':
-                    encoding = 'utf-16be'
-                elif endian == 'II':
-                    encoding = 'utf-16le'
-                else:
-                    raise ValueError
-            else:
-                encoding = 'utf-8'
-        elif cset == 'Ascii':
-            encoding = 'ascii'
-        elif cset == 'Jis':
-            encoding = 'shift_jis'
-        else:
-            # Fallback to utf-8 as this is mostly the default for Linux
-            # distributions.
-            encoding = 'utf-8'
-
-        return self._fallback_to_encoding(text, encoding).strip('\0')
+        # FIXME: Maybe this requires stripping, not sure if this is for some of
+        # the pyexiv2 versions or for all.
+        #return self.get_tag_value('Exif.Photo.UserComment').strip('\0 \x00')
+        return self.get_tag_value('Exif.Photo.UserComment')
 
     def get_file_comment(self):
         fmd = FileMetadata(self.image_path + FILE_METADATA_MEDIA_SUFFIX)

@@ -29,23 +29,80 @@ import pyexiv2
 import Image as PILImage
 
 
-class _ImageMetadata_0_2(object):
+def decode_exif_user_comment(raw, imgpath):
+    """
+    Before pyexvi2 0.3, the EXIF user comment was not decoded to a unicode
+    string. This function does exactly that and is used for earlier versions
+    of pyexiv2.
+    """
+    # This field can contain charset information
+    if raw.startswith('charset='):
+        tokens = raw.split(' ')
+        csetfield = tokens[0]
+        text = ' '.join(tokens[1:])
+        ignore, cset = csetfield.split('=')
+        cset = cset.strip('"')
+    else:
+        cset = None
+        text = raw
+
+    if cset == 'Unicode':
+        encoding = None
+        # Starting from 0.20, exiv2 converts unicode comments to UTF-8
+        try:
+            text.decode('utf-8')
+        except UnicodeDecodeError:
+            # Decoding failed, maybe we can assume we are with exiv2 << 0.20
+            im = PILImage.open(imgpath)
+            endianess = im.app['APP1'][6:8]
+            if endianess == 'MM':
+                encoding = 'utf-16be'
+            elif endianess == 'II':
+                encoding = 'utf-16le'
+            else:
+                raise ValueError
+        else:
+            encoding = 'utf-8'
+    elif cset == 'Ascii':
+        encoding = 'ascii'
+    elif cset == 'Jis':
+        encoding = 'shift_jis'
+    else:
+        # Fallback to utf-8 as this is mostly the default for Linux
+        # distributions.
+        encoding = 'utf-8'
+
+    # Return the decoded string according to the found encoding.
+    try:
+        return text.decode(encoding)
+    except UnicodeDecodeError:
+        return text.decode(encoding, 'replace')
+
+
+# This is required at import time for inheritances below.
+if 'ImageMetadata' in dir(pyexiv2):
+    Pyexvi2ImageMetadata = pyexiv2.ImageMetadata
+else:
+    # This is for the interpreter to be happy, but if pyexiv2.ImageMetadata
+    # does not exist, we are with pyexiv2 << 0.2, and the old API, so we won't
+    # be using classes that inherot from Pyexvi2ImageMetadata.
+    Pyexvi2ImageMetadata = object
+
+
+class _ImageMetadata_0_2_2(Pyexvi2ImageMetadata):
 
     def __init__(self, imgpath):
+        super(_ImageMetadata_0_2_2, self).__init__(imgpath)
         self.imgpath = imgpath
-        self._metadata = pyexiv2.ImageMetadata(self.imgpath)
 
     def __getitem__(self, key):
-        return self._metadata[key]
+        tag = super(_ImageMetadata_0_2_2, self).__getitem__(key)
+        if key == 'Exif.Photo.UserComment':
+            tag.value = decode_exif_user_comment(tag.value, self.imgpath)
+        return tag
 
-    def __setitem__(self, key, value):
-        self._metadata[key] = value
 
-    def __delitem__(self, key):
-        del self._metadata[key]
-
-    def __getattr__(self, name):
-        return getattr(self._metadata, name)
+class _ImageMetadata_0_2(_ImageMetadata_0_2_2):
 
     def get_jpeg_comment(self):
         # comment appeared in pyexiv2 0.2.2, so use PIL
@@ -60,8 +117,9 @@ class _ImageMetadata_0_2(object):
 
 class _ImageTag_0_1(object):
 
-    def __init__(self, tag, md, key):
+    def __init__(self, tag, imgpath, md, key):
         self._tag = tag
+        self._imgpath = imgpath
         self._metadata = md
         self._key = key
 
@@ -96,9 +154,13 @@ class _ImageTag_0_1(object):
     def get_decoded_utf8(self):
         return self.get_interpreted_value().decode('utf-8')
 
+    def get_decoded_exif_user_comment(self):
+        return decode_exif_user_comment(self._tag, self._imgpath)
+
     TAG_PYTRANSLATORS = {
         'Exif.Photo.DateTimeDigitized' : 'get_exif_date',
         'Exif.Photo.DateTimeOriginal'  : 'get_exif_date',
+        'Exif.Photo.UserComment'       : 'get_decoded_exif_user_comment',
         'Exif.Image.DateTime'          : 'get_exif_date',
         'Exif.Image.Orientation'       : 'get_int',
         'Exif.Pentax.LensType'         : 'get_interpreted_value',
@@ -124,7 +186,8 @@ class _ImageMetadata_0_1(object):
         self._metadata = pyexiv2.Image(self.imgpath.encode(sys.getfilesystemencoding()))
 
     def __getitem__(self, key):
-        return _ImageTag_0_1(self._metadata[key], self._metadata, key)
+        return _ImageTag_0_1(self._metadata[key], self.imgpath,
+                             self._metadata, key)
 
     def __setitem__(self, key, value):
         self._metadata[key] = value
@@ -169,7 +232,10 @@ class _ImageMetadata_0_1(object):
 if 'ImageMetadata' in dir(pyexiv2):
     if 'comment' in dir(pyexiv2.ImageMetadata):
         # pyexiv2 (>= 0.2.2)
-        ImageMetadata = pyexiv2.ImageMetadata
+        if pyexiv2.version_info >= (0, 3, 0):
+            ImageMetadata = pyexiv2.ImageMetadata
+        else:
+            ImageMetadata = _ImageMetadata_0_2_2
     else:
         # pyexiv2 (>= 0.2, << 0.2.2)
         ImageMetadata = _ImageMetadata_0_2
