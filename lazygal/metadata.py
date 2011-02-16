@@ -321,12 +321,14 @@ class NoMetadata(Exception):
     pass
 
 
-class DirectoryMetadata(make.FileSimpleDependency):
+class DirectoryMetadata(make.GroupTask):
 
     def __init__(self, dir):
+        super(DirectoryMetadata, self).__init__()
+
         self.dir = dir
         self.directory_path = self.dir.path
-        make.FileSimpleDependency.__init__(self, self.directory_path)
+        self.add_dependency(self.dir)
 
         self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)
         if os.path.isfile(self.description_filename):
