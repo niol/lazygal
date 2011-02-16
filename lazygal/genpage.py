@@ -284,6 +284,9 @@ class WebalbumIndexPage(WebalbumPage):
             if self.dir.album.dirzip and dir.source_dir.get_media_count() > 1:
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
+        for subgal in self.subgals:
+            self.add_dependency(subgal)
+
         self.set_template('dirindex.thtml')
 
     def _get_paginated_name(self, page_number=None):
