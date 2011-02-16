@@ -308,7 +308,7 @@ class WebalbumDir(make.FileMakeObject):
             elif media.type == 'video':
                 media_task = WebalbumVideoTask(self, media, self.album)
             else:
-                raise NotImplementedError("Unknonwn media type '%s'"\
+                raise NotImplementedError("Unknown media type '%s'"\
                                           % media.type)
             self.medias.append(media_task)
             self.add_dependency(media_task)
