@@ -271,7 +271,7 @@ class WebalbumDir(make.FileMakeObject):
     This is a built web gallery with its files, thumbs and reduced pics.
     """
 
-    def __init__(self, dir, subgals, album, album_dest_dir, clean_dest):
+    def __init__(self, dir, subgals, album, album_dest_dir, clean_dest=False):
         self.__mtime = None
 
         self.source_dir = dir
