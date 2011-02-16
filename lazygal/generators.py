@@ -169,7 +169,7 @@ class SubgalBreak(make.MakeTask):
 class WebalbumMediaTask(make.GroupTask):
 
     def __init__(self, webgal, media, album):
-        make.MakeTask.__init__(self)
+        super(WebalbumMediaTask, self).__init__()
 
         self.album = album
         self.webgal = webgal
@@ -213,7 +213,7 @@ class WebalbumImageTask(WebalbumMediaTask):
     """
 
     def __init__(self, webgal, image, album):
-        WebalbumMediaTask.__init__(self, webgal, image, album)
+        super(WebalbumImageTask, self).__init__(webgal, image, album)
 
         self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
                                              genmedia.THUMB_SIZE_NAME)
@@ -248,7 +248,7 @@ class WebalbumVideoTask(WebalbumMediaTask):
     def __init__(self, webgal, video, album):
         self.webvideo = None
 
-        WebalbumMediaTask.__init__(self, webgal, video, album)
+        super(WebalbumVideoTask, self).__init__(webgal, video, album)
 
         self.thumb = None # none yet
 
@@ -276,7 +276,7 @@ class WebalbumDir(make.FileMakeObject):
 
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
-        make.FileMakeObject.__init__(self, self.path)
+        super(WebalbumDir, self).__init__(self.path)
 
         self.add_dependency(self.source_dir)
         self.subgals = subgals
@@ -397,7 +397,7 @@ class WebalbumDir(make.FileMakeObject):
                 self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
-        make.FileMakeObject.make(self, force)
+        super(WebalbumDir, self).make(force)
 
         # Although we should have modified the directory contents and thus its
         # mtime, it is possible that the directory mtime has not been updated
@@ -411,13 +411,14 @@ class SharedFiles(make.FileSimpleDependency):
 
     def __init__(self, album, dest_dir):
         self.path = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
-        make.FileSimpleDependency.__init__(self, self.path)
 
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
             album.log(_("MKDIR %SHAREDDIR%"), 'info')
             album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
+
+        super(SharedFiles, self).__init__(self.path)
 
         for shared_file in glob.glob(\
           os.path.join(album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
