@@ -272,8 +272,6 @@ class WebalbumDir(make.FileMakeObject):
     """
 
     def __init__(self, dir, subgals, album, album_dest_dir, clean_dest=False):
-        self.__mtime = None
-
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         super(WebalbumDir, self).__init__(self.path)
@@ -284,10 +282,6 @@ class WebalbumDir(make.FileMakeObject):
 
         self.flattening_dir = None
 
-        # mtime for directories must be saved, because the WebalbumDir gets
-        # updated as its dependencies are built.
-        self.__mtime = self.get_mtime()
-
         self.clean_dest = clean_dest
 
         # Create the directory if it does not exist
@@ -296,6 +290,8 @@ class WebalbumDir(make.FileMakeObject):
                            % self.source_dir.strip_root(), 'info')
             self.album.log("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
+            # Directory did not exist, mark it as so
+            self.stamp_delete()
 
         self.medias = []
         self.sort_task = SubgalSort(self)
@@ -317,7 +313,6 @@ class WebalbumDir(make.FileMakeObject):
 
         if not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
-            self.add_dependency(self.break_task)
 
             if self.album.thumbs_per_page > 0:
                 # FIXME: If pagination is 'on', galleries need to be sorted
@@ -327,6 +322,8 @@ class WebalbumDir(make.FileMakeObject):
 
             self.webgal_pic = genmedia.WebalbumPicture(self)
             self.add_dependency(self.webgal_pic)
+        else:
+            self.break_task = None
 
     def add_index_page(self, subgals, galleries):
         page_number = self.break_task.next_page_number()
@@ -335,9 +332,19 @@ class WebalbumDir(make.FileMakeObject):
                                              subgals, galleries)
             self.add_dependency(page)
 
-    def get_mtime(self):
-        # Use the saved mtime that was initialized once, in self.__init__()
-        return self.__mtime or super(WebalbumDir, self).get_mtime()
+    def needs_build(self, return_culprit=False):
+        if self.break_task:
+            # This task is special because it populates dependencies. This is
+            # why it needs to be built before a build check.
+            self.break_task.make()
+
+        if not self.built_once() and os.path.isdir(self.path):
+            # Directory previously existed, we assume that it was well built.
+            # If the user is not satisfied with this, lazygal can be run
+            # with --check-all-dirs.
+            self.stamp_build(os.path.getmtime(self.path))
+
+        return super(WebalbumDir, self).needs_build(return_culprit)
 
     def get_subgal_count(self):
         if self.flatten_below():

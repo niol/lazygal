@@ -32,8 +32,7 @@ class MakeTask(object):
     def __init__(self):
         self.deps = []
         self.output_items = []
-        self.__last_build_time = -1 # older than oldest epoch
-        self.__built_once = False
+        self.stamp_delete()
         self.__dep_only = False
 
     def add_dependency(self, dependency):
@@ -67,7 +66,16 @@ class MakeTask(object):
         self.__last_build_time = build_time
         self.__built_once = True
 
+    def stamp_delete(self):
+        self.__last_build_time = -1 # older than oldest epoch
+        self.__built_once = False
+
+    def built_once(self):
+        return self.__built_once
+
     def needs_build(self, return_culprit=False):
+        mtime = self.get_mtime() # acces mtime which may update build stamp
+
         if not self.built_once():
             if return_culprit:
                 return 'never built'
@@ -137,57 +145,61 @@ class GroupTask(MakeTask):
     A class that builds nothing but groups subtasks.
     """
 
+    def built_once(self):
+        return True # GroupTask is all about the deps.
+
+    def get_mtime(self):
+        # Find youngest dep, which should indicate latest build.
+        mtime = None
+        for dependency in self.deps:
+            if dependency.built_once():
+                new_mtime = dependency.get_mtime()
+                if mtime is None or new_mtime > mtime:
+                    mtime = new_mtime
+        if mtime is None:
+            self.stamp_delete()
+        else:
+            self.stamp_build(mtime)
+
+        return super(GroupTask, self).get_mtime()
+
     def build(self):
         pass
 
-    def add_dependency(self, dependency):
-        super(GroupTask, self).add_dependency(dependency)
-        if dependency.get_mtime() > self.get_mtime():
-            self.stamp_build(dependency.get_mtime())
+
+class FileMakeObject(MakeTask):
+
+    def __init__(self, path):
+        super(FileMakeObject, self).__init__()
+        self._path = path
+        self.register_output(self._path)
+
+    def built_once(self):
+        return os.path.exists(self._path)
+
+    def get_mtime(self):
+        # Update build info according to file existence
+        if os.path.exists(self._path):
+            self.stamp_build(os.path.getmtime(self._path))
+        else:
+            self.stamp_delete()
+        return super(FileMakeObject, self).get_mtime()
+
+    def __repr__(self):
+        return '%s(%s)' % (self.__class__.__name__, self._path)
 
 
-class FileSimpleDependency(MakeTask):
+class FileSimpleDependency(FileMakeObject):
     """
     Simple file dependency that needn't build. It just should be there.
     """
 
     def __init__(self, path):
-        MakeTask.__init__(self)
-        self._path = path
-        try:
-            mtime = self.get_mtime()
-        except OSError:
-            pass
-        else:
-            self.stamp_build(mtime)
-
-    def get_mtime(self):
-        return os.path.getmtime(self._path)
+        super(FileSimpleDependency, self).__init__(path)
+        assert os.path.exists(self._path)
 
     def build(self):
         pass
-
-
-class FileMakeObject(FileSimpleDependency):
-
-    def __init__(self, path):
-        FileSimpleDependency.__init__(self, path)
-        self.register_output(self._path)
-
-    def needs_build(self):
-        return FileSimpleDependency.needs_build(self)\
-               or not os.path.exists(self._path)
-
-    def get_mtime(self):
-        try:
-            mtime = super(FileMakeObject, self).get_mtime()
-        except OSError:
-            # Return last built time
-            mtime = super(FileSimpleDependency, self).get_mtime()
-        return mtime
-
-    def build(self):
-        MakeTask.build(self)
 
 
 class FileCopy(FileMakeObject):
