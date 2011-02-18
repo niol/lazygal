@@ -31,7 +31,7 @@ import Image as PILImage
 
 def decode_exif_user_comment(raw, imgpath):
     """
-    Before pyexvi2 0.3, the EXIF user comment was not decoded to a unicode
+    Before pyexiv2 0.3, the EXIF user comment was not decoded to a unicode
     string. This function does exactly that and is used for earlier versions
     of pyexiv2.
     """
@@ -81,15 +81,15 @@ def decode_exif_user_comment(raw, imgpath):
 
 # This is required at import time for inheritances below.
 if 'ImageMetadata' in dir(pyexiv2):
-    Pyexvi2ImageMetadata = pyexiv2.ImageMetadata
+    Pyexiv2ImageMetadata = pyexiv2.ImageMetadata
 else:
     # This is for the interpreter to be happy, but if pyexiv2.ImageMetadata
     # does not exist, we are with pyexiv2 << 0.2, and the old API, so we won't
-    # be using classes that inherot from Pyexvi2ImageMetadata.
-    Pyexvi2ImageMetadata = object
+    # be using classes that inherit from Pyexiv2ImageMetadata.
+    Pyexiv2ImageMetadata = object
 
 
-class _ImageMetadata_0_2_2(Pyexvi2ImageMetadata):
+class _ImageMetadata_0_2_2(Pyexiv2ImageMetadata):
 
     def __init__(self, imgpath):
         super(_ImageMetadata_0_2_2, self).__init__(imgpath)
