@@ -200,10 +200,7 @@ class ImageInfoTags(object):
             return encoded_string.decode(encoding, 'replace')
 
     def get_exif_usercomment(self):
-        # FIXME: Maybe this requires stripping, not sure if this is for some of
-        # the pyexiv2 versions or for all.
-        #return self.get_tag_value('Exif.Photo.UserComment').strip('\0 \x00')
-        return self.get_tag_value('Exif.Photo.UserComment')
+        return self.get_tag_value('Exif.Photo.UserComment').strip(' \0\x00')
 
     def get_file_comment(self):
         fmd = FileMetadata(self.image_path + FILE_METADATA_MEDIA_SUFFIX)
