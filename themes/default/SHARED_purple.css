@@ -11,6 +11,10 @@ div#osize_links{
 		text-align:right;
 }
 
+h1{
+        display: none;
+}
+
 #breadcrumbs {
     padding: 3px;
     margin-bottom: 25px;
