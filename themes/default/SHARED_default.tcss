@@ -47,6 +47,33 @@ a{
     right:0.1em;
 }
 
+\#breadcrumbs {
+    padding: 3px;
+    margin-bottom: 25px;
+}
+
+\#breadcrumbs ul {
+    margin-left: 0;
+    padding-left: 0;
+    display: inline;
+    }
+
+\#breadcrumbs ul li {
+    margin-left: 0;
+    padding-left: 2px;
+    border: none;
+    list-style: none;
+    display: inline;
+}
+
+\#breadcrumbs ul li:after {
+    content: "\0020 \0020 \0020 \00BB \0020";
+}
+
+\#breadcrumbs ul li.bc_current:after {
+    content: " ";
+}
+
 img {
     border:solid black 1px;
     margin:1em;

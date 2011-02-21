@@ -49,6 +49,17 @@ class TestSourceTree(LazygalTest):
         d = self.get_dir('joe/young/.git')
         self.assertEqual(d.should_be_skipped(), True, d.path)
 
+    def test_dir_parent_paths(self):
+        d = self.get_dir('joe/young/early_years')
+
+        expected = [
+            os.path.join(self.source_dir, 'joe/young/early_years'),
+            os.path.join(self.source_dir, 'joe/young'),
+            os.path.join(self.source_dir, 'joe'),
+            self.source_dir,
+        ]
+        self.assertEqual(d.parent_paths(), map(unicode, expected))
+
 
 if __name__ == '__main__':
     unittest.main()

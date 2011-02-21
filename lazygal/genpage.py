@@ -125,6 +125,41 @@ class WebalbumPage(genfile.WebalbumFile):
 
         return osize_index_links
 
+    def _get_webgal_id(self, srcdir_path):
+        if self.dir.should_be_flattened(srcdir_path):
+            rawid = self.dir.source_dir.rel_path(self.dir.flattening_srcpath(srcdir_path), srcdir_path)
+        else:
+            rawid = os.path.basename(srcdir_path)
+        return rawid.replace(' /\\', '_')
+
+    def _get_webgal_link(self, srcdir_path):
+        link_target = self._add_size_qualifier('index.html', self.size_name)
+
+        if self.dir.should_be_flattened(srcdir_path):
+            # Add anchor target to get straight to gallery listing
+            link_target = link_target + '#' + self._get_webgal_id(srcdir_path)
+
+        if not srcdir_path == self.dir.source_dir.path\
+        or self.dir.should_be_flattened(srcdir_path):
+            # Add relative path to link
+            link_target = self.dir.flattening_rel_path(srcdir_path)\
+                          + link_target
+
+        return self.url_quote(link_target)
+
+    def _gen_webgal_path(self):
+        wg_path = []
+        for dirmd in self.dir.source_dir.parents_metadata():
+            wg = {}
+            wg['link'] = self._get_webgal_link(dirmd.dir_path)
+            wg['name'] = dirmd.get_title()
+            wg['root'] = dirmd.dir_path == self.dir.album.source_dir
+            wg['current'] = dirmd.dir_path == self.dir.source_dir.path
+            wg_path.append(wg)
+
+        wg_path.reverse()
+        return wg_path
+
     def _add_size_qualifier(self, path, size_name):
         return self.dir.album._add_size_qualifier(path, size_name)
 
@@ -132,7 +167,7 @@ class WebalbumPage(genfile.WebalbumFile):
         return genshi.core.Markup(value)
 
     def url_quote(self, url):
-        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/')
+        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/#')
 
 
 class WebalbumBrowsePage(WebalbumPage):
@@ -164,6 +199,10 @@ class WebalbumBrowsePage(WebalbumPage):
         self.dir.album.log("(%s)" % self.page_path)
 
         tpl_values = {}
+
+        # Breadcrumbs
+        tpl_values['webgal_path'] = self._gen_webgal_path()
+
         tpl_values['name'] = self.media.filename
         tpl_values['mediatype'] = self.media.type
         tpl_values['dir'] = self.dir.source_dir.strip_root()
@@ -345,6 +384,8 @@ class WebalbumIndexPage(WebalbumPage):
         dir_info['image_count'] = dir.source_dir.get_media_count('image')
         dir_info['subgal_count'] = len(dir.source_dir.subdirs)
 
+        dir_info['id'] = self.url_quote(self._get_webgal_id(dir.source_dir.path))
+
         return dir_info
 
     def _get_subgal_links(self):
@@ -365,6 +406,10 @@ class WebalbumIndexPage(WebalbumPage):
         self.dir.album.log("(%s)" % self.page_path)
 
         values = {}
+
+        # Breadcrumbs (current is static, see dirindex.thtml, that's why the
+        # last item of the list is removed).
+        values['webgal_path'] = self._gen_webgal_path()[:-1]
 
         if not self.dir.source_dir.is_album_root():
             # Parent index link not for album root

@@ -25,9 +25,14 @@
 
 <h1 py:content="album_name"></h1>
 
-<p py:if="parent_index_link" id="index_link">
-    <a href="../$parent_index_link">${_('Parent')}</a>
-</p>
+<div id="breadcrumbs">
+		<ul>
+				<li py:for="webgal in webgal_path">
+						<a href="${webgal.link}" py:content="webgal.name" />
+				</li>
+				<li class="bc_current" py:content="album_name" />
+		</ul>
+</div>
 
 <p py:if="album_description" class="description" py:content="album_description"></p>
 
@@ -56,7 +61,7 @@
 <py:for each="subdir, medias in medias">
     <div py:if="medias" class="media_links">
         <py:if test="not subdir.is_main">
-            <h2>$subdir.album_name</h2>
+            <h2><a name="$subdir.id"></a>$subdir.album_name</h2>
             <div py:if="subdir.album_description" class="subgal_description">
                 <p>$subdir.album_description</p>
             </div>

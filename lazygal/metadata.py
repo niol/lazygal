@@ -320,14 +320,13 @@ class NoMetadata(Exception):
 
 class DirectoryMetadata(make.GroupTask):
 
-    def __init__(self, dir):
+    def __init__(self, dir_path):
         super(DirectoryMetadata, self).__init__()
 
-        self.dir = dir
-        self.directory_path = self.dir.path
-        self.add_dependency(self.dir)
+        self.dir_path = dir_path
+        self.add_file_dependency(self.dir_path)
 
-        self.description_filename = os.path.join(self.directory_path, MATEW_METADATA)
+        self.description_filename = os.path.join(self.dir_path, MATEW_METADATA)
         if os.path.isfile(self.description_filename):
             self.description_file = self.description_filename
             self.add_file_dependency(self.description_filename)
@@ -336,7 +335,7 @@ class DirectoryMetadata(make.GroupTask):
 
             # Add dependency to "file metadata" files if they exist.
             for file_md_fn in FILE_METADATA:
-                file_md_path = os.path.join(self.directory_path, file_md_fn)
+                file_md_path = os.path.join(self.dir_path, file_md_fn)
                 if os.path.isfile(file_md_path):
                     self.add_file_dependency(file_md_path)
 
@@ -347,7 +346,7 @@ class DirectoryMetadata(make.GroupTask):
         if subdir is None:
             path = self.description_file
         else:
-            path = os.path.join(self.directory_path, subdir, MATEW_METADATA)
+            path = os.path.join(self.dir_path, subdir, MATEW_METADATA)
 
         if path is None or not os.path.exists(path):
             raise NoMetadata(_('Could not open metadata file %s') % path)
@@ -368,7 +367,7 @@ class DirectoryMetadata(make.GroupTask):
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
-                        data = os.path.join(self.dir.path, data)
+                        data = os.path.join(self.dir_path, data)
                     metadata[tag] = data.decode(locale.getpreferredencoding())
                     break
 
@@ -379,7 +378,7 @@ class DirectoryMetadata(make.GroupTask):
         Returns the file metadata that could be found in the directory.
         '''
 
-        if subdir is None: subdir = self.directory_path
+        if subdir is None: subdir = self.dir_path
 
         if 'album_name' not in metadata.keys():
             fmd = FileMetadata(os.path.join(subdir, 'album-name')).contents()
@@ -398,7 +397,7 @@ class DirectoryMetadata(make.GroupTask):
 
         return metadata
 
-    def get(self, subdir = None):
+    def get(self, subdir=None, dir=None):
         '''
         Returns directory meta data. First tries to parse known formats
         and then fall backs to built in defaults.
@@ -416,13 +415,22 @@ class DirectoryMetadata(make.GroupTask):
         # Add album picture
         if not result.has_key('album_picture'):
             try:
-                picture = self.dir.get_all_medias_paths()[0]
+                if dir is not None:
+                    picture = dir.get_all_medias_paths()[0]
+                else:
+                    raise IndexError
             except IndexError:
                 picture = None
             if picture is not None:
                 result['album_picture'] = picture
 
         return result
+
+    def get_title(self):
+        try:
+            return self.get()['album_name']
+        except KeyError:
+            return os.path.basename(self.dir_path).replace('_', ' ')
 
 
 class DefaultMetadata(make.FileMakeObject):
@@ -439,9 +447,9 @@ class DefaultMetadata(make.FileMakeObject):
         self.album = album
 
     def build(self):
-        md = DirectoryMetadata(self.source_dir)
+        md = DirectoryMetadata(self.source_dir.path)
 
-        md_data = md.get()
+        md_data = md.get(None, self.source_dir)
         if 'album_description' in md_data.keys()\
         or 'album_name' in md_data.keys():
             self.album.log(_("  SKIPPED because metadata exists."))

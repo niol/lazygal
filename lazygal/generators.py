@@ -364,9 +364,10 @@ class WebalbumDir(make.FileMakeObject):
             all_medias.extend(subgal.get_all_medias_tasks())
         return all_medias
 
-    def should_be_flattened(self):
+    def should_be_flattened(self, path=None):
+        if path is None: path = self.source_dir.path
         return self.album.dir_flattening_depth is not False\
-        and self.source_dir.get_album_level() > self.album.dir_flattening_depth
+        and self.source_dir.get_album_level(path) > self.album.dir_flattening_depth
 
     def flatten_below(self):
         if self.album.dir_flattening_depth is False:
@@ -377,6 +378,19 @@ class WebalbumDir(make.FileMakeObject):
             return self.subgals[0].should_be_flattened()
         else:
             return False
+
+    def flattening_srcpath(self, srcdir_path):
+        if self.should_be_flattened(srcdir_path):
+            cur_path = srcdir_path
+            while self.should_be_flattened(cur_path):
+                cur_path, dummy = os.path.split(cur_path)
+            return cur_path
+        else:
+            return ''
+
+    def flattening_rel_path(self, srcdir_path):
+        return self.source_dir.rel_path(self.source_dir.path,
+                                        self.flattening_srcpath(srcdir_path))
 
     def build(self):
         # Check dest for junk files

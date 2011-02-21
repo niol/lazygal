@@ -47,7 +47,7 @@ class TestFileMetadata(LazygalTest):
         self.create_file(os.path.join(self.source_dir, 'album-name'),
                          album_name)
 
-        md = metadata.DirectoryMetadata(self.album_root)
+        md = metadata.DirectoryMetadata(self.album_root.path)
         self.assertEqual(md.get()['album_name'], album_name)
 
     def test_album_desc(self):
@@ -55,7 +55,7 @@ class TestFileMetadata(LazygalTest):
         self.create_file(os.path.join(self.source_dir, 'album-description'),
                          album_desc)
 
-        md = metadata.DirectoryMetadata(self.album_root)
+        md = metadata.DirectoryMetadata(self.album_root.path)
         self.assertEqual(md.get()['album_description'], album_desc)
 
     def test_img_desc(self):

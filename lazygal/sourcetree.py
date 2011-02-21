@@ -110,16 +110,20 @@ class File(make.FileSimpleDependency):
         except AttributeError:
             return path.startswith(dir)
 
-    def get_album_level(self):
-        if os.path.isdir(self.path):
-            cur_path = self.path
+    def get_album_level(self, path=None):
+        if path is None: path = self.path
+
+        if os.path.isdir(path):
+            cur_path = path
         else:
-            cur_path = os.path.dirname(self.path)
+            cur_path = os.path.dirname(path)
 
         album_level = 0
         while cur_path != self.album.source_dir:
             cur_path, tail = os.path.split(cur_path)
             album_level += 1
+            if cur_path == '/':
+                raise RuntimeError(_('Root not found'))
         return album_level
 
     SKIPPED_DIRS = ('.svn', '_darcs', '.bzr', '.git', '.hg', 'CVS', )
@@ -306,8 +310,8 @@ class Directory(File):
                                % filename, 'info')
                 self.album.log("(%s)" % os.path.join(self.path, filename))
 
-        self.metadata = metadata.DirectoryMetadata(self)
-        md = self.metadata.get()
+        self.metadata = metadata.DirectoryMetadata(self.path)
+        md = self.metadata.get(None, self)
         if 'album_name' in md.keys():
             self.title = md['album_name']
         else:
@@ -324,6 +328,26 @@ class Directory(File):
 
     def is_album_root(self):
         return self.path == self._path_to_unicode(self.album.source_dir)
+
+    def parent_paths(self):
+        parent_paths = [self.path]
+
+        found = False
+        head = self.path
+
+        while not found:
+            if head == self.album.source_dir:
+                found = True
+            elif head == "/":
+                raise RuntimeError(_("Root not found"))
+            else:
+                head, tail = os.path.split(head)
+                parent_paths.append(os.path.join(self.path, head))
+
+        return parent_paths
+
+    def parents_metadata(self):
+        return map(metadata.DirectoryMetadata, self.parent_paths())
 
     def is_metadata(self, filename):
         if filename == metadata.MATEW_METADATA: return True

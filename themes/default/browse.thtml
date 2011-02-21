@@ -23,11 +23,16 @@
 
 <body>
 
-<div id="gallery_links">
-		<div id="index_link">
-            <a href="$index_link">${_('Gallery index')}</a>
-        </div>
+<div id="breadcrumbs">
+		<ul>
+				<li py:for="webgal in webgal_path">
+						<a href="${webgal.link}" py:content="webgal.name" />
+				</li>
+				<li class="bc_current" py:content="name" />
+		</ul>
+</div>
 
+<div id="gallery_links">
 		<div id="osize_links" py:if="len(osize_links) > 1">
 				<p>
 						<py:for each="i, osize_link in enumerate(osize_links)">
