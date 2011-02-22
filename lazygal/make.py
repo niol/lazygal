@@ -192,7 +192,7 @@ class FileMakeObject(MakeTask):
         return super(FileMakeObject, self).get_mtime()
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self._path)
+        return '%s(%s)' % (self.__class__.__name__, self._path.encode('utf-8'))
 
 
 class FileSimpleDependency(FileMakeObject):
