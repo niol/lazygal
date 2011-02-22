@@ -139,11 +139,14 @@ class WebalbumPage(genfile.WebalbumFile):
             # Add anchor target to get straight to gallery listing
             link_target = link_target + '#' + self._get_webgal_id(srcdir_path)
 
-        if not srcdir_path == self.dir.source_dir.path\
-        or self.dir.should_be_flattened(srcdir_path):
-            # Add relative path to link
-            link_target = self.dir.flattening_rel_path(srcdir_path)\
-                          + link_target
+        # Add relative path to link if needed
+        index_path = None
+        if self.dir.should_be_flattened(srcdir_path):
+            index_path = self.dir.flattening_srcpath(srcdir_path)
+        if srcdir_path != self.dir.source_dir.path:
+            index_path = srcdir_path
+        if index_path is not None:
+            link_target = self.dir.rel_path(index_path) + link_target
 
         return self.url_quote(link_target)
 

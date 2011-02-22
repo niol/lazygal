@@ -379,7 +379,19 @@ class WebalbumDir(make.FileMakeObject):
         else:
             return False
 
+    def rel_path(self, target_srcdir_path):
+        '''
+        Returns the relative path to go from this directory to
+        target_srcdir_path.
+        '''
+        return self.source_dir.rel_path(self.source_dir.path,
+                                        target_srcdir_path)
+
     def flattening_srcpath(self, srcdir_path):
+        '''
+        Returns the source path in which srcdir_path should flattened, that is
+        the path of the gallery index that will point to srcdir_path's pictures.
+        '''
         if self.should_be_flattened(srcdir_path):
             cur_path = srcdir_path
             while self.should_be_flattened(cur_path):
@@ -387,10 +399,6 @@ class WebalbumDir(make.FileMakeObject):
             return cur_path
         else:
             return ''
-
-    def flattening_rel_path(self, srcdir_path):
-        return self.source_dir.rel_path(self.source_dir.path,
-                                        self.flattening_srcpath(srcdir_path))
 
     def build(self):
         # Check dest for junk files
