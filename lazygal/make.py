@@ -129,15 +129,21 @@ class MakeTask(object):
         if not output in self.output_items:
             self.output_items.append(output)
 
-    def print_dep_tree(self):
-        # FIXME: pass depth level in parameter
-        print self, self.get_mtime()
+    def print_dep_entry(self, level=0):
+        indent = ''
+        for index in range(0, level):
+            indent = indent + '\t'
+
+        print indent, self, self.get_mtime()
+
+    def print_dep_tree(self, depth=1, parent_level=-1):
+        level = parent_level+1
+        if level > depth: return
+
+        self.print_dep_entry(level)
+
         for d in self.deps:
-            print '\t', d, d.get_mtime()
-            for e in d.deps:
-                print '\t\t', e, e.get_mtime()
-                for f in e.deps:
-                    print '\t\t\t', f, f.get_mtime()
+            d.print_dep_tree(depth, level)
 
 
 class GroupTask(MakeTask):
