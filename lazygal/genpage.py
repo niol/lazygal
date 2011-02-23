@@ -327,7 +327,7 @@ class WebalbumIndexPage(WebalbumPage):
                 self.add_dependency(genfile.WebalbumArchive(dir))
 
         for subgal in self.subgals:
-            self.add_dependency(subgal)
+            self.add_dependency(subgal.source_dir)
 
         self.set_template('dirindex.thtml')
 
