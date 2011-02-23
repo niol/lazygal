@@ -44,6 +44,7 @@ class TestDeps(LazygalTestGen):
                'Webalbum subgal has not been built and does not need build.')
 
         self.album.generate(dest_path)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'\
@@ -66,9 +67,9 @@ class TestDeps(LazygalTestGen):
                                   self.album)
 
         dest_path = os.path.join(self.tmpdir, 'dst')
-        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.album.generate(dest_path)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'\
@@ -76,6 +77,10 @@ class TestDeps(LazygalTestGen):
 
         # touch the description file
         os.utime(os.path.join(source_subgal.path, 'album_description'), None)
+        # New objects in order to probe filesystem
+        source_subgal = Directory(subgal_path, [], ['subgal_img.jpg'],
+                                  self.album)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertTrue(dest_subgal.needs_build(),
             'Webalbum subgal should need build because of updated dir md.')
@@ -88,15 +93,20 @@ class TestDeps(LazygalTestGen):
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
 
         dest_path = os.path.join(self.tmpdir, 'dst')
-        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.album.generate(dest_path)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'\
             % str(dest_subgal.needs_build(True)))
 
         self.add_img(source_subgal.path, 'subgal_img2.jpg')
+        # New objects to ensure pic is taken into account
+        source_subgal = Directory(source_subgal.path, [],
+                                  ['subgal_img.jpg', 'subgal_img2.jpg'],
+                                  self.album)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         # Subgal should need build.
         self.assertTrue(dest_subgal.needs_build(),
