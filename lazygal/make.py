@@ -34,6 +34,7 @@ class MakeTask(object):
         self.output_items = []
         self.stamp_delete()
         self.__dep_only = False
+        self.update_build_status()
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -73,9 +74,13 @@ class MakeTask(object):
     def built_once(self):
         return self.__built_once
 
-    def needs_build(self, return_culprit=False):
-        mtime = self.get_mtime() # acces mtime which may update build stamp
+    def update_build_status(self):
+        '''
+        Do stuff to update the build status (e.g. probe filesystem, deps).
+        '''
+        pass
 
+    def needs_build(self, return_culprit=False):
         if not self.built_once():
             if return_culprit:
                 return 'never built'
@@ -87,7 +92,7 @@ class MakeTask(object):
             or dependency.needs_build():
                 if not dependency.is_dep_only():
                     if return_culprit:
-                        mtime_gap = dependency.get_mtime() - mtime
+                        mtime_gap = dependency.get_mtime() - self.get_mtime()
                         if mtime_gap > 0:
                             reason = 'dep newer by %s s' % mtime_gap
                         elif dependency.needs_build():
@@ -129,6 +134,12 @@ class MakeTask(object):
         if not output in self.output_items:
             self.output_items.append(output)
 
+    def clean_output(self, output):
+        """
+        Clean-up in case of interruption (KeyboardInterrupt).
+        """
+        pass
+
     def print_dep_entry(self, level=0):
         indent = ''
         for index in range(0, level):
@@ -154,7 +165,8 @@ class GroupTask(MakeTask):
     def built_once(self):
         return True # GroupTask is all about the deps.
 
-    def get_mtime(self):
+    def update_build_status(self):
+        super(GroupTask, self).update_build_status()
         # Find youngest dep, which should indicate latest build.
         mtime = None
         for dependency in self.deps:
@@ -167,7 +179,11 @@ class GroupTask(MakeTask):
         else:
             self.stamp_build(mtime)
 
-        return super(GroupTask, self).get_mtime()
+    def add_dependency(self, dependency):
+        super(GroupTask, self).add_dependency(dependency)
+        dep_mtime = dependency.get_mtime()
+        if dep_mtime > self.get_mtime():
+            self.stamp_build(dep_mtime)
 
     def build(self):
         pass
@@ -176,20 +192,17 @@ class GroupTask(MakeTask):
 class FileMakeObject(MakeTask):
 
     def __init__(self, path):
-        super(FileMakeObject, self).__init__()
         self._path = path
+        super(FileMakeObject, self).__init__()
         self.register_output(self._path)
 
-    def built_once(self):
-        return os.path.exists(self._path)
-
-    def get_mtime(self):
+    def update_build_status(self):
+        super(FileMakeObject, self).update_build_status()
         # Update build info according to file existence
         if os.path.exists(self._path):
             self.stamp_build(os.path.getmtime(self._path))
         else:
             self.stamp_delete()
-        return super(FileMakeObject, self).get_mtime()
 
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, self._path.encode('utf-8'))
