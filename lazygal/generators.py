@@ -531,8 +531,11 @@ class Album:
         # Load styles templates
         for style in styles:
             style_filename = style['filename']
-            if self.tpl_loader.is_known_template_type(style_filename):
+            try:
                 self.tpl_loader.load(style_filename)
+            except ValueError:
+                # Not a known emplate ext, ignore
+                pass
 
     def get_transcoder(self):
         if self.transcoder is None:
