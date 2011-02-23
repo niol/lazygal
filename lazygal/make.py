@@ -100,7 +100,7 @@ class MakeTask(object):
         return False
 
     def make(self, force=False):
-        if self.needs_build() or force:
+        if force or self.needs_build():
             for d in self.deps:
                 d.make() # dependency building not forced
             self.call_build()

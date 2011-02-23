@@ -415,14 +415,16 @@ class WebalbumDir(make.FileMakeObject):
                 self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
-        super(WebalbumDir, self).make(force)
+        needed_build = self.needs_build()
+
+        super(WebalbumDir, self).make(force or needed_build)
 
         # Although we should have modified the directory contents and thus its
         # mtime, it is possible that the directory mtime has not been updated
         # if we regenerated without adding/removing pictures (to take into
         # account a rotation for example). This is why we force directory mtime
-        # update here.
-        os.utime(self.path, None)
+        # update here if something has been built.
+        if needed_build: os.utime(self.path, None)
 
 
 class SharedFiles(make.FileSimpleDependency):
@@ -707,8 +709,11 @@ class Album:
 
             if feed:
                 feed.push_dir(destgal)
-            if destgal.needs_build() or check_all_dirs:
+
+            if check_all_dirs:
                 destgal.make()
+            elif destgal.needs_build():
+                destgal.make(force=True) # avoid another needs_build() call in make()
             else:
                 self.log(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
