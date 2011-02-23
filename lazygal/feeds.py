@@ -77,10 +77,17 @@ class RSS20:
         item['contents'] =  contents
         item['timestamp'] = timestamp
 
-        self.items.append(item)
-        self.items.sort(self.__item_older)
-        while len(self.items) > self.__maxitems:
-            self.items.pop()
+        i = 0
+        while i < len(self.items)\
+        and self.__item_older(item, self.items[i]) > 0:
+            i = i + 1
+
+        if i < self.__maxitems:
+            # We have a candidate
+            self.items.insert(i, item)
+            if len(self.items) > self.__maxitems:
+                # We have one too much, so get rid of it
+                self.items.pop()
 
     def dump(self, path):
         (root, channel) = self.__get_root_and_channel(os.path.basename(path))
