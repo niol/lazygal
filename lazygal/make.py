@@ -215,7 +215,7 @@ class FileSimpleDependency(FileMakeObject):
 
     def __init__(self, path):
         super(FileSimpleDependency, self).__init__(path)
-        assert os.path.exists(self._path)
+        assert self.built_once()
 
     def build(self):
         pass
