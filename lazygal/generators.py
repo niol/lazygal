@@ -313,6 +313,9 @@ class WebalbumDir(make.FileMakeObject):
 
         if not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
+            # This task is special because it populates dependencies. This is
+            # why it needs to be built before a build check.
+            self.break_task.make()
 
             if self.album.thumbs_per_page > 0:
                 # FIXME: If pagination is 'on', galleries need to be sorted
@@ -331,20 +334,6 @@ class WebalbumDir(make.FileMakeObject):
             page = genpage.WebalbumIndexPage(self, size_name, page_number,
                                              subgals, galleries)
             self.add_dependency(page)
-
-    def needs_build(self, return_culprit=False):
-        if self.break_task:
-            # This task is special because it populates dependencies. This is
-            # why it needs to be built before a build check.
-            self.break_task.make()
-
-        if not self.built_once() and os.path.isdir(self.path):
-            # Directory previously existed, we assume that it was well built.
-            # If the user is not satisfied with this, lazygal can be run
-            # with --check-all-dirs.
-            self.stamp_build(os.path.getmtime(self.path))
-
-        return super(WebalbumDir, self).needs_build(return_culprit)
 
     def get_subgal_count(self):
         if self.flatten_below():
