@@ -116,7 +116,11 @@ class MakeTask(object):
         overridden with more complicated things in subclasses. The purpose is
         to setup some state before and/or after build.
         """
-        self.build()
+        try:
+            self.build()
+        except KeyboardInterrupt:
+            self.clean_output()
+            sys.exit(_('Interrupted'))
         self.stamp_build()
 
     def build(self):
@@ -203,6 +207,10 @@ class FileMakeObject(MakeTask):
         else:
             self.stamp_delete()
 
+    def clean_output(self):
+        print "os.unlink(" + self._path + ")"
+        os.unlink(self._path)
+
     def __repr__(self):
         return '%s(%s)' % (self.__class__.__name__, self._path.encode('utf-8'))
 
@@ -219,6 +227,8 @@ class FileSimpleDependency(FileMakeObject):
     def build(self):
         pass
 
+    def clean_output(self):
+        pass
 
 class FileCopy(FileMakeObject):
     """
