@@ -26,13 +26,12 @@ from lazygal.sourcetree import Directory
 from lazygal import pyexiv2api as pyexiv2
 
 
-class TestSourceTree(LazygalTestGen):
+class TestGenerators(LazygalTestGen):
 
     def test_genfile_filelayout(self):
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
 
         dest_path = self.get_working_path()
-        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.album.generate(dest_path)
 
@@ -42,12 +41,13 @@ class TestSourceTree(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)))
 
         # Check subgal dir contents
-        self.assertTrue(os.path.isdir(dest_subgal.path))
+        dest_subgal_path = os.path.join(dest_path, 'subgal')
+        self.assertTrue(os.path.isdir(dest_subgal_path))
         for fn in ('index.html', 'index_medium.html',
                    'subgal_img.html', 'subgal_img_medium.html',
                    'subgal_img_thumb.jpg', 'subgal_img_small.jpg',
                    'subgal_img_medium.jpg'):
-            self.assertTrue(os.path.isfile(os.path.join(dest_subgal.path, fn)))
+            self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
     def test_originals_symlinks(self):
         img_path = self.add_img(self.source_dir, 'symlink_target.jpg')
