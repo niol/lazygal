@@ -49,6 +49,46 @@ class TestGenerators(LazygalTestGen):
                    'subgal_img_medium.jpg'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
+    def test_filecleanup(self):
+        '''
+        Files that are not part of what was generated or updated shall be
+        spotted.
+        '''
+        pics = [ 'img%d.jpg' % i for i in range(0, 8)]
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        dest_path = self.get_working_path()
+
+        self.album.generate(dest_path)
+
+        # add a thumbs that should not be there
+        self.add_img(dest_path, 'extra_thumb.jpg')
+        self.add_img(os.path.join(dest_path, 'subgal'), 'extra_thumb2.jpg')
+
+        # remove a pic in source_dir
+        os.unlink(os.path.join(self.source_dir, 'subgal', 'img6.jpg'))
+
+        # new objects to probe filesystem
+        pics.remove('img6.jpg')
+        source_subgal = Directory(os.path.join(self.source_dir, 'subgal'),
+                                  [], pics, self.album)
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
+        expected = map(lambda fn:\
+                             unicode(os.path.join(dest_path, 'subgal', fn)),
+                       ['extra_thumb2.jpg',
+                        'img6_thumb.jpg',
+                        'img6_small.jpg', 'img6_medium.jpg',
+                        'img6.html', 'img6_medium.html',
+                       ]
+                      )
+        self.assertEqual(sorted(dest_subgal.list_foreign_files()),
+                         sorted(expected))
+
+        source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
+        dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
+        self.assertEqual(sorted(dest_gal.list_foreign_files()),
+                         [os.path.join(dest_path, 'extra_thumb.jpg')])
+
     def test_originals_symlinks(self):
         img_path = self.add_img(self.source_dir, 'symlink_target.jpg')
 
