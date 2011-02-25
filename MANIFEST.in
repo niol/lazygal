@@ -11,5 +11,6 @@ recursive-include themes *.js
 include locale/*.po
 include locale/lazygal.pot
 include locale/POTFILES.in
+include lazygal-setcomment.py
 include devscripts/*
 include lazygaltest/*py
