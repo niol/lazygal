@@ -13,13 +13,15 @@ Ideas to improve Lazygal (in no particular order)
 
 * Add some styles to the default theme.
 
-* Delete half made stuff on KeyInterrupt
-     Work to do to be mostly in lazygal/make.py but should uncover some bugs in
-     output items computations.
-
 * Remove feed rel link in templates when there is no feed.
 
 * Integrate Gallerific
 
 * Better video thumbnails :
   http://www.crocodile.org/lord/thumbextraction/vthumb.py
+
+* Make it possible to input multiple source_dirs on the command line.
+
+* Archive (zip) link on directory index.
+
+* --exclude to exclude directories from processing.
