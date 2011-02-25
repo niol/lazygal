@@ -180,7 +180,7 @@ class OggTheoraTranscoder(GstVideoConverter):
 
 if __name__ == '__main__':
     import sys, os
-    converter = OggTheoraConverter()
+    converter = OggTheoraTranscoder()
     for file_path in sys.argv[1:]:
         fn, ext = os.path.splitext(file_path)
         ogg_path = fn + '.ogg'
