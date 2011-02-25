@@ -14,3 +14,4 @@ include locale/POTFILES.in
 include lazygal-setcomment.py
 include devscripts/*
 include lazygaltest/*py
+include lazygaltest/sample*.jpg
