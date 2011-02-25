@@ -274,6 +274,8 @@ class WebalbumDir(make.FileMakeObject):
     def __init__(self, dir, subgals, album, album_dest_dir, clean_dest=False):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
+        if self.path.endswith('/'): self.path = os.path.dirname(self.path)
+
         super(WebalbumDir, self).__init__(self.path)
 
         self.add_dependency(self.source_dir)
@@ -335,6 +337,11 @@ class WebalbumDir(make.FileMakeObject):
                                              subgals, galleries)
             self.add_dependency(page)
 
+    def register_output(self, output):
+        # We only care about output in the current directory
+        if os.path.dirname(output) == self.path:
+            super(WebalbumDir, self).register_output(output)
+
     def get_subgal_count(self):
         if self.flatten_below():
             return 0
@@ -389,7 +396,9 @@ class WebalbumDir(make.FileMakeObject):
         else:
             return ''
 
-    def build(self):
+    def list_foreign_files(self):
+        foreign_files = []
+
         # Check dest for junk files
         extra_files = []
         if self.source_dir.is_album_root():
@@ -406,13 +415,19 @@ class WebalbumDir(make.FileMakeObject):
             if dest_file not in self.output_items and\
                dest_file not in expected_dirs and\
                dest_file not in extra_files:
-                text = ''
-                if self.clean_dest and not os.path.isdir(dest_file):
-                    os.unlink(dest_file)
-                    text = ""
-                else:
-                    text = _("you should")
-                self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
+                foreign_files.append(dest_file)
+
+        return foreign_files
+
+    def build(self):
+        for dest_file in self.list_foreign_files():
+            text = ''
+            if self.clean_dest and not os.path.isdir(dest_file):
+                os.unlink(dest_file)
+                text = ""
+            else:
+                text = _("you should")
+            self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
         needed_build = self.needs_build()

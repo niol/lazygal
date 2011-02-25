@@ -131,8 +131,7 @@ class MakeTask(object):
         This provides a facility to register within the makefile machinery what
         items are built from the task.
         """
-        if not output in self.output_items:
-            self.output_items.append(output)
+        self.output_items.append(output)
 
     def clean_output(self, output):
         """
