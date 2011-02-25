@@ -150,6 +150,44 @@ class TestGenerators(LazygalTestGen):
                          True)
 
 
+class TestSpecialGens(LazygalTestGen):
+
+    def setUp(self):
+        super(TestSpecialGens, self).setUp(False)
+        self.dest_path = os.path.join(self.tmpdir, 'dst')
+
+    def test_paginate(self):
+        '''
+        It shall be possible to split big galleries on mutiple index pages.
+        '''
+        self.setup_album({'thumbs_per_page': 4})
+
+        pics = [ 'img%d.jpg' % i for i in range(0, 9)]
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        self.album.generate(self.dest_path)
+        # FIXME: Check dest dir contents, test only catches uncaught exceptions
+        # for now...
+
+    def test_flatten(self):
+        self.setup_album({'dir_flattening_depth': 1})
+
+        source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
+        self.album.generate(self.dest_path)
+        # FIXME: Check dest dir contents, test only catches uncaught exceptions
+        # for now...
+
+    def test_flattenpaginate(self):
+        self.setup_album({'thumbs_per_page': 4, 'dir_flattening_depth': 1,})
+
+        pics = [ 'img%d.jpg' % i for i in range(0, 9)]
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        self.album.generate(self.dest_path)
+        # FIXME: Check dest dir contents, test only catches uncaught exceptions
+        # for now...
+
+
 if __name__ == '__main__':
     unittest.main()
 

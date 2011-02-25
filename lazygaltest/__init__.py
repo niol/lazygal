@@ -61,13 +61,19 @@ class LazygalTest(unittest.TestCase):
 
 class LazygalTestGen(LazygalTest):
 
-    def setUp(self):
+    def setUp(self, album=True):
         super(LazygalTestGen, self).setUp()
 
         self.tmpdir = self.get_working_path()
         self.source_dir = os.path.join(self.tmpdir, 'src')
         os.mkdir(self.source_dir)
-        self.album = Album(self.source_dir)
+
+        if album:
+            self.setup_album()
+
+    def setup_album(self, kwargs=None):
+        if kwargs is None: kwargs = {}
+        self.album = Album(self.source_dir, **kwargs)
         self.album.set_logging('error')
         self.album.set_theme()
 
