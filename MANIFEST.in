@@ -1,5 +1,6 @@
 include ChangeLog
 include ChangeLog-full
+include MANIFEST.in
 include COPYING
 include README
 include TODO
