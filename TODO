@@ -25,3 +25,5 @@ Ideas to improve Lazygal (in no particular order)
 * Archive (zip) link on directory index.
 
 * --exclude to exclude directories from processing.
+
+* Also transcode to VP8.
