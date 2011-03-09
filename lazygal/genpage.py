@@ -311,7 +311,6 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_dependency(dir.source_dir.metadata)
             if dir is not self.dir:
                 dir.flattening_dir = self.dir
-                self.add_dependency(dir)
 
             self.add_dependency(dir.source_dir)
             self.add_dependency(dir.sort_task)
