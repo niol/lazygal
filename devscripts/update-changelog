@@ -19,4 +19,4 @@ $HG log --template '{tags}|{date|shortdate}|{desc|firstline}\n' -R $repo |\
                     print "\nLazygal " $1 " (" $2 ")";\
                     print "  * " $3\
                   }'\
-    > $repo/ChangeLog
+    > $repo/ChangeLog-full

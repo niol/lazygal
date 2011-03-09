@@ -1,422 +1,92 @@
+Lazygal 0.6 (2011-03-09)
+  * delete half made stuff on key interrupt
+  * add breadcrumbs on every page
+  * add many unit tests
+  * make the pyexiv2 api changes wrapper a separate module
+  * improve the way the picture mess thumbnail is created
+  * make it possible to symlink original images
+  * update cz translation
+  * add danish translation
+  * add support for file metadata including image captions
+  * Key navigation in gallery
+
 Lazygal 0.5.2 (2010-09-16)
   * fix RSS feed item tpl loading which broke feed generation
-  * update TODO
-  * Added tag 0_5_1 for changeset 2dae25a96d5d
 
 Lazygal 0.5.1 (2010-08-26)
-  * set version to 0.5.1
-  * another fix forPOTFILES list
-  * add new input theme potfiles
-  * simplify changelog gen script a bit using hg log templates
-  * fix image-index theme
-  * have missing theme files being searched in the default theme
-  * fix metadata generation root path decoding
-  * fix root path decoding
-  * fix metadata generation error logging
-  * fix failure with videos when a size for original pics is set
   * work around pygst bug that steals help command line swith
   * improve debug output for tpl decoding errors
   * fix decoding of Exif.Image.ImageDescription and Iptc.Application2.ObjectName
   * drop python < 2.5 support (as a consequence of Debian bug #588262)
-  * the t template var trick has disapeared
   * fix camera model name retrieval with pyexiv2 0.2+
   * fix fr translation
-  * fix changelog generation script which was showing the tip tag
-  * Added tag 0_5 for changeset c4ad2afab2c7
 
 Lazygal 0.5 (2010-06-15)
-  * set version to 0.5
-  * to not append hg revision if last commit is a tag
-  * separate lazygal version and hg rev
-  * add png files to theme data
-  * retrieve hg rev from VCS if available
-  * update manpages dates
-  * update changelog generation script for mercurial
-  * reprocess all source files if translated source file list has changed
-  * update translated file list
-  * update potfile
   * update french translation
-  * update TODO
-  * add some documentation for included templates
-  * fix video ordering which messed up pic ordering
-  * reset GStreamer pipeline when decoding has failed
-  * update TODO
   * avoid using PIL for JPEG comment when pyexiv2 can do the job
-  * fix typo in error msg
   * also generate web pages for videos (ogg/theora)
-  * improve included tpls handling
   * describe high level mode of operation in manual page
-  * more usefull debug output for template decoding errors
   * support new pyexiv2 0.2 API
-  * fix some function names due to video preparation patch
-  * always store file paths in unicode
-  * bring dates in 2010
-  * update tags
   * Read IPTC metadata
-  * multi media support (preparation for video support)
-  * improve broken img handling
-  * probing EXIF data unconditionaly is indeed a perf problem
-  * add a separate task for the breaking of galleries into multiple pages
-  * fix issues with file make objs last built time
-  * improve task output registering
-  * only read EXIF info once per page
-  * do not sort the galleries when nothing needs to be built
-  * fix SubgalSort task according to recent refactoring
-  * record FIXME in unicode path issue
-  * fix typo in webgal dir cleanup
-  * remove useless del im
   * do not keep EXIF data in memory, reread from file when needed (not that often)
-  * no subgal count in feed item if no subgals
-  * fix album picture path by always recording abs path
-  * Fix typos
-  * correctly initialize album name when generating default metadata
-  * improve description of -m
-  * fix the generating of default metadata
-  * add a FIXME to the second implementation of the same alg
-  * try to fix up the mess that comes from the confusion between a Directory and a WebalbumDir
-  * better handling of broken image files
-  * move webgalpic init out of index page init
-  * some __doc__ enhancements
-  * update TODO
-  * fix sorting of pics in already generated webgals
-  * simplify code by removing the LightWebgal
-  * fix mixups in _last_built_time variable
-  * improve SORTING task debug line
-  * remove prepare() in make machinery
-  * make the sorting of pictures in a gallery a separate task
-  * remove useless regsiter_builder() stuff
   * add dirty script to set an EXIF comment, to be improved later
-  * fix failure of directory metadata generation on dirs without pics
   * update homepage url
   * add subgal and image count on subgal links in default theme
   * flush out pipes after message print to make sure msg are displayed even when output is piped (ssh, less)
   * get rid of the "$t." prefix in templates
-  * simplify a bit the file file cleanup code
-  * fix code disalignement
-  * fix presented elements computation when --thumbs-per-page is used with --flatten-below
-  * split the now big generators.py file
-  * return empty jpeg comment whenever field is missing from jpeg file for some reason
-  * memory improvement: only automatically populate outputed items for make objects that produce files
-  * force the cleanup of circular references by the gc after each dir
-  * only set full featured webgal_dir object link if flattening below
-  * light subdir is enough for other img link
-  * fixed thumb links regression in index page
   * support for templates include and deps
   * Flatten directory structure below a certain depth
-  * also include jpEg
-  * add missing space in verbose output
-  * fixed issue with dir cleanup wich showed up album dirs
-  * comment typo
   * skip galleries whose name collide with shared material (e.g. CSS)
-  * fixed gallery conf file not taken into account except for tpl vars
   * fixed output not in a pipe (less, ssh, etc) that raised a unicode decode error
-  * automatically populate newsize definition plugins list
   * more control over image resize
-  * bring dates in 2009
   * fix manpage installation
 
 Lazygal 0.4.1 (2009-05-21)
-  * set version to 0.4.1
-  * update TODO
-  * fixed typo in french translation
-  * update french translation
-  * bring MANIFEST.in up to date with current dist
-  * urlencode dirzip urls
-  * Make RESIZE translatable
-  * Fix description of --subgal-sort-by
   * Czech translation update
-  * POT update
-  * fix parent link tpl var name in default theme
   * new cmdline option --orig-base (Debian Closes: #504039)
-  * default theme: original link is not technical
-  * do not build destgal if the dir has no photos, thus do not create empty webgal dir
-  * do not capword in str_humanize
-  * fix up typos in previous url_quote patch
   * no subgals for dirs with no photos
   * quote most urls in page links
-  * do not break up filename and extension for directories
-  * fix unicode error when source_dir has got non-ascii chars
-  * remove useless sorting of subdir names before options are taken into account
-  * allow subgal sorting and reverse sorting of pics and subgals
   * make webalbum browsable directly on filesystem
   * improve sorting when no EXIF data is available and give more sorting options
   * add progressive and optimize image saving options (thanks to Ian Zimmerman)
   * add missing default values in a config object (thanks to Ian Zimmerman)
   * handle EXIF flash values localized by some cameras
-  * fix typo in french translation
   * generate manpage using docbook
-  * %z in strftime hack for feed generation : add python issue link
   * -s now understands the special dimensions 0x0 which instructs not to resize for this size
-  * useless typo fix in feed generator
-  * make thumb size name a variable
   * Handle non-ascii dates
 
 Lazygal 0.4 (2008-07-04)
-  * set version to 0.4
-  * output tpl gen date in current local to match i18n
-  * use new out parameter in genshi templates generation (genshi >
   * add french translation
   * support for an additionnal config file in source_dir
-  * do not output format not supported message twice
-  * update TODO : better i18n in templates
-  * add some translatable strings in the default theme
   * Initial czech translation.
-  * Avoid two strings with different format chars.
-  * revert previous patch and use lenient mode for variable lookup
-  * i18n support for templates
-  * Use defined() as it seems to be needed with genshi 0.5.0
-  * remove version in manpage
-  * fix typo in comment
-  * add a comment about the usage of the 't' dict in templates
-  * fix typo in exception raising
-  * better encoding detection for album_description
   * allow xhtml tags in album_description
   * improve README a bit on template vars
-  * compute utf-16 endianess from EXIF tag endianess (patch by Matthieu Castet)
-  * fix typo in source dir does not exist error
   * fix unicode EXIF UserComment (thanks Matthieu Castet for the hint on endianess)
-  * charset parsing is only for the UserComment EXIF field
-  * strip useless space in exif strings
-  * fallback to utf-8 for jpeg comments
-  * better handling of decoding errors for EXIF commendings
-  * handle charset decl with no text in EXIF comment
-  * Readd lost zero
-  * Better parsing of field
-  * Better charset handling
-  * Handle charset in EXIF comment
-  * Handle old EXIF comment
-  * Fix \0 in comment
-  * add a white frame to webalbum pics which looks better
-  * add an option to choose the webalbum picture color
-  * TODO i18n in tpls
-  * fix filename encoding issue during dest_dir cleanup checks
-  * make genshi templates play better with unicode
-  * TODO video and dirgalpic bg color
-  * optional directory archive with original images for easy download
-  * update-po script reorganization
   * i18n support for runtime messages
-  * fix lazygal module * import
   * webalbum index pagination for big directories
-  * remove useless Album constructor parameter
-  * Another int conversion
-  * Force int conversion
 
 Lazygal 0.3.1 (2008-03-27)
-  * set version to 0.3.1
-  * add a script that builds a changelog from the darcs history
   * better description of touch instead of --check-all-dirs in man page
   * fix thumb alt in dirindex
   * fix thumb width/height not being outputed in dirindex
-  * if dep needs build, target should be built
   * rebuild webalbumpic when pics get removed from dir
-  * use static var instead of instance var for configurable webalbumpic fn
 
 Lazygal 0.3 (2008-03-08)
-  * set version to 0.3
-  * sort subdirs for nice ordering when displayed
-  * better and simplet title for index page
-  * TODO abandon this item because the shell makes it really tricky to put complex stuff in tpl vars'
-  * IndexPage now depends on subdir metadata
-  * try to handle conffile tpl vars with non ascii chars
-  * use subdir objects rather than dirnames to populate subgal links
-  * make more use of _str_humanize()
-  * webalbum pic should be a dep of webalbum dir instead of index page
   * skip VCS directories in album generation
-  * do not fail on directory that contains no pictures
-  * fix typo in tpl var name: s/zise/size/
-  * do not display other size links if there is only one image size
-  * Add missing template.
   * Support for new PyExiv2
-  * update TODO
-  * reorder Album methods a bit to have loging all in one place
   * themes mostly through CSS and new default style cmdline option
-  * make the contents of the feed item a template
-  * fix original link
-  * allow template vars given on the cmdline to have differente encodings
   * fail if dest is in source tree
   * add webalbum picture to feed items
-  * simple filedep should not be registered as output from the target
-  * fix tpl file dep by normalizing DATAPATH
-  * TODO Webalbumdir done another way
-  * make feed use source dirs mtimes instead of generated dirs mtimes
-  * share more code between LightWebalbumDir and WebalbumDir
-  * maybe fix album_description generation which was broken by previous changes
-  * play a bit with picture mess params to improve effect (making the thumbs larger)
-  * TODO inheritence not possible between WebalbumDir et LightWebalbumDir
-  * add reported bug to TODO
-  * add a todo list to the project
-  * shared file tpl must depend on template file
   * build some fancier album picture
-  * use some extra_files list for dir cleanup
-  * fix tpl shared files generation
   * walk source tree from deep to top to be able to reuse stuff processed in subdirs
-  * move _add_size_qualifier() in album so that everybody gets it
-  * Support for generating metadata files
-  * More intelligent quotes stripping
-  * use the new copy target for ImageOriginal
-  * make shared files generation a make target
 
 Lazygal 0.2 (2008-01-24)
-  * bump version number
-  * do not complain if elementtree is not here
-  * advertise RSS feed in templates now that it seems to work
-  * full RSS feed generation (not only processed directories)
-  * add missing metadata dependency for index page
-  * quote urls in feed for special characters
-  * update copyright dates in licence headers
-  * Optional lens information
-  * Better model name generation
   * linux kernel compile like output, which is more readable
-  * fix feed generation, sorting and maxitems
-  * some tidying in album metadata to bring back guessed album pictures in index page
-  * depending on prev/next for browse page should occure at prepare time
-  * make sure that make targets are prepared only once
-  * browse page should depend on directory in case of image deletion
-  * fix indentation in previous patch
-  * feed should not depend on skipped directories
-  * do not load exif data in unprocessed directories
   * feed generation for new or updated galleries
-  * construct template dependencies with full path
-  * refactor metadata as a make target and refactor WebalbumDir attrs
-  * fix browse page other size links
-  * chain images only once for all
-  * fix root index pages not being built
-  * save initial mtime is only for WebalbumDir
-  * split source tree classes in a separate module
-  * externalize makefile logic into a separate module
-  * fixes and improvements (themes, files and metadata) for manual page
   * Add man page
-  * Avoid failure if running outside darcs tree
-  * fix unencoded utf-8 in check dest for junk
-  * Add footer option to template
   * Improve template variables support
   * warn about manually removing ungenerated directories in dest
   * Allow to include original pictures in generated album
 
 Lazygal 0.1 (2007-10-26)
-  * bump version number
-  * make default theme CSS be intepreted by template engine and escape #
-  * Make default theme accepts same template vars.
-  * Add some more template variables.
-  * template-vars can be configured from config file.
-  * Use interpreted flash value instead of raw number.
-  * fix album subpicture link containing a dot in name
-  * handle tag Exif.Photo.FocalPlaneResolutionUnit no set
-  * make shared stuff logging more accurate with what happens
-  * example of CSS with tpl vars in image-index theme
-  * pass tpl vars on the cmdline
-  * shared files templates
-  * Improve exposure display.
-  * added lazygal section to default config options
-  * Avoid multiple conversion of float values.
-  * Move config to ~/.lazygal directory, we already use it for themes.
-  * Improve 35 mm equivalent calculation.
-  * Move image name bellow comment.
-  * Use 35 mm equivalent from EXIF if available
-  * Use same format for 35 mm equivalent as for normal focal length
-  * Handle if we want int value as float
-  * Fix FIXMEs :-).
-  * Fix handling of images without EXIF.
-  * Do not break vim modeline by end of comment.
-  * Use format string instead of contatenation.
-  * Configuration file support.
-  * Make CSS valid.
-  * do not complain about album metadata not being a supported format
-  * EXIF backend changed to exiv2
-  * remove duplicated get_date_taken() method
-  * make sur exif data is loaded before using it
-  * improve output and add --quiet and --debug options
-  * make image-index theme more XHML valid regarding subgal links
-  * remove unused variable
-  * put rotation calculation in ExifTags
-  * get exif date selection in ExifTags
-  * correctly load utf-8 from album metadata
-  * catch bogus EXIF focal plane x res
-  * get exif and metadata stuff in a separate file
-  * rename lazygal/lazygal.py to lazygal/generators.py
-  * Mention homepage in README
-  * Create whole path for album if it does not exist
-  * Make setup.py sdist work
-  * Try to use EXIF date when available
-  * Actually use parameter
-  * Generic EXIF date parsing method
-  * also increase default JPEG quality in alum class
-  * Increase default JPEG quality
-  * JPEG quality is now configurable
-  * Display gallery index in more columns on wider screens
-  * Fix typo in help
-  * Fix typo
-  * Update meta data code
-  * Implelement guessing of album picture
-  * Rearrange metadata acquision
-  * Rearrange functions to group same
-  * Add some documentation
-  * Improve vendor/model detection
-  * fix get_last_version which did not work when patches had a long comment
-  * do not advice to remove shared dir
-  * try to fix filesystem encoding issues
-  * make FileImage constructor use dir object
-  * Better detect duplicate information in vendor/model fields
-  * Include sensitivity info
-  * Allow {upper,mixed}-case extensions
-  * Include version in footer
-  * Sync image-index theme with default
-  * append some kind of darcs revision to version if available
-  * make lazygal version available in templates
-  * Include time zone in date
-  * Fix alternate text for image
-  * Show verbose album name if available
-  * Improve albums listing in image-index theme
-  * Update mage-index style to make it look a bit better
-  * Add image-index theme as copy of default
-  * Convert album picture path to allow it's usage
-  * Add some readme, mostly to document meta data
-  * metadata support for subdirs
-  * initial album metadata support
-  * added generation date to templates
-  * remove final link separator in other sizes links
-  * no other size link on currently selected size
-  * Add version to lazygal module
-  * add missing __init__.py file for new lazygal module
-  * Allow user defined themes
-  * Prefer local themes
-  * Install themes
-  * Rename Lazygal module to lazygal
-  * Rename script to avoid name conflict with module
-  * Add distutils support
-  * Configurable thumbnail size
-  * These sould be integers
-  * Configurable image sizes
-  * Use format strings
-  * Fix typo
-  * Handle zero source mtime
-  * enhanced-exif-support
-  * work-on-empty-dir
-  * whitespace-cleanup
-  * use genshi for templates
-  * force update of dest dir mtime
-  * get rel_root into browse page template
-  * save dest dir mtime because it is updated during lazygal's operation
-  * always generate browse page if directory has changed, because files may have been deleted
-  * added licence clauses (GPL v2)
-  * rotate before thunbail in order to have consistent sizes accross gallery
-  * added --check-all-dirs option to force lazygal to check all dirs
-  * add --clean_destination option to clean deleted photos in destination
-  * fix stupid angle error in orientation rotation
-  * skip whole directories according to mtime
-  * basic auto orientation according to EXIF data
-  * copy shared files before generating galleries
-  * compute a title for the root directory page
-  * sort subgal links
-  * handle cases where EXIF date is not available or does not make sense
-  * dest is only relevant for directories
-  * other sizes links on every page
-  * add lazygal website link in default template
-  * make File, Directory and ImageFile more object oriented
-  * test for source dir to exist
-  * fix prev link search
-  * remove superfluous print
-  * sort by EXIF date
-  * rename image_processor for it to be shorter
-  * fix css not found
-  * inital import, it works!
+  * inital version, it works!
