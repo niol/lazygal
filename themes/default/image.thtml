@@ -11,7 +11,7 @@
         </ul>
         <ul class="image_caption_tech">
             <li>$image_name</li>
-            <li py:if="camera_name">${_('Using')} $camera_name
+            <li py:if="camera_name">${_('Camera:')} $camera_name
                 <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
 	        </li>
             <li py:if="exposure">${_('Exposure')} $exposure</li>

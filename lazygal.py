@@ -119,12 +119,12 @@ parser.add_option("", "--dir-flattening-depth",
                   action="store", type="int",
                   dest="dir_flattening_depth",
                   default=config.getboolean('lazygal', 'dir-flattening-depth'),
-                  help=_("Level below witch the directory tree is flattened. Default is 0 which is unlimited."))
+                  help=_("Level below which the directory tree is flattened. Default is 0 which is unlimited."))
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",
                   default=config.get('lazygal', 'image-size'),
-                  help=_("Size of images, define as <name>=SIZE,..., eg. small=800x600,medium=1024x768. The special dimensions 0x0 use original size. See manual page for SIZE syntax."))
+                  help=_("Size of images, define as <name>=SIZE,..., eg. small=800x600,medium=1024x768. The special value 0x0 uses original size. See manual page for SIZE syntax."))
 parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
                   dest="thumbnail_size",
@@ -152,7 +152,7 @@ parser.add_option("", "--orig-symlink",
 parser.add_option("", "--puburl",
                   action="store", type="string",
                   dest="pub_url",
-                  help=_("Publication URL (only usefull for feed generation)."))
+                  help=_("Publication URL (only useful for feed generation)."))
 parser.add_option("-m", "--generate-metadata",
                   action="store_true",
                   dest="metadata", default=False,
@@ -174,7 +174,7 @@ parser.add_option("", "--webalbum-pic-bg",
 parser.add_option("", "--optimize",
                   action="store_true",
                   dest="optimize", default=config.getboolean('lazygal', 'optimize'),
-                  help=_("Run an extra optimization pass an each image."))
+                  help=_("Run an extra optimization pass on each image."))
 parser.add_option("", "--progressive",
                   action="store_true",
                   dest="progressive", default=config.getboolean('lazygal', 'progressive'),

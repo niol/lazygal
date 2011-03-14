@@ -498,7 +498,7 @@ class SharedFileTemplate(make.FileMakeObject):
         if ext.startswith('.t'):
             self.path = filename + '.' + ext[2:]
         else:
-            raise ValueError(_('We have a template with an extension that does not start with a t. Abording.'))
+            raise ValueError(_('We have a template with an extension that does not start with a t. Aborting.'))
 
         make.FileMakeObject.__init__(self, self.path)
         self.add_file_dependency(shared_tpl_name)
