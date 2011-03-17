@@ -27,11 +27,15 @@ import genpage, genmedia, genfile
 from sourcetree import SOURCEDIR_CONFIGFILE
 
 
-DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-    DATAPATH = os.path.join(sys.exec_prefix, 'share', 'lazygal')
+from lazygal import INSTALL_MODE, INSTALL_PREFIX
+if INSTALL_MODE == 'source':
+    DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+elif INSTALL_MODE == 'installed':
+    DATAPATH = os.path.join(INSTALL_PREFIX, 'share', 'lazygal')
     if not os.path.exists(os.path.join(DATAPATH, 'themes')):
         print _('Could not find themes dir, check your installation!')
+        sys.exit(1)
+
 
 THEME_DIR = os.path.join(DATAPATH, 'themes')
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))

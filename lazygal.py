@@ -22,6 +22,19 @@ from optparse import OptionParser
 import genshi.core
 import ConfigParser
 
+
+# i18n
+from lazygal import INSTALL_MODE, INSTALL_PREFIX
+if INSTALL_MODE == 'source':
+    LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
+                                                 'build', 'mo'))
+elif INSTALL_MODE == 'installed':
+    LOCALES_PATH = os.path.join(INSTALL_PREFIX, 'share', 'locale')
+gettext.install('lazygal', LOCALES_PATH, unicode=1)
+
+locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
+
+
 import lazygal
 from lazygal.generators import Album, SOURCEDIR_CONFIGFILE
 from lazygal.genmedia import THUMB_SIZE_NAME
@@ -51,15 +64,6 @@ CONFIGDEFAULTS = {
     'webalbumpic-bg': 'transparent',
     'template-vars': '',
 }
-
-# i18n
-LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                             'build', 'mo'))
-if not os.path.exists(LOCALES_PATH):
-    LOCALES_PATH = '/usr/share/locale'
-gettext.install('lazygal', LOCALES_PATH, unicode=1)
-
-locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
 
 
 # Read configuration file

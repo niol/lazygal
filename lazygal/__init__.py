@@ -22,6 +22,20 @@ __all__ = [
         'generators',
         ]
 
+
+# Compute installation prefix
+if os.path.isfile(os.path.join(os.path.dirname(__file__), '..', 'setup.py')):
+    INSTALL_MODE = 'source'
+    INSTALL_PREFIX = ''
+else:
+    # Lazygal is installed, assume we are in
+    # $prefix/lib/python2.X/dist-packages/lazygal
+    INSTALL_MODE = 'installed'
+    INSTALL_PREFIX = os.path.join(os.path.dirname(__file__),
+                                  '..', '..', '..', '..')
+    INSTALL_PREFIX = os.path.normpath(INSTALL_PREFIX)
+
+
 def get_hg_rev():
     try:
         lazygal_dir = os.path.join(os.path.dirname(__file__), '..')
