@@ -337,6 +337,47 @@
         <listitem>
           <para>Level below witch the directory tree is flattened. Default is
           no flattening ('No').</para>
+          <para>This option makes the program include the web gallery index
+          of child galleries in their parent's gallery index, if their level is
+          greater than the supplied <replaceable>LEVEL</replaceable>. The level
+          of the album root is 0.</para>
+          <para>Index pages with multiple galleries (which happens when this
+          section is used) show the pictures links in gallery sections.</para>
+          <para>The following examples show the produced indexes for a sample
+          album (2 sub-galleries, 1 sub-sub-gallery, 1 picture in each one of
+          those).</para>
+          <example>
+            <title>--dir-flattening-depth=Off (default)</title>
+            <programlisting>
+              index.html &lt;- sub-gallery links
+              subgal1/index.html &lt;- index with img1
+              subgal1/img1.html
+              subgal1/subsubgal1/index.html &lt;- index with img2
+              subgal1/subsubgal1/img2.html
+              subgal2/index.html &lt;- index with img3
+              subgal2/img3.html
+            </programlisting>
+          </example>
+          <example>
+            <title>--dir-flattening-depth=0</title>
+            <programlisting>
+              index.html &lt;- contains index for all pics
+              subgal1/img1.html
+              subgal1/subsubgal1/img2.html
+              subgal2/img3.html
+            </programlisting>
+          </example>
+          <example>
+            <title>--dir-flattening-depth=1</title>
+            <programlisting>
+              index.html &lt;- contains index for all pics
+              subgal1/index.html &lt;- index with img1 and img2
+              subgal1/img1.html
+              subgal1/subsubgal1/img2.html
+              subgal2/index.html &lt;- index with img3
+              subgal2/img3.html
+            </programlisting>
+          </example>
         </listitem>
       </varlistentry>
 
