@@ -20,10 +20,12 @@ Ideas to improve Lazygal (in no particular order)
 * Better video thumbnails :
   http://www.crocodile.org/lord/thumbextraction/vthumb.py
 
-* Make it possible to input multiple source_dirs on the command line.
+* Make lazygal follow symbolic links on directories in source tree.
 
 * Archive (zip) link on directory index.
 
 * --exclude to exclude directories from processing.
 
 * Also transcode to VP8.
+
+* Per source directory config file.
