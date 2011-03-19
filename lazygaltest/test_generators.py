@@ -19,6 +19,7 @@
 import unittest
 import os
 import datetime
+import shutil
 
 from __init__ import LazygalTestGen
 from lazygal.generators import WebalbumDir
@@ -186,6 +187,56 @@ class TestSpecialGens(LazygalTestGen):
         self.album.generate(self.dest_path)
         # FIXME: Check dest dir contents, test only catches uncaught exceptions
         # for now...
+
+    def test_dir_symlink(self):
+        '''
+        The generator should follow symlinks on directories, but should not get
+        stuck in infinite recursion if two distinct directory trees have
+        symbolic links to each other.
+        '''
+        self.setup_album()
+
+        pics = [ 'img%d.jpg' % i for i in range(0, 2)]
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        # cp -ar to create an out-of-tree source dir with pics
+        src2_path = os.path.join(self.get_working_path(), 'symlink_target')
+        shutil.copytree(self.source_dir, src2_path)
+
+        # symlink src2 so it show in album
+        os.symlink(src2_path, os.path.join(self.source_dir, 'symlinked'))
+        # symlink src in src2 to check if the generator goes in an infinite
+        # loop.
+        os.symlink(self.source_dir, os.path.join(src2_path, 'do_not_follow'))
+
+        self.album.generate(self.dest_path)
+
+        # Check root dir contents
+        self.assertTrue(os.path.isdir(self.dest_path))
+        for fn in ('index.html', 'index_medium.html'):
+            self.assertTrue(os.path.isfile(os.path.join(self.dest_path, fn)))
+        for dn in ('subgal', 'symlinked'):
+            self.assertTrue(os.path.isdir(os.path.join(self.dest_path, dn)))
+
+        # Check symlinked root contents
+        dest_path = os.path.join(self.dest_path, 'symlinked')
+        for fn in ('index.html', 'index_medium.html'):
+            self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)))
+
+        # Check symlinked subgal contents
+        dest_path = os.path.join(self.dest_path, 'symlinked', 'subgal')
+        for fn in ('index.html', 'index_medium.html',
+                   'img0.html', 'img0_medium.html',
+                   'img0_thumb.jpg', 'img0_small.jpg',
+                   'img0_medium.jpg',
+                   'img1.html', 'img1_medium.html',
+                   'img1_thumb.jpg', 'img1_small.jpg',
+                   'img1_medium.jpg'):
+            fp = os.path.join(dest_path, fn)
+            self.assertTrue(os.path.isfile(fp), "%s is missing" % fp)
+
+        # Check that symlinked initial root has not been processed
+        self.assertFalse(os.path.isdir(os.path.join(self.dest_path, 'symlinked', 'subgal', 'do_not_follow')))
 
 
 if __name__ == '__main__':
