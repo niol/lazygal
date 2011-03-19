@@ -19,6 +19,15 @@
 This module provides a simple wrapper to the pyexiv2 API which changed between
 version 0.1 and 0.2. The goal is to provide a wrapper compatible with the
 latest API.
+
+Sample usage :
+
+>>> import pyexiv2api as pyexiv2
+
+Now, simply use the latest API. The module as figured out whether to directly
+use the pyexiv2 module if pyexiv2 >= 0.2 is available, or to mimic the new API
+in case you are running with an older version.
+
 """
 
 
