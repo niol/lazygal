@@ -1,7 +1,12 @@
+Lazygal ##DEVELOPMENT VERSION##
+  * follow symlinks to include other galleries
+  * fix installation with a prefix which is not /usr (e.g. /usr/local)
+
 Lazygal 0.6 (2011-03-09)
   * delete half made stuff on key interrupt
   * add breadcrumbs on every page
   * add many unit tests
+  * copy image metadata in resized pics
   * make the pyexiv2 api changes wrapper a separate module
   * improve the way the picture mess thumbnail is created
   * make it possible to symlink original images
