@@ -123,7 +123,7 @@ parser.add_option("", "--dir-flattening-depth",
                   action="store", type="int",
                   dest="dir_flattening_depth",
                   default=config.getboolean('lazygal', 'dir-flattening-depth'),
-                  help=_("Level below which the directory tree is flattened. Default is 0 which is unlimited."))
+                  help=_("Level below which the directory tree is flattened. Default is 'No' which disables this feature."))
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",

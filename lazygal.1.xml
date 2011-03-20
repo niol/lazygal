@@ -347,7 +347,7 @@
           album (2 sub-galleries, 1 sub-sub-gallery, 1 picture in each one of
           those).</para>
           <example>
-            <title>--dir-flattening-depth=Off (default)</title>
+            <title>--dir-flattening-depth=No (default)</title>
             <programlisting>
               index.html &lt;- sub-gallery links
               subgal1/index.html &lt;- index with img1

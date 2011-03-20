@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-14 12:11+0100\n"
+"POT-Creation-Date: 2011-03-20 21:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,8 +68,8 @@ msgstr ""
 
 #: ../lazygal.py:122
 msgid ""
-"Level below which the directory tree is flattened. Default is 0 which is "
-"unlimited."
+"Level below which the directory tree is flattened. Default is 'No' which "
+"disables this feature."
 msgstr ""
 
 #: ../lazygal.py:127
