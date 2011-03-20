@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-14 12:11+0100\n"
-"PO-Revision-Date: 2011-03-13 22:57+0100\n"
+"POT-Creation-Date: 2011-03-20 21:10+0100\n"
+"PO-Revision-Date: 2011-03-20 23:53+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
 "Language: it\n"
@@ -74,9 +74,11 @@ msgstr ""
 
 #: ../lazygal.py:122
 msgid ""
-"Level below which the directory tree is flattened. Default is 0 which is "
-"unlimited."
+"Level below which the directory tree is flattened. Default is 'No' which "
+"disables this feature."
 msgstr ""
+"Livello al di sotto del quale l'albero delle directory viene appiattito. Il "
+"valore predefinito, \"No\", disabilita questa funzione."
 
 #: ../lazygal.py:127
 msgid ""
@@ -162,7 +164,7 @@ msgstr "Genera immagini JPEG progressive."
 
 #: ../lazygal.py:183 ../lazygal.py:186
 msgid "ORDER"
-msgstr "ORDINE"
+msgstr "ORDINAMENTO"
 
 #: ../lazygal.py:184
 msgid ""
@@ -199,13 +201,16 @@ msgstr "La directory %s non esiste."
 
 #: ../lazygal.py:207
 msgid "Option --orig-symlink is not available on this platform."
-msgstr ""
+msgstr "L'opzione --orig-symlink non è disponibile in questa piattaforma."
 
 #: ../lazygal.py:241
 msgid ""
 "Sizes is a comma-separated list of size names and specs:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
 msgstr ""
+"Le dimensioni si indicano in una lista di nomi e specifiche di dimensione "
+"separati dalla virgola:\n"
+"\tes: \"small=640x480,medium=1024x768\"."
 
 #: ../lazygal.py:244
 #, python-format
@@ -245,7 +250,7 @@ msgstr ""
 
 #: ../lazygal/generators.py:54
 msgid "  SORTING pics and subdirs"
-msgstr "  ORDINARE le immagini e le sottodirectory"
+msgstr "  ORDINAMENTO delle immagini e delle sottodirectory"
 
 #: ../lazygal/generators.py:63 ../lazygal/generators.py:75
 #, python-format
@@ -254,7 +259,7 @@ msgstr "Criterio di ordine \"%s\" sconosciuto"
 
 #: ../lazygal/generators.py:108
 msgid "  BREAKING web gallery into multiple pages"
-msgstr "  SPEZZARE una galleria web in più pagine"
+msgstr "  IMPAGINAZIONE della galleria web"
 
 #: ../lazygal/generators.py:291
 #, python-format
@@ -436,7 +441,7 @@ msgstr "Immagine originale"
 
 #: ../themes/default/image.thtml:14
 msgid "Camera:"
-msgstr ""
+msgstr "Fotocamera:"
 
 #: ../themes/default/image.thtml:15
 msgid "with"
