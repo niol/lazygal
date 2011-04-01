@@ -151,7 +151,7 @@ parser.add_option("", "--orig-base",
 parser.add_option("", "--orig-symlink",
                   action="store_true",
                   dest="orig_symlink",
-                  default=config.get('lazygal', 'orig-symlink'),
+                  default=config.getboolean('lazygal', 'orig-symlink'),
                   help=_("Do not copy original photos in output directory, instead create symlinks to their original locations."))
 parser.add_option("", "--puburl",
                   action="store", type="string",
