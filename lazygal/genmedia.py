@@ -183,10 +183,11 @@ class WebVideo(genfile.WebalbumFile):
         transcoder = self.webgal.album.get_transcoder()
         try:
             transcoder.convert(self.source_video.path, self.path)
-        except mediautils.TranscodeError:
+        except mediautils.TranscodeError, e:
             self.dir.album.log(_("  %s is BROKEN, skipped")\
                                % self.source_video.filename,
                                'error')
+            self.dir.album.log(e, 'info')
 
 
 # vim: ts=4 sw=4 expandtab
