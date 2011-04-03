@@ -117,7 +117,10 @@ class ImageOtherSize(genfile.WebalbumFile):
                 del dest_imgtags[tag]
             except KeyError:
                 pass
-        dest_imgtags.write()
+        try:
+            dest_imgtags.write()
+        except ValueError, e:
+            self.dir.album.log(_("Could not copy metadata in reduced picture: %s") % e, 'error')
 
 
 class WebalbumPicture(make.FileMakeObject):
