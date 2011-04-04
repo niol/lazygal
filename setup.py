@@ -18,6 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from distutils.core import setup, Command
+import distutils.sysconfig
 import distutils.command.build_scripts
 import distutils.command.build
 from distutils.dep_util import newer
