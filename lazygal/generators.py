@@ -710,7 +710,7 @@ class Album:
         dir_heap = {}
         for root, dirnames, filenames in self.walk(self.source_dir):
 
-            if dir_heap.has_key(root):
+            if root in dir_heap:
                 subdirs, subgals = dir_heap[root]
                 del dir_heap[root] # No need to keep it there
             else:
@@ -741,7 +741,7 @@ class Album:
 
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
-                if not dir_heap.has_key(container_dirname):
+                if container_dirname not in dir_heap:
                     dir_heap[container_dirname] = ([], [])
                 container_subdirs, container_subgals = dir_heap[container_dirname]
                 container_subdirs.append(source_dir)

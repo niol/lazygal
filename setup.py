@@ -123,11 +123,11 @@ class build_lazygal(distutils.command.build.build):
         has_db2man = False
         for path in build_manpages.db2mans:
             if os.path.exists(path): has_db2man = True
-        return self.distribution.cmdclass.has_key("build_manpages")\
+        return 'build_manpages' in self.distribution.cmdclass\
             and has_db2man and build_manpages.executable != None
 
     def __has_i18n(self, command):
-        return self.distribution.cmdclass.has_key("build_i18n")
+        return 'build_i18n' in self.distribution.cmdclass
 
     def finalize_options(self):
         distutils.command.build.build.finalize_options(self)

@@ -413,7 +413,7 @@ class DirectoryMetadata(make.GroupTask):
         result = self.get_file_metadata(result, subdir)
 
         # Add album picture
-        if not result.has_key('album_picture'):
+        if 'album_picture' not in result:
             try:
                 if dir is not None:
                     picture = dir.get_all_medias_paths()[0]
