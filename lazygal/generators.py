@@ -154,7 +154,7 @@ class SubgalBreak(make.MakeTask):
 
     def __fill_real_pagination(self):
         how_many_pages = len(self.webgal_dir.medias)\
-                          / self.webgal_dir.album.thumbs_per_page + 1
+                          // self.webgal_dir.album.thumbs_per_page + 1
         for page_number in range(0, how_many_pages):
             step = page_number * self.webgal_dir.album.thumbs_per_page
             end_index = step + self.webgal_dir.album.thumbs_per_page

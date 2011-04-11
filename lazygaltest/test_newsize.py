@@ -38,8 +38,8 @@ class TestSizeParser(unittest.TestCase):
     def assert_ratio_matches(self, orig_size, new_size):
         forig_size = map(float, orig_size)
         fnew_size = map(float, new_size)
-        orig_ratio = forig_size[1] / forig_size[0]
-        new_ratio = fnew_size[1] / fnew_size[0]
+        orig_ratio = forig_size[1] // forig_size[0]
+        new_ratio = fnew_size[1] // fnew_size[0]
         self.assertAlmostEqual(orig_ratio, new_ratio, 2)
 
     def check(self, orig_size, size_string, expected_new_size, ratiocheck=True):
@@ -53,7 +53,7 @@ class TestSizeParser(unittest.TestCase):
         orig_size = self.get_random_size()
         scale = self.get_random_percentage()
         size_string = '%d%%' % scale
-        real_dest_size = tuple(map(lambda x: x*scale/100, orig_size))
+        real_dest_size = tuple(map(lambda x: x*scale//100, orig_size))
 
         self.check(orig_size, size_string, real_dest_size)
 
@@ -70,7 +70,7 @@ class TestSizeParser(unittest.TestCase):
         size_string = '%d%%%d%%' % (xscale, yscale)
         x = orig_size[0]
         y = orig_size[1]
-        real_dest_size = (x*xscale/100, y*yscale/100)
+        real_dest_size = (x*xscale//100, y*yscale//100)
 
         self.check(orig_size, size_string, real_dest_size, ratiocheck=False)
 

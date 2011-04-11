@@ -36,12 +36,12 @@ class RSS20:
         # seems to be related to http://bugs.python.org/issue762963 .
         # FIXME : There's got to be a simpler way than this.
         offset = {}
-        offset['hour'] = abs(time.timezone / 3600)
+        offset['hour'] = abs(time.timezone // 3600)
         if time.timezone <= 0:
             offset['sign'] = '+'
         else:
             offset['sign'] = '-'
-        offset['minute'] = (time.timezone % 3600) / 60
+        offset['minute'] = (time.timezone % 3600) // 60
         self.timezone_offset = "%(sign)s%(hour)02d%(minute)02d" % offset
 
     def __get_root_and_channel(self, feed_filename):

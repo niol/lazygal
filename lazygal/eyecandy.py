@@ -31,7 +31,7 @@ class PictureMess:
     STEP = 5
     THUMB_HOW_MANY = 5
     THUMB_MAX_ROTATE_ANGLE = 40
-    THUMB_SIZE = [3*max(RESULT_SIZE)/5 for i in range(2)]
+    THUMB_SIZE = [3*max(RESULT_SIZE)//5 for i in range(2)]
     THUMB_WHITE_WIDTH = 5
 
     def __init__(self, images_paths, top_image_path=None, bg='transparent'):
@@ -66,8 +66,8 @@ class PictureMess:
 
         thumb = Image.new('RGBA', (maxi, maxi))
 
-        thumb.paste(white, ((maxi - white_size[0])/ 2,
-                            (maxi - white_size[1])/ 2))
+        thumb.paste(white, ((maxi - white_size[0])// 2,
+                            (maxi - white_size[1])// 2))
 
         rotation = random.randint(-self.THUMB_MAX_ROTATE_ANGLE,
                                   self.THUMB_MAX_ROTATE_ANGLE)

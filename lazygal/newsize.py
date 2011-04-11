@@ -47,7 +47,7 @@ class Scale(_Newsize):
     def dest_size(self, orig_size):
         match = self.matches()
         scale = int(match.group('scale'))
-        return tuple(map(lambda x: x*scale/100, orig_size))
+        return tuple(map(lambda x: x*scale//100, orig_size))
 
 
 class XYScale(_Newsize):
@@ -59,7 +59,7 @@ class XYScale(_Newsize):
         xscale = int(match.group('xscale'))
         yscale = int(match.group('yscale'))
         x, y = orig_size
-        return (x * xscale / 100, y * yscale / 100)
+        return (x * xscale // 100, y * yscale // 100)
 
 
 class Width(_Newsize):
@@ -70,7 +70,7 @@ class Width(_Newsize):
         match = self.matches()
         width = int(match.group('width'))
         x, y = orig_size
-        height = y * width / x
+        height = y * width // x
         return (width, height)
 
 
@@ -82,7 +82,7 @@ class Height(_Newsize):
         match = self.matches()
         height = int(match.group('height'))
         x, y = orig_size
-        width = x * height / y
+        width = x * height // y
         return (width, height)
 
 
@@ -96,11 +96,11 @@ class _WidthHeight(_Newsize):
 
     def appropriate_widthheight(self, orig_size, width, height, constraint):
         x, y = orig_size
-        new_height = y * width / x
+        new_height = y * width // x
         if constraint(new_height, height):
             return (width, new_height)
         else:
-            new_width = x * height / y
+            new_width = x * height // y
             # y * width / x >= height,
             # therefore x * height / y = new_width <= width
             # with contraint being '<='.
@@ -178,7 +178,7 @@ class Area(_Newsize):
         # x * y0 / area = y / y0
         # y0 = sqrt( y * area / x )
         # x0 = sqrt( x * area / y )
-        return (int(math.sqrt(x * area / y)), int(math.sqrt(y * area / x)))
+        return (int(math.sqrt(x * area // y)), int(math.sqrt(y * area // x)))
 
 
 resize_patterns = []
