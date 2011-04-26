@@ -306,7 +306,7 @@ class ImageInfoTags(object):
 
     def get_jpeg_comment(self):
         try:
-            return self._fallback_to_encoding(self._metadata.comment)
+            return self._fallback_to_encoding(self._metadata.comment.strip(' '))
         except AttributeError:
             return ''
 
