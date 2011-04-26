@@ -310,6 +310,12 @@ class ImageInfoTags(object):
         except AttributeError:
             return ''
 
+    def get_authorship(self):
+        try:
+            return self.get_exif_string('Exif.Image.Artist')
+        except KeyError:
+            return ''
+
 
 class NoMetadata(Exception):
     '''

@@ -283,6 +283,7 @@ class WebalbumImagePage(WebalbumBrowsePage):
                 tpl_values['comment'] = None
             else:
                 tpl_values['comment'] = self._do_not_escape(comment)
+            tpl_values['authorship'] = image_info.get_authorship()
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
