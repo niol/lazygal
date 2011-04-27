@@ -7,7 +7,7 @@
         <ul id="image_caption_nontech">
             <li py:if="comment">$comment</li>
             <li>${_('Taken')} $image_date</li>
-            <li py:if="authorship">${_('Credits')}&nbsp;: $authorship</li>
+            <li py:if="authorship">${_('Author')}&nbsp;: $authorship</li>
             <li py:if="original_link"><a href="$original_link">${_('Original picture')}</a></li>
         </ul>
         <ul class="image_caption_tech">
