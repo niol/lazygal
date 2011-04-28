@@ -1,6 +1,10 @@
-Lazygal ##DEVELOPMENT VERSION##
+Lazygal 0.6.1 (2011-04-27)
+  * fix -O which was symlinks instead of copies
+  * add exif author if present in generated web pages
+  * fix build with python2.7
   * follow symlinks to include other galleries
   * fix installation with a prefix which is not /usr (e.g. /usr/local)
+  * add italian translation
 
 Lazygal 0.6 (2011-03-09)
   * delete half made stuff on key interrupt

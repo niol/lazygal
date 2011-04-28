@@ -1,4 +1,31 @@
+Lazygal 0.6.1 (2011-04-27)
+  * update french translation
+  * updating translation template
+  * credits -> author for author field
+  * add exif author if present in generated web pages
+  * strip spaces from jpeg comment
+  * handle dict.has_key() deprecation
+  * explicity use floor division
+  * fix build with python2.7
+  * log transcoding errors when they happen if in verbose mode
+  * do not crash when pyexiv2 fails to copy metadata in reduced pictures
+  * fix -O which was symlinks instead of copies
+  * update italian translation
+  * update fr translation
+  * make sure docs are consistent regarding --dir-flattening-depth default value
+  * update TODO and change log
+  * follow symlinks on directories while walking dir trees
+  * add example usage for pyexiv2 wrapper
+  * update TODO
+  * fix installation with a prefix which is not /usr (e.g. /usr/local)
+  * improve description of --dir-flattening-depth in manual page
+  * unfuzz translations because of typo fixes in translated strings
+  * fix many typos in translated strings (many thanks to Frederico Bruni)
+  * add italian translation
+
 Lazygal 0.6 (2011-03-09)
+  * add MANIFEST.in in source dist
+  * set version to 0.6 and add simpler changelog
   * index pages should only depend on source dirs
   * update TODO
   * add unit tests samples to manifest
