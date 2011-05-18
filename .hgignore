@@ -1,0 +1,6 @@
+syntax:glob
+*.pyc
+syntax:regexp
+^build
+^lazygal.1$
+^MANIFEST$
