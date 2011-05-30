@@ -399,7 +399,7 @@ class DirectoryMetadata(make.GroupTask):
         if 'album_picture' not in metadata.keys():
             fmd = FileMetadata(os.path.join(subdir, 'album-picture')).contents(splitter='\n')
             if fmd is not None:
-                metadata['album_picture'] = fmd[0]
+                metadata['album_picture'] = os.path.join(subdir, fmd[0])
 
         return metadata
 

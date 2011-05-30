@@ -145,6 +145,13 @@ class WebalbumPicture(make.FileMakeObject):
             self.add_dependency(thumb)
 
         if webgal_dir.source_dir.album_picture:
+            albumpic_path = os.path.join(webgal_dir.source_dir.path,
+                                         webgal_dir.source_dir.album_picture)
+            if not os.path.isfile(albumpic_path):
+                self.album.log(_("Supplied album picture %s does not exist.")\
+                               % webgal_dir.source_dir.album_picture,
+                               'error')
+
             md_dirpic_thumb = self.album._add_size_qualifier(\
                                            webgal_dir.source_dir.album_picture,
                                            THUMB_SIZE_NAME)
