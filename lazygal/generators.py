@@ -60,7 +60,8 @@ class SubgalSort(make.MakeTask):
         if self.album.subgal_sort_by[0] == 'mtime':
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_mtime(y.source_dir)
-        elif self.album.subgal_sort_by[0] == 'filename':
+        elif self.album.subgal_sort_by[0] == 'dirname'\
+        or self.album.subgal_sort_by[0] == 'filename': # Backward compatibility
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_filename(y.source_dir)
         else:

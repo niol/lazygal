@@ -324,7 +324,7 @@
         </term>
         <listitem>
           <para>Sort order for subgalleries, among 'mtime' or
-          'filename' (default is 'filename'). Add ':reverse' to reverse the
+          'dirname' (default is 'dirname'). Add ':reverse' to reverse the
           sort order (e.g. <option>--subgal-sort-by=filename:reverse</option>).
           </para>
         </listitem>
