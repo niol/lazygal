@@ -323,9 +323,10 @@
           <option>--subgal-sort-by=<replaceable>ORDER</replaceable></option>
         </term>
         <listitem>
-          <para>Sort order for subgalleries, among 'mtime' or
-          'dirname' (default is 'dirname'). Add ':reverse' to reverse the
-          sort order (e.g. <option>--subgal-sort-by=filename:reverse</option>).
+          <para>Sort order for subgalleries, among 'exif' (EXIF date of the
+          latest picture in sub-gallery), 'mtime' or 'dirname' (default is
+          'dirname'). Add ':reverse' to reverse the sort order
+          (e.g. <option>--subgal-sort-by=filename:reverse</option>).
           </para>
         </listitem>
       </varlistentry>

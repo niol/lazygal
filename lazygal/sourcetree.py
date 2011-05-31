@@ -394,5 +394,20 @@ class Directory(File):
             all_subdirs.extend(subdir.get_all_subdirs())
         return all_subdirs
 
+    def compare_latest_exif(self, other_gallery):
+        date1 = max([time.mktime(m.get_date_taken().timetuple())\
+                     for m in self.medias])
+
+        date2 = None
+        for m in other_gallery.medias:
+            m_stamp = time.mktime(m.get_date_taken().timetuple())
+            if m_stamp > date2 or date2 is None:
+                date2 = m_stamp
+            # Stop here if we already found a media with later date
+            if date2 > date1:
+                return int(date1 - date2)
+
+        return int(date1 - date2)
+
 
 # vim: ts=4 sw=4 expandtab
