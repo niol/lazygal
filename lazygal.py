@@ -44,6 +44,7 @@ from lazygal.newsize import is_known_newsizer
 CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
     'quiet': 'No',
+    'output-directory': '.',
     'theme': 'default',
     'default-style': 'default',
     'clean-destination': 'No',
@@ -89,7 +90,8 @@ parser.add_option("", "--debug",
                   help=_("Output everything that lazygal is doing."))
 parser.add_option("-o", "--output-directory",
                   action="store", type="string",
-                  dest="dest_dir", default=".",
+                  dest="dest_dir",
+                  default=config.get('lazygal', 'output-directory'),
                   help=_("Directory where web pages, slides and thumbs will be written (default is current directory)."))
 parser.add_option("-t", "--theme",
                   action="store", type="string",
