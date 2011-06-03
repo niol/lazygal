@@ -45,6 +45,7 @@ CONFIGFILE = '~/.lazygal/config'
 CONFIGDEFAULTS = {
     'quiet': 'No',
     'output-directory': '.',
+    'puburl': 'No',
     'theme': 'default',
     'default-style': 'default',
     'clean-destination': 'No',
@@ -157,7 +158,8 @@ parser.add_option("", "--orig-symlink",
                   help=_("Do not copy original photos in output directory, instead create symlinks to their original locations."))
 parser.add_option("", "--puburl",
                   action="store", type="string",
-                  dest="pub_url",
+                  dest="puburl",
+                  default=config.get('lazygal', 'puburl'),
                   help=_("Publication URL (only useful for feed generation)."))
 parser.add_option("-m", "--generate-metadata",
                   action="store_true",
@@ -212,6 +214,11 @@ if options.orig_symlink:
     except AttributeError:
         print _("Option --orig-symlink is not available on this platform.")
         sys.exit(1)
+
+if options.puburl == 'No':
+    puburl = False
+else:
+    puburl = options.puburl
 
 # Load a config file in the source_dir root
 sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
@@ -317,7 +324,7 @@ if log_level != None:
 if options.metadata:
     album.generate_default_metadata()
 else:
-    album.generate(options.dest_dir, options.pub_url,
+    album.generate(options.dest_dir, puburl,
                    options.check_all_dirs, options.clean_dest)
 
 
