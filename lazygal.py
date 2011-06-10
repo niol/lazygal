@@ -324,8 +324,12 @@ if log_level != None:
 if options.metadata:
     album.generate_default_metadata()
 else:
-    album.generate(options.dest_dir, puburl,
-                   options.check_all_dirs, options.clean_dest)
+    try:
+        album.generate(options.dest_dir, puburl,
+                       options.check_all_dirs, options.clean_dest)
+    except KeyboardInterrupt:
+        print _("Interrupted.")
+        sys.exit(1)
 
 
 # vim: ts=4 sw=4 expandtab
