@@ -80,15 +80,20 @@ class ImageOtherSize(genfile.WebalbumFile):
     )
 
     def __build_other_size(self, im):
-        new_size = self.newsizer.dest_size(im.size)
-
-        im.draft(None, new_size)
-        im = im.resize(new_size, Image.ANTIALIAS)
-
         # Use EXIF data to rotate target image if available and required
         rotation = self.source_image.info().get_required_rotation()
+
+        if rotation != 0:
+            img_size = (im.size[1], im.size[0], ) # swap coords
+        else:
+            img_size = im.size
+
+        new_size = self.newsizer.dest_size(img_size)
+
+        im.draft(None, new_size)
         if rotation != 0:
             im = im.rotate(rotation)
+        im = im.resize(new_size, Image.ANTIALIAS)
 
         calibrated = False
         while not calibrated:
