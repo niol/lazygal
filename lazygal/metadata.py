@@ -104,9 +104,11 @@ class ImageInfoTags(object):
             orientation_code = self.get_tag_value('Exif.Image.Orientation')
             if orientation_code == 8:
                 return 90
+            elif orientation_code == 3:
+                return 180
             elif orientation_code == 6:
                 return 270
-            else:
+            else: # Should be orientation_code == 1 but catch all
                 return 0
         except KeyError:
             return 0
