@@ -168,8 +168,38 @@ class GstVideoReader(GstVideoOpener):
 
 class GstVideoTranscoder(GstVideoReader):
 
-    def __init__(self):
+    def __init__(self, audiocodec, videocodec, muxer):
         super(GstVideoTranscoder, self).__init__()
+
+        # Audio
+        self.decode_audio()
+
+        self.audioenc = gst.element_factory_make(audiocodec, 'audioenc')
+        self.pipeline.add(self.audioenc)
+        self.resample.link(self.audioenc)
+
+        aoqueue = gst.element_factory_make("queue")
+        self.pipeline.add(aoqueue)
+        self.audioenc.link(aoqueue)
+
+        # Video
+        self.decode_video()
+
+        self.videoenc = gst.element_factory_make(videocodec, 'videoenc')
+        self.pipeline.add(self.videoenc)
+        self.ff.link(self.videoenc)
+
+        voqueue = gst.element_factory_make("queue")
+        self.pipeline.add(voqueue)
+        self.videoenc.link(voqueue)
+
+        self.muxer = gst.element_factory_make(muxer, 'muxer')
+        self.pipeline.add(self.muxer)
+        aoqueue.link(self.muxer)
+        voqueue.link(self.muxer)
+
+        # Output
+        self.muxer.link(self.oqueue)
 
         # Add output file
         self.sink = gst.element_factory_make("filesink", "sink")
@@ -189,44 +219,31 @@ class GstVideoTranscoder(GstVideoReader):
 class OggTheoraTranscoder(GstVideoTranscoder):
 
     def __init__(self):
-        super(OggTheoraTranscoder, self).__init__()
-
         # Working pipeline
         # gst-launch-0.10 filesrc location=surf_luge.mov ! decodebin name=decode
         # decode. ! queue ! ffmpegcolorspace ! theoraenc ! queue ! oggmux name=muxer
         # decode. ! queue ! audioconvert ! vorbisenc ! queue ! muxer.
         # muxer. ! queue ! filesink location=surf_luge.ogg sync=false
 
-        # Audio
-        self.decode_audio()
+        super(OggTheoraTranscoder, self).__init__('vorbisenc', 'theoraenc',
+                                                  'oggmux')
 
-        self.vorbisenc = gst.element_factory_make("vorbisenc", "vorbisenc")
-        self.pipeline.add(self.vorbisenc)
-        self.resample.link(self.vorbisenc)
 
-        aoqueue = gst.element_factory_make("queue")
-        self.pipeline.add(aoqueue)
-        self.vorbisenc.link(aoqueue)
+class WebMTranscoder(GstVideoTranscoder):
 
-        # Video
-        self.decode_video()
+    def __init__(self):
+        # Working pipeline
+        # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
+        # queue ! ffmpegcolorspace ! vp8enc ! webmmux name=mux ! filesink
+        # location=newfile.webm demux. ! queue ! progressreport ! audioconvert
+        # ! audioresample ! vorbisenc ! mux.
+        # (Thanks
+        # http://stackoverflow.com/questions/4649925/convert-video-to-webm-using-gstreamer/4649990#4649990
+        # ! )
 
-        self.theoraenc = gst.element_factory_make("theoraenc")
-        self.pipeline.add(self.theoraenc)
-        self.ff.link(self.theoraenc)
+        super(WebMTranscoder, self).__init__('vorbisenc', 'vp8enc', 'webmmux')
 
-        voqueue = gst.element_factory_make("queue")
-        self.pipeline.add(voqueue)
-        self.theoraenc.link(voqueue)
-
-        # Muxer
-        self.oggmux = gst.element_factory_make("oggmux", "oggmux")
-        self.pipeline.add(self.oggmux)
-        aoqueue.link(self.oggmux)
-        voqueue.link(self.oggmux)
-
-        # Output
-        self.oggmux.link(self.oqueue)
+        self.videoenc.set_property('quality', 7)
 
 
 class VideoFrameExtractor(GstVideoReader):
