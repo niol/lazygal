@@ -120,7 +120,7 @@ class MakeTask(object):
             self.build()
         except KeyboardInterrupt:
             self.clean_output()
-            sys.exit(1)
+            raise
         self.stamp_build()
 
     def build(self):
