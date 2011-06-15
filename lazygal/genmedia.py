@@ -116,6 +116,10 @@ class ImageOtherSize(genfile.WebalbumFile):
         imgtags.copy(dest_imgtags)
         dest_imgtags['Exif.Photo.PixelXDimension'] = new_size[0]
         dest_imgtags['Exif.Photo.PixelYDimension'] = new_size[1]
+        if rotation != 0:
+            # Smaller image has been rotated in order to be displayed correctly
+            # in a web browser. Fix orientation tag accordingly.
+            dest_imgtags['Exif.Image.Orientation'] = 1
         # Those are removed from published pics due to pivacy concerns
         for tag in self.PRIVATE_IMAGE_TAGS:
             try:
