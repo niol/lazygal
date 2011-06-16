@@ -17,6 +17,7 @@
 
 import os, locale
 import codecs
+import datetime
 import Image
 
 from lazygal import pyexiv2api as pyexiv2
@@ -82,22 +83,23 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         '''
-        date = None
-        try:
-            date = self.get_tag_value('Exif.Photo.DateTimeDigitized')
-        except (IndexError, ValueError, KeyError):
+        for date_tag in ('Exif.Photo.DateTimeDigitized',
+                         'Exif.Photo.DateTimeOriginal',
+                         'Exif.Image.DateTime',
+                        ):
             try:
-                date = self.get_tag_value('Exif.Photo.DateTimeOriginal')
+                date = self.get_tag_value(date_tag)
+                if type(date) is not datetime.datetime:
+                    # Sometimes, pyexiv2 sends a string. It seems to happen on
+                    # malformed tags.
+                    raise ValueError
             except (IndexError, ValueError, KeyError):
-                try:
-                    date = self.get_tag_value('Exif.Image.DateTime')
-                except (IndexError, ValueError, KeyError):
-                    # No date available in EXIF
-                    pass
-        # Some pics give a zeroed date which is not recognized by pyexiv2 as a
-        # date.
-        if date == '0000:00:00 00:00:00': date = None
-        return date
+                pass
+            else:
+                return date
+
+        # No date could be found in the picture metadata
+        return None
 
     def get_required_rotation(self):
         try:
