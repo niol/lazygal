@@ -396,10 +396,10 @@ class Directory(File):
 
     def compare_latest_exif(self, other_gallery):
         date1 = max([time.mktime(m.get_date_taken().timetuple())\
-                     for m in self.medias])
+                     for m in self.get_all_medias()])
 
         date2 = None
-        for m in other_gallery.medias:
+        for m in other_gallery.get_all_medias():
             m_stamp = time.mktime(m.get_date_taken().timetuple())
             if m_stamp > date2 or date2 is None:
                 date2 = m_stamp
