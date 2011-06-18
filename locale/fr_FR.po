@@ -115,7 +115,7 @@ msgid ""
 msgstr ""
 "Ne pas copier les photos originales dans le répertoire de production "
 "del'album web, au lieu de cela les référencer directement en utilisant "
-"lechemin relatif de base fourni"
+"le chemin relatif de base fourni"
 
 #: ../lazygal.py:155
 msgid ""
@@ -204,7 +204,7 @@ msgstr "Mauvaise ligne de commande."
 #: ../lazygal.py:204
 #, python-format
 msgid "Directory %s does not exist."
-msgstr "La répertoire %s n'existe pas."
+msgstr "Le répertoire %s n'existe pas."
 
 #: ../lazygal.py:211
 msgid "Option --orig-symlink is not available on this platform."
