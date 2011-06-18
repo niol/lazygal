@@ -328,7 +328,7 @@ else:
         album.generate(options.dest_dir, puburl,
                        options.check_all_dirs, options.clean_dest)
     except KeyboardInterrupt:
-        print _("Interrupted.")
+        print >> sys.stderr, _("Interrupted.")
         sys.exit(1)
 
 
