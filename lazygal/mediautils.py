@@ -347,7 +347,8 @@ class VideoFrameNthExtractor(VideoFrameExtractor):
         self.frame_index = self.frame_index + 1
         if self.frame_index == self.frame_no:
             self.frame = self.open_frame(buf)
-            # FIXME: Abord playback as frame has been found.
+            # Abord playback as frame has been found.
+            self.stop_pipeline()
 
     def get_frame(self):
         self.open(self.path)
