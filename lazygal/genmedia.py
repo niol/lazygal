@@ -204,6 +204,7 @@ class WebVideo(genfile.WebalbumFile):
                                % self.source_video.filename,
                                'error')
             self.dir.album.log(str(e), 'info')
+            os.unlink(self.path)
 
 
 # vim: ts=4 sw=4 expandtab
