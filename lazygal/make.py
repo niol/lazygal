@@ -208,7 +208,6 @@ class FileMakeObject(MakeTask):
             self.stamp_delete()
 
     def clean_output(self):
-        print "os.unlink(" + self._path + ")"
         os.unlink(self._path)
 
     def __repr__(self):
