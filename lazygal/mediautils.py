@@ -17,6 +17,8 @@
 
 
 import sys
+import signal
+
 try:
     import gobject
     import pygst
@@ -36,9 +38,16 @@ else:
     gobjects_threads_init = False
 
 
+interrupted = False
+def signal_handler(signum, frame):
+    global interrupted
+    interrupted = True
+
+
 def gobject_init():
     gobject.threads_init()
     gobjects_threads_init = True
+    signal.signal(signal.SIGINT, signal_handler)
 
 
 import Image as PILImage
@@ -51,6 +60,9 @@ class GstVideoOpener(object):
 
     def __init__(self):
         self.pipeline = gst.Pipeline()
+        self.running = False
+
+        self.pipeline.set_auto_flush_bus(True)
 
         # Input
         self.filesrc = gst.element_factory_make("filesrc", "source")
@@ -83,18 +95,43 @@ class GstVideoOpener(object):
         input_file = input_file.encode(sys.getfilesystemencoding())
         self.filesrc.set_property("location", input_file)
 
+    def check_interrupt(self):
+        if interrupted:
+            msg = gst.message_new_application(self.pipeline,
+                                              gst.Structure('interrupted'))
+            self.pipeline.get_bus().post(msg)
+            return False # Remove timeout handler
+        return True
+
+    def __stop_pipeline(self):
+        self.running = False
+        self.pipeline.set_state(gst.STATE_NULL)
+
     def run_pipeline(self):
         self.pipeline.set_state(gst.STATE_PLAYING)
+        self.running = True
 
-        finished = False
-        while not finished:
-            message = self.bus.poll(gst.MESSAGE_ANY, -1)
+        gobject.timeout_add(250, self.check_interrupt)
+
+        while self.running:
+            message = self.pipeline.get_bus().poll(gst.MESSAGE_ANY, -1)
             if message.type == gst.MESSAGE_EOS:
-                self.pipeline.set_state(gst.STATE_NULL)
-                finished = True
+                self.__stop_pipeline()
             elif message.type == gst.MESSAGE_ERROR:
-                self.pipeline.set_state(gst.STATE_NULL)
+                self.__stop_pipeline()
                 raise TranscodeError(message.parse_error())
+            elif message.type == gst.MESSAGE_APPLICATION:
+                if message.src == self.pipeline:
+                    struct_name = message.structure.get_name()
+                    if struct_name == 'aborded_playback':
+                        self.__stop_pipeline()
+                    elif struct_name == 'interrupted':
+                        self.__stop_pipeline()
+                        raise KeyboardInterrupt
+
+    def stop_pipeline(self):
+        msg = gst.message_new_application(self.pipeline,
+                                          gst.Structure('aborded_playback'))
 
 
 class GstVideoInfo(object):
@@ -139,9 +176,6 @@ class GstVideoReader(GstVideoOpener):
         # Output
         self.oqueue = gst.element_factory_make("queue")
         self.pipeline.add(self.oqueue)
-
-        self.pipeline.set_auto_flush_bus(True)
-        self.bus = self.pipeline.get_bus()
 
     def decode_audio(self):
         # Audio
