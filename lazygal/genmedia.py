@@ -200,10 +200,10 @@ class WebVideo(genfile.WebalbumFile):
         try:
             transcoder.convert(self.source_video.path, self.path)
         except mediautils.TranscodeError, e:
-            self.dir.album.log(_("  %s is BROKEN, skipped")\
+            self.dir.album.log(_("  transcoding %s failed, skipped")\
                                % self.source_video.filename,
                                'error')
-            self.dir.album.log(e, 'info')
+            self.dir.album.log(str(e), 'info')
 
 
 # vim: ts=4 sw=4 expandtab
