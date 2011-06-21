@@ -235,7 +235,7 @@ class WebalbumBrowsePage(WebalbumPage):
                     self.dir.source_dir.strip_root(),
                     self.media.filename)
             else:
-                tpl_values['original_link'] = self.image.filename
+                tpl_values['original_link'] = self.media.filename
             tpl_values['original_link'] =\
                 self.url_quote(tpl_values['original_link'])
 
