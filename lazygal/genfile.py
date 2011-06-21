@@ -23,17 +23,17 @@ import zipfile
 import make
 
 
-class ImageOriginal(make.FileCopy):
+class MediaOriginal(make.FileCopy):
 
-    def __init__(self, dir, source_image, size_name=None):
+    def __init__(self, dir, source_media, size_name=None):
         self.dir = dir
 
-        dest_name = source_image.filename
+        dest_name = source_media.filename
         if size_name:
             dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
 
         self.path = os.path.join(self.dir.path, dest_name)
-        make.FileCopy.__init__(self, source_image.path, self.path)
+        make.FileCopy.__init__(self, source_media.path, self.path)
 
     def build(self):
         self.dir.album.log("  CP %s" % os.path.basename(self.path),
@@ -42,17 +42,17 @@ class ImageOriginal(make.FileCopy):
         make.FileCopy.build(self)
 
 
-class SymlinkImageOriginal(make.FileSymlink):
+class SymlinkMediaOriginal(make.FileSymlink):
 
-    def __init__(self, dir, source_image, size_name=None):
+    def __init__(self, dir, source_media, size_name=None):
         self.dir = dir
 
-        dest_name = source_image.filename
+        dest_name = source_media.filename
         if size_name:
             dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
 
         self.path = os.path.join(self.dir.path, dest_name)
-        make.FileSymlink.__init__(self, source_image.path, self.path)
+        make.FileSymlink.__init__(self, source_media.path, self.path)
 
     def build(self):
         self.dir.album.log("  SYMLINK %s" % os.path.basename(self.path),

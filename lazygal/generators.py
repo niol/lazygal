@@ -214,6 +214,17 @@ class WebalbumMediaTask(make.GroupTask):
             for bpage in self.browse_pages.values():
                 if media.thumb: bpage.add_dependency(media.thumb)
 
+    def get_original_or_symlink(self):
+        if not self.album.orig_symlink:
+            return genfile.MediaOriginal(self.webgal, self.media)
+        else:
+            return genfile.SymlinkMediaOriginal(self.webgal, self.media)
+
+    def get_original(self):
+        if not self.original:
+            self.original = self.get_original_or_symlink()
+        return self.original
+
 
 class WebalbumImageTask(WebalbumMediaTask):
     """
@@ -226,17 +237,6 @@ class WebalbumImageTask(WebalbumMediaTask):
         self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
                                              genmedia.THUMB_SIZE_NAME)
         self.add_dependency(self.thumb)
-
-    def get_original_or_symlink(self):
-        if not self.album.orig_symlink:
-            return genfile.ImageOriginal(self.webgal, self.media)
-        else:
-            return genfile.SymlinkImageOriginal(self.webgal, self.media)
-
-    def get_original(self):
-        if not self.original:
-            self.original = self.get_original_or_symlink()
-        return self.original
 
     def get_resized(self, size_name):
         if self.album.browse_size_strings[size_name] == '0x0':
@@ -261,9 +261,6 @@ class WebalbumVideoTask(WebalbumMediaTask):
         self.thumb = None # none yet
 
         self.add_dependency(self.webvideo)
-
-    def get_original(self):
-        return self.get_resized("0x0")
 
     def get_browse_page(self, size_name):
         return genpage.WebalbumVideoPage(self.webgal, size_name, self)
