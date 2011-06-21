@@ -100,6 +100,7 @@ class GstVideoOpener(object):
             msg = gst.message_new_application(self.pipeline,
                                               gst.Structure('interrupted'))
             self.pipeline.get_bus().post(msg)
+        if interrupted or not self.running:
             return False # Remove timeout handler
         return True
 
