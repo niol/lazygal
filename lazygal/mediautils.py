@@ -410,7 +410,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
 
 class VideoThumbnailer(object):
 
-    def __init__(self, thumb_size=(150,113,)):
+    def __init__(self, thumb_size=None):
         self.thumb_size = thumb_size
 
         # fps images per second should be enough to find a suitable thumbnail
@@ -425,21 +425,32 @@ class VideoThumbnailer(object):
 
     def convert(self, video_path, thumbnail_path):
         thumb = self.get_thumb(video_path)
-        thumb.draft(None, self.thumb_size)
-        thumb = thumb.resize(self.thumb_size, PILImage.ANTIALIAS)
+
+        if self.thumb_size is not None:
+            thumb.draft(None, self.thumb_size)
+            thumb = thumb.resize(self.thumb_size, PILImage.ANTIALIAS)
+
         thumb.save(thumbnail_path)
 
 
 if __name__ == '__main__':
     import sys, os
-    converter = OggTheoraTranscoder()
-    thumbnailer = VideoThumbnailer()
-    for file_path in sys.argv[1:]:
-        fn, ext = os.path.splitext(file_path)
-        ogg_path = fn + '.ogg'
-        converter.convert(file_path, ogg_path)
-        thumb_path = fn + '_thumb.jpg'
-        thumbnailer.convert(file_path, thumb_path)
+
+    converter_type = sys.argv[1]
+    if converter_type == 'ogg':
+        converter = OggTheoraTranscoder()
+    elif converter_type == 'webm':
+        converter = WebMTranscoder()
+    elif converter_type == 'jpeg':
+        converter = VideoThumbnailer()
+    else:
+        raise ValueError
+
+    for file_path in sys.argv[2:]:
+        file_path = file_path.decode(sys.getfilesystemencoding())
+        fn, ext = os.path.splitext(os.path.basename(file_path))
+        target_path = fn + '.' + converter_type
+        converter.convert(file_path, target_path)
 
 
 # vim: ts=4 sw=4 expandtab
