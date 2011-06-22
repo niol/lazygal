@@ -137,6 +137,8 @@ class _ImageTag_0_1(object):
             return self.get_value()
         elif name == 'raw_value':
             return self._tag
+        elif name == 'human_value':
+            return self.get_interpreted_value()
         else:
             raise AttributeError
 
@@ -173,8 +175,6 @@ class _ImageTag_0_1(object):
         'Exif.Image.DateTime'          : 'get_exif_date',
         'Exif.Image.Orientation'       : 'get_int',
         'Exif.Pentax.LensType'         : 'get_interpreted_value',
-        'Exif.Nikon3.Lens'             : 'get_interpreted_value',
-        'Exif.Nikon3.LensType'         : 'get_interpreted_value',
         'Exif.Minolta.LensID'          : 'get_interpreted_value',
         'Exif.Photo.Flash'             : 'get_decoded_utf8',
     }

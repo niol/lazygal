@@ -157,9 +157,9 @@ class ImageInfoTags(object):
             return self.get_tag_value('Exif.Pentax.LensType')
         except (IndexError, ValueError, KeyError):
             try:
-                ret = self.get_tag_value('Exif.Nikon3.Lens')
+                ret = self._metadata['Exif.Nikon3.Lens'].human_value.strip()
                 try:
-                    ret2 = self.get_tag_value('Exif.Nikon3.LensType')
+                    ret2 = self._metadata['Exif.Nikon3.LensType'].human_value.strip()
                 except (IndexError, ValueError, KeyError):
                     return ret
                 else:
