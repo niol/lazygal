@@ -128,6 +128,20 @@ class TestFileMetadata(LazygalTest):
 
         self.assertEqual(im_md.get_comment(), u'unicode test : éàê')
 
+    def test_model(self):
+        sample = 'sample-model-nikon1.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_camera_name(), 'NIKON D5000')
+
+    def test_lens(self):
+        sample = 'sample-model-nikon1.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_lens_name(), '35mm F1.8 D G')
+
+        sample = 'sample-model-nikon2.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_lens_name(), '70-200mm F2.8 D G')
+
 
 if __name__ == '__main__':
     unittest.main()
