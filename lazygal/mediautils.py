@@ -133,6 +133,7 @@ class GstVideoOpener(object):
     def stop_pipeline(self):
         msg = gst.message_new_application(self.pipeline,
                                           gst.Structure('aborded_playback'))
+        self.pipeline.get_bus().post(msg)
 
 
 class GstVideoInfo(object):
@@ -283,10 +284,11 @@ class WebMTranscoder(GstVideoTranscoder):
 
 class VideoFrameExtractor(GstVideoReader):
 
-    def __init__(self, path):
+    def __init__(self, path, fps):
         super(VideoFrameExtractor, self).__init__()
 
         self.path = path
+        self.fps = fps
 
         self.decode_video()
 
@@ -294,9 +296,6 @@ class VideoFrameExtractor(GstVideoReader):
         self.video_size = None
         input_pad = self.ff.get_pad('sink')
         input_pad.connect('notify::caps', self.cb_new_caps)
-
-        # fps images per second should be enough to find a suitable thumbnail.
-        fps = 2
 
         videorate = gst.element_factory_make('videorate')
         self.pipeline.add(videorate)
@@ -337,8 +336,8 @@ class VideoFrameExtractor(GstVideoReader):
 
 class VideoFrameNthExtractor(VideoFrameExtractor):
 
-    def __init__(self, path, frame_no):
-        super(VideoFrameNthExtractor, self).__init__(path)
+    def __init__(self, path, frame_no, fps):
+        super(VideoFrameNthExtractor, self).__init__(path, fps)
         self.frame_index = -1
         self.frame_no = frame_no
         self.frame = None
@@ -359,16 +358,24 @@ class VideoFrameNthExtractor(VideoFrameExtractor):
 
 class VideoBestFrameFinder(VideoFrameExtractor):
 
-    def __init__(self, path):
-        super(VideoBestFrameFinder, self).__init__(path)
+    def __init__(self, path, fps, intro_seconds):
+        super(VideoBestFrameFinder, self).__init__(path, fps)
+
+        self.max_frames = self.fps * intro_seconds # Frames to go through
         self.histograms = []
 
     def cb_grabbed_frame_buf(self, buf):
-        # We're searching for the best frame, grab histogram
-        self.histograms.append(self.open_frame(buf).histogram())
+        self.frame_number = self.frame_number + 1
+
+        if self.frame_number < self.max_frames:
+            # We're searching for the best frame, grab histogram
+            self.histograms.append(self.open_frame(buf).histogram())
+        else:
+            self.stop_pipeline()
 
     def get_best_frame(self):
         self.open(self.path)
+        self.frame_number = -1
         self.run_pipeline()
 
         n_samples = len(self.histograms)
@@ -396,7 +403,9 @@ class VideoBestFrameFinder(VideoFrameExtractor):
                 min_mse = mse
                 best_frame_no = hist_index
 
-        return VideoFrameNthExtractor(self.path, best_frame_no).get_frame()
+        frame_finder = VideoFrameNthExtractor(self.path,
+                                              best_frame_no, self.fps)
+        return frame_finder.get_frame()
 
 
 class VideoThumbnailer(object):
@@ -404,12 +413,18 @@ class VideoThumbnailer(object):
     def __init__(self, thumb_size=(150,113,)):
         self.thumb_size = thumb_size
 
+        # fps images per second should be enough to find a suitable thumbnail
+        self.fps = 1
+        # search thumb in first intro_seconds seconds
+        self.intro_seconds = 300
+
     def get_thumb(self, video_path):
-        best_frame_no = VideoBestFrameFinder(video_path).best_frame_no()
-        return VideoFrameNthExtractor(video_path, best_frame_no).get_frame()
+        thumb_finder = VideoBestFrameFinder(video_path,
+                                            self.fps, self.intro_seconds)
+        return thumb_finder.get_best_frame()
 
     def convert(self, video_path, thumbnail_path):
-        thumb = VideoBestFrameFinder(video_path).get_best_frame()
+        thumb = self.get_thumb(video_path)
         thumb.draft(None, self.thumb_size)
         thumb = thumb.resize(self.thumb_size, PILImage.ANTIALIAS)
         thumb.save(thumbnail_path)
