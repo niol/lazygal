@@ -114,7 +114,7 @@ msgid ""
 "submitted relative path as base."
 msgstr ""
 "Ne pas copier les photos originales dans le répertoire de production "
-"del'album web, au lieu de cela les référencer directement en utilisant "
+"de l'album web, au lieu de cela les référencer directement en utilisant "
 "le chemin relatif de base fourni"
 
 #: ../lazygal.py:155
@@ -123,8 +123,7 @@ msgid ""
 "their original locations."
 msgstr ""
 "Ne pas copier les photos originales dans le répertoire de production de "
-"l'album web, au lieu de cela les référencer directement en utilisant le "
-"chemin relatif de base fourni."
+"l'album web, au lieu de cela, créer un lien symbolique vers leur emplacement."
 
 #: ../lazygal.py:159
 msgid "Publication URL (only useful for feed generation)."
