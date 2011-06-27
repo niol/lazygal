@@ -172,6 +172,15 @@ class WebalbumPage(genfile.WebalbumFile):
     def url_quote(self, url):
         return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/#')
 
+    UNIT_PREFIXES = (('T', 2**40), ('G', 2**30), ('M', 2**20), ('K', 2**10),)
+
+    def format_filesize(self, size_bytes):
+        for unit_prefix, limit in self.UNIT_PREFIXES:
+            if size_bytes >= limit:
+                return '%.1f %siB'\
+                       % (round(float(size_bytes) / limit, 1), unit_prefix)
+        return '%.1f B' % size_bytes
+
 
 class WebalbumBrowsePage(WebalbumPage):
 
@@ -381,6 +390,7 @@ class WebalbumIndexPage(WebalbumPage):
         if self.dir.album.dirzip and dir.dirzip:
             archive_rel_path = dir.dirzip._rel_path(self.dir)
             dir_info['dirzip'] = self.url_quote(archive_rel_path)
+            dir_info['dirzip_size'] = self.format_filesize(dir.dirzip.size())
 
         dir_info['is_main'] = dir is self.dir
 

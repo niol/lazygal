@@ -77,7 +77,7 @@
         </p>
 
         <div class="dirzip" py:if="subdir.dirzip">
-            <a href="$subdir.dirzip">${_('All full scale pictures as an archive, for')} "$subdir.album_name"</a>.
+            <a href="$subdir.dirzip">${_('All full scale pictures as an archive, for')} "$subdir.album_name"</a> ($subdir.dirzip_size).
         </div>
     </div>
 </py:for>

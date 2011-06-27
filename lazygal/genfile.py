@@ -110,6 +110,9 @@ class WebalbumArchive(WebalbumFile):
             archive.write(pic, inzip_fn)
         archive.close()
 
+    def size(self):
+        return os.path.getsize(self.path)
+
 
 class SharedFileCopy(make.FileCopy):
 
