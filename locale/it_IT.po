@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-25 10:05+0200\n"
+"POT-Creation-Date: 2011-06-30 07:54+0200\n"
 "PO-Revision-Date: 2011-06-25 10:16+0200\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -381,7 +381,7 @@ msgstr "Tipo di modello sconosciuto per %s"
 msgid "  ZIP %s"
 msgstr "  ZIP %s"
 
-#: ../lazygal/genfile.py:121
+#: ../lazygal/genfile.py:124
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
@@ -421,27 +421,27 @@ msgstr "  TRANSCODIFICA %s"
 msgid "  transcoding %s failed, skipped"
 msgstr "  errore nella transcodifica di %s, si ignora"
 
-#: ../lazygal/genpage.py:201 ../lazygal/genpage.py:407
+#: ../lazygal/genpage.py:210 ../lazygal/genpage.py:417
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
 #. strftime does not work with unicode...
-#: ../lazygal/genpage.py:268
+#: ../lazygal/genpage.py:277
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "il %d/%m/%Y alle %H:%M"
 
-#: ../lazygal/genpage.py:486
+#: ../lazygal/genpage.py:496
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:502
+#: ../lazygal/genpage.py:512
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr "C'è un modello con un estensione che non inizia con una t. Interrotto."
 
-#: ../lazygal/genpage.py:508
+#: ../lazygal/genpage.py:518
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"

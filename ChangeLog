@@ -1,3 +1,18 @@
+Lazygal 0.6.2 (2011-06-30)
+  * add gallery archive size in gallery index
+  * fix retrieval of Nikon Lens info
+  * make -O work with videos
+  * fix failure when one use -O and there is a video (Debian #631181)
+  * fix failure when date tags are not recognized by pyexiv2 (Debian #630572)
+  * fix rotated pics EXIF Orientation tag
+  * fix obeying on size constraints when images are auto rotated
+  * gracefuly handle SIGINT
+  * make it possible to load puburl from config file
+  * --sugbgal-sort-by=exif sort by latest EXIF in subgal
+  * support for providing output dir in config file
+  * rename --subgal-sort-by=filename to --subgal-sort-by=dirname which is clearer
+  * fix supplying album picture by file album-picture
+
 Lazygal 0.6.1 (2011-04-27)
   * fix -O which was symlinks instead of copies
   * add exif author if present in generated web pages
