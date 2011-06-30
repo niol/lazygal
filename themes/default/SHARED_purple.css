@@ -3,16 +3,16 @@ p{
 }
 
 a{
-		text-decoration:none;
-		color:purple;
+    text-decoration:none;
+    color:purple;
 }
 
 div#osize_links{
-		text-align:right;
+    text-align:right;
 }
 
 h1{
-        display: none;
+    display: none;
 }
 
 #breadcrumbs {
@@ -24,7 +24,7 @@ h1{
     margin-left: 0;
     padding-left: 0;
     display: inline;
-    }
+}
 
 #breadcrumbs ul li {
     margin-left: 0;
@@ -50,22 +50,22 @@ div.subgal_link {
 
 div.subgal_image {
     float: left;
-		margin-right: 2em;
-		margin-left: 4em;
-		width:180px;
+    margin-right: 2em;
+    margin-left: 4em;
+    width:180px;
 }
 
 div.subgal_image img {
     margin: 0;
-		border: none;
+    border: none;
 }
 
 div.subgal_description p{
-		text-align:justify;
+    text-align:justify;
 }
 
 div.subgal_stats{
-		font-size: x-small;
+    font-size: x-small;
 }
 
 #subgal_links li {
@@ -99,28 +99,28 @@ img {
 }
 
 .image_caption li{
-		list-style-type:none;
-		text-align:center;
+    list-style-type:none;
+    text-align:center;
 }
 
 .image_caption_tech{
-		display:none;
+    display:none;
 }
 
 .footer{
-		padding-top:3em;
-		clear:both;
-		font-size:x-small;
+    padding-top:3em;
+    clear:both;
+    font-size:x-small;
 }
 
 .footer p{
-		text-align:justify;
+    text-align:justify;
 }
 
 #lazygalfooter{
-		padding-top:0em;
-		margin-top:0.2em;
-		border-top: solid black 1px;
+    padding-top:0em;
+    margin-top:0.2em;
+    border-top: solid black 1px;
 }
 
 // vim: ts=4 sw=4 expandtab

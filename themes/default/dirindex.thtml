@@ -1,24 +1,24 @@
 <!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
-      xmlns:py="http://genshi.edgewall.org/"
-      xmlns:xi="http://www.w3.org/2001/XInclude">
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
 <head>
-  <title py:content="album_name" />
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <meta name="Generator" content="lazygal $lazygal_version" />
-  <py:for each="style in styles">
-    <py:if test="style.alternate">
-        <link rel="alternate stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
-    </py:if>
-    <py:if test="not style.alternate">
-        <link rel="stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
-    </py:if>
-  </py:for>
-  <link rel="alternate" type="application/rss+xml" title="Recent galleries" href="${rel_root}index.xml" />
-  <script type="text/javascript" src="${rel_root}shared/jquery-1.4.2.min.js"></script>
-  <script type="text/javascript" src="${rel_root}shared/scripts.js"></script>
+    <title py:content="album_name" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="Generator" content="lazygal $lazygal_version" />
+    <py:for each="style in styles">
+        <py:if test="style.alternate">
+            <link rel="alternate stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
+        </py:if>
+        <py:if test="not style.alternate">
+            <link rel="stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
+        </py:if>
+    </py:for>
+    <link rel="alternate" type="application/rss+xml" title="Recent galleries" href="${rel_root}index.xml" />
+    <script type="text/javascript" src="${rel_root}shared/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="${rel_root}shared/scripts.js"></script>
 </head>
 
 <body>
@@ -26,12 +26,12 @@
 <h1 py:content="album_name"></h1>
 
 <div id="breadcrumbs">
-		<ul>
-				<li py:for="webgal in webgal_path">
-						<a href="${webgal.link}" py:content="webgal.name" />
-				</li>
-				<li class="bc_current" py:content="album_name" />
-		</ul>
+    <ul>
+        <li py:for="webgal in webgal_path">
+            <a href="${webgal.link}" py:content="webgal.name" />
+        </li>
+        <li class="bc_current" py:content="album_name" />
+    </ul>
 </div>
 
 <p py:if="album_description" class="description" py:content="album_description"></p>
@@ -91,3 +91,4 @@
 </body>
 
 </html>
+<!-- vim: set fenc=utf-8 ts=4 sw=4 expandtab: -->
