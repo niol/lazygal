@@ -265,7 +265,7 @@ setup(name = 'lazygal',
         'build_scripts' : build_scripts_lazygal,
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
-        'tests'         : test_lazygal,
+        'test'          : test_lazygal,
         },
     data_files = theme_data
     )
