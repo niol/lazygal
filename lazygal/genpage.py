@@ -238,6 +238,13 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['osize_links'] = self._get_osize_links(self.media.name)
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
+        if self.dir.feed is not None:
+            tpl_values['feed_url'] = pathutils.relative_path(self.dir.path,
+                                                             self.dir.feed.path)
+            tpl_values['feed_url'] = self.url_quote(tpl_values['feed_url'])
+        else:
+            tpl_values['feed_url'] = None
+
         if self.dir.album.original:
             if self.dir.album.orig_base:
                 tpl_values['original_link'] = os.path.join(\
@@ -451,12 +458,22 @@ class WebalbumIndexPage(WebalbumPage):
         values['rel_root'] = self.dir.source_dir.rel_root()
         values['rel_path'] = self.dir.source_dir.strip_root()
 
+        if self.dir.feed is not None:
+            values['feed_url'] = pathutils.relative_path(self.dir.path,
+                                                         self.dir.feed.path)
+            values['feed_url'] = self.url_quote(values['feed_url'])
+        else:
+            values['feed_url'] = None
+
         self.page_template.dump(values, self.page_path)
 
 
 class WebalbumFeed(make.FileMakeObject):
 
-    def __init__(self, album, dest_dir, pub_url):
+    def __init__(self, album, dir_path, pub_url):
+        self.path = os.path.join(dir_path, 'index.xml')
+        super(WebalbumFeed, self).__init__(self.path)
+
         self.album = album
         self.pub_url = pub_url
         if not self.pub_url:
@@ -464,8 +481,6 @@ class WebalbumFeed(make.FileMakeObject):
         if not self.pub_url.endswith('/'):
             self.pub_url = self.pub_url + '/'
 
-        self.path = os.path.join(dest_dir, 'index.xml')
-        make.FileMakeObject.__init__(self, self.path)
         self.feed = feeds.RSS20(self.pub_url)
         self.item_template = self.album.tpl_loader.load('feeditem.thtml')
 

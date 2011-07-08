@@ -16,7 +16,7 @@
             <link rel="stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
         </py:if>
     </py:for>
-    <link rel="alternate" type="application/rss+xml" title="Recent galleries" href="${rel_root}index.xml" />
+    <link py:if="feed_url" rel="alternate" type="application/rss+xml" title="Recent galleries" href="$feed_url" />
     <script type="text/javascript" src="${rel_root}shared/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="${rel_root}shared/scripts.js"></script>
 </head>

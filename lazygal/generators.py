@@ -287,6 +287,7 @@ class WebalbumDir(make.FileMakeObject):
         self.add_dependency(self.source_dir)
         self.subgals = subgals
         self.album = album
+        self.feed = None
 
         self.flattening_dir = None
 
@@ -347,6 +348,9 @@ class WebalbumDir(make.FileMakeObject):
         # We only care about output in the current directory
         if os.path.dirname(output) == self.path:
             super(WebalbumDir, self).register_output(output)
+
+    def register_feed(self, feed):
+        self.feed = feed
 
     def get_subgal_count(self):
         if self.flatten_below():
@@ -765,6 +769,7 @@ class Album:
 
             if feed:
                 feed.push_dir(destgal)
+                destgal.register_feed(feed)
 
             if check_all_dirs:
                 destgal.make()
