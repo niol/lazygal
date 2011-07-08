@@ -21,6 +21,7 @@ import locale
 import gc
 
 import make
+import pathutils
 import sourcetree, tpl, newsize, metadata, mediautils
 import genpage, genmedia, genfile
 
@@ -380,13 +381,20 @@ class WebalbumDir(make.FileMakeObject):
         else:
             return False
 
-    def rel_path(self, target_srcdir_path):
+    def rel_path_to_src(self, target_srcdir_path):
         '''
         Returns the relative path to go from this directory to
         target_srcdir_path.
         '''
         return self.source_dir.rel_path(self.source_dir.path,
                                         target_srcdir_path)
+
+    def rel_path(self, path):
+        '''
+        Returns the relative path to go from this directory to the path supplied
+        as argument.
+        '''
+        return pathutils.relative_path(self.path, path)
 
     def flattening_srcpath(self, srcdir_path):
         '''

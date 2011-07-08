@@ -18,7 +18,7 @@
 import os, sys, datetime, time
 import Image
 
-from lazygal import make, metadata
+from lazygal import pathutils, make, metadata
 
 
 SOURCEDIR_CONFIGFILE = '.lazygal'
@@ -29,46 +29,19 @@ class File(make.FileSimpleDependency):
     def __init__(self, path, album):
         make.FileSimpleDependency.__init__(self, path)
 
-        self.path = self._path_to_unicode(path)
+        self.path = pathutils.path2unicode(path)
         self.album = album
         self.filename = os.path.basename(self.path)
         self.name, self.extension = os.path.splitext(self.filename)
 
-    def _path_to_unicode(self, path):
-        if type(path) is unicode:
-            return path
-        else:
-            return path.decode(sys.getfilesystemencoding())
-
     def strip_root(self, path=None):
-        found = False
-        album_path = ""
-
         if not path:
-            head = self.path
-        else:
-            head = path
+            path = self.path
 
-        while not found:
-            if head == self.album.source_dir:
-                found = True
-            elif head == "/":
-                raise Exception(_("Root not found"))
-            else:
-                head, tail = os.path.split(head)
-                if album_path == "":
-                    album_path = tail
-                else:
-                    album_path = os.path.join(tail, album_path)
-
-        return album_path
+        return pathutils.relative_path(self.album.source_dir, path)
 
     def rel_root(self):
-        if os.path.isdir(self.path):
-            path = self.path
-        else:
-            path = os.path.dirname(self.path)
-        return self.rel_path(path, self.album.source_dir)
+        return pathutils.relative_path(self.path, self.album.source_dir)
 
     def rel_path(self, from_dir, path=None):
         try:
@@ -79,36 +52,18 @@ class File(make.FileSimpleDependency):
         if path is None:
             path = self.path
 
-        if not os.path.isdir(path):
-            path, fn = os.path.split(path)
-        else:
-            fn = None
-
-        rel_path = ""
-        common_path = from_dir
-        while common_path != self.album.source_dir\
-        and not self.is_subdir_of(common_path, path):
-            common_path, tail = os.path.split(common_path)
-            rel_path = os.path.join('..', rel_path)
-            if common_path == '/':
-                raise Exception(_("Root not found"))
-
-        if self.is_subdir_of(common_path, path):
-            rel_path = os.path.join(rel_path, path[len(common_path)+1:])
-
-        if fn:
-            rel_path = os.path.join(rel_path, fn)
-
-        return rel_path
+        return pathutils.relative_path(from_dir, path)
 
     def is_subdir_of(self, dir, path=None):
         if path is None:
             path = self.path
 
         try:
-            return path.startswith(dir.path)
+            dir_path = dir.path
         except AttributeError:
-            return path.startswith(dir)
+            dir_path = dir
+
+        return pathutils.is_subdir_of(dir_path, path)
 
     def get_album_level(self, path=None):
         if path is None: path = self.path
@@ -292,7 +247,7 @@ class Directory(File):
         self.extension = None
 
         self.subdirs = subdirs
-        self.filenames = map(self._path_to_unicode, filenames)
+        self.filenames = map(pathutils.path2unicode, filenames)
 
         self.human_name = self.album._str_humanize(self.name)
 
@@ -328,7 +283,7 @@ class Directory(File):
             self.album_picture = None
 
     def is_album_root(self):
-        return self.path == self._path_to_unicode(self.album.source_dir)
+        return self.path == pathutils.path2unicode(self.album.source_dir)
 
     def parent_paths(self):
         parent_paths = [self.path]

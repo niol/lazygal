@@ -68,14 +68,15 @@ class WebalbumFile(make.FileMakeObject):
         self.dir = dir
         self.path = path
 
-    def _rel_path(self, dir=None):
-        rel_path = os.path.basename(self.path)
+    def _rel_path(self, dir):
+        '''
+        Returns the path of the current object relative to the supplied dir
+        object argument.
+        '''
         if dir is None or dir is self.dir:
-            return rel_path
+            return os.path.basename(self.path)
         else:
-            dir_in = dir.source_dir
-            rel_dir_in = self.dir.source_dir.rel_path(dir_in)
-            return os.path.join(rel_dir_in, rel_path)
+            return dir.rel_path(self.path)
 
 
 class WebalbumArchive(WebalbumFile):

@@ -24,6 +24,7 @@ import locale
 import genshi
 
 import make
+import pathutils
 import genfile, genmedia, feeds
 
 
@@ -98,6 +99,7 @@ class WebalbumPage(genfile.WebalbumFile):
             else:
                 media_rel_path = dir.source_dir.rel_path(self.dir.source_dir)\
                                  + '/'
+            # FIXME: Simpler : media_rel_path = media.rel_path(dir.source_dir)
 
             if media.type == 'image':
                 return self._gen_other_img_link(media, dir, media_rel_path)
@@ -146,7 +148,7 @@ class WebalbumPage(genfile.WebalbumFile):
         if srcdir_path != self.dir.source_dir.path:
             index_path = srcdir_path
         if index_path is not None:
-            link_target = self.dir.rel_path(index_path) + link_target
+            link_target = self.dir.rel_path_to_src(index_path) + link_target
 
         return self.url_quote(link_target)
 
