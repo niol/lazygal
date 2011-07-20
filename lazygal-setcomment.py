@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 
 from lazygal import pyexiv2api as pyexiv2
