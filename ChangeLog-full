@@ -1,4 +1,46 @@
-Lazygal 0.6.1 (2011-04-27)
+Lazygal 0.6.2 (2011-06-30)
+  * update fr translation
+  * update TODO
+  * make whitespace in theme files consistent
+  * more fixes for fr translation
+  * add gallery archive size in gallery index
+  * update italian translation
+  * improve video utils quick and dirty test code
+  * video utils: search for thumb only in first 5 minutes of video
+  * add Nikon Lens info retrieval unit tests
+  * fix retrieval of Nikon Lens info
+  * make sure gst pipeline SIGINT check is stopped when pipeline is
+  * make -O work with videos
+  * fix failure when one use -O and there is a video (Debian #631181)
+  * stop pipeline when thumb frame has been extracted, do not wait for EOS
+  * handle SIGINT while transcoding videos
+  * also transcode .3gp videos
+  * remove target video when transcoding has failed
+  * improve failed transocding error message
+  * discard old debugging statement
+  * subgal-sort-by=exif: use all pics in subdirs, not just pics directly in gallery
+  * minor fr translation fixes (thanks to Jonathan Michalon)
+  * print Interrupted error to stderr
+  * fix broken new size fix according to rotation
+  * fix failure when date tags are not recognized by pyexiv2 (Debian #630572)
+  * add webm transocding utility class
+  * also rotate upside down pics
+  * better handling of SIGINT during task build
+  * fix rotated pics EXIF Orientation tag
+  * fix obeying on size constraints when images are auto rotated
+  * gracefuly handle SIGINT
+  * update TODO
+  * make it possible to load puburl from config file
+  * fix typo in manpage due to option parameter change
+  * --sugbgal-sort-by=exif sort by latest EXIF in subgal
+  * support for providing output dir in config file
+  * rename --subgal-sort-by=filename to --subgal-sort-by=dirname which is clearer
+  * fix supplying album picture by file album-picture
+  * add some video utility classes: video info parser and video thumbnailer
+  * add ignore file
+
+Lazygal 0.6.1 (2011-04-28)
+  * set version to 0.6.1
   * update french translation
   * updating translation template
   * credits -> author for author field
