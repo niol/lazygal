@@ -83,7 +83,7 @@ class ImageOtherSize(genfile.WebalbumFile):
         # Use EXIF data to rotate target image if available and required
         rotation = self.source_image.info().get_required_rotation()
 
-        if rotation != 0 and rotation % 90 == 0:
+        if rotation in (90, 270, ):
             img_size = (im.size[1], im.size[0], ) # swap coords
         else:
             img_size = im.size
