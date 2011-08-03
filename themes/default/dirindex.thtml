@@ -68,12 +68,7 @@
         </py:if>
 
         <p>
-            <a py:for="media in medias" href="$media.link">
-                <img src="$media.thumb"
-                     width="$media.thumb_width"
-                     height="$media.thumb_height"
-                     alt="$media.thumb_name thumb" />
-            </a>
+            <a py:for="media in medias" href="$media.link"><img src="$media.thumb" width="$media.thumb_width" height="$media.thumb_height" alt="$media.thumb_name thumb" /></a>
         </p>
 
         <div class="dirzip" py:if="subdir.dirzip">
