@@ -13,8 +13,6 @@ Ideas to improve Lazygal (in no particular order)
 
 * Add some styles to the default theme.
 
-* Remove feed rel link in templates when there is no feed.
-
 * Integrate Gallerific
 
 * Better video thumbnails :
@@ -34,3 +32,5 @@ Ideas to improve Lazygal (in no particular order)
 * Document configuration file options.
 
 * Document input formats.
+
+* xinclude for XHTML <head />
