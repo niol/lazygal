@@ -111,7 +111,7 @@ parser.add_option("", "--template-vars",
                   help=_("Common variables to load all templates with."))
 parser.add_option("", "--clean-destination",
                   action="store_true",
-                  dest="clean_dest",
+                  dest="clean_destination",
                   default=config.getboolean('lazygal', 'clean-destination'),
                   help=_("Clean destination directory of files that should not be there."))
 parser.add_option("-v", "--version",
@@ -326,7 +326,7 @@ if options.metadata:
 else:
     try:
         album.generate(options.dest_dir, puburl,
-                       options.check_all_dirs, options.clean_dest)
+                       options.check_all_dirs, options.clean_destination)
     except KeyboardInterrupt:
         print >> sys.stderr, _("Interrupted.")
         sys.exit(1)
