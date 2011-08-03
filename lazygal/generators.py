@@ -443,8 +443,8 @@ class WebalbumDir(make.FileMakeObject):
                 os.unlink(dest_file)
                 text = ""
             else:
-                text = _("you should")
-            self.album.log(_("  %s RM %s") % (text, dest_file), 'info')
+                text = _("you should ")
+            self.album.log(_("  %sRM %s") % (text, dest_file), 'info')
 
     def make(self, force=False):
         needed_build = self.needs_build()
