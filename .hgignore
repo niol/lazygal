@@ -3,4 +3,5 @@ syntax:glob
 syntax:regexp
 ^build
 ^lazygal.1$
+^lazygal.conf.5$
 ^MANIFEST$
