@@ -66,15 +66,19 @@
         </div>
     </py:if>
 
-        <p>
-            <a py:for="media in medias" href="$media.link"><img src="$media.thumb" width="$media.thumb_width" height="$media.thumb_height" alt="$media.thumb_name thumb" /></a>
-        </p>
-
-        <div class="dirzip" py:if="subdir.dirzip">
-            <a href="$subdir.dirzip">${_('All full scale pictures as an archive, for')} "$subdir.album_name"</a> ($subdir.dirzip_size).
+    <div id="medias">
+        <div py:for="media in medias" class="media">
+            <a href="$media.link"><img src="$media.thumb"
+                                       width="$media.thumb_width"
+                                       height="$media.thumb_height"
+                                       alt="$media.thumb_name thumb" /></a>
         </div>
     </div>
-</py:for>
+
+    <div class="dirzip" py:if="subdir.dirzip">
+        <a href="$subdir.dirzip">${_('All full scale pictures as an archive, for')} "$subdir.album_name"</a> ($subdir.dirzip_size).
+    </div>
+</div>
 
 <div class="footer" py:if="footer" py:content="footer" />
 

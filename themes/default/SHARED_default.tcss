@@ -35,6 +35,10 @@ a{
     padding-right:7em;
 }
 
+.media {
+    display: inline;
+}
+
 \#prev_link{
     position:absolute;
     top:50%;
