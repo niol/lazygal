@@ -159,7 +159,7 @@
         </term>
         <listitem>
           <para>Clean destination directory of files that should not
-          be there.</para>
+          be there (default is to print a warning but not to delete).</para>
         </listitem>
       </varlistentry>
 
