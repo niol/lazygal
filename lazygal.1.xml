@@ -3,21 +3,18 @@
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
   <!-- Please adjust the date whenever revising the manpage. -->
-  <!ENTITY dhdate      "<date>January 2011</date>">
-  <!-- SECTION should be 1-8, maybe w/ subsection other parameters are
-       allowed: see man(7), man(1). -->
-  <!ENTITY dhsection   "<manvolnum>1</manvolnum>">
-  <!ENTITY dhucpackage "<refentrytitle>LAZYGAL</refentrytitle>">
-  <!ENTITY dhpackage   "lazygal">
-  <!ENTITY debian      "<productname>Debian</productname>">
-  <!ENTITY gnu         "<acronym>GNU</acronym>">
-  <!ENTITY gpl         "&gnu; <acronym>GPL</acronym>">
+  <!ENTITY dhdate         "<date>August 2011</date>">
+  <!ENTITY dhsection      "1">
+  <!ENTITY dhsectiontitle "User commands">
+  <!ENTITY dhpackage      "lazygal">
+  <!ENTITY dhtitle        "lazygal">
+  <!ENTITY debian         "<productname>Debian</productname>">
+  <!ENTITY gnu            "<acronym>GNU</acronym>">
+  <!ENTITY gpl            "&gnu; <acronym>GPL</acronym>">
 ]>
 
 <refentry>
   <refentryinfo>
-    <address>
-    </address>
     <copyright>
       <year>2010</year>
       <holder></holder>
@@ -25,12 +22,13 @@
     &dhdate;
   </refentryinfo>
   <refmeta>
-    &dhucpackage;
-
-    &dhsection;
+    <refentrytitle>LAZYGAL</refentrytitle>
+    <manvolnum>&dhsection;</manvolnum>
+    <refmiscinfo class="source">&dhpackage;</refmiscinfo>
+    <refmiscinfo class="manual">&dhsectiontitle;</refmiscinfo>
   </refmeta>
   <refnamediv>
-    <refname>&dhpackage;</refname>
+    <refname>&dhtitle;</refname>
     <refpurpose>static web gallery generator</refpurpose>
   </refnamediv>
   <refsynopsisdiv>
@@ -41,6 +39,7 @@
       <replaceable>albumdir</replaceable></arg>
     </cmdsynopsis>
   </refsynopsisdiv>
+
   <refsect1>
     <title>DESCRIPTION</title>
 
