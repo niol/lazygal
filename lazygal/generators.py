@@ -640,7 +640,7 @@ class Album:
         return styles
 
     def set_original(self, original=False, orig_base=None, orig_symlink=False):
-        self.original = original
+        self.original = original or orig_symlink
         self.orig_symlink = orig_symlink
         if self.original and orig_base and not orig_symlink:
             self.orig_base = orig_base
