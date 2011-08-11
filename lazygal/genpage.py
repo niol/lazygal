@@ -112,7 +112,7 @@ class WebalbumPage(genfile.WebalbumFile):
 
     def _get_osize_links(self, filename):
         osize_index_links = []
-        for osize_name in self.dir.album.browse_size_strings.keys():
+        for osize_name in self.dir.album.browse_sizes:
             osize_info = {}
             if osize_name == self.size_name:
                 # No link if we're on the current page

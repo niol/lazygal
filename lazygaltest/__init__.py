@@ -71,11 +71,9 @@ class LazygalTestGen(LazygalTest):
         if album:
             self.setup_album()
 
-    def setup_album(self, kwargs=None):
-        if kwargs is None: kwargs = {}
-        self.album = Album(self.source_dir, **kwargs)
+    def setup_album(self, config=None):
+        self.album = Album(self.source_dir, config)
         self.album.set_logging('error')
-        self.album.set_theme()
 
     def setup_subgal(self, name, pic_names):
         subgal_path = os.path.join(self.source_dir, 'subgal')

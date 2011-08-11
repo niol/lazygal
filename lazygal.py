@@ -19,8 +19,6 @@
 
 import sys, os, locale, gettext
 from optparse import OptionParser
-import genshi.core
-import ConfigParser
 
 
 # i18n
@@ -36,44 +34,9 @@ locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
 
 
 import lazygal
-from lazygal.generators import Album, SOURCEDIR_CONFIGFILE
-from lazygal.genmedia import THUMB_SIZE_NAME
-from lazygal.newsize import is_known_newsizer
+from lazygal.generators import Album
+import lazygal.config
 
-
-CONFIGFILE = '~/.lazygal/config'
-CONFIGDEFAULTS = {
-    'quiet': 'No',
-    'output-directory': '.',
-    'puburl': 'No',
-    'theme': 'default',
-    'default-style': 'default',
-    'clean-destination': 'No',
-    'check-all-dirs': 'No',
-    'dir-flattening-depth': 'No',
-    'original': 'No',
-    'orig-base': 'No',
-    'orig-symlink': 'No',
-    'image-size': 'small=800x600,medium=1024x768',
-    'thumbnail-size': '150x113',
-    'make-dir-zip': 'No',
-    'thumbs-per-page': '0',
-    'pic-sort-by': 'exif',
-    'subgal-sort-by': 'dirname',
-    'quality': '85',
-    'optimize': 'Yes',
-    'progressive': 'Yes',
-    'webalbumpic-bg': 'transparent',
-    'template-vars': '',
-}
-
-
-# Read configuration file
-config = ConfigParser.ConfigParser(defaults = CONFIGDEFAULTS)
-# The following will hold until the config file has more than one section.
-# See http://mail.python.org/pipermail/python-list/2006-March/370021.html
-config.add_section('lazygal')
-config.read(os.path.expanduser(CONFIGFILE))
 
 usage = _("usage: %prog [options] albumdir")
 parser = OptionParser(usage=usage)
@@ -83,107 +46,93 @@ parser.get_option('-h').help = _("Show this help message and exit.")
 
 parser.add_option("", "--quiet",
                   action="store_true",
-                  dest="quiet", default=config.getboolean('lazygal', 'quiet'),
+                  dest="quiet",
                   help=_("Don't output anything except for errors."))
 parser.add_option("", "--debug",
                   action="store_true",
-                  dest="debug", default=False,
+                  dest="debug",
                   help=_("Output everything that lazygal is doing."))
 parser.add_option("-o", "--output-directory",
                   action="store", type="string",
                   dest="dest_dir",
-                  default=config.get('lazygal', 'output-directory'),
                   help=_("Directory where web pages, slides and thumbs will be written (default is current directory)."))
 parser.add_option("-t", "--theme",
                   action="store", type="string",
                   dest="theme",
-                  default=config.get('lazygal', 'theme'),
                   help=_("Theme name (looked up in theme directory) or theme full path."))
 parser.add_option("", "--default-style",
                   action="store", type="string",
                   dest="default_style",
-                  default=config.get('lazygal', 'default-style'),
                   help=_("Default style to apply to the theme."))
 parser.add_option("", "--template-vars",
                   action="store", type="string",
                   dest="tpl_vars",
-                  default=config.get('lazygal', 'template-vars'),
                   help=_("Common variables to load all templates with."))
 parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_destination",
-                  default=config.getboolean('lazygal', 'clean-destination'),
                   help=_("Clean destination directory of files that should not be there."))
 parser.add_option("-v", "--version",
                   action="store_true",
-                  dest="show_version", default=False,
+                  dest="show_version",
                   help=_("Display program version."))
 parser.add_option("", "--check-all-dirs",
                   action="store_true",
-                  dest="check_all_dirs", default=config.getboolean('lazygal', 'check-all-dirs'),
+                  dest="check_all_dirs",
                   help=_("Exhaustively go through all directories regardless of source modification time."))
 parser.add_option("", "--dir-flattening-depth",
                   action="store", type="int",
                   dest="dir_flattening_depth",
-                  default=config.getboolean('lazygal', 'dir-flattening-depth'),
                   help=_("Level below which the directory tree is flattened. Default is 'No' which disables this feature."))
 parser.add_option("-s", "--image-size",
                   action="store", type="string",
                   dest="image_size",
-                  default=config.get('lazygal', 'image-size'),
                   help=_("Size of images, define as <name>=SIZE,..., eg. small=800x600,medium=1024x768. The special value 0x0 uses original size. See manual page for SIZE syntax."))
 parser.add_option("-T", "--thumbnail-size",
                   action="store", type="string",
                   dest="thumbnail_size",
-                  default=config.get('lazygal', 'thumbnail-size'),
                   help=_("Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE syntax."))
 parser.add_option("-q", "--quality",
                   action="store", type="int",
                   dest="quality",
-                  default=config.get('lazygal', 'quality'),
                   help=_("Quality of generated JPEG images (default is 85)."))
 parser.add_option("-O", "--original",
                   action="store_true",
-                  dest="original", default=False,
+                  dest="original",
                   help=_("Include original photos in output."))
 parser.add_option("", "--orig-base",
                   action="store", type="string",
                   dest="orig_base",
-                  default=config.get('lazygal', 'orig-base'),
                   help=_("Do not copy original photos in output directory, instead link them using submitted relative path as base."))
 parser.add_option("", "--orig-symlink",
                   action="store_true",
                   dest="orig_symlink",
-                  default=config.getboolean('lazygal', 'orig-symlink'),
                   help=_("Do not copy original photos in output directory, instead create symlinks to their original locations."))
 parser.add_option("", "--puburl",
                   action="store", type="string",
                   dest="puburl",
-                  default=config.get('lazygal', 'puburl'),
                   help=_("Publication URL (only useful for feed generation)."))
 parser.add_option("-m", "--generate-metadata",
                   action="store_true",
-                  dest="metadata", default=False,
+                  dest="metadata",
                   help=_("Generate metadata description files where they don't exist instead of generating the web gallery."))
 parser.add_option("-n", "--thumbs-per-page",
                   action="store", type="int",
                   dest="thumbs_per_page",
-                  default=config.getint('lazygal', 'thumbs-per-page'),
                   help=_("Maximum number of thumbs per index page. This enables index pagination (0 is unlimited)."))
 parser.add_option("-z", "--make-dir-zip",
                   action="store_true",
-                  dest="dirzip", default=config.getboolean('lazygal', 'make-dir-zip'),
+                  dest="dirzip",
                   help=_("Make a zip archive of original pictures for each directory."))
 parser.add_option("", "--webalbum-pic-bg",
                   action="store", type="string",
                   dest="webalbumpic_bg",
-                  default=config.get('lazygal', 'webalbumpic-bg'),
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
 parser.add_option("", "--pic-sort-by",
-                  action="store", default=config.get('lazygal', 'pic-sort-by'), metavar=_('ORDER'),
+                  action="store", metavar=_('ORDER'),
                   dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--subgal-sort-by",
-                  action="store", default=config.get('lazygal', 'subgal-sort-by'), metavar=_('ORDER'),
+                  action="store", metavar=_('ORDER'),
                   dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname or mtime. Add ':reverse' to reverse the chosen order."))
 (options, args) = parser.parse_args()
 
@@ -200,110 +149,74 @@ if not os.path.isdir(source_dir):
     print _("Directory %s does not exist.") % source_dir
     sys.exit(1)
 
+
+cmdline_config = lazygal.config.BetterConfigParser()
+for section in lazygal.config.DEFAULT_CONFIG.sections():
+    cmdline_config.add_section(section)
+
+
+if options.quiet: cmdline_config.set('runtime', 'quiet', 'Yes')
+if options.debug: cmdline_config.set('runtime', 'debug', 'Yes')
+if options.check_all_dirs:
+    cmdline_config.set('runtime', 'check-all-dirs', 'Yes')
+
+if options.dest_dir is not None:
+    cmdline_config.set('global', 'destdir',
+                       options.dest_dir.decode(sys.getfilesystemencoding()))
+if options.clean_destination:
+    cmdline_config.set('global', 'clean-destination', 'Yes')
+if options.dir_flattening_depth is not None:
+    cmdline_config.set('global', 'dir-flattening-depth',
+                       options.dir_flattening_depth)
+if options.puburl is not None:
+    cmdline_config.set('global', 'puburl', options.puburl)
+if options.theme is not None:
+    cmdline_config.set('global', 'theme', options.theme)
+
+if options.default_style is not None:
+    cmdline_config.set('webgal', 'default-style', options.default_style)
+if options.webalbumpic_bg is not None:
+    cmdline_config.set('webgal', 'webalbumpic-bg', options.webalbumpic_bg)
+if options.image_size is not None:
+    cmdline_config.set('webgal', 'image-size', options.image_size)
+if options.thumbnail_size is not None:
+    cmdline_config.set('webgal', 'thumbnail-size', options.thumbnail_size)
+if options.thumbs_per_page is not None:
+    cmdline_config.set('webgal', 'thumbs-per-page', options.thumbs_per_page)
+if options.pic_sort_by is not None:
+    cmdline_config.set('webgal', 'sort-medias', options.pic_sort_by)
+if options.subgal_sort_by is not None:
+    cmdline_config.set('webgal', 'sort-subgals', options.pic_sort_by)
+if options.original:
+    cmdline_config.set('webgal', 'original', 'Yes')
+if options.orig_base is not None:
+    cmdline_config.set('webgal', 'original-baseurl', options.orig_base)
 if options.orig_symlink:
     try:
         _ = os.symlink
     except AttributeError:
         print _("Option --orig-symlink is not available on this platform.")
         sys.exit(1)
-
-if options.puburl == 'No':
-    puburl = False
-else:
-    puburl = options.puburl
-
-# Load a config file in the source_dir root
-sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
-if os.path.isfile(sourcedir_configfile):
-    config.read(sourcedir_configfile)
-
-    # Load the defaults now that all the config files are red
-    default_from_config = {}
-    # (section template-vars is handled later in the script)
-    for name, value in config.items('lazygal'):
-        # FIXME: Not to proud of the following but config options need a big
-        # refactoring and their proper module, I'll save this for later.
-        if value == 'Yes': value = True
-        elif value == 'No': value = False
-        else:
-            try:
-                value = int(value)
-            except ValueError: pass
-        default_from_config[name.replace('-', '_')] = value
-    parser.set_defaults(**default_from_config)
-
-    # Reparse a second time for the new defaults (from the source directory
-    # config file) to be taken into account.
-    (options, args) = parser.parse_args()
-
-size_strings = []
-size_defs = options.image_size.split(',')
-for single_def in size_defs:
-    try:
-        name, string_size = single_def.split('=')
-        if name == '': raise ValueError
-    except ValueError:
-        print _("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\".")
-        sys.exit(1)
-    if name == THUMB_SIZE_NAME:
-        print _("Size name '%s' is reserved for internal processing.")\
-                % THUMB_SIZE_NAME
-        sys.exit(1)
-    if not is_known_newsizer(string_size):
-        print _("'%s' for size '%s' does not describe a known size syntax.")\
-                % (string_size, name, )
-        sys.exit(1)
-    size_strings.append((name, string_size))
-
-thumb_size_string = options.thumbnail_size
-if not is_known_newsizer(thumb_size_string):
-    print _("'%s' for thumb size does not describe a known size syntax.")\
-            % thumb_string_size
-    sys.exit(1)
-
-def parse_sort(sort_string):
-    try:
-        sort_method, reverse = sort_string.split(':')
-    except ValueError:
-        sort_method = sort_string
-        reverse = False
-    if reverse == 'reverse':
-        return sort_method, True
     else:
-        return sort_method, False
+        cmdline_config.set('webgal', 'original-symlink', 'Yes')
+if options.dirzip:
+    cmdline_config.set('webgal', 'dirzip', 'Yes')
+if options.quality is not None:
+    cmdline_config.set('webgal', 'jpeg-quality', options.quality)
 
-album = Album(source_dir, thumb_size_string, size_strings,
-              quality=options.quality,
-              dir_flattening_depth=options.dir_flattening_depth,
-              optimize=options.optimize, progressive=options.progressive,
-              thumbs_per_page=options.thumbs_per_page,
-              dirzip=options.dirzip,
-              pic_sort_by=parse_sort(options.pic_sort_by),
-              subgal_sort_by=parse_sort(options.subgal_sort_by))
+if options.tpl_vars is not None:
+    cmdline_config.add_section('template-vars')
+    tpl_vars_defs = options.tpl_vars.split(',')
+    for single_def in tpl_vars_defs:
+        name, value = single_def.split('=')
+        cmdline_config.set('template-vars',
+                           name, value.decode(sys.stdin.encoding))
 
-if options.tpl_vars or config.has_section('template-vars'):
-    tpl_vars = {}
-    if config.has_section('template-vars'):
-        for option in config.options('template-vars'):
-            value = config.get('template-vars', option)
-            value = value.decode(locale.getpreferredencoding())
-            tpl_vars[option] = genshi.core.Markup(value)
-    if options.tpl_vars:
-        tpl_vars_defs = options.tpl_vars.split(',')
-        for single_def in tpl_vars_defs:
-            name, value = single_def.split('=')
-            value = value.decode(sys.stdin.encoding)
-            tpl_vars[name] = genshi.core.Markup(value)
-    album.set_tpl_vars(tpl_vars)
-
-album.set_theme(options.theme, options.default_style)
-
-orig_base = None
-if options.original and options.orig_base != 'No':
-    orig_base = options.orig_base
-album.set_original(options.original, orig_base, options.orig_symlink)
-
-album.set_webalbumpic(bg=options.webalbumpic_bg)
+try:
+    album = Album(source_dir, cmdline_config)
+except ValueError, e:
+    print e
+    sys.exit(1)
 
 log_level = None
 if options.quiet:
@@ -317,8 +230,7 @@ if options.metadata:
     album.generate_default_metadata()
 else:
     try:
-        album.generate(options.dest_dir, puburl,
-                       options.check_all_dirs, options.clean_destination)
+        album.generate()
     except KeyboardInterrupt:
         print >> sys.stderr, _("Interrupted.")
         sys.exit(1)

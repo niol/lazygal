@@ -20,12 +20,13 @@ import glob
 import locale
 import gc
 
+from config import LazygalConfig, DEFAULT_CONFIG
+from sourcetree import SOURCEDIR_CONFIGFILE
+
 import make
 import pathutils
 import sourcetree, tpl, newsize, metadata, mediautils
 import genpage, genmedia, genfile
-
-from sourcetree import SOURCEDIR_CONFIGFILE
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
@@ -191,8 +192,8 @@ class WebalbumMediaTask(make.GroupTask):
         self.resized = {}
         self.browse_pages = {}
 
-        for size_name in self.album.browse_size_strings.keys():
-            if self.album.browse_size_strings[size_name] == '0x0':
+        for size_name in self.album.browse_sizes:
+            if self.album.newsizers[size_name] == 'original':
                 self.resized[size_name] = self.get_original()
             else:
                 self.resized[size_name] = self.get_resized(size_name)
@@ -240,7 +241,7 @@ class WebalbumImageTask(WebalbumMediaTask):
         self.add_dependency(self.thumb)
 
     def get_resized(self, size_name):
-        if self.album.browse_size_strings[size_name] == '0x0':
+        if self.album.newsizers[size_name] == 'original':
             return self.get_original_or_symlink()
         else:
             return genmedia.ImageOtherSize(self.webgal, self.media, size_name)
@@ -339,7 +340,7 @@ class WebalbumDir(make.FileMakeObject):
 
     def add_index_page(self, subgals, galleries):
         page_number = self.break_task.next_page_number()
-        for size_name in self.album.browse_size_strings.keys():
+        for size_name in self.album.browse_sizes:
             page = genpage.WebalbumIndexPage(self, size_name, page_number,
                                              subgals, galleries)
             self.add_dependency(page)
@@ -491,55 +492,85 @@ class SharedFiles(make.FileSimpleDependency):
 
 class Album:
 
-    def __init__(self, source_dir,
-                 thumb_size_string='150x113', browse_size_strings=None,
-                 optimize=False, progressive=False, quality=85,
-                 dir_flattening_depth=False, thumbs_per_page=0,
-                 dirzip=False,
-                 pic_sort_by=('exif', False),
-                 subgal_sort_by=('filename', False)):
+    def __init__(self, source_dir, config=None):
         self.set_logging()
 
         self.source_dir = os.path.abspath(source_dir)
         self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
-        self.thumb_size_string = thumb_size_string
-        if browse_size_strings is not None:
-            self.browse_size_strings = dict(browse_size_strings)
-            self.default_size_name = browse_size_strings[0][0]
-        else:
-            self.browse_size_strings = {'small': '800x600',
-                                        'medium': '1024x768'}
-            self.default_size_name = 'small'
+        self.config = LazygalConfig()
+        self.config.load(DEFAULT_CONFIG) # Config defaults
+        sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
+        if os.path.isfile(sourcedir_configfile): # Album root config
+            self.config.read(sourcedir_configfile)
+        if config is not None: # Supplied config
+            self.config.load(config)
 
+        self.browse_sizes = []
         self.newsizers = {}
-        for size_name, size_string in self.browse_size_strings.items():
-            self.newsizers[size_name] = newsize.get_newsizer(size_string)
-        self.newsizers[genmedia.THUMB_SIZE_NAME] = newsize.get_newsizer(self.thumb_size_string)
-
-        self.quality = quality
+        self.__parse_browse_sizes(self.config.get('webgal', 'image-size'))
+        self.__parse_size(genmedia.THUMB_SIZE_NAME,
+                          self.config.get('webgal', 'thumbnail-size'))
+        self.default_size_name = self.browse_sizes[0]
 
         self.tpl_loader = None
         self.tpl_vars = {}
-        self.original = False
-        self.orig_base = None
-        self.orig_symlink = False
-        self.thumbs_per_page = thumbs_per_page
-        self.dir_flattening_depth = dir_flattening_depth
-        self.dirzip = dirzip
+
+        self.set_theme(self.config.get('global', 'theme'),
+                       self.config.get('webgal', 'default-style'))
+
+        self.set_original(self.config.getboolean('webgal', 'original'),
+                          self.config.getstr('webgal', 'original-baseurl'),
+                          self.config.getboolean('webgal', 'original-symlink'))
+
+        self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
+        self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
+        self.dirzip = self.config.getboolean('webgal', 'dirzip')
+
+        self.quality = self.config.getint('webgal', 'jpeg-quality')
         self.save_options = {}
-        if optimize:
+        if self.config.getboolean('webgal', 'jpeg-optimize'):
             self.save_options['optimize'] = True
-        if progressive:
+        if self.config.getboolean('webgal', 'jpeg-progressive'):
             self.save_options['progressive'] = True
 
-        self.pic_sort_by = pic_sort_by
-        self.subgal_sort_by = subgal_sort_by
+        self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
+        self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
 
         self.transcoder = None
         self.videothumb = None
 
-        self.set_webalbumpic()
+        self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
+
+    def __parse_browse_sizes(self, sizes_string):
+        for single_def in sizes_string.split(','):
+            name, string_size = single_def.split('=')
+            if name == '':
+                raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
+            if name == genmedia.THUMB_SIZE_NAME:
+                raise ValueError(_("Size name '%s' is reserved for internal processing.") % THUMB_SIZE_NAME)
+            self.__parse_size(name, string_size)
+            self.browse_sizes.append(name)
+
+    def __parse_size(self, size_name, size_string):
+        if size_string == '0x0':
+            self.newsizers[size_name] = 'original'
+        else:
+            try:
+                self.newsizers[size_name] = newsize.get_newsizer(size_string)
+            except newsize.NewsizeStringParseError:
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (string_size, name, ))
+
+    def __parse_sort(self, sort_string):
+        try:
+            sort_method, reverse = sort_string.split(':')
+        except ValueError:
+            sort_method = sort_string
+            reverse = False
+        if reverse == 'reverse':
+            return sort_method, True
+        else:
+            return sort_method, False
 
     def set_theme(self, theme=tpl.DEFAULT_TEMPLATE, default_style=None):
         self.theme = theme
@@ -577,7 +608,16 @@ class Album:
                 self.transcoder = False
         return self.transcoder
 
-    def set_tpl_vars(self, tpl_vars=None):
+    def set_tpl_vars(self):
+        # Load tpl vars from config
+        tpl_vars = None
+        if self.config.has_section('template-vars'):
+            tpl_vars = {}
+            for option in config.options('template-vars'):
+                value = config.get('template-vars', option)
+                value = value.decode(locale.getpreferredencoding())
+                tpl_vars[option] = genshi.core.Markup(value)
+
         if tpl_vars is not None:
             self.tpl_vars.update(tpl_vars)
         if self.tpl_loader is not None:
@@ -641,8 +681,8 @@ class Album:
         if size_name == self.default_size_name and extension == '.html':
             # Do not append default size name to HTML page filename
             return path
-        elif size_name in self.browse_size_strings.keys()\
-        and self.browse_size_strings[size_name] == '0x0'\
+        elif size_name in self.browse_sizes\
+        and self.newsizers[size_name] == 'original'\
         and extension != '.html':
             # Do not append size_name to unresized images.
             return path
@@ -705,10 +745,16 @@ class Album:
 
             metadata.DefaultMetadata(source_dir, self).make()
 
-    def generate(self, dest_dir, pub_url=None,
-                 check_all_dirs=False, clean_dest=False):
-        dest_dir = dest_dir.decode(sys.getfilesystemencoding())
+    def generate(self, dest_dir=None):
+        if dest_dir is None:
+            dest_dir = self.config.getstr('global', 'destdir')
+        else:
+            dest_dir = dest_dir.decode(sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(dest_dir)
+
+        pub_url = self.config.getstr('global', 'puburl')
+        check_all_dirs = self.config.getboolean('runtime', 'check-all-dirs')
+        clean_dest = self.config.getboolean('global', 'clean-destination')
 
         if self.is_in_sourcetree(sane_dest_dir):
             raise ValueError(_("Fatal error, web gallery directory is within source tree."))

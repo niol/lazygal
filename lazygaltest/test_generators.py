@@ -22,6 +22,7 @@ import datetime
 import shutil
 
 from __init__ import LazygalTestGen
+import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal import pyexiv2api as pyexiv2
@@ -143,9 +144,13 @@ class TestGenerators(LazygalTestGen):
         self.assertRaises(KeyError, long)
 
     def test_feed(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'puburl', 'http://example.com/album/')
+        self.setup_album(config)
+
         img_path = self.add_img(self.source_dir, 'img01.jpg')
         dest_dir = self.get_working_path()
-        self.album.generate(dest_dir, 'http://example.com/album/')
+        self.album.generate(dest_dir)
 
         self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'index.xml')),
                          True)
@@ -161,7 +166,9 @@ class TestSpecialGens(LazygalTestGen):
         '''
         It shall be possible to split big galleries on mutiple index pages.
         '''
-        self.setup_album({'thumbs_per_page': 4})
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'thumbs-per-page', 4)
+        self.setup_album(config)
 
         pics = [ 'img%d.jpg' % i for i in range(0, 9)]
         source_subgal = self.setup_subgal('subgal', pics)
@@ -171,7 +178,9 @@ class TestSpecialGens(LazygalTestGen):
         # for now...
 
     def test_flatten(self):
-        self.setup_album({'dir_flattening_depth': 1})
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'dir-flattening-depth', 1)
+        self.setup_album(config)
 
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
         self.album.generate(self.dest_path)
@@ -179,7 +188,10 @@ class TestSpecialGens(LazygalTestGen):
         # for now...
 
     def test_flattenpaginate(self):
-        self.setup_album({'thumbs_per_page': 4, 'dir_flattening_depth': 1,})
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'thumbs-per-page', 4)
+        config.set('global', 'dir-flattening-depth', 1)
+        self.setup_album(config)
 
         pics = [ 'img%d.jpg' % i for i in range(0, 9)]
         source_subgal = self.setup_subgal('subgal', pics)
