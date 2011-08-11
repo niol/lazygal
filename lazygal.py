@@ -179,14 +179,6 @@ parser.add_option("", "--webalbum-pic-bg",
                   dest="webalbumpic_bg",
                   default=config.get('lazygal', 'webalbumpic-bg'),
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
-parser.add_option("", "--optimize",
-                  action="store_true",
-                  dest="optimize", default=config.getboolean('lazygal', 'optimize'),
-                  help=_("Run an extra optimization pass on each image."))
-parser.add_option("", "--progressive",
-                  action="store_true",
-                  dest="progressive", default=config.getboolean('lazygal', 'progressive'),
-                  help=_("Generate Progressive JPEG images."))
 parser.add_option("", "--pic-sort-by",
                   action="store", default=config.get('lazygal', 'pic-sort-by'), metavar=_('ORDER'),
                   dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))

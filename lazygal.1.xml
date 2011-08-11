@@ -255,25 +255,6 @@
 
       <varlistentry>
         <term>
-          <option>--optimize</option>
-        </term>
-        <listitem>
-          <para>Run an extra optimization pass for each generated
-          thumbnail.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>
-          <option>--progressive</option>
-        </term>
-        <listitem>
-          <para>Generate progressive JPEG images.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>
           <option>--puburl=<replaceable>PUB_URL</replaceable></option>
         </term>
         <listitem>
