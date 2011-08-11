@@ -58,14 +58,13 @@
     </py:for>
 </div>
 
-<py:for each="subdir, medias in medias">
-    <div py:if="medias" class="media_links">
-        <py:if test="not subdir.is_main">
-            <h2><a name="$subdir.id"></a>$subdir.album_name</h2>
-            <div py:if="subdir.album_description" class="subgal_description">
-                <p>$subdir.album_description</p>
-            </div>
-        </py:if>
+<div py:for="subdir, medias in medias" py:if="medias" class="media_links">
+    <py:if test="not subdir.is_main">
+        <h2><a name="$subdir.id"></a>$subdir.album_name</h2>
+        <div py:if="subdir.album_description" class="subgal_description">
+            <p>$subdir.album_description</p>
+        </div>
+    </py:if>
 
         <p>
             <a py:for="media in medias" href="$media.link"><img src="$media.thumb" width="$media.thumb_width" height="$media.thumb_height" alt="$media.thumb_name thumb" /></a>
