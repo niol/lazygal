@@ -23,7 +23,10 @@
 
 <body>
 
-<h1 py:content="album_name"></h1>
+<div class="title">
+    <h1 py:content="album_name" />
+    <p class="header" py:if="album_description" py:content="album_description" />
+</div>
 
 <div class="inline_enum" id="breadcrumbs">
     <ul>

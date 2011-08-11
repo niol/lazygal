@@ -4,13 +4,11 @@
         <p><img src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" /></p>
     </div>
     <div id="image_caption">
-        <ul id="image_caption_nontech">
-            <li py:if="comment">$comment</li>
-            <li>${_('Taken')} $image_date</li>
-            <li py:if="authorship">${_('Author')}&nbsp;: $authorship</li>
-            <li py:if="original_link"><a href="$original_link">${_('Original picture')}</a></li>
-        </ul>
-        <ul class="image_caption_tech">
+        <div class="image_comment" py:if="comment">$comment</div>
+        <div class="image_date">${_('Taken')} $image_date</div>
+        <div class="authorship" py:if="authorship">${_('Author')}&nbsp;: $authorship</div>
+        <div py:if="original_link" class="original_link"><a href="$original_link">${_('Original picture')}</a></div>
+        <div class="image_caption_tech">
             <li>$image_name</li>
             <li py:if="camera_name">${_('Camera:')} $camera_name
                 <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
@@ -20,7 +18,7 @@
             <li py:if="fnumber">${_('Aperture')} $fnumber</li>
             <li py:if="flash">${_('Flash')} $flash</li>
             <li py:if="focal_length">${_('Focal length')} $focal_length</li>
-        </ul>
+        </div>
     </div>
 </div>
 <!-- vim: set fenc=utf-8 ts=4 sw=4 expandtab: -->
