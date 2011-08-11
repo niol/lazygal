@@ -23,7 +23,7 @@
 
 <body>
 
-<div id="breadcrumbs">
+<div class="inline_enum" id="breadcrumbs">
     <ul>
         <li py:for="webgal in webgal_path">
             <a href="${webgal.link}" py:content="webgal.name" />
@@ -32,16 +32,13 @@
     </ul>
 </div>
 
-<div id="gallery_links">
-    <div id="osize_links" py:if="len(osize_links) > 1">
-        <p>
-            <py:for each="i, osize_link in enumerate(osize_links)">
-                <a py:strip="not osize_link.link"
-                   href="${osize_link.link}">${osize_link.name}</a>
-            <py:if test="i != len(osize_links)-1"> | </py:if>
-            </py:for>
-        </p>
-    </div>
+<div class="inline_enum" id="osize_links" py:if="len(osize_links) > 1">
+    <ul>
+        <li py:for="osize_link in osize_links">
+            <a py:strip="not osize_link.link"
+               href="$osize_link.link">$osize_link.name</a>
+        </li>
+    </ul>
 </div>
 
 <div py:if="prev_link" id="prev_link">

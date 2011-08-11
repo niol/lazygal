@@ -25,7 +25,7 @@
 
 <h1 py:content="album_name"></h1>
 
-<div id="breadcrumbs">
+<div class="inline_enum" id="breadcrumbs">
     <ul>
         <li py:for="webgal in webgal_path">
             <a href="${webgal.link}" py:content="webgal.name" />
@@ -34,23 +34,23 @@
     </ul>
 </div>
 
-<p py:if="album_description" class="description" py:content="album_description"></p>
+<div class="inline_enum" id="osize_links" py:if="len(osize_index_links) > 1">
+    <ul>
+        <li py:for="osize_index_link in osize_index_links">
+            <a py:strip="not osize_index_link.link"
+               href="$osize_index_link.link">$osize_index_link.name</a>
+        </li>
+    </ul>
+</div>
 
-<p py:if="len(osize_index_links) > 1">
-    <py:for each="i, osize_index_link in enumerate(osize_index_links)">
-        <a py:strip="not osize_index_link.link"
-           href="$osize_index_link.link">$osize_index_link.name</a>
-        <py:if test="i != len(osize_index_links)-1"> | </py:if>
-    </py:for>
-</p>
-
-<p py:if="len(onum_index_links) > 1">
-    <py:for each="i, onum_index_link in enumerate(onum_index_links)">
-        <a py:strip="not onum_index_link.link"
-           href="$onum_index_link.link">$onum_index_link.name</a>
-        <py:if test="i != len(onum_index_links)-1"> | </py:if>
-    </py:for>
-</p>
+<div class="inline_enum" id="onum_links" py:if="len(onum_index_links) > 1">
+    <ul>
+        <li py:for="onum_index_link in onum_index_links">
+            <a py:strip="not onum_index_link.link"
+               href="$onum_index_link.link">$onum_index_link.name</a>
+        </li>
+    </ul>
+</div>
 
 <div id="subgal_links">
     <py:for each="subgal_link in subgal_links">
