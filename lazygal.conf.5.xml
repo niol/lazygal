@@ -1,0 +1,343 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
+
+<!ENTITY % lazygalent SYSTEM "lazygal.ent">
+%lazygalent;
+
+  <!-- Please adjust the date whenever revising the manpage. -->
+  <!ENTITY dhdate         "<date>August 2011</date>">
+  <!ENTITY dhsection      "5">
+  <!ENTITY dhsectiontitle "File formats and conventions">
+  <!ENTITY dhpackage      "lazygal">
+  <!ENTITY dhtitle        "lazygal.conf">
+  <!ENTITY debian         "<productname>Debian</productname>">
+  <!ENTITY gnu            "<acronym>GNU</acronym>">
+  <!ENTITY gpl            "&gnu; <acronym>GPL</acronym>">
+]>
+
+<refentry>
+  <refentryinfo>
+    <copyright>
+      <year>2011</year>
+      <holder></holder>
+    </copyright>
+    &dhdate;
+  </refentryinfo>
+  <refmeta>
+    <refentrytitle>LAZYGAL.CONF</refentrytitle>
+    <manvolnum>&dhsection;</manvolnum>
+    <refmiscinfo class="source">&dhpackage;</refmiscinfo>
+    <refmiscinfo class="manual">&dhsectiontitle;</refmiscinfo>
+  </refmeta>
+
+  <refnamediv>
+    <refname>&dhtitle;</refname>
+    <refpurpose>Configuration file for lazygal,
+                a static web gallery generator.</refpurpose>
+  </refnamediv>
+
+  <refsect1>
+    <title>DESCRIPTION</title>
+
+    <para>The configuration file is an INI like file
+    which configures <literal>lazygal</literal>. The format looks like this:
+    </para>
+
+<informalexample><programlisting>
+[sectionname]
+variable = value
+othervariable = othervalue
+
+[othersection]
+foo = bar
+</programlisting></informalexample>
+
+    <para>Boolean values can be conveniently set in the following ways:</para>
+    <itemizedlist>
+        <listitem>
+            <para>For <literal>True</literal>:
+                <literal>1</literal>,
+                <literal>yes</literal>,
+                <literal>true</literal>, and
+                <literal>on</literal>.
+            </para>
+        </listitem>
+        <listitem>
+            <para>For <literal>False</literal>:
+                <literal>0</literal>,
+                <literal>no</literal>,
+                <literal>false</literal>, and
+                <literal>off</literal>.
+            </para>
+        </listitem>
+    </itemizedlist>
+
+    <para>Please refer to
+        <ulink url="http://docs.python.org/library/configparser.html">
+            the python <literal>ConfigParser</literal> documentation
+        </ulink>
+        for more information on the file format.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>runtime section</title>
+
+    <para>The <parameter>runtime</parameter> defines the runtime
+    parameters.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>quiet</term>
+        <listitem>
+          <para>Boolean. Same as <option>--quiet</option> in &lazygal;
+          if <literal>True</literal>.
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>debug</term>
+        <listitem>
+          <para>Boolean. Same as <option>--debug</option> in &lazygal;
+          if <literal>True</literal>
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>check-all-dirs</term>
+        <listitem>
+          <para>Boolean. Same as <option>--check-all-dirs</option> in &lazygal;
+          if <literal>True</literal>.
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>global section</title>
+
+    <para>The <parameter>global</parameter> defines the global
+    parameters. Those parameters apply to all the sub-galleries.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term>destdir</term>
+        <listitem>
+          <para>Same as <option>--output-directory=<replaceable>DEST_DIR</replaceable></option>
+          in &lazygal; (default is current directory).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>clean-destination</term>
+        <listitem>
+          <para>Boolean. Same as <option>--clean-destination</option>
+          in &lazygal; if <literal>True</literal>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>dir-flattening-depth</term>
+        <listitem>
+          <para>Same as <option>--dir-flattening-depth=<replaceable>LEVEL</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+     </varlistentry>
+
+      <varlistentry>
+        <term>puburl</term>
+        <listitem>
+          <para>Same as <option>--puburl=<replaceable>PUB_URL</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>theme</term>
+        <listitem>
+          <para>Same as <option>--theme=<replaceable>THEME</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>webgal section</title>
+
+    <para>The <parameter>webgal</parameter> defines the parameters for a
+    web-gallery.</para>
+
+    <variablelist>
+
+       <varlistentry>
+        <term>default-style</term>
+        <listitem>
+          <para>Same as <option>--default-style=<replaceable>DEFAULT_STYLE</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>webalbumpic-bg</term>
+        <listitem>
+          <para>Same as <option>--webalbum-pic-bg=<replaceable>WEBALBUMPIC_BG</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>image-size</term>
+        <listitem>
+          <para>Same as <option>--image-size=<replaceable>IMAGE_SIZE</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>thumbnail-size</term>
+        <listitem>
+          <para>Same as <option>--thumbnail-size=<replaceable>THUMBNAIL_SIZE</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>thumbs-per-page</term>
+        <listitem>
+          <para>Same as <option>--thumbs-per-page=<replaceable>THUMBS_PER_PAGE</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>sort-medias</term>
+        <listitem>
+          <para>Same as <option>--pic-sort-by=<replaceable>ORDER</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>sort-subgals</term>
+        <listitem>
+          <para>Same as <option>--subgal-sort-by=<replaceable>ORDER</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>original</term>
+        <listitem>
+          <para>Boolean. Same as <option>--original</option> in &lazygal;
+          if <literal>True</literal>
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>original-baseurl</term>
+        <listitem>
+          <para>Same as <option>--orig-base=<replaceable>RELATIVE_PATH</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>original-symlink</term>
+        <listitem>
+          <para>Boolean. Same as <option>--orig-symlink</option> in &lazygal;
+          if <literal>True</literal>
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>dirzip</term>
+        <listitem>
+          <para>Same as <option>--make-dir-zip</option> in &lazygal;
+          if <literal>True</literal>
+          (default is <literal>False</literal>).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>jpeg-quality</term>
+        <listitem>
+          <para>Same as <option>--quality=<replaceable>QUALITY</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>jpeg-optimize</term>
+        <listitem>
+          <para>Boolean. Run an extra optimization pass for each generated
+          thumbnail if <literal>True</literal>, the default.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>jpeg-progressive</term>
+        <listitem>
+          <para>Generate progressive JPEG images if <literal>True</literal>,
+          the default.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+  </refsect1>
+
+  <refsect1>
+    <title>template-vars section</title>
+
+    <para>The <parameter>template-vars</parameter> defines the custom
+    template variables. The variables and their value are listed in this
+    section.</para>
+
+    <example>
+      <title>$footer in the default template</title>
+
+      <para>For instance, <parameter>$footer</parameter> is a template variable
+      in the <literal>default</literal> template. Its value can be defined
+      with this configuration file:</para>
+
+<programlisting>
+[template-vars]
+footer = &lt;p&gt;All pics are copyright 2011 me&lt;/p&gt;
+</programlisting>
+    </example>
+
+  </refsect1>
+
+  <refsect1>
+    <title>SEE ALSO</title>
+
+    <para>&lazygal;.</para>
+  </refsect1>
+
+  <refsect1>
+    <title>AUTHOR</title>
+
+    <para>This manual page was written for
+      the &debian; system (but may be used by others).  Permission is
+      granted to copy, distribute and/or modify this document under
+      the terms of the &gnu; General Public License, Version 2 any
+	  later version published by the Free Software Foundation.
+    </para>
+	<para>
+	  On Debian systems, the complete text of the GNU General Public
+	  License can be found in /usr/share/common-licenses/GPL.
+	</para>
+
+  </refsect1>
+</refentry>

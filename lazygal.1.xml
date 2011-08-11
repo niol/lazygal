@@ -2,6 +2,9 @@
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd" [
 
+  <!ENTITY % lazygalent SYSTEM "lazygal.ent">
+  %lazygalent;
+
   <!-- Please adjust the date whenever revising the manpage. -->
   <!ENTITY dhdate         "<date>August 2011</date>">
   <!ENTITY dhsection      "1">
@@ -500,24 +503,6 @@
       </varlistentry>
 
       <varlistentry>
-        <term><filename>~/.lazygal/config</filename></term>
-        <listitem>
-            <para>User configuration file. INI like file format.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
-        <term>
-            <filename><parameter>SOURCE_DIR</parameter>/.lazygal</filename>
-        </term>
-        <listitem>
-            <para>Gallery configuration file. INI like file format. Overloads
-            the user configuration file, is overloaded by command line
-            options.</para>
-        </listitem>
-      </varlistentry>
-
-      <varlistentry>
         <term><filename>~/.lazygal/themes</filename></term>
         <listitem>
             <para>User themes directory.</para>
@@ -527,6 +512,44 @@
     </variablelist>
 
   </refsect1>
+
+  <refsect1>
+    <title>CONFIGURATION FILES</title>
+
+    <para>Multiple configuration files are processed by &dhpackage;.
+    The configuration is initially set up with the defaults. The defaults
+    can be found in the &dhpackage; source distribution in
+    <filename>lazygal/defaults.conf</filename>.</para>
+
+    <para>Then, the configuration files are processed in the following order,
+    each newly defined value overloading formerly defined values.</para>
+
+    <para>Finally, any command-line-provided parameter takes precedence on
+    any configuration file value.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><filename>~/.lazygal/config</filename></term>
+        <listitem>
+            <para>User configuration file. See &lazygal-conf; for format.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <filename><parameter>SOURCE_DIR</parameter>/.lazygal</filename>
+        </term>
+        <listitem>
+            <para>Gallery configuration file. See &lazygal-conf; for format.
+            </para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
 
   <refsect1>
     <title>SIZE DESCRIPTION</title>
@@ -619,7 +642,8 @@
   <refsect1>
     <title>SEE ALSO</title>
 
-    <para>The full documentation of &dhpackage; is maintained as a README file.</para>
+    <para>&lazygal-conf;.</para>
+
     <para>More information is available on the program website:
     <filename>http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal</filename>.
     </para>

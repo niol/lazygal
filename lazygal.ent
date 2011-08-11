@@ -1,0 +1,12 @@
+<!-- Cross references to other man pages -->
+<!ENTITY lazygal "<citerefentry>
+    <refentrytitle><command>lazygal</command></refentrytitle>
+    <manvolnum>1</manvolnum>
+  </citerefentry>"
+>
+
+<!ENTITY lazygal-conf "<citerefentry>
+    <refentrytitle><filename>lazygal.conf</filename></refentrytitle>
+    <manvolnum>5</manvolnum>
+  </citerefentry>"
+>
