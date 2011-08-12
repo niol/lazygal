@@ -8,14 +8,9 @@
     <title py:content="album_name" />
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="Generator" content="lazygal $lazygal_version" />
-    <py:for each="style in styles">
-        <py:if test="style.alternate">
-            <link rel="alternate stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
-        </py:if>
-        <py:if test="not style.alternate">
-            <link rel="stylesheet" type="text/css" media="screen,projection" title="$style.name" href="${rel_root}shared/${style.filename}.css" />
-        </py:if>
-    </py:for>
+    <link py:for="style in styles" type="text/css"
+          rel="$style.rel" media="screen,projection" title="$style.name"
+          href="${rel_root}shared/${style.filename}.css" />
     <link py:if="feed_url" rel="alternate" type="application/rss+xml" title="Recent galleries" href="$feed_url" />
     <script type="text/javascript" src="${rel_root}shared/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="${rel_root}shared/scripts.js"></script>

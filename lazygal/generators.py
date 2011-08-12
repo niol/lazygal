@@ -636,9 +636,9 @@ class Album:
             style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
             style['name'] = self._str_humanize(style['filename'])
             if style['filename'] == default_style:
-                style['alternate'] = False
+                style['rel'] = 'stylesheet'
             else:
-                style['alternate'] = True
+                style['rel'] = 'alternate stylesheet'
             styles.append(style)
         return styles
 
