@@ -218,7 +218,7 @@ logging.basicConfig(format='%(message)s', level=logging.INFO)
 try:
     album = Album(source_dir, cmdline_config)
 except ValueError, e:
-    print e
+    print unicode(e)
     sys.exit(1)
 
 log_level = None

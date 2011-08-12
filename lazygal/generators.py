@@ -551,7 +551,7 @@ class Album:
             if name == '':
                 raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
             if name == genmedia.THUMB_SIZE_NAME:
-                raise ValueError(_("Size name '%s' is reserved for internal processing.") % THUMB_SIZE_NAME)
+                raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
             self.__parse_size(name, string_size)
             self.browse_sizes.append(name)
 
@@ -562,7 +562,7 @@ class Album:
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
             except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (string_size, name, ))
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
 
     def __parse_sort(self, sort_string):
         try:
