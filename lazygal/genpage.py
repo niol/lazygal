@@ -18,6 +18,7 @@
 
 import os
 import sys
+import logging
 import urllib
 import locale
 
@@ -209,8 +210,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
     def build(self):
         page_rel_path = self._rel_path(self.dir.flattening_dir)
-        self.dir.album.log(_("  XHTML %s") % page_rel_path, 'info')
-        self.dir.album.log("(%s)" % self.page_path)
+        logging.info(_("  XHTML %s") % page_rel_path)
+        logging.debug("(%s)" % self.page_path)
 
         tpl_values = {}
 
@@ -423,9 +424,8 @@ class WebalbumIndexPage(WebalbumPage):
         return subgal_links
 
     def build(self):
-        self.dir.album.log(_("  XHTML %s") % os.path.basename(self.page_path),
-                           'info')
-        self.dir.album.log("(%s)" % self.page_path)
+        logging.info(_("  XHTML %s") % os.path.basename(self.page_path))
+        logging.debug("(%s)" % self.page_path)
 
         values = {}
 
@@ -510,8 +510,8 @@ class WebalbumFeed(make.FileMakeObject):
                             webalbumdir.source_dir.get_mtime())
 
     def build(self):
-        self.album.log(_("FEED %s") % os.path.basename(self.path), 'info')
-        self.album.log("(%s)" % self.path)
+        logging.info(_("FEED %s") % os.path.basename(self.path))
+        logging.debug("(%s)" % self.path)
         self.feed.dump(self.path)
 
 
@@ -532,9 +532,8 @@ class SharedFileTemplate(make.FileMakeObject):
         self.add_file_dependency(shared_tpl_name)
 
     def build(self):
-        self.album.log(_("TPL %%SHAREDDIR%%/%s")\
-                       % os.path.basename(self.path), 'info')
-        self.album.log("(%s)" % self.path)
+        logging.info(_("TPL %%SHAREDDIR%%/%s") % os.path.basename(self.path))
+        logging.debug("(%s)" % self.path)
         self.tpl.dump({}, self.path)
 
 

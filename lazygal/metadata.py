@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, locale
+import logging
 import codecs
 import datetime
 import Image
@@ -468,9 +469,9 @@ class DefaultMetadata(make.FileMakeObject):
         md_data = md.get(None, self.source_dir)
         if 'album_description' in md_data.keys()\
         or 'album_name' in md_data.keys():
-            self.album.log(_("  SKIPPED because metadata exists."))
+            logging.debug(_("  SKIPPED because metadata exists."))
         elif self.source_dir.get_all_medias_count() < 1:
-            self.album.log(_("  SKIPPED because directory does not contain images."))
+            logging.debug(_("  SKIPPED because directory does not contain images."))
         else:
             self.generate(md_data)
 
@@ -479,7 +480,7 @@ class DefaultMetadata(make.FileMakeObject):
         Generates new metadata file with default values.
         '''
 
-        self.album.log(_("GEN %s") % self._path, 'info')
+        logging.info(_("GEN %s") % self._path)
 
         f = file(self._path, 'w')
         f.write(codecs.BOM_UTF8)

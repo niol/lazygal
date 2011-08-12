@@ -17,6 +17,7 @@
 
 
 import os
+import logging
 
 import Image
 # lazygal has her own ImageFile class, so avoid trouble
@@ -48,18 +49,17 @@ class ImageOtherSize(genfile.WebalbumFile):
 
     def build(self):
         img_rel_path = self._rel_path(self.dir.flattening_dir)
-        self.dir.album.log(_("  RESIZE %s") % img_rel_path, 'info')
+        logging.info(_("  RESIZE %s") % img_rel_path)
 
-        self.dir.album.log("(%s)" % self.path)
+        logging.debug("(%s)" % self.path)
 
         try:
             if not self.source_image.broken:
                 im = Image.open(self.source_image.path)
                 self.__build_other_size(im)
         except IOError:
-            self.dir.album.log(_("  %s is BROKEN, skipped")\
-                               % self.source_image.filename,
-                               'error')
+            logging.error(_("  %s is BROKEN, skipped")\
+                          % self.source_image.filename)
             self.source_image.broken = True
             raise
 
@@ -129,7 +129,7 @@ class ImageOtherSize(genfile.WebalbumFile):
         try:
             dest_imgtags.write()
         except ValueError, e:
-            self.dir.album.log(_("Could not copy metadata in reduced picture: %s") % e, 'error')
+            logging.error(_("Could not copy metadata in reduced picture: %s") % e)
 
 
 class WebalbumPicture(make.FileMakeObject):
@@ -173,13 +173,12 @@ class WebalbumPicture(make.FileMakeObject):
                                            bg=self.album.webalbumpic_bg)
 
     def build(self):
-        self.album.log(_("  DIRPIC %s") % os.path.basename(self.path), 'info')
-        self.album.log("(%s)" % self.path)
+        logging.info(_("  DIRPIC %s") % os.path.basename(self.path))
+        logging.debug("(%s)" % self.path)
         try:
             self.dirpic.write(self.path)
         except ValueError, ex:
-            self.album.log(str(ex), 'error')
-
+            logging.error(str(ex))
 
 
 class WebVideo(genfile.WebalbumFile):
@@ -194,16 +193,15 @@ class WebVideo(genfile.WebalbumFile):
 
     def build(self):
         vid_rel_path = self._rel_path(self.webgal.flattening_dir)
-        self.webgal.album.log(_("  TRANSCODE %s") % vid_rel_path, 'info')
+        logging.info(_("  TRANSCODE %s") % vid_rel_path)
 
         transcoder = self.webgal.album.get_transcoder()
         try:
             transcoder.convert(self.source_video.path, self.path)
         except mediautils.TranscodeError, e:
-            self.dir.album.log(_("  transcoding %s failed, skipped")\
-                               % self.source_video.filename,
-                               'error')
-            self.dir.album.log(str(e), 'info')
+            logging.error(_("  transcoding %s failed, skipped")\
+                          % self.source_video.filename)
+            logging.info(str(e))
             os.unlink(self.path)
 
 

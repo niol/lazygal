@@ -18,6 +18,7 @@
 import os, sys
 import glob
 import locale
+import logging
 import gc
 
 from config import LazygalConfig, DEFAULT_CONFIG
@@ -57,7 +58,7 @@ class SubgalSort(make.MakeTask):
         self.album = self.webgal_dir.album
 
     def build(self):
-        self.album.log(_("  SORTING pics and subdirs"), 'info')
+        logging.info(_("  SORTING pics and subdirs"))
 
         if self.album.subgal_sort_by[0] == 'exif':
             subgal_sorter = lambda x, y:\
@@ -115,7 +116,7 @@ class SubgalBreak(make.MakeTask):
         return self.__last_page_number + 1
 
     def build(self):
-        self.album.log(_("  BREAKING web gallery into multiple pages"), 'info')
+        logging.info(_("  BREAKING web gallery into multiple pages"))
 
         if self.album.thumbs_per_page == 0:
             self.__fill_no_pagination()
@@ -296,9 +297,9 @@ class WebalbumDir(make.FileMakeObject):
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
-            self.album.log(_("  MKDIR %%WEBALBUMROOT%%/%s")\
-                           % self.source_dir.strip_root(), 'info')
-            self.album.log("(%s)" % self.path)
+            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")\
+                         % self.source_dir.strip_root())
+            logging.debug("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
             # Directory did not exist, mark it as so
             self.stamp_delete()
@@ -445,7 +446,7 @@ class WebalbumDir(make.FileMakeObject):
                 text = ""
             else:
                 text = _("you should ")
-            self.album.log(_("  %sRM %s") % (text, dest_file), 'info')
+            logging.info(_("  %sRM %s") % (text, dest_file))
 
     def make(self, force=False):
         needed_build = self.needs_build()
@@ -467,8 +468,8 @@ class SharedFiles(make.FileSimpleDependency):
 
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
-            album.log(_("MKDIR %SHAREDDIR%"), 'info')
-            album.log("(%s)" % self.path)
+            logging.info(_("MKDIR %SHAREDDIR%"))
+            logging.debug("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
 
         super(SharedFiles, self).__init__(self.path)
@@ -485,16 +486,13 @@ class SharedFiles(make.FileSimpleDependency):
                                                         shared_file,
                                                         shared_file_dest))
             else:
-                self.add_dependency(genfile.SharedFileCopy(album,
-                                                           shared_file,
+                self.add_dependency(genfile.SharedFileCopy(shared_file,
                                                            shared_file_dest))
 
 
 class Album:
 
     def __init__(self, source_dir, config=None):
-        self.set_logging()
-
         self.source_dir = os.path.abspath(source_dir)
         self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
@@ -505,6 +503,11 @@ class Album:
             self.config.read(sourcedir_configfile)
         if config is not None: # Supplied config
             self.config.load(config)
+
+        if self.config.getboolean('runtime', 'quiet'):
+            logging.getLogger().setLevel(logging.ERROR)
+        if self.config.getboolean('runtime', 'debug'):
+            logging.getLogger().setLevel(logging.DEBUG)
 
         self.browse_sizes = []
         self.newsizers = {}
@@ -657,25 +660,6 @@ class Album:
             ext = '.jpg'
         return genmedia.WebalbumPicture.BASEFILENAME + ext
 
-    log_levels = ['debug', 'info', 'error']
-
-    def set_logging(self, level='info', outpipe=sys.stdout,
-                                           errpipe=sys.stderr):
-        self.log_level = level
-        self.log_outpipe = outpipe
-        self.log_errpipe = errpipe
-
-    def log(self, msg, level='debug'):
-        if self.log_levels.index(level)\
-           >= self.log_levels.index(self.log_level):
-            msg = msg.encode(locale.getpreferredencoding())
-            if level == 'error':
-                print >> self.log_errpipe, msg
-                self.log_errpipe.flush()
-            else:
-                print >> self.log_outpipe, msg
-                self.log_outpipe.flush()
-
     def _add_size_qualifier(self, path, size_name):
         filename, extension = os.path.splitext(path)
         if size_name == self.default_size_name and extension == '.html':
@@ -725,7 +709,7 @@ class Album:
                         for x in self.walk(d_path, walked):
                             yield x
                     else:
-                        self.log(_("Not following symlink '%s' because directory has already been processed.") % d_path, 'error')
+                        logging.warning(_("Not following symlink '%s' because directory has already been processed.") % d_path)
 
             yield root, dirs, files
 
@@ -733,15 +717,14 @@ class Album:
         '''
         Generate default metada files if no exists.
         '''
-        self.log(_("Generating metadata in %s") % self.source_dir)
+        logging.debug(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in self.walk(self.source_dir):
             filenames.sort() # This is required for the ignored files
                              # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
-            self.log(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
-                     'info')
-            self.log("(%s)" % source_dir.path)
+            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root())
+            logging.debug("(%s)" % source_dir.path)
 
             metadata.DefaultMetadata(source_dir, self).make()
 
@@ -759,7 +742,7 @@ class Album:
         if self.is_in_sourcetree(sane_dest_dir):
             raise ValueError(_("Fatal error, web gallery directory is within source tree."))
 
-        self.log(_("Generating to %s") % sane_dest_dir)
+        logging.debug(_("Generating to %s") % sane_dest_dir)
 
         if pub_url:
             feed = genpage.WebalbumFeed(self, sane_dest_dir, pub_url)
@@ -779,20 +762,19 @@ class Album:
             source_dir = sourcetree.Directory(root, subdirs, filenames, self)
 
             if source_dir.should_be_skipped():
-                self.log(_("(%s) has been skipped") % source_dir.path)
+                logging.debug(_("(%s) has been skipped") % source_dir.path)
                 continue
             if source_dir.path == os.path.join(sane_dest_dir,
                                                DEST_SHARED_DIRECTORY_NAME):
-                self.log(_("(%s) has been skipped because its name collides with the shared material directory name") % source_dir.path, 'error')
+                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name") % source_dir.path)
                 continue
 
-            self.log(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
-                     'info')
-            self.log("(%s)" % source_dir.path)
+            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root())
+            logging.debug("(%s)" % source_dir.path)
 
             if source_dir.get_all_medias_count() < 1:
-                self.log(_("(%s) and childs have no known medias, skipped")
-                           % source_dir.path)
+                logging.debug(_("(%s) and childs have no known medias, skipped")
+                              % source_dir.path)
                 continue
 
             destgal = WebalbumDir(source_dir, subgals, self,
@@ -822,14 +804,13 @@ class Album:
             elif destgal.needs_build():
                 destgal.make(force=True) # avoid another needs_build() call in make()
             else:
-                self.log(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
+                logging.debug(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
             # Force some memory cleanups, this is usefull for big albums.
             del destgal
             gc.collect()
 
-            self.log(_("[Leaving  %%ALBUMROOT%%/%s]") % source_dir.strip_root(),
-                     'info')
+            logging.info(_("[Leaving  %%ALBUMROOT%%/%s]") % source_dir.strip_root())
 
         if feed:
             feed.make()

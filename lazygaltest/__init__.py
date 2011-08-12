@@ -36,6 +36,11 @@ LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
 gettext.install('lazygal', LOCALES_PATH, unicode=1)
 
 
+# Init quiet logging
+import logging
+logging.basicConfig(format='%(message)s', level=logging.ERROR)
+
+
 class LazygalTest(unittest.TestCase):
 
     def setUp(self):
@@ -73,7 +78,6 @@ class LazygalTestGen(LazygalTest):
 
     def setup_album(self, config=None):
         self.album = Album(self.source_dir, config)
-        self.album.set_logging('error')
 
     def setup_subgal(self, name, pic_names):
         subgal_path = os.path.join(self.source_dir, 'subgal')

@@ -18,6 +18,7 @@
 
 import os
 import locale
+import logging
 import zipfile
 
 import make
@@ -36,9 +37,8 @@ class MediaOriginal(make.FileCopy):
         make.FileCopy.__init__(self, source_media.path, self.path)
 
     def build(self):
-        self.dir.album.log("  CP %s" % os.path.basename(self.path),
-                           'info')
-        self.dir.album.log("(%s)" % self.path)
+        logging.info("  CP %s" % os.path.basename(self.path))
+        logging.debug("(%s)" % self.path)
         make.FileCopy.build(self)
 
 
@@ -55,9 +55,8 @@ class SymlinkMediaOriginal(make.FileSymlink):
         make.FileSymlink.__init__(self, source_media.path, self.path)
 
     def build(self):
-        self.dir.album.log("  SYMLINK %s" % os.path.basename(self.path),
-                           'info')
-        self.dir.album.log("(%s)" % self.path)
+        logging.info("  SYMLINK %s" % os.path.basename(self.path))
+        logging.debug("(%s)" % self.path)
         make.FileSymlink.build(self)
 
 
@@ -86,8 +85,6 @@ class WebalbumArchive(WebalbumFile):
                                  webgal_dir.source_dir.name + '.zip')
         WebalbumFile.__init__(self, self.path, webgal_dir)
 
-        self.album = self.dir.album
-
         self.dir.dirzip = self
 
         self.add_dependency(self.dir.source_dir)
@@ -99,8 +96,8 @@ class WebalbumArchive(WebalbumFile):
 
     def build(self):
         zip_rel_path = self._rel_path(self.dir.flattening_dir)
-        self.album.log(_("  ZIP %s") % zip_rel_path, 'info')
-        self.album.log("(%s)" % self.path)
+        logging.info(_("  ZIP %s") % zip_rel_path)
+        logging.debug("(%s)" % self.path)
 
         archive = zipfile.ZipFile(self.path, mode='w')
         for pic in self.pics:
@@ -117,14 +114,12 @@ class WebalbumArchive(WebalbumFile):
 
 class SharedFileCopy(make.FileCopy):
 
-    def __init__(self, album, src, dst):
+    def __init__(self, src, dst):
         make.FileCopy.__init__(self, src, dst)
-        self.album = album
 
     def build(self):
-        self.album.log(_("CP %%SHAREDDIR%%/%s") %\
-                       os.path.basename(self.dst), 'info')
-        self.album.log("(%s)" % self.dst)
+        logging.info(_("CP %%SHAREDDIR%%/%s") % os.path.basename(self.dst))
+        logging.debug("(%s)" % self.dst)
         make.FileCopy.build(self)
 
 

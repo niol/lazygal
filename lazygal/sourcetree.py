@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime, time
+import logging
 import Image
 
 from lazygal import pathutils, make, metadata
@@ -262,9 +263,9 @@ class Directory(File):
                 self.medias.append(media)
             elif not self.is_metadata(filename)and\
                  filename != SOURCEDIR_CONFIGFILE:
-                self.album.log(_("  Ignoring %s, format not supported.")\
-                               % filename, 'info')
-                self.album.log("(%s)" % os.path.join(self.path, filename))
+                logging.info(_("  Ignoring %s, format not supported.")\
+                             % filename)
+                logging.debug("(%s)" % os.path.join(self.path, filename))
 
         self.metadata = metadata.DirectoryMetadata(self.path)
         md = self.metadata.get(None, self)

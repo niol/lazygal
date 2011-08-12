@@ -18,6 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import sys, os, locale, gettext
+import logging
 from optparse import OptionParser
 
 
@@ -211,6 +212,8 @@ if options.tpl_vars is not None:
         name, value = single_def.split('=')
         cmdline_config.set('template-vars',
                            name, value.decode(sys.stdin.encoding))
+
+logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 try:
     album = Album(source_dir, cmdline_config)
