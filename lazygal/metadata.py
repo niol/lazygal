@@ -19,7 +19,6 @@ import os, locale
 import logging
 import codecs
 import datetime
-import Image
 
 from lazygal import pyexiv2api as pyexiv2
 from lazygal import make
