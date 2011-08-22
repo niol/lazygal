@@ -155,7 +155,7 @@ class ImageInfoTags(object):
         '''
 
         try:
-            return self.get_tag_value('Exif.Pentax.LensType')
+            return self._metadata['Exif.Pentax.LensType'].human_value.strip()
         except (IndexError, ValueError, KeyError):
             try:
                 ret = self._metadata['Exif.Nikon3.Lens'].human_value.strip()
@@ -167,7 +167,7 @@ class ImageInfoTags(object):
                     return '%s %s' % (ret, ret2)
             except (IndexError, ValueError, KeyError):
                 try:
-                    return self.get_tag_value('Exif.Minolta.LensID')
+                    return self._metadata['Exif.Minolta.LensID'].human_value.strip()
                 except (IndexError, ValueError, KeyError):
                     return ''
 

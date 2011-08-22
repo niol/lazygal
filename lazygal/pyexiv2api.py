@@ -174,8 +174,6 @@ class _ImageTag_0_1(object):
         'Exif.Photo.UserComment'       : 'get_decoded_exif_user_comment',
         'Exif.Image.DateTime'          : 'get_exif_date',
         'Exif.Image.Orientation'       : 'get_int',
-        'Exif.Pentax.LensType'         : 'get_interpreted_value',
-        'Exif.Minolta.LensID'          : 'get_interpreted_value',
         'Exif.Photo.Flash'             : 'get_decoded_utf8',
     }
 
