@@ -20,6 +20,7 @@ import glob
 import locale
 import logging
 import gc
+import genshi
 
 from config import LazygalConfig, DEFAULT_CONFIG
 from sourcetree import SOURCEDIR_CONFIGFILE
@@ -616,8 +617,8 @@ class Album:
         tpl_vars = None
         if self.config.has_section('template-vars'):
             tpl_vars = {}
-            for option in config.options('template-vars'):
-                value = config.get('template-vars', option)
+            for option in self.config.options('template-vars'):
+                value = self.config.get('template-vars', option)
                 value = value.decode(locale.getpreferredencoding())
                 tpl_vars[option] = genshi.core.Markup(value)
 
