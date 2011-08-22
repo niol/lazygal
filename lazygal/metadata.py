@@ -235,7 +235,7 @@ class ImageInfoTags(object):
 
     def get_flash(self):
         try:
-            return self.get_tag_value('Exif.Photo.Flash')
+            return self._metadata['Exif.Photo.Flash'].human_value
         except KeyError:
             return ''
 
