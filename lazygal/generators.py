@@ -323,6 +323,8 @@ class WebalbumDir(make.FileMakeObject):
 
         self.dirzip = None
 
+        self.index_pages = []
+
         if not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
             # This task is special because it populates dependencies. This is
@@ -342,10 +344,13 @@ class WebalbumDir(make.FileMakeObject):
 
     def add_index_page(self, subgals, galleries):
         page_number = self.break_task.next_page_number()
+        pages = []
         for size_name in self.album.browse_sizes:
             page = genpage.WebalbumIndexPage(self, size_name, page_number,
                                              subgals, galleries)
             self.add_dependency(page)
+            pages.append(page)
+        self.index_pages.append(pages)
 
     def register_output(self, output):
         # We only care about output in the current directory

@@ -251,6 +251,123 @@ class TestSpecialGens(LazygalTestGen):
         self.assertFalse(os.path.isdir(os.path.join(self.dest_path, 'symlinked', 'subgal', 'do_not_follow')))
 
 
+class TestSorting(LazygalTestGen):
+
+    def setUp(self):
+        super(TestSorting, self).setUp(False)
+        self.dest_path = os.path.join(self.tmpdir, 'dst')
+
+    def __setup_pics(self):
+        subgal_path = os.path.join(self.source_dir, 'subgal')
+        os.mkdir(subgal_path)
+
+        pics = ['4-december.jpg', '6-january.jpg', '1-february.jpg', '3-june.jpg', '5-august.jpg']
+        months = [12, 1, 2, 6, 8]
+        for index, pic in enumerate(pics):
+
+            img_path = self.add_img(subgal_path, pic)
+            img_exif = pyexiv2.ImageMetadata(img_path)
+            img_exif.read()
+            for tag in ('Exif.Photo.DateTimeDigitized',
+                        'Exif.Photo.DateTimeOriginal',
+                        'Exif.Image.DateTime',
+                       ):
+                img_exif[tag] = datetime.datetime(2011, months[index], 1)
+            img_exif.write()
+
+        return subgal_path, pics
+
+    def test_sortbyexif(self):
+        '''
+        It shall be possible to sort images in a gallery according to EXIF date.
+        '''
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'sort-medias', 'exif')
+        self.setup_album(config)
+        subgal_path, pics = self.__setup_pics()
+
+        src_dir = Directory(subgal_path, [], pics, self.album)
+        dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
+
+        dest_subgal.sort_task.make()
+
+        self.assertEqual([media.media.filename for media in dest_subgal.medias],
+                         [u'6-january.jpg', u'1-february.jpg', u'3-june.jpg', u'5-august.jpg', u'4-december.jpg'])
+
+    def test_sortbyexif_galsplit(self):
+        '''
+        It shall be possible to sort images in galleries split on multiple
+        pages according to EXIF date.
+        '''
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'sort-medias', 'exif')
+        config.set('webgal', 'thumbs-per-page', 3)
+        self.setup_album(config)
+        subgal_path, pics = self.__setup_pics()
+
+        src_dir = Directory(subgal_path, [], pics, self.album)
+        dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
+
+        dest_subgal.sort_task.make()
+
+        self.assertEqual([media.media.filename for media in dest_subgal.medias],
+                         [u'6-january.jpg', u'1-february.jpg', u'3-june.jpg', u'5-august.jpg', u'4-december.jpg'])
+
+        # page #1
+        page_medias = dest_subgal.index_pages[0][0].galleries[0][1]
+        self.assertEqual([media.media.filename for media in page_medias],
+                         [u'6-january.jpg', u'1-february.jpg', u'3-june.jpg'])
+        # page #2
+        page_medias = dest_subgal.index_pages[1][0].galleries[0][1]
+        self.assertEqual([media.media.filename for media in page_medias],
+                         [u'5-august.jpg', u'4-december.jpg'])
+
+    def test_sortbyfilename(self):
+        '''
+        It shall be possible to sort images in a gallery by filename.
+        '''
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'sort-medias', 'filename')
+        self.setup_album(config)
+        subgal_path, pics = self.__setup_pics()
+
+        src_dir = Directory(subgal_path, [], pics, self.album)
+        dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
+
+        dest_subgal.sort_task.make()
+
+        self.assertEqual([media.media.filename for media in dest_subgal.medias],
+                         [u'1-february.jpg', u'3-june.jpg', u'4-december.jpg', u'5-august.jpg', u'6-january.jpg'])
+
+    def test_sortbyfilename_galsplit(self):
+        '''
+        It shall be possible to sort images in galleries split on multiple
+        pages by filename.
+        '''
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'sort-medias', 'filename')
+        config.set('webgal', 'thumbs-per-page', 3)
+        self.setup_album(config)
+        subgal_path, pics = self.__setup_pics()
+
+        src_dir = Directory(subgal_path, [], pics, self.album)
+        dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
+
+        dest_subgal.sort_task.make()
+
+        self.assertEqual([media.media.filename for media in dest_subgal.medias],
+                         [u'1-february.jpg', u'3-june.jpg', u'4-december.jpg', u'5-august.jpg', u'6-january.jpg'])
+
+        # page #1
+        page_medias = dest_subgal.index_pages[0][0].galleries[0][1]
+        self.assertEqual([media.media.filename for media in page_medias],
+                         [u'1-february.jpg', u'3-june.jpg', u'4-december.jpg'])
+        # page #2
+        page_medias = dest_subgal.index_pages[1][0].galleries[0][1]
+        self.assertEqual([media.media.filename for media in page_medias],
+                         [u'5-august.jpg', u'6-january.jpg'])
+
+
 if __name__ == '__main__':
     unittest.main()
 
