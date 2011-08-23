@@ -327,15 +327,16 @@ class WebalbumDir(make.FileMakeObject):
 
         if not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
-            # This task is special because it populates dependencies. This is
-            # why it needs to be built before a build check.
-            self.break_task.make()
 
             if self.album.thumbs_per_page > 0:
                 # FIXME: If pagination is 'on', galleries need to be sorted
                 # before being broken on multiple pages, and thus this slows
                 # down a lot the checking of a directory's need to be built.
                 self.break_task.add_dependency(self.sort_task)
+
+            # This task is special because it populates dependencies. This is
+            # why it needs to be built before a build check.
+            self.break_task.make()
 
             self.webgal_pic = genmedia.WebalbumPicture(self)
             self.add_dependency(self.webgal_pic)
