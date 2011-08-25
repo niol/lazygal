@@ -380,11 +380,14 @@ class DirectoryMetadata(make.GroupTask):
                         data = data[1:]
                     if data[-1] == '"':
                         data = data[:-1]
+                    data = data.decode(locale.getpreferredencoding())
+
                     if tag == 'album_picture':
                         if subdir is not None:
                             data = os.path.join(subdir, data)
                         data = os.path.join(self.dir_path, data)
-                    metadata[tag] = data.decode(locale.getpreferredencoding())
+
+                    metadata[tag] = data
                     break
 
         return metadata
