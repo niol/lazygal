@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime, time
+import locale
 import logging
 import Image
 
@@ -99,7 +100,7 @@ class File(make.FileSimpleDependency):
         return int(self.get_mtime() - other_file.get_mtime())
 
     def compare_filename(self, other_file):
-        return cmp(self.filename, other_file.filename)
+        return locale.strcoll(self.filename, other_file.filename)
 
 
 class MediaFile(File):
