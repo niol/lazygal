@@ -24,7 +24,7 @@ Sample usage :
 
 >>> import pyexiv2api as pyexiv2
 
-Now, simply use the latest API. The module as figured out whether to directly
+Now, simply use the latest API. The module has figured out whether to directly
 use the pyexiv2 module if pyexiv2 >= 0.2 is available, or to mimic the new API
 in case you are running with an older version.
 
