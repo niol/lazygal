@@ -213,6 +213,7 @@ class MediaHandler(object):
 
     FORMATS = { '.jpeg' : ImageFile,
                 '.jpg'  : ImageFile,
+                '.png'  : ImageFile,
                 '.mov'  : VideoFile,
                 '.avi'  : VideoFile,
                 '.mp4'  : VideoFile,
