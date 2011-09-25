@@ -1,3 +1,5 @@
+@import url("basic.css");
+
 #if bgcolor
 body{
 		background-color:${bgcolor}
@@ -36,7 +38,7 @@ a{
 }
 
 .media {
-    display: inline;
+    display: inline-block;
 }
 
 \#prev_link{

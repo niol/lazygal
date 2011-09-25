@@ -262,7 +262,8 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
         super(WebalbumVideoTask, self).__init__(webgal, video, album)
 
-        self.thumb = None # none yet
+        self.thumb = genmedia.VideoThumb(self.webgal, self.media,
+                                         genmedia.THUMB_SIZE_NAME)
 
         self.add_dependency(self.webvideo)
 
@@ -548,7 +549,7 @@ class Album:
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
 
         self.transcoder = None
-        self.videothumb = None
+        self.videothumbnailer = None
 
         self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
 
@@ -618,6 +619,14 @@ class Album:
                 self.transcoder = False
         return self.transcoder
 
+    def get_videothumbnailer(self):
+        if self.videothumbnailer is None:
+            if mediautils.HAVE_GST:
+                self.videothumbnailer = mediautils.VideoThumbnailer()
+            else:
+                self.videothumbnailer = False
+        return self.videothumbnailer
+
     def set_tpl_vars(self):
         # Load tpl vars from config
         tpl_vars = None
@@ -667,8 +676,11 @@ class Album:
             ext = '.jpg'
         return genmedia.WebalbumPicture.BASEFILENAME + ext
 
-    def _add_size_qualifier(self, path, size_name):
+    def _add_size_qualifier(self, path, size_name, force_extension=None):
         filename, extension = os.path.splitext(path)
+        if force_extension is not None:
+            extension = force_extension
+
         if size_name == self.default_size_name and extension == '.html':
             # Do not append default size name to HTML page filename
             return path

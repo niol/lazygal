@@ -21,6 +21,7 @@ import logging
 import Image
 
 from lazygal import pathutils, make, metadata
+from lazygal import mediautils
 
 
 SOURCEDIR_CONFIGFILE = '.lazygal'
@@ -194,19 +195,16 @@ class ImageFile(MediaFile):
 class VideoFile(MediaFile):
     type = 'video'
 
+    def get_size(self):
+        inspector = mediautils.GstVideoInfo(self.path)
+        inspector.inspect()
+        return inspector.videowidth, inspector.videoheight
+        
     def has_reliable_date(self):
         return False
 
     def get_date_taken(self):
         return self.get_datetime()
-
-    def get_size(self, path=None):
-        size = (400, 300)
-        if path:
-            # Assume for now this is a thumb
-            return self.album.newsizers['thumb'].dest_size(size)
-        else:
-            return size
 
 
 class MediaHandler(object):

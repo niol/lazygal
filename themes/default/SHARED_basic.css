@@ -1,0 +1,14 @@
+.media {
+		position: relative;
+}
+
+.video_arrow {
+		position: absolute;
+		border: none;
+		width: 40%;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+}

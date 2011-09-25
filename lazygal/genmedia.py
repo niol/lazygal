@@ -19,7 +19,7 @@
 import os
 import logging
 
-import Image
+import Image as PILImage
 # lazygal has her own ImageFile class, so avoid trouble
 import ImageFile as PILImageFile
 PILImageFile.MAXBLOCK = 1024*1024 # default is 64k, not enough for big pics
@@ -34,73 +34,70 @@ from lazygal import pyexiv2api as pyexiv2
 THUMB_SIZE_NAME = 'thumb'
 
 
-class ImageOtherSize(genfile.WebalbumFile):
+class ResizedImage(genfile.WebalbumFile):
 
-    def __init__(self, dir, source_image, size_name):
-        self.dir = dir
-        self.source_image = source_image
-        path = os.path.join(self.dir.path,
-               self.dir.album._add_size_qualifier(self.source_image.filename,
-                                                  size_name))
-        genfile.WebalbumFile.__init__(self, path, dir)
+    force_extension = None
 
-        self.newsizer = self.dir.album.newsizers[size_name]
+    def __init__(self, webgal, source_media, size_name):
+        self.webgal = webgal
+        self.source_media = source_media
+        path = os.path.join(self.webgal.path,
+               self.webgal.album._add_size_qualifier(self.source_media.filename,
+                                                     size_name,
+                                                     self.force_extension))
+        genfile.WebalbumFile.__init__(self, path, webgal)
 
-        self.add_dependency(self.source_image)
+        self.newsizer = self.webgal.album.newsizers[size_name]
+        self.size = None
+
+        self.add_dependency(self.source_media)
+
+    def get_size(self):
+        if self.size is None:
+            self.size = self.newsizer.dest_size(self.source_media.get_size())
+        return self.size
+
+    def get_verb(self):
+        raise NotImplementedError
+    VERB = property(get_verb)
 
     def build(self):
-        img_rel_path = self._rel_path(self.dir.flattening_dir)
-        logging.info(_("  RESIZE %s") % img_rel_path)
-
+        media_rel_path = self.rel_path(self.webgal.flattening_dir)
+        logging.info("  %s %s" % (self.VERB, media_rel_path))
         logging.debug("(%s)" % self.path)
 
-        try:
-            if not self.source_image.broken:
-                im = Image.open(self.source_image.path)
-                self.__build_other_size(im)
-        except IOError:
-            logging.error(_("  %s is BROKEN, skipped")\
-                          % self.source_image.filename)
-            self.source_image.broken = True
-            raise
+        im = self.resize(self.get_image())
+        self.save(im)
+
+    def get_image(self):
+        raise NotImplementedError
 
     def call_build(self):
         try:
             self.build()
         except IOError:
+            if not self.source_media.broken:
+                logging.error(_("  %s is BROKEN, skipped")\
+                              % self.source_media.filename)
+                self.source_media.broken = True
+
             # Make the system believe the file was built a long time ago.
             self.stamp_build(0)
         else:
             self.stamp_build()
 
-    PRIVATE_IMAGE_TAGS = (
-        'Exif.GPSInfo.GPSLongitude',
-        'Exif.GPSInfo.GPSLatitude',
-        'Exif.GPSInfo.GPSDestLongitude',
-        'Exif.GPSInfo.GPSDestLatitude',
-    )
-
-    def __build_other_size(self, im):
-        # Use EXIF data to rotate target image if available and required
-        rotation = self.source_image.info().get_required_rotation()
-
-        if rotation in (90, 270, ):
-            img_size = (im.size[1], im.size[0], ) # swap coords
-        else:
-            img_size = im.size
-
-        new_size = self.newsizer.dest_size(img_size)
+    def resize(self, im):
+        new_size = self.get_size()
 
         im.draft(None, new_size)
-        if rotation != 0:
-            im = im.rotate(rotation)
-        im = im.resize(new_size, Image.ANTIALIAS)
+        return im.resize(new_size, PILImage.ANTIALIAS)
 
+    def save(self, im):
         calibrated = False
         while not calibrated:
             try:
-                im.save(self.path, quality=self.dir.album.quality,
-                                   **self.dir.album.save_options)
+                im.save(self.path, quality=self.webgal.album.quality,
+                                   **self.webgal.album.save_options)
             except IOError, e:
                 if str(e).startswith('encoder error'):
                     PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
@@ -109,18 +106,73 @@ class ImageOtherSize(genfile.WebalbumFile):
                     raise
             calibrated = True
 
+
+class ImageOtherSize(ResizedImage):
+
+    def __init__(self, webgal, source_image, size_name):
+        super(ImageOtherSize, self).__init__(webgal, source_image, size_name)
+        self.rotation = None
+
+    def get_verb(self): return _('RESIZE')
+    VERB = property(get_verb)
+
+    def get_rotation(self):
+        if self.rotation is None:
+            source_media_md = self.source_media.info()
+            if source_media_md is not None:
+                self.rotation = source_media_md.get_required_rotation()
+        return self.rotation
+
+    def get_size(self):
+        if self.size is None:
+            orig_size = self.source_media.get_size()
+            if self.get_rotation() in (90, 270, ):
+                img_size = (orig_size[1], orig_size[0], ) # swap coords
+            else:
+                img_size = orig_size
+            self.size = self.newsizer.dest_size(img_size)
+        return self.size
+
+    def get_image(self):
+        return PILImage.open(self.source_media.path)
+
+    PRIVATE_IMAGE_TAGS = (
+        'Exif.GPSInfo.GPSLongitude',
+        'Exif.GPSInfo.GPSLatitude',
+        'Exif.GPSInfo.GPSDestLongitude',
+        'Exif.GPSInfo.GPSDestLatitude',
+    )
+
+    def resize(self, im):
+        rotation = self.get_rotation()
+        new_size = self.get_size()
+
+        im.draft(None, new_size)
+        # Use EXIF data to rotate target image if available and required
+        if rotation != 0:
+            im = im.rotate(rotation)
+        return im.resize(new_size, PILImage.ANTIALIAS)
+
+    def save(self, im):
+        super(ImageOtherSize, self).save(im)
+
         # Copy exif tags to reduced img
-        imgtags = pyexiv2.ImageMetadata(self.source_image.path)
+
+        imgtags = pyexiv2.ImageMetadata(self.source_media.path)
         imgtags.read()
         dest_imgtags = pyexiv2.ImageMetadata(self.path)
         dest_imgtags.read()
         imgtags.copy(dest_imgtags)
+        
+        new_size = self.get_size()
         dest_imgtags['Exif.Photo.PixelXDimension'] = new_size[0]
         dest_imgtags['Exif.Photo.PixelYDimension'] = new_size[1]
-        if rotation != 0:
+
+        if self.get_rotation() != 0:
             # Smaller image has been rotated in order to be displayed correctly
             # in a web browser. Fix orientation tag accordingly.
             dest_imgtags['Exif.Image.Orientation'] = 1
+
         # Those are removed from published pics due to pivacy concerns
         for tag in self.PRIVATE_IMAGE_TAGS:
             try:
@@ -131,6 +183,25 @@ class ImageOtherSize(genfile.WebalbumFile):
             dest_imgtags.write()
         except ValueError, e:
             logging.error(_("Could not copy metadata in reduced picture: %s") % e)
+
+
+class VideoThumb(ResizedImage):
+
+    force_extension = '.jpg'
+
+    def get_verb(self): return _('VIDEOTHUMB')
+    VERB = property(get_verb)
+
+    def get_image(self):
+        thumbnailer = self.webgal.album.get_videothumbnailer()
+        try:
+            thumb = thumbnailer.get_thumb(self.source_media.path)
+        except mediautils.TranscodeError, e:
+            logging.error(_("  creating %s thumbnail failed, skipped")\
+                          % self.source_video.filename)
+            logging.info(str(e))
+        else:
+            return thumb
 
 
 class WebalbumPicture(make.FileMakeObject):
@@ -193,7 +264,7 @@ class WebVideo(genfile.WebalbumFile):
         self.add_dependency(self.source_video)
 
     def build(self):
-        vid_rel_path = self._rel_path(self.webgal.flattening_dir)
+        vid_rel_path = self.rel_path(self.webgal.flattening_dir)
         logging.info(_("  TRANSCODE %s") % vid_rel_path)
 
         transcoder = self.webgal.album.get_transcoder()

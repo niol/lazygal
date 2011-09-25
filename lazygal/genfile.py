@@ -67,7 +67,7 @@ class WebalbumFile(make.FileMakeObject):
         self.dir = dir
         self.path = path
 
-    def _rel_path(self, dir):
+    def rel_path(self, dir):
         '''
         Returns the path of the current object relative to the supplied dir
         object argument.
@@ -95,7 +95,7 @@ class WebalbumArchive(WebalbumFile):
             self.add_file_dependency(pic)
 
     def build(self):
-        zip_rel_path = self._rel_path(self.dir.flattening_dir)
+        zip_rel_path = self.rel_path(self.dir.flattening_dir)
         logging.info(_("  ZIP %s") % zip_rel_path)
         logging.debug("(%s)" % self.path)
 
