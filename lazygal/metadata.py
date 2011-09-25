@@ -198,6 +198,7 @@ class ImageInfoTags(object):
             return float(val.numerator) / float(val.denominator)
 
     def _fallback_to_encoding(self, encoded_string, encoding='utf-8'):
+        if type(encoded_string) is unicode: return encoded_string
         try:
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:
@@ -218,6 +219,7 @@ class ImageInfoTags(object):
             ret = self.get_file_comment()
             if ret is None:
                 ret = self.get_exif_usercomment()
+                ret = self._fallback_to_encoding(ret)
                 if ret == '':
                     raise ValueError
         except (ValueError, KeyError):
