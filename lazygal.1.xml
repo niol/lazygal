@@ -447,8 +447,19 @@
 
     <para>If a directory from the source album contains a file named
     <filename>album_description</filename>, it is processed as a source
-    of album metadata. See <filename>/usr/share/doc/lazygal/README</filename>
-    for more information.</para>
+    of album metadata. The format is borrowed from another album
+    generating tool - Matew. Each line is treated as one possible tag, 
+    unknown lines are simply ignored. Example content of this file
+    follows: </para>
+
+    <example>
+      <title>album_description</title>
+        <programlisting>
+Album name "My album"
+Album description "Description, which can be very long."
+Album image identifier relative/path/to/image.jpg
+        </programlisting>
+    </example>
 
     <para>Otherwise, the user can provide metadata in the following
     files.</para>

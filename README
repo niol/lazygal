@@ -3,77 +3,16 @@ Lazygal
 
 lazygal is another static web gallery generator written in Python.
 
-It can be summed up by the following features :
-
-    * Command line based (thus scriptable).
-    * Reusable engine (to make a GUI for instance).
-    * Lazy : do not build what's already there. There is still stuff to
-      do in this area (especially regarding directory and templates
-      modification time), but lazygal is already quite lazy.
-    * Recursive : generates subgalleries.
-    * Does not change your original pictures directories (the source
-      argument).
-    * Tells you what should not be in your generated directories (and
-      delete it if you want to).
-    * Can generate multiple sizes to browse pictures according to your
-      screen.
-    * Sort pictures in the same directory by EXIF date if available,
-      else file modification time.
-    * Theming.
-    * XHTML and CSS compliance for provided themes.
-    * Support for album meta data.
-
 You can find more information about Lazygal at its website:
 <http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal>
 
-Configuration
--------------
+Documentation is maintained and available in the manual pages :
+- lazygal(1)
+- lazygal.conf(5)
 
-In addition to command line, you can specify parameters in configuration files.
-Configuration files are looked up as follows, the next taking precedence for already declared variables over the previous :
-    1) Lazygals's defaults.
-    2) ~/.lazygal/config
-    3) %SOURCE_DIR/.lazygal
-    4) command line.
+Lazygal has a test suite, please report any failures as bugs:
+$ ./setup.py test
 
-Example configuration file :
-
-[lazygal]
-theme = image-index
-clean-destination = Yes
-image-size = medium=1024x685,small=640x428
-thumbnail-size = 150x100
-quality = 90
-
-Additionally you can define template variables in special section
-[template-vars], for example:
-
-[template-vars]
-lnkcolor = #e0e0e0
-bgcolor = #202020
-txtcolor = #d0d0d0
-lnkdecoration = underline
-
-In this example, those are made available in the templates as $lnkcolor,
-$bgcolor, $txtcolor and $lnkdecoration .
-
-Those template variables may also be set on the command line using the
---template-vars option.
-
-Specifying album meta data
---------------------------
-
-Each album can have defined some meta data such as name, description and
-image shown on listing (note that not all themes use all of these).
-
-Currently only supported format is borrowed from another album
-generating tool - Matew. To add such metadata, create file
-album_description in folder where you want to add metadata. Each line is
-treated as one possible tag, unknown lines are simply ignored. Example
-content of this file follow, I hope it is self explaining:
-
-Album name "My album"
-Album description "Description, which can be very long."
-Album image identifier relative/path/to/image.jpg
+Please report bugs to Alexandre Rossi <alexandre.rossi@gmail.com>
 
 # vim: et ts=4 sw=4 sts=4 tw=72 spell spelllang=en_us
