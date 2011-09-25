@@ -351,18 +351,36 @@ class Directory(File):
             all_subdirs.extend(subdir.get_all_subdirs())
         return all_subdirs
 
-    def compare_latest_exif(self, other_gallery):
-        date1 = max([time.mktime(m.get_date_taken().timetuple())\
-                     for m in self.get_all_medias()])
+    def latest_media_stamp(self, hint=None):
+        '''
+        Returns the latest media date:
+            - first considering all pics that have an EXIF date
+            - if none have a reliable date, use file mtimes.
+        `hint` stops processing if one of the found values is higher. This is
+        to speed up compare_latest_exif().
+        '''
+        all_medias = self.get_all_medias()
+        media_stamp_max = None
+        for m in all_medias:
+            if m.has_reliable_date():
+                media_stamp = time.mktime(m.get_date_taken().timetuple())
+                if media_stamp_max is None or media_stamp > media_stamp_max:
+                    media_stamp_max = media_stamp
+                    if hint is not None and media_stamp_max > hint:
+                        return media_stamp_max
 
-        date2 = None
-        for m in other_gallery.get_all_medias():
-            m_stamp = time.mktime(m.get_date_taken().timetuple())
-            if m_stamp > date2 or date2 is None:
-                date2 = m_stamp
-            # Stop here if we already found a media with later date
-            if date2 > date1:
-                return int(date1 - date2)
+        if media_stamp_max is None:
+            # none of the media had a reliable date, use mtime instead
+            for m in all_medias:
+                media_stamp = time.mktime(m.get_mtime().timetuple())
+                if media_stamp_max is None or media_stamp > media_stamp_max:
+                    media_stamp_max = media_stamp
+
+        return media_stamp_max
+
+    def compare_latest_exif(self, other_gallery):
+        date1 = self.latest_media_stamp()
+        date2 = other_gallery.latest_media_stamp(date1)
 
         return int(date1 - date2)
 
