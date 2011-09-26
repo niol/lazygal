@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+#
+# Lazygal, a lazy satic web gallery generator: v0.7 conf migration tool.
+# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+import ConfigParser
+
+
+TRANSLATION_TABLE_07 = {
+    'quiet'               : ('runtime', 'quiet'),
+    'output-directory'    : ('global' , 'destdir'),
+    'puburl'              : ('global' , 'puburl'),
+    'theme'               : ('global' , 'theme'),
+    'default-style'       : ('webgal' , 'default-style'),
+    'clean-destination'   : ('global' , 'clean-destination'),
+    'check-all-dirs'      : ('runtime', 'check-all-dirs'),
+    'dir-flattening-depth': ('global' , 'dir-flattening-depth'),
+    'original'            : ('webgal' , 'original'),
+    'orig-base'           : ('webgal' , 'original-baseurl'),
+    'orig-symlink'        : ('webgal' , 'original-symlink'),
+    'image-size'          : ('webgal' , 'image-size'),
+    'thumbnail-size'      : ('webgal' , 'thumbnail-size'),
+    'make-dir-zip'        : ('webgal' , 'dirzip'),
+    'thumbs-per-page'     : ('webgal' , 'thumbs-per-page'),
+    'pic-sort-by'         : ('webgal' , 'sort-medias'),
+    'subgal-sort-by'      : ('webgal' , 'sort-subgals'),
+    'quality'             : ('webgal' , 'jpeg-quality'),
+    'optimize'            : ('webgal' , 'jpeg-optimize'),
+    'progressive'         : ('webgal' , 'jpeg-progressive'),
+    'webalbumpic-bg'      : ('webgal' , 'webalbumpic-bg'),
+}
+
+def config_to_0_7(file_path):
+    oldconfig = ConfigParser.RawConfigParser()
+    config_fp = open(file_path)
+    oldconfig.readfp(config_fp)
+    config_fp.close()
+
+    newconfig = ConfigParser.RawConfigParser()
+    for oldkey, (new_section, new_key) in TRANSLATION_TABLE_07.items():
+        if oldconfig.has_option('lazygal', oldkey):
+            if not newconfig.has_section(new_section):
+                newconfig.add_section(new_section)
+            newconfig.set(new_section, new_key,
+                          oldconfig.get('lazygal', oldkey))
+    return newconfig
+
+
+if __name__ == '__main__':
+    import sys
+    config_to_0_7(sys.argv[1]).write(sys.stdout)
+
+
+# vim: ts=4 sw=4 expandtab
