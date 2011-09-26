@@ -150,7 +150,7 @@ class GstVideoInfo(object):
         if not gobjects_threads_init:
             gobject_init()
 
-        discoverer = gst.extend.discoverer.Discoverer(self.path)
+        discoverer = gst.extend.discoverer.Discoverer(self.path.encode('utf-8'))
         discoverer.connect('discovered', self.__stream_discovered)
         discoverer.discover()
         self.loop.run()
