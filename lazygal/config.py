@@ -62,11 +62,28 @@ DEFAULT_CONFIG.readfp(open(os.path.join(os.path.dirname(__file__),
 DEFAULT_CONFIG.read(os.path.expanduser(USER_CONFIG_PATH))
 
 
+class LazygalConfigDeprecated(BaseException): pass
+
+
 class LazygalConfig(BetterConfigParser):
 
     def __init__(self):
         BetterConfigParser.__init__(self)
         self.load(DEFAULT_CONFIG)
+
+    def check_deprecation(self, config=None):
+        if config is None: config = self
+
+        if config.has_section('lazygal'):
+            raise LazygalConfigDeprecated("'lazygal' section is deprecated")
+
+    def read(self, filenames):
+        BetterConfigParser.read(self, filenames)
+        self.check_deprecation()
+
+    def load(self, other_config):
+        self.check_deprecation(other_config)
+        BetterConfigParser.load(self, other_config)
 
 
 # vim: ts=4 sw=4 expandtab

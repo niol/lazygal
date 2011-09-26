@@ -22,7 +22,7 @@ import logging
 import gc
 import genshi
 
-from config import LazygalConfig, DEFAULT_CONFIG
+from config import LazygalConfig, DEFAULT_CONFIG, LazygalConfigDeprecated
 from sourcetree import SOURCEDIR_CONFIGFILE
 
 import make
@@ -508,7 +508,11 @@ class Album:
         self.config.load(DEFAULT_CONFIG) # Config defaults
         sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
         if os.path.isfile(sourcedir_configfile): # Album root config
-            self.config.read(sourcedir_configfile)
+            try:
+                self.config.read(sourcedir_configfile)
+            except LazygalConfigDeprecated:
+                logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page.") % sourcedir_configfile)
+                sys.exit(1)
         if config is not None: # Supplied config
             self.config.load(config)
 
