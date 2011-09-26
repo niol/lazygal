@@ -1,3 +1,5 @@
+@import url("basic.css");
+
 p{
     text-align:center;
 }
@@ -100,10 +102,6 @@ div.subgal_stats{
 .media_links{
     padding-left:7em;
     padding-right:7em;
-}
-
-.media{
-    display: inline;
 }
 
 #prev_link{

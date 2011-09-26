@@ -1,5 +1,6 @@
 .media {
 		position: relative;
+		display: inline-block;
 }
 
 .video_arrow {

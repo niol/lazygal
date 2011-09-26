@@ -37,10 +37,6 @@ a{
     padding-right:7em;
 }
 
-.media {
-    display: inline-block;
-}
-
 \#prev_link{
     position:absolute;
     top:50%;
