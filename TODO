@@ -15,9 +15,6 @@ Ideas to improve Lazygal (in no particular order)
 
 * Integrate Gallerific
 
-* Better video thumbnails :
-  http://www.crocodile.org/lord/thumbextraction/vthumb.py
-
 * Archive (zip) link on directory index.
 
 * --exclude to exclude directories from processing.
