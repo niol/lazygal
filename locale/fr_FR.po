@@ -503,7 +503,7 @@ msgstr "Focale"
 
 #: ../themes/default/video.thtml:7
 msgid "Original video"
-msgstr "!fichier vidéo d'origine"
+msgstr "fichier vidéo d'origine"
 
 #: ../themes/default/feeditem.thtml:5 ../themes/default/gallerylink.thtml:21
 #: ../themes/image-index/gallerylink.thtml:30
