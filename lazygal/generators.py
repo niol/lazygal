@@ -756,7 +756,7 @@ class Album:
             dest_dir = self.config.getstr('global', 'destdir')
         else:
             dest_dir = dest_dir.decode(sys.getfilesystemencoding())
-        sane_dest_dir = os.path.abspath(dest_dir)
+        sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
         pub_url = self.config.getstr('global', 'puburl')
         check_all_dirs = self.config.getboolean('runtime', 'check-all-dirs')
