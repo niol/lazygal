@@ -281,7 +281,7 @@ class WebalbumDir(make.FileMakeObject):
     This is a built web gallery with its files, thumbs and reduced pics.
     """
 
-    def __init__(self, dir, subgals, album, album_dest_dir, clean_dest=False):
+    def __init__(self, dir, subgals, album, album_dest_dir):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         if self.path.endswith('/'): self.path = os.path.dirname(self.path)
@@ -294,8 +294,6 @@ class WebalbumDir(make.FileMakeObject):
         self.feed = None
 
         self.flattening_dir = None
-
-        self.clean_dest = clean_dest
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
@@ -448,13 +446,7 @@ class WebalbumDir(make.FileMakeObject):
 
     def build(self):
         for dest_file in self.list_foreign_files():
-            text = ''
-            if self.clean_dest and not os.path.isdir(dest_file):
-                os.unlink(dest_file)
-                text = ""
-            else:
-                text = _("you should ")
-            logging.info(_("  %sRM %s") % (text, dest_file))
+            self.album.cleanup(dest_file)
 
     def make(self, force=False):
         needed_build = self.needs_build()
@@ -469,10 +461,11 @@ class WebalbumDir(make.FileMakeObject):
         if needed_build: os.utime(self.path, None)
 
 
-class SharedFiles(make.FileSimpleDependency):
+class SharedFiles(make.FileMakeObject):
 
     def __init__(self, album, dest_dir):
         self.path = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
+        self.album = album
 
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
@@ -482,20 +475,30 @@ class SharedFiles(make.FileSimpleDependency):
 
         super(SharedFiles, self).__init__(self.path)
 
+        self.expected_shared_files = []
         for shared_file in glob.glob(\
-          os.path.join(album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
+          os.path.join(self.album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
                                      replace(THEME_SHARED_FILE_PREFIX, '')
             shared_file_dest = os.path.join(self.path,
                                             shared_file_name)
 
-            if album.tpl_loader.is_known_template_type(shared_file):
-                self.add_dependency(genpage.SharedFileTemplate(album,
-                                                        shared_file,
-                                                        shared_file_dest))
+            if self.album.tpl_loader.is_known_template_type(shared_file):
+                sf = genpage.SharedFileTemplate(album, shared_file,
+                                                shared_file_dest)
+                self.expected_shared_files.append(sf.path)
             else:
-                self.add_dependency(genfile.SharedFileCopy(shared_file,
-                                                           shared_file_dest))
+                sf = genfile.SharedFileCopy(shared_file, shared_file_dest)
+                self.expected_shared_files.append(shared_file_dest)
+
+            self.add_dependency(sf)
+
+    def build(self):
+        # Cleanup themes files which are not in themes anymore.
+        for present_file in os.listdir(self.path):
+            file_path = os.path.join(self.path, present_file)
+            if file_path not in self.expected_shared_files:
+                self.album.cleanup(file_path)
 
 
 class Album:
@@ -520,6 +523,8 @@ class Album:
             logging.getLogger().setLevel(logging.ERROR)
         if self.config.getboolean('runtime', 'debug'):
             logging.getLogger().setLevel(logging.DEBUG)
+
+        self.clean_dest = self.config.getboolean('global', 'clean-destination')
 
         self.browse_sizes = []
         self.newsizers = {}
@@ -703,6 +708,15 @@ class Album:
     def is_in_sourcetree(self, path):
         return pathutils.is_subdir_of(self.source_dir, path)
 
+    def cleanup(self, file_path):
+        text = ''
+        if self.clean_dest and not os.path.isdir(file_path):
+            os.unlink(file_path)
+            text = ''
+        else:
+            text = _('you should ')
+        logging.info(_('  %sRM %s') % (text, file_path))
+
     def walk(self, top, walked=None):
         '''
         This is a wrapper around os.walk() from the standard library:
@@ -753,7 +767,6 @@ class Album:
 
         pub_url = self.config.getstr('global', 'puburl')
         check_all_dirs = self.config.getboolean('runtime', 'check-all-dirs')
-        clean_dest = self.config.getboolean('global', 'clean-destination')
 
         if self.is_in_sourcetree(sane_dest_dir):
             raise ValueError(_("Fatal error, web gallery directory is within source tree."))
@@ -793,8 +806,7 @@ class Album:
                               % source_dir.path)
                 continue
 
-            destgal = WebalbumDir(source_dir, subgals, self,
-                                  sane_dest_dir, clean_dest)
+            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir)
 
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
@@ -831,7 +843,8 @@ class Album:
         if feed:
             feed.make()
 
-        SharedFiles(self, sane_dest_dir).make()
+        # Force to check for unexpected files
+        SharedFiles(self, sane_dest_dir).make(True)
 
 
 # vim: ts=4 sw=4 expandtab
