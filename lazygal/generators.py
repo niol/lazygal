@@ -701,14 +701,7 @@ class Album:
         return dash_replaced
 
     def is_in_sourcetree(self, path):
-        head = path
-        old_head = None
-        while head != old_head:
-            if head == self.source_dir:
-                return True
-            old_head = head
-            head, tail = os.path.split(head)
-        return False
+        return pathutils.is_subdir_of(self.source_dir, path)
 
     def walk(self, top, walked=None):
         '''
