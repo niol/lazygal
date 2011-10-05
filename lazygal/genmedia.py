@@ -163,7 +163,7 @@ class ImageOtherSize(ResizedImage):
         dest_imgtags = pyexiv2.ImageMetadata(self.path)
         dest_imgtags.read()
         imgtags.copy(dest_imgtags)
-        
+
         new_size = self.get_size()
         dest_imgtags['Exif.Photo.PixelXDimension'] = new_size[0]
         dest_imgtags['Exif.Photo.PixelYDimension'] = new_size[1]
