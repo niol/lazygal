@@ -36,12 +36,14 @@
     </ul>
 </div>
 
-<div py:if="prev_link" id="prev_link">
-    <a href="$prev_link.link"><img src="$prev_link.thumb" width="$prev_link.thumb_width" height="$prev_link.thumb_height" alt="Previous" /></a>
+<div py:if="prev_link" class="prevnext" id="prev_link">
+    <xi:include href="thumb.thtml" py:with="media=prev_link" />
+    <a class="prevnext_text" href="$prev_link.link">${_('previous')}</a>
 </div>
 
-<div py:if="next_link" id="next_link">
-    <a href="$next_link.link"><img src="$next_link.thumb" width="$next_link.thumb_width" height="$next_link.thumb_height" alt="Next" /></a>
+<div py:if="next_link" class="prevnext" id="next_link">
+    <xi:include href="thumb.thtml" py:with="media=next_link" />
+    <a class="prevnext_text" href="$next_link.link">${_('next')}</a>
 </div>
 
 <xi:include href="${mediatype}.thtml" />

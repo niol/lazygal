@@ -65,15 +65,7 @@
     </py:if>
 
     <div id="medias">
-        <div py:for="media in medias" class="media media_$media.type">
-            <a href="$media.link"><img class="media media_$media.type"
-                                       src="$media.thumb"
-                                       width="$media.thumb_width"
-                                       height="$media.thumb_height"
-                                       alt="$media.thumb_name thumb" /></a>
-            <a py:if="media.type == 'video'"
-               href="$media.link"><img class="video_arrow" src="${rel_root}shared/video_arrow.svg" alt="video arrow overlay" /><span class="video_length" py:content="media.length" /></a>
-        </div>
+        <xi:include href="thumb.thtml" py:for="media in medias" />
     </div>
 
     <div class="dirzip" py:if="subdir.dirzip">

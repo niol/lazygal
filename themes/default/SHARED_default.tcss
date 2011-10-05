@@ -37,6 +37,10 @@ a{
     padding-right:7em;
 }
 
+.prevnext_text {
+    display: none;
+}
+
 \#prev_link{
     position:absolute;
     top:50%;
