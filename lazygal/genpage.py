@@ -275,7 +275,7 @@ class WebalbumVideoPage(WebalbumBrowsePage):
         self.video = self.media
 
     def add_extra_vals(self, tpl_values):
-        tpl_values['video_src'] = self.video.name + '.ogg'
+        tpl_values['video_src'] = self.video.name + '.webm'
 
 
 class WebalbumIndexPage(WebalbumPage):

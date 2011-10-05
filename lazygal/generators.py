@@ -623,7 +623,7 @@ class Album:
     def get_transcoder(self):
         if self.transcoder is None:
             if mediautils.HAVE_GST:
-                self.transcoder = mediautils.OggTheoraTranscoder()
+                self.transcoder = mediautils.WebMTranscoder()
             else:
                 self.transcoder = False
         return self.transcoder

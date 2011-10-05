@@ -258,7 +258,7 @@ class WebVideo(genfile.WebalbumFile):
     def __init__(self, webgal, source_video):
         self.webgal = webgal
         self.source_video = source_video
-        path = os.path.join(self.webgal.path, source_video.name+'.ogg')
+        path = os.path.join(self.webgal.path, source_video.name + '.webm')
         genfile.WebalbumFile.__init__(self, path, webgal)
 
         self.add_dependency(self.source_video)
