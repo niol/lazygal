@@ -199,7 +199,7 @@ class VideoFile(MediaFile):
         inspector = mediautils.GstVideoInfo(self.path)
         inspector.inspect()
         return inspector.videowidth, inspector.videoheight
-        
+
     def has_reliable_date(self):
         return False
 
