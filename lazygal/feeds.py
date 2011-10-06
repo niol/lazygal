@@ -16,8 +16,9 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import os, time
+import os
 import sys, urllib
+import email.utils
 from xml.etree import cElementTree as ET
 
 
@@ -30,19 +31,6 @@ class RSS20:
         self.description = None
         self.link = link
         self.__maxitems = maxitems
-
-        # Workaround the fact that struct_time does not hold timezone info and
-        # that %z in strftime() resets to UTC if an argument is given. This
-        # seems to be related to http://bugs.python.org/issue762963 .
-        # FIXME : There's got to be a simpler way than this.
-        offset = {}
-        offset['hour'] = abs(time.timezone // 3600)
-        if time.timezone <= 0:
-            offset['sign'] = '+'
-        else:
-            offset['sign'] = '-'
-        offset['minute'] = (time.timezone % 3600) // 60
-        self.timezone_offset = "%(sign)s%(hour)02d%(minute)02d" % offset
 
     def __get_root_and_channel(self, feed_filename):
         root = ET.Element('rss', {'version'    : '2.0',
@@ -60,12 +48,6 @@ class RSS20:
 
     def __url_quote(self, url):
         return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/')
-
-    def __rfc822_time(self, timestamp=None):
-        if not timestamp:
-            timestamp = time.time()
-        return time.strftime("%a, %d %b %Y %H:%M:%S " + self.timezone_offset,
-                             time.localtime(timestamp))
 
     def __item_older(self, x, y):
         return int(y['timestamp'] - x['timestamp'])
@@ -100,11 +82,11 @@ class RSS20:
             ET.SubElement(rssitem, 'title').text = item['title']
             ET.SubElement(rssitem, 'link').text = self.__url_quote(item['link'])
             ET.SubElement(rssitem, 'guid').text = self.__url_quote(item['link'])
-            date = self.__rfc822_time(item['timestamp'])
+            date = email.utils.formatdate(item['timestamp'], localtime=True)
             ET.SubElement(rssitem, 'pubDate').text = date
             ET.SubElement(rssitem, 'description').text = item['contents']
 
-        pubdate.text = self.__rfc822_time()
+        pubdate.text = email.utils.formatdate(localtime=True)
 
         feedtree = ET.ElementTree(root)
         feedtree.write(path, 'utf-8')
