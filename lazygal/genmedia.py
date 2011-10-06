@@ -193,9 +193,8 @@ class VideoThumb(ResizedImage):
     VERB = property(get_verb)
 
     def get_image(self):
-        thumbnailer = self.webgal.album.get_videothumbnailer()
         try:
-            thumb = thumbnailer.get_thumb(self.source_media.path)
+            thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
         except mediautils.TranscodeError, e:
             logging.error(_("  creating %s thumbnail failed, skipped")\
                           % self.source_video.filename)
@@ -267,9 +266,8 @@ class WebVideo(genfile.WebalbumFile):
         vid_rel_path = self.rel_path(self.webgal.flattening_dir)
         logging.info(_("  TRANSCODE %s") % vid_rel_path)
 
-        transcoder = self.webgal.album.get_transcoder()
         try:
-            transcoder.convert(self.source_video.path, self.path)
+            mediautils.WebMTranscoder(self.source_video.path).convert(self.path)
         except mediautils.TranscodeError, e:
             logging.error(_("  transcoding %s failed, skipped")\
                           % self.source_video.filename)

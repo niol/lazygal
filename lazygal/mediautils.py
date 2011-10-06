@@ -58,7 +58,9 @@ class TranscodeError(Exception): pass
 
 class GstVideoOpener(object):
 
-    def __init__(self):
+    def __init__(self, input_file):
+        self.input_file = input_file.encode(sys.getfilesystemencoding())
+
         self.pipeline = gst.Pipeline()
         self.running = False
 
@@ -87,13 +89,12 @@ class GstVideoOpener(object):
         else:
             print "E: Unknown PAD detected: %s" % pad_type
 
-    def open(self, input_file):
+    def open(self):
         # Init gobjects threads only if a conversion is initiated
         if not gobjects_threads_init:
             gobject_init()
 
-        input_file = input_file.encode(sys.getfilesystemencoding())
-        self.filesrc.set_property("location", input_file)
+        self.filesrc.set_property("location", self.input_file)
 
     def check_interrupt(self):
         if interrupted:
@@ -172,8 +173,8 @@ class GstVideoInfo(object):
 
 class GstVideoReader(GstVideoOpener):
 
-    def __init__(self):
-        super(GstVideoReader, self).__init__()
+    def __init__(self, mediapath):
+        super(GstVideoReader, self).__init__(mediapath)
 
         # Output
         self.oqueue = gst.element_factory_make("queue")
@@ -204,8 +205,8 @@ class GstVideoReader(GstVideoOpener):
 
 class GstVideoTranscoder(GstVideoReader):
 
-    def __init__(self, audiocodec, videocodec, muxer):
-        super(GstVideoTranscoder, self).__init__()
+    def __init__(self, mediapath, audiocodec, videocodec, muxer):
+        super(GstVideoTranscoder, self).__init__(mediapath)
 
         # Audio
         self.decode_audio()
@@ -243,8 +244,8 @@ class GstVideoTranscoder(GstVideoReader):
         self.pipeline.add(self.sink)
         self.oqueue.link(self.sink)
 
-    def convert(self, input_file, output_file):
-        self.open(input_file)
+    def convert(self, output_file):
+        self.open()
 
         output_file = output_file.encode(sys.getfilesystemencoding())
         self.sink.set_property("location", output_file)
@@ -254,20 +255,21 @@ class GstVideoTranscoder(GstVideoReader):
 
 class OggTheoraTranscoder(GstVideoTranscoder):
 
-    def __init__(self):
+    def __init__(self, mediapath):
         # Working pipeline
         # gst-launch-0.10 filesrc location=surf_luge.mov ! decodebin name=decode
         # decode. ! queue ! ffmpegcolorspace ! theoraenc ! queue ! oggmux name=muxer
         # decode. ! queue ! audioconvert ! vorbisenc ! queue ! muxer.
         # muxer. ! queue ! filesink location=surf_luge.ogg sync=false
 
-        super(OggTheoraTranscoder, self).__init__('vorbisenc', 'theoraenc',
+        super(OggTheoraTranscoder, self).__init__(mediapath,
+                                                  'vorbisenc', 'theoraenc',
                                                   'oggmux')
 
 
 class WebMTranscoder(GstVideoTranscoder):
 
-    def __init__(self):
+    def __init__(self, mediapath):
         # Working pipeline
         # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
         # queue ! ffmpegcolorspace ! vp8enc ! webmmux name=mux ! filesink
@@ -277,7 +279,8 @@ class WebMTranscoder(GstVideoTranscoder):
         # http://stackoverflow.com/questions/4649925/convert-video-to-webm-using-gstreamer/4649990#4649990
         # ! )
 
-        super(WebMTranscoder, self).__init__('vorbisenc', 'vp8enc', 'webmmux')
+        super(WebMTranscoder, self).__init__(mediapath,
+                                             'vorbisenc', 'vp8enc', 'webmmux')
 
         self.videoenc.set_property('quality', 7)
 
@@ -285,9 +288,8 @@ class WebMTranscoder(GstVideoTranscoder):
 class VideoFrameExtractor(GstVideoReader):
 
     def __init__(self, path, fps):
-        super(VideoFrameExtractor, self).__init__()
+        super(VideoFrameExtractor, self).__init__(path)
 
-        self.path = path
         self.fps = fps
 
         self.decode_video()
@@ -351,7 +353,7 @@ class VideoFrameNthExtractor(VideoFrameExtractor):
             self.stop_pipeline()
 
     def get_frame(self):
-        self.open(self.path)
+        self.open()
         self.run_pipeline()
         return self.frame
 
@@ -374,7 +376,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
             self.stop_pipeline()
 
     def get_best_frame(self):
-        self.open(self.path)
+        self.open()
         self.frame_number = -1
         self.run_pipeline()
 
@@ -403,14 +405,15 @@ class VideoBestFrameFinder(VideoFrameExtractor):
                 min_mse = mse
                 best_frame_no = hist_index
 
-        frame_finder = VideoFrameNthExtractor(self.path,
+        frame_finder = VideoFrameNthExtractor(self.input_file,
                                               best_frame_no, self.fps)
         return frame_finder.get_frame()
 
 
 class VideoThumbnailer(object):
 
-    def __init__(self, thumb_size=None):
+    def __init__(self, input_file, thumb_size=None):
+        self.input_file = input_file.encode(sys.getfilesystemencoding())
         self.thumb_size = thumb_size
 
         # fps images per second should be enough to find a suitable thumbnail
@@ -418,13 +421,13 @@ class VideoThumbnailer(object):
         # search thumb in first intro_seconds seconds
         self.intro_seconds = 300
 
-    def get_thumb(self, video_path):
-        thumb_finder = VideoBestFrameFinder(video_path,
+    def get_thumb(self):
+        thumb_finder = VideoBestFrameFinder(self.input_file,
                                             self.fps, self.intro_seconds)
         return thumb_finder.get_best_frame()
 
-    def convert(self, video_path, thumbnail_path):
-        thumb = self.get_thumb(video_path)
+    def convert(self, thumbnail_path):
+        thumb = self.get_thumb()
 
         if self.thumb_size is not None:
             thumb.draft(None, self.thumb_size)
@@ -438,11 +441,11 @@ if __name__ == '__main__':
 
     converter_type = sys.argv[1]
     if converter_type == 'ogg':
-        converter = OggTheoraTranscoder()
+        converter = OggTheoraTranscoder
     elif converter_type == 'webm':
-        converter = WebMTranscoder()
+        converter = WebMTranscoder
     elif converter_type == 'jpeg':
-        converter = VideoThumbnailer()
+        converter = VideoThumbnailer
     else:
         raise ValueError
 
@@ -450,7 +453,7 @@ if __name__ == '__main__':
         file_path = file_path.decode(sys.getfilesystemencoding())
         fn, ext = os.path.splitext(os.path.basename(file_path))
         target_path = fn + '.' + converter_type
-        converter.convert(file_path, target_path)
+        converter(file_path).convert(target_path)
 
 
 # vim: ts=4 sw=4 expandtab

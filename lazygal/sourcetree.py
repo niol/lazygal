@@ -231,7 +231,7 @@ class MediaHandler(object):
         extension = extension.lower()
         if extension in MediaHandler.FORMATS.keys():
             media_class = MediaHandler.FORMATS[extension]
-            if media_class == VideoFile and not self.album.get_transcoder():
+            if media_class == VideoFile and not mediautils.HAVE_GST:
                 return None
             return media_class(path, self.album)
         else:

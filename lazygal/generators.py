@@ -27,7 +27,7 @@ from sourcetree import SOURCEDIR_CONFIGFILE
 
 import make
 import pathutils
-import sourcetree, tpl, newsize, metadata, mediautils
+import sourcetree, tpl, newsize, metadata
 import genpage, genmedia, genfile
 
 
@@ -557,9 +557,6 @@ class Album:
         self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
 
-        self.transcoder = None
-        self.videothumbnailer = None
-
         self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
 
     def __parse_browse_sizes(self, sizes_string):
@@ -619,22 +616,6 @@ class Album:
             except ValueError:
                 # Not a known emplate ext, ignore
                 pass
-
-    def get_transcoder(self):
-        if self.transcoder is None:
-            if mediautils.HAVE_GST:
-                self.transcoder = mediautils.WebMTranscoder()
-            else:
-                self.transcoder = False
-        return self.transcoder
-
-    def get_videothumbnailer(self):
-        if self.videothumbnailer is None:
-            if mediautils.HAVE_GST:
-                self.videothumbnailer = mediautils.VideoThumbnailer()
-            else:
-                self.videothumbnailer = False
-        return self.videothumbnailer
 
     def set_tpl_vars(self):
         # Load tpl vars from config
