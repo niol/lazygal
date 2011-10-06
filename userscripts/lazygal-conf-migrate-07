@@ -58,6 +58,11 @@ def config_to_0_7(file_path):
                 newconfig.add_section(new_section)
             newconfig.set(new_section, new_key,
                           oldconfig.get('lazygal', oldkey))
+    if oldconfig.has_section('template-vars'):
+        newconfig.add_section('template-vars')
+        for tplvar in oldconfig.options('template-vars'):
+            newconfig.set('template-vars', tplvar,
+                          oldconfig.get('template-vars', tplvar))
     return newconfig
 
 
