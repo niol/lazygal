@@ -272,7 +272,10 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
     def get_resized(self, size_name):
         if not self.webvideo:
-            self.webvideo = genmedia.WebVideo(self.webgal, self.media)
+            if self.media.extension == '.webm':
+                self.webvideo = self.get_original()
+            else:
+                self.webvideo = genmedia.WebVideo(self.webgal, self.media)
         return self.webvideo
 
 
