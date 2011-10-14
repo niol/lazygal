@@ -508,7 +508,6 @@ class Album:
 
     def __init__(self, source_dir, config=None):
         self.source_dir = os.path.abspath(source_dir)
-        self.source_dir = self.source_dir.decode(sys.getfilesystemencoding())
 
         self.config = LazygalConfig()
         self.config.load(DEFAULT_CONFIG) # Config defaults

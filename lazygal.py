@@ -145,7 +145,7 @@ if len(args) != 1:
     parser.print_help()
     sys.exit(_("Bad command line."))
 
-source_dir = args[0]
+source_dir = args[0].decode(sys.getfilesystemencoding())
 if not os.path.isdir(source_dir):
     print _("Directory %s does not exist.") % source_dir
     sys.exit(1)
