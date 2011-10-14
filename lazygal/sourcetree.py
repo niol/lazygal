@@ -216,6 +216,7 @@ class MediaHandler(object):
                 '.avi'  : VideoFile,
                 '.mp4'  : VideoFile,
                 '.3gp'  : VideoFile,
+                '.webm' : VideoFile,
               }
 
     def __init__(self, album):
