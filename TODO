@@ -19,14 +19,9 @@ Ideas to improve Lazygal (in no particular order)
 
 * --exclude to exclude directories from processing.
 
-* Transcode to VP8 (WebM) instead of Ogg/Theora. Copy webM files instead of
-  transcoding.
-
 * Per directory config file.
 
 * Warn if config file contains unknown options.
-
-* Document configuration file options.
 
 * Document input formats.
 
