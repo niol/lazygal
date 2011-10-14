@@ -59,7 +59,7 @@ class TranscodeError(Exception): pass
 class GstVideoOpener(object):
 
     def __init__(self, input_file):
-        self.input_file = input_file.encode(sys.getfilesystemencoding())
+        self.input_file = input_file
 
         self.pipeline = gst.Pipeline()
         self.running = False
@@ -94,7 +94,8 @@ class GstVideoOpener(object):
         if not gobjects_threads_init:
             gobject_init()
 
-        self.filesrc.set_property("location", self.input_file)
+        self.filesrc.set_property("location",
+                            self.input_file.encode(sys.getfilesystemencoding()))
 
     def check_interrupt(self):
         if interrupted:
@@ -413,7 +414,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
 class VideoThumbnailer(object):
 
     def __init__(self, input_file, thumb_size=None):
-        self.input_file = input_file.encode(sys.getfilesystemencoding())
+        self.input_file = input_file
         self.thumb_size = thumb_size
 
         # fps images per second should be enough to find a suitable thumbnail
