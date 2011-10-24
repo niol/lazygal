@@ -221,14 +221,6 @@ except ValueError, e:
     print unicode(e)
     sys.exit(1)
 
-log_level = None
-if options.quiet:
-    log_level = 'error'
-if options.debug:
-    log_level = 'debug'
-if log_level != None:
-    album.set_logging(log_level)
-
 if options.metadata:
     album.generate_default_metadata()
 else:
