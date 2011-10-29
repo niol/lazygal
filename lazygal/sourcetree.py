@@ -90,7 +90,7 @@ class File(make.FileSimpleDependency):
         head = self.strip_root()
         while head != '':
             head, tail = os.path.split(head)
-            if tail in Directory.SKIPPED_DIRS:
+            if tail in File.SKIPPED_DIRS:
                 return True
         return False
 

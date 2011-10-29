@@ -771,18 +771,20 @@ class Album:
                 subdirs = []
                 subgals = []
 
+            checked_dir = sourcetree.File(root, self)
+
+            if checked_dir.should_be_skipped():
+                logging.debug(_("(%s) has been skipped") % checked_dir.path)
+                continue
+            if checked_dir.path == os.path.join(sane_dest_dir,
+                                                DEST_SHARED_DIRECTORY_NAME):
+                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name") % checked_dir.path)
+                continue
+
+            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % checked_dir.strip_root())
+            logging.debug("(%s)" % checked_dir.path)
+
             source_dir = sourcetree.Directory(root, subdirs, filenames, self)
-
-            if source_dir.should_be_skipped():
-                logging.debug(_("(%s) has been skipped") % source_dir.path)
-                continue
-            if source_dir.path == os.path.join(sane_dest_dir,
-                                               DEST_SHARED_DIRECTORY_NAME):
-                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name") % source_dir.path)
-                continue
-
-            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root())
-            logging.debug("(%s)" % source_dir.path)
 
             if source_dir.get_all_medias_count() < 1:
                 logging.debug(_("(%s) and childs have no known medias, skipped")
