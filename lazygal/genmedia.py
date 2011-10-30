@@ -121,20 +121,41 @@ class ImageOtherSize(ResizedImage):
             source_media_md = self.source_media.info()
             if source_media_md is not None:
                 self.rotation = source_media_md.get_required_rotation()
+            else:
+                self.rotation = 0
         return self.rotation
 
     def get_size(self):
         if self.size is None:
-            orig_size = self.source_media.get_size()
+            self.unrotated_size = super(ImageOtherSize, self).get_size()
             if self.get_rotation() in (90, 270, ):
-                img_size = (orig_size[1], orig_size[0], ) # swap coords
+                self.size = (self.unrotated_size[1],
+                             self.unrotated_size[0], ) # swap coords
             else:
-                img_size = orig_size
-            self.size = self.newsizer.dest_size(img_size)
+                self.size = self.unrotated_size
         return self.size
 
     def get_image(self):
         return PILImage.open(self.source_media.path)
+
+    TRANSPOSE_METHODS = {
+        90  : PILImage.ROTATE_90,
+        180 : PILImage.ROTATE_180,
+        270 : PILImage.ROTATE_270,
+    }
+
+    def resize(self, im):
+        rotation = self.get_rotation()
+        new_size = self.get_size()
+
+        im.draft(None, self.unrotated_size)
+        im = im.resize(self.unrotated_size, PILImage.ANTIALIAS)
+
+        # Use EXIF data to rotate target image if available and required
+        if rotation != 0:
+            im = im.transpose(self.TRANSPOSE_METHODS[rotation])
+
+        return im
 
     PRIVATE_IMAGE_TAGS = (
         'Exif.GPSInfo.GPSLongitude',
@@ -142,16 +163,6 @@ class ImageOtherSize(ResizedImage):
         'Exif.GPSInfo.GPSDestLongitude',
         'Exif.GPSInfo.GPSDestLatitude',
     )
-
-    def resize(self, im):
-        rotation = self.get_rotation()
-        new_size = self.get_size()
-
-        im.draft(None, new_size)
-        # Use EXIF data to rotate target image if available and required
-        if rotation != 0:
-            im = im.rotate(rotation)
-        return im.resize(new_size, PILImage.ANTIALIAS)
 
     def save(self, im):
         super(ImageOtherSize, self).save(im)
