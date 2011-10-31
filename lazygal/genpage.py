@@ -235,6 +235,8 @@ class WebalbumImagePage(WebalbumBrowsePage):
     def add_extra_vals(self, tpl_values):
         tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
                                                          self.size_name)
+        tpl_values['img_src'] = self.url_quote(tpl_values['img_src'])
+
         tpl_values['image_name'] = self.image.filename
 
         browse_image_path = os.path.join(self.dir.path,
@@ -276,6 +278,7 @@ class WebalbumVideoPage(WebalbumBrowsePage):
 
     def add_extra_vals(self, tpl_values):
         tpl_values['video_src'] = self.video.name + '.webm'
+        tpl_values['video_src'] = self.url_quote(tpl_values['video_src'])
 
 
 class WebalbumIndexPage(WebalbumPage):
@@ -383,6 +386,7 @@ class WebalbumIndexPage(WebalbumPage):
             dir_info['link'] = self.url_quote(dir_info['link'])
             dir_info['album_picture'] = os.path.join(subgal.source_dir.name,
                                      self.dir.album.get_webalbumpic_filename())
+            dir_info['album_picture'] = self.url_quote(dir_info['album_picture'])
             subgal_links.append(dir_info)
         return subgal_links
 
