@@ -27,14 +27,13 @@ class Color:
 
 class PictureMess:
 
-    RESULT_SIZE = (200, 150)
     STEP = 5
     THUMB_HOW_MANY = 5
     THUMB_MAX_ROTATE_ANGLE = 40
-    THUMB_SIZE = [3*max(RESULT_SIZE)//5 for i in range(2)]
     THUMB_WHITE_WIDTH = 5
 
-    def __init__(self, images_paths, top_image_path=None, bg='transparent'):
+    def __init__(self, images_paths, top_image_path=None, bg='transparent',
+                 result_size=(200, 150, )):
         if len(images_paths) > self.THUMB_HOW_MANY:
             self.images_paths = random.sample(images_paths, self.THUMB_HOW_MANY)
         else:
@@ -51,11 +50,14 @@ class PictureMess:
 
         self.bg = bg != 'transparent' and bg or Color.TRANSPARENT
 
+        self.result_size = result_size
+        self.thumb_size = [3*max(self.result_size)//5 for i in range(2)]
+
         self.picture_mess = None
 
     def __build_mess_thumb(self, image_path):
         img = Image.open(image_path)
-        img.thumbnail(self.THUMB_SIZE, Image.ANTIALIAS)
+        img.thumbnail(self.thumb_size, Image.ANTIALIAS)
 
         white_size = [ x + 2*self.THUMB_WHITE_WIDTH for x in img.size ]
 
@@ -74,7 +76,7 @@ class PictureMess:
         thumb = thumb.rotate(rotation, resample=Image.BILINEAR)
 
         thumb = thumb.crop(thumb.getbbox())
-        thumb.thumbnail(self.THUMB_SIZE, Image.ANTIALIAS)
+        thumb.thumbnail(self.thumb_size, Image.ANTIALIAS)
         return thumb
 
     def __rand_coord_with_step(self, coord, holding_coord):
@@ -112,7 +114,7 @@ class PictureMess:
         self.__paste_img_to_mess_top(img, self.__place_thumb_box(img))
 
     def __build_picture_mess(self):
-        self.picture_mess = Image.new("RGBA", self.RESULT_SIZE)
+        self.picture_mess = Image.new("RGBA", self.result_size)
         added_one_thumb = False
         for image_path in self.images_paths:
             try:

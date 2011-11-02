@@ -254,8 +254,12 @@ class WebalbumPicture(make.FileMakeObject):
             md_dirpic_thumb = None
 
         pics = [thumb.path for thumb in thumbs]
+
+        # Use 800x600 as a random value to obtain a 4:3 aspect ratio (if
+        # thumb size preserves aspect ratio)
         self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb,
-                                           bg=self.album.webalbumpic_bg)
+                bg=self.album.webalbumpic_bg,
+                result_size=self.album.newsizers['thumb'].dest_size((800, 600)))
 
     def build(self):
         logging.info(_("  DIRPIC %s") % os.path.basename(self.path))
