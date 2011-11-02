@@ -127,12 +127,15 @@ class ImageOtherSize(ResizedImage):
 
     def get_size(self):
         if self.size is None:
-            self.unrotated_size = super(ImageOtherSize, self).get_size()
+            orig_size = self.source_media.get_size()
             if self.get_rotation() in (90, 270, ):
-                self.size = (self.unrotated_size[1],
-                             self.unrotated_size[0], ) # swap coords
+                # swap coords
+                orig_size = (orig_size[1], orig_size[0], )
+                self.size = self.newsizer.dest_size(orig_size)
+                self.unrotated_size = (self.size[1], self.size[0], )
             else:
-                self.size = self.unrotated_size
+                self.size = self.newsizer.dest_size(orig_size)
+                self.unrotated_size = self.size
         return self.size
 
     def get_image(self):
