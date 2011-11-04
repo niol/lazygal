@@ -258,6 +258,7 @@ setup(name = 'lazygal',
         'Natural Language :: English',
     ],
     packages = ['lazygal'],
+    package_data = {'lazygal': ['defaults.conf'], },
     scripts = ['lazygal.py'],
     # Override certain command classes with our own ones
     cmdclass = {
