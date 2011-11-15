@@ -52,6 +52,11 @@ class WebalbumPage(genfile.WebalbumFile):
             self.add_file_dependency(subtpl.path)
         return tpl
 
+    def init_tpl_values(self):
+        tpl_values = {}
+        tpl_values.update(self.dir.tpl_vars)
+        return tpl_values
+
     def _gen_other_media_link(self, media, dir=None):
         if media:
             link_vals = {}
@@ -76,7 +81,7 @@ class WebalbumPage(genfile.WebalbumFile):
 
     def _get_osize_links(self, filename):
         osize_index_links = []
-        for osize_name in self.dir.album.browse_sizes:
+        for osize_name in self.dir.browse_sizes:
             osize_info = {}
             if osize_name == self.size_name:
                 # No link if we're on the current page
@@ -130,7 +135,7 @@ class WebalbumPage(genfile.WebalbumFile):
         return wg_path
 
     def _add_size_qualifier(self, path, size_name):
-        return self.dir.album._add_size_qualifier(path, size_name)
+        return self.dir._add_size_qualifier(path, size_name)
 
     def _do_not_escape(self, value):
         return genshi.core.Markup(value)
@@ -176,7 +181,7 @@ class WebalbumBrowsePage(WebalbumPage):
         logging.info(_("  XHTML %s") % page_rel_path)
         logging.debug("(%s)" % self.page_path)
 
-        tpl_values = {}
+        tpl_values = self.init_tpl_values()
 
         # Breadcrumbs
         tpl_values['webgal_path'] = self._gen_webgal_path()
@@ -209,11 +214,11 @@ class WebalbumBrowsePage(WebalbumPage):
         else:
             tpl_values['feed_url'] = None
 
-        if self.dir.album.original:
-            if self.dir.album.orig_base:
+        if self.dir.original:
+            if self.dir.orig_base:
                 tpl_values['original_link'] = os.path.join(\
                     self.dir.source_dir.rel_root(),
-                    self.dir.album.orig_base,
+                    self.dir.orig_base,
                     self.dir.source_dir.strip_root(),
                     self.media.filename)
             else:
@@ -308,8 +313,8 @@ class WebalbumIndexPage(WebalbumPage):
                 # when dir is flattenend).
                 dir.add_dependency(media.browse_pages[size_name])
 
-            if self.dir.album.dirzip and dir.source_dir.get_media_count() > 1:
-                self.add_dependency(genfile.WebalbumArchive(dir))
+            if self.dir.dirzip is not None:
+                self.add_dependency(self.dir.dirzip)
 
         for subgal in self.subgals:
             self.add_dependency(subgal.source_dir)
@@ -363,7 +368,7 @@ class WebalbumIndexPage(WebalbumPage):
         if 'album_name' not in dir_info.keys():
             dir_info['album_name'] = dir.source_dir.human_name
 
-        if self.dir.album.dirzip and dir.dirzip:
+        if dir.dirzip:
             archive_rel_path = dir.dirzip.rel_path(self.dir)
             dir_info['dirzip'] = self.url_quote(archive_rel_path)
             dir_info['dirzip_size'] = self.format_filesize(dir.dirzip.size())
@@ -385,7 +390,7 @@ class WebalbumIndexPage(WebalbumPage):
                                          self._get_related_index_fn()])
             dir_info['link'] = self.url_quote(dir_info['link'])
             dir_info['album_picture'] = os.path.join(subgal.source_dir.name,
-                                     self.dir.album.get_webalbumpic_filename())
+                                            self.dir.get_webalbumpic_filename())
             dir_info['album_picture'] = self.url_quote(dir_info['album_picture'])
             subgal_links.append(dir_info)
         return subgal_links
@@ -394,7 +399,7 @@ class WebalbumIndexPage(WebalbumPage):
         logging.info(_("  XHTML %s") % os.path.basename(self.page_path))
         logging.debug("(%s)" % self.page_path)
 
-        values = {}
+        values = self.init_tpl_values()
 
         # Breadcrumbs (current is static, see dirindex.thtml, that's why the
         # last item of the list is removed).
@@ -466,7 +471,7 @@ class WebalbumFeed(make.FileMakeObject):
 
         desc_values = {}
         desc_values['album_pic_path'] = os.path.join(url,
-                                          self.album.get_webalbumpic_filename())
+                                         webalbumdir.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
         desc_values['picture_count'] = webalbumdir.source_dir.get_media_count('image')
         desc_values['desc'] = webalbumdir.source_dir.desc

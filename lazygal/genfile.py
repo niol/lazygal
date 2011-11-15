@@ -85,8 +85,6 @@ class WebalbumArchive(WebalbumFile):
                                  webgal_dir.source_dir.name + '.zip')
         WebalbumFile.__init__(self, self.path, webgal_dir)
 
-        self.dir.dirzip = self
-
         self.add_dependency(self.dir.source_dir)
 
         self.pics = map(lambda x: os.path.join(self.dir.source_dir.path, x),

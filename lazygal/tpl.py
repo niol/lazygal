@@ -29,14 +29,12 @@ DEFAULT_TEMPLATE = 'default'
 
 class LazygalTemplate(object):
 
-    def __init__(self, loader, genshi_tpl, common_values=None):
+    def __init__(self, loader, genshi_tpl):
         self.loader = loader
         self.path = genshi_tpl.filepath
-        self.common_values = common_values or {}
         self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
-        values.update(self.common_values)
         values['gen_date'] = time.strftime("%c").decode(locale.getpreferredencoding())
         values['lazygal_version'] = __init__.__version__
         return values
@@ -126,17 +124,12 @@ class TplFactory(object):
         '.tcss'  : PlainTemplate,
     }
 
-    common_values = None
-
     def __init__(self, default_tpl_dir, tpl_dir):
         # We use lenient mode here because we want an easy way to check whether
         # a template variable is defined, or the empty string, thus defined()
         # will only work for the 'whether it is defined' part of the test.
         self.loader = TemplateLoader([tpl_dir, default_tpl_dir],
                                       variable_lookup='lenient')
-
-    def set_common_values(self, values):
-        self.common_values = values
 
     def is_known_template_type(self, file):
         filename, ext = os.path.splitext(os.path.basename(file))
@@ -147,7 +140,7 @@ class TplFactory(object):
             filename, ext = os.path.splitext(os.path.basename(tpl_ident))
             tpl_class = self.known_exts[ext]
             tpl = self.loader.load(tpl_ident, cls=tpl_class.genshi_tpl_class)
-            return tpl_class(self, tpl, self.common_values)
+            return tpl_class(self, tpl)
         else:
             raise ValueError(_('Unknown template type for %s' % tpl_ident))
 

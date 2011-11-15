@@ -92,10 +92,14 @@ class TestGenerators(LazygalTestGen):
                          [os.path.join(dest_path, 'extra_thumb.jpg')])
 
     def test_originals_symlinks(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'original', 'Yes')
+        config.set('webgal', 'original-symlink', 'Yes')
+        self.setup_album(config)
+
         img_path = self.add_img(self.source_dir, 'symlink_target.jpg')
 
         dest_dir = self.get_working_path()
-        self.album.set_original(original=True, orig_symlink=True)
         self.album.generate(dest_dir)
 
         symlink = os.path.join(dest_dir, os.path.basename(img_path))

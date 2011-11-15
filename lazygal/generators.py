@@ -22,7 +22,8 @@ import logging
 import gc
 import genshi
 
-from config import LazygalConfig, DEFAULT_CONFIG, LazygalConfigDeprecated
+from config import LazygalConfig, LazygalWebgalConfig,\
+                   USER_CONFIG_PATH, LazygalConfigDeprecated
 from sourcetree import SOURCEDIR_CONFIGFILE
 
 import make
@@ -56,37 +57,37 @@ class SubgalSort(make.MakeTask):
         make.MakeTask.__init__(self)
         self.set_dep_only()
         self.webgal_dir = webgal_dir
-        self.album = self.webgal_dir.album
 
     def build(self):
         logging.info(_("  SORTING pics and subdirs"))
 
-        if self.album.subgal_sort_by[0] == 'exif':
+        if self.webgal_dir.subgal_sort_by[0] == 'exif':
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_latest_exif(y.source_dir)
-        elif self.album.subgal_sort_by[0] == 'mtime':
+        elif self.webgal_dir.subgal_sort_by[0] == 'mtime':
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_mtime(y.source_dir)
-        elif self.album.subgal_sort_by[0] == 'dirname'\
-        or self.album.subgal_sort_by[0] == 'filename': # Backward compatibility
+        elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
+        or self.webgal_dir.subgal_sort_by[0] == 'filename': # Backward compatibility
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_filename(y.source_dir)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
-                             % self.album.subgal_sort_by[0])
+                             % self.webgal_dir.subgal_sort_by[0])
         self.webgal_dir.subgals.sort(subgal_sorter,
-                                     reverse=self.album.subgal_sort_by[1])
+                                     reverse=self.webgal_dir.subgal_sort_by[1])
 
-        if self.album.pic_sort_by[0] == 'exif':
+        if self.webgal_dir.pic_sort_by[0] == 'exif':
             sorter = lambda x, y: x.media.compare_to_sort(y.media)
-        elif self.album.pic_sort_by[0] == 'mtime':
+        elif self.webgal_dir.pic_sort_by[0] == 'mtime':
             sorter = lambda x, y: x.media.compare_mtime(y.media)
-        elif self.album.pic_sort_by[0] == 'filename':
+        elif self.webgal_dir.pic_sort_by[0] == 'filename':
             sorter = lambda x, y: x.media.compare_filename(y.media)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")\
-                             % self.album.pic_sort_by[0])
-        self.webgal_dir.medias.sort(sorter, reverse=self.album.pic_sort_by[1])
+                             % self.webgal_dir.pic_sort_by[0])
+        self.webgal_dir.medias.sort(sorter,
+                                    reverse=self.webgal_dir.pic_sort_by[1])
 
         # chain medias
         previous = None
@@ -105,7 +106,6 @@ class SubgalBreak(make.MakeTask):
     def __init__(self, webgal_dir):
         make.MakeTask.__init__(self)
         self.webgal_dir = webgal_dir
-        self.album = self.webgal_dir.album
 
         self.__last_page_number = -1
 
@@ -119,7 +119,7 @@ class SubgalBreak(make.MakeTask):
     def build(self):
         logging.info(_("  BREAKING web gallery into multiple pages"))
 
-        if self.album.thumbs_per_page == 0:
+        if self.webgal_dir.thumbs_per_page == 0:
             self.__fill_no_pagination()
         else:
             if self.webgal_dir.flatten_below():
@@ -152,7 +152,7 @@ class SubgalBreak(make.MakeTask):
                 subgal = subgals_it.next()
                 how_many_medias += subgal.source_dir.get_media_count()
                 galleries.append((subgal, subgal.medias))
-                if how_many_medias > self.webgal_dir.album.thumbs_per_page:
+                if how_many_medias > self.webgal_dir.thumbs_per_page:
                     self.webgal_dir.add_index_page(subgals, galleries)
                     galleries = []
                     how_many_medias = 0
@@ -162,10 +162,10 @@ class SubgalBreak(make.MakeTask):
 
     def __fill_real_pagination(self):
         how_many_pages = len(self.webgal_dir.medias)\
-                          // self.webgal_dir.album.thumbs_per_page + 1
+                          // self.webgal_dir.thumbs_per_page + 1
         for page_number in range(0, how_many_pages):
-            step = page_number * self.webgal_dir.album.thumbs_per_page
-            end_index = step + self.webgal_dir.album.thumbs_per_page
+            step = page_number * self.webgal_dir.thumbs_per_page
+            end_index = step + self.webgal_dir.thumbs_per_page
             shown_medias = self.webgal_dir.medias[step:end_index]
             galleries = [(self.webgal_dir, shown_medias)]
 
@@ -180,10 +180,9 @@ class SubgalBreak(make.MakeTask):
 
 class WebalbumMediaTask(make.GroupTask):
 
-    def __init__(self, webgal, media, album):
+    def __init__(self, webgal, media):
         super(WebalbumMediaTask, self).__init__()
 
-        self.album = album
         self.webgal = webgal
         self.media = media
 
@@ -194,14 +193,14 @@ class WebalbumMediaTask(make.GroupTask):
         self.resized = {}
         self.browse_pages = {}
 
-        for size_name in self.album.browse_sizes:
-            if self.album.newsizers[size_name] == 'original':
+        for size_name in self.webgal.browse_sizes:
+            if self.webgal.newsizers[size_name] == 'original':
                 self.resized[size_name] = self.get_original()
             else:
                 self.resized[size_name] = self.get_resized(size_name)
             self.add_dependency(self.resized[size_name])
 
-            if self.album.original and not self.album.orig_base:
+            if self.webgal.original and not self.webgal.orig_base:
                 self.add_dependency(self.get_original())
 
             self.browse_pages[size_name] = self.get_browse_page(size_name)
@@ -219,7 +218,7 @@ class WebalbumMediaTask(make.GroupTask):
                 if media.thumb: bpage.add_dependency(media.thumb)
 
     def get_original_or_symlink(self):
-        if not self.album.orig_symlink:
+        if not self.webgal.orig_symlink:
             return genfile.MediaOriginal(self.webgal, self.media)
         else:
             return genfile.SymlinkMediaOriginal(self.webgal, self.media)
@@ -235,15 +234,15 @@ class WebalbumImageTask(WebalbumMediaTask):
     This task builds all items related to one picture.
     """
 
-    def __init__(self, webgal, image, album):
-        super(WebalbumImageTask, self).__init__(webgal, image, album)
+    def __init__(self, webgal, image):
+        super(WebalbumImageTask, self).__init__(webgal, image)
 
         self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
                                              genmedia.THUMB_SIZE_NAME)
         self.add_dependency(self.thumb)
 
     def get_resized(self, size_name):
-        if self.album.newsizers[size_name] == 'original':
+        if self.webgal.newsizers[size_name] == 'original':
             return self.get_original_or_symlink()
         else:
             return genmedia.ImageOtherSize(self.webgal, self.media, size_name)
@@ -257,10 +256,10 @@ class WebalbumVideoTask(WebalbumMediaTask):
     This task builds all items related to one video.
     """
 
-    def __init__(self, webgal, video, album):
+    def __init__(self, webgal, video):
         self.webvideo = None
 
-        super(WebalbumVideoTask, self).__init__(webgal, video, album)
+        super(WebalbumVideoTask, self).__init__(webgal, video)
 
         self.thumb = genmedia.VideoThumb(self.webgal, self.media,
                                          genmedia.THUMB_SIZE_NAME)
@@ -298,6 +297,9 @@ class WebalbumDir(make.FileMakeObject):
 
         self.flattening_dir = None
 
+        self.config = LazygalWebgalConfig(self.album.config)
+        self.__configure()
+
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
             logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")\
@@ -314,9 +316,9 @@ class WebalbumDir(make.FileMakeObject):
             self.sort_task.add_dependency(media)
 
             if media.type == 'image':
-                media_task = WebalbumImageTask(self, media, self.album)
+                media_task = WebalbumImageTask(self, media)
             elif media.type == 'video':
-                media_task = WebalbumVideoTask(self, media, self.album)
+                media_task = WebalbumVideoTask(self, media)
             else:
                 raise NotImplementedError("Unknown media type '%s'"\
                                           % media.type)
@@ -330,7 +332,7 @@ class WebalbumDir(make.FileMakeObject):
         if not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
 
-            if self.album.thumbs_per_page > 0:
+            if self.thumbs_per_page > 0:
                 # FIXME: If pagination is 'on', galleries need to be sorted
                 # before being broken on multiple pages, and thus this slows
                 # down a lot the checking of a directory's need to be built.
@@ -345,10 +347,133 @@ class WebalbumDir(make.FileMakeObject):
         else:
             self.break_task = None
 
+    def __parse_browse_sizes(self, sizes_string):
+        for single_def in sizes_string.split(','):
+            name, string_size = single_def.split('=')
+            if name == '':
+                raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
+            if name == genmedia.THUMB_SIZE_NAME:
+                raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
+            self.__parse_size(name, string_size)
+            self.browse_sizes.append(name)
+
+    def __parse_size(self, size_name, size_string):
+        if size_string == '0x0':
+            self.newsizers[size_name] = 'original'
+        else:
+            try:
+                self.newsizers[size_name] = newsize.get_newsizer(size_string)
+            except newsize.NewsizeStringParseError:
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
+
+    def __parse_sort(self, sort_string):
+        try:
+            sort_method, reverse = sort_string.split(':')
+        except ValueError:
+            sort_method = sort_string
+            reverse = False
+        if reverse == 'reverse':
+            return sort_method, True
+        else:
+            return sort_method, False
+
+    def __load_tpl_vars(self):
+        # Load tpl vars from config
+        tpl_vars = {}
+        if self.config.has_section('template-vars'):
+            tpl_vars = {}
+            for option in self.config.options('template-vars'):
+                value = self.config.get('template-vars', option)
+                value = value.decode(locale.getpreferredencoding())
+                tpl_vars[option] = genshi.core.Markup(value)
+
+        return tpl_vars
+
+    def __configure(self):
+        config_dirs = self.source_dir.parent_paths()[:-1] # strip root dir
+        config_dirs.reverse() # from root to deepest
+        config_files = map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
+                           config_dirs)
+        logging.debug(_("  Trying loading gallery configs: %s")
+                      % ', '.join(map(self.source_dir.strip_root,
+                                          config_files)))
+        self.config.read(config_files)
+
+        self.browse_sizes = []
+        self.newsizers = {}
+        self.__parse_browse_sizes(self.config.get('webgal', 'image-size'))
+        self.__parse_size(genmedia.THUMB_SIZE_NAME,
+                          self.config.get('webgal', 'thumbnail-size'))
+        self.default_size_name = self.browse_sizes[0]
+
+        self.tpl_vars = self.__load_tpl_vars()
+        styles = self.album.get_avail_styles(self.album.theme,
+                                     self.config.get('webgal', 'default-style'))
+        self.tpl_vars.update({'styles' : styles})
+
+        self.set_original(self.config.getboolean('webgal', 'original'),
+                          self.config.getstr('webgal', 'original-baseurl'),
+                          self.config.getboolean('webgal', 'original-symlink'))
+
+        self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
+
+        if self.config.getboolean('webgal', 'dirzip')\
+        and self.source_dir.get_media_count() > 1:
+            self.dirzip = genfile.WebalbumArchive(dir)
+            self.add_dependency(self.dirzip)
+        else:
+            self.dirzip = None
+
+        self.quality = self.config.getint('webgal', 'jpeg-quality')
+        self.save_options = {}
+        if self.config.getboolean('webgal', 'jpeg-optimize'):
+            self.save_options['optimize'] = True
+        if self.config.getboolean('webgal', 'jpeg-progressive'):
+            self.save_options['progressive'] = True
+
+        self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
+        self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
+
+        self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
+
+    def set_original(self, original=False, orig_base=None, orig_symlink=False):
+        self.original = original or orig_symlink
+        self.orig_symlink = orig_symlink
+        if self.original and orig_base and not orig_symlink:
+            self.orig_base = orig_base
+        else:
+            self.orig_base = None
+
+    def set_webalbumpic(self, bg='transparent'):
+        self.webalbumpic_bg = bg
+
+    def get_webalbumpic_filename(self):
+        if self.webalbumpic_bg == 'transparent':
+            ext = '.png' # JPEG does not have an alpha channel
+        else:
+            ext = '.jpg'
+        return genmedia.WebalbumPicture.BASEFILENAME + ext
+
+    def _add_size_qualifier(self, path, size_name, force_extension=None):
+        filename, extension = os.path.splitext(path)
+        if force_extension is not None:
+            extension = force_extension
+
+        if size_name == self.default_size_name and extension == '.html':
+            # Do not append default size name to HTML page filename
+            return path
+        elif size_name in self.browse_sizes\
+        and self.newsizers[size_name] == 'original'\
+        and extension != '.html':
+            # Do not append size_name to unresized images.
+            return path
+        else:
+            return "%s_%s%s" % (filename, size_name, extension)
+
     def add_index_page(self, subgals, galleries):
         page_number = self.break_task.next_page_number()
         pages = []
-        for size_name in self.album.browse_sizes:
+        for size_name in self.browse_sizes:
             page = genpage.WebalbumIndexPage(self, size_name, page_number,
                                              subgals, galleries)
             self.add_dependency(page)
@@ -510,9 +635,13 @@ class Album:
         self.source_dir = os.path.abspath(source_dir)
 
         self.config = LazygalConfig()
-        self.config.load(DEFAULT_CONFIG) # Config defaults
+
+        logging.info(_("Trying loading user config %s") % USER_CONFIG_PATH)
+        self.config.read(USER_CONFIG_PATH)
+
         sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
-        if os.path.isfile(sourcedir_configfile): # Album root config
+        if os.path.isfile(sourcedir_configfile):
+            logging.info(_("Loading root config %s") % sourcedir_configfile)
             try:
                 self.config.read(sourcedir_configfile)
             except LazygalConfigDeprecated:
@@ -528,70 +657,13 @@ class Album:
 
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
 
-        self.browse_sizes = []
-        self.newsizers = {}
-        self.__parse_browse_sizes(self.config.get('webgal', 'image-size'))
-        self.__parse_size(genmedia.THUMB_SIZE_NAME,
-                          self.config.get('webgal', 'thumbnail-size'))
-        self.default_size_name = self.browse_sizes[0]
-
         self.tpl_loader = None
-        self.tpl_vars = {}
 
-        self.set_theme(self.config.get('global', 'theme'),
-                       self.config.get('webgal', 'default-style'))
+        self.set_theme(self.config.get('global', 'theme'))
 
-        self.set_original(self.config.getboolean('webgal', 'original'),
-                          self.config.getstr('webgal', 'original-baseurl'),
-                          self.config.getboolean('webgal', 'original-symlink'))
-
-        self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
         self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
-        self.dirzip = self.config.getboolean('webgal', 'dirzip')
 
-        self.quality = self.config.getint('webgal', 'jpeg-quality')
-        self.save_options = {}
-        if self.config.getboolean('webgal', 'jpeg-optimize'):
-            self.save_options['optimize'] = True
-        if self.config.getboolean('webgal', 'jpeg-progressive'):
-            self.save_options['progressive'] = True
-
-        self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
-        self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
-
-        self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
-
-    def __parse_browse_sizes(self, sizes_string):
-        for single_def in sizes_string.split(','):
-            name, string_size = single_def.split('=')
-            if name == '':
-                raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
-            if name == genmedia.THUMB_SIZE_NAME:
-                raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
-            self.__parse_size(name, string_size)
-            self.browse_sizes.append(name)
-
-    def __parse_size(self, size_name, size_string):
-        if size_string == '0x0':
-            self.newsizers[size_name] = 'original'
-        else:
-            try:
-                self.newsizers[size_name] = newsize.get_newsizer(size_string)
-            except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
-
-    def __parse_sort(self, sort_string):
-        try:
-            sort_method, reverse = sort_string.split(':')
-        except ValueError:
-            sort_method = sort_string
-            reverse = False
-        if reverse == 'reverse':
-            return sort_method, True
-        else:
-            return sort_method, False
-
-    def set_theme(self, theme=tpl.DEFAULT_TEMPLATE, default_style=None):
+    def set_theme(self, theme=tpl.DEFAULT_TEMPLATE):
         self.theme = theme
 
         # First try user directory
@@ -606,12 +678,8 @@ class Album:
                                                       tpl.DEFAULT_TEMPLATE),
                                          self.tpl_dir)
 
-        styles = self.get_avail_styles(self.theme, default_style)
-        self.tpl_vars.update({'styles' : styles})
-        self.set_tpl_vars()
-
         # Load styles templates
-        for style in styles:
+        for style in self.get_avail_styles(theme):
             style_filename = style['filename']
             try:
                 self.tpl_loader.load(style_filename)
@@ -619,22 +687,7 @@ class Album:
                 # Not a known emplate ext, ignore
                 pass
 
-    def set_tpl_vars(self):
-        # Load tpl vars from config
-        tpl_vars = None
-        if self.config.has_section('template-vars'):
-            tpl_vars = {}
-            for option in self.config.options('template-vars'):
-                value = self.config.get('template-vars', option)
-                value = value.decode(locale.getpreferredencoding())
-                tpl_vars[option] = genshi.core.Markup(value)
-
-        if tpl_vars is not None:
-            self.tpl_vars.update(tpl_vars)
-        if self.tpl_loader is not None:
-            self.tpl_loader.set_common_values(self.tpl_vars)
-
-    def get_avail_styles(self, theme, default_style):
+    def get_avail_styles(self, theme, default_style=None):
         style_files_mask = os.path.join(self.tpl_dir,
                                         THEME_SHARED_FILE_PREFIX + '*' + 'css')
         styles = []
@@ -643,46 +696,13 @@ class Album:
             tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
             style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
             style['name'] = self._str_humanize(style['filename'])
-            if style['filename'] == default_style:
-                style['rel'] = 'stylesheet'
-            else:
-                style['rel'] = 'alternate stylesheet'
+            if default_style is not None:
+                if style['filename'] == default_style:
+                    style['rel'] = 'stylesheet'
+                else:
+                    style['rel'] = 'alternate stylesheet'
             styles.append(style)
         return styles
-
-    def set_original(self, original=False, orig_base=None, orig_symlink=False):
-        self.original = original or orig_symlink
-        self.orig_symlink = orig_symlink
-        if self.original and orig_base and not orig_symlink:
-            self.orig_base = orig_base
-        else:
-            self.orig_base = None
-
-    def set_webalbumpic(self, bg='transparent'):
-        self.webalbumpic_bg = bg
-
-    def get_webalbumpic_filename(self):
-        if self.webalbumpic_bg == 'transparent':
-            ext = '.png' # JPEG does not have an alpha channel
-        else:
-            ext = '.jpg'
-        return genmedia.WebalbumPicture.BASEFILENAME + ext
-
-    def _add_size_qualifier(self, path, size_name, force_extension=None):
-        filename, extension = os.path.splitext(path)
-        if force_extension is not None:
-            extension = force_extension
-
-        if size_name == self.default_size_name and extension == '.html':
-            # Do not append default size name to HTML page filename
-            return path
-        elif size_name in self.browse_sizes\
-        and self.newsizers[size_name] == 'original'\
-        and extension != '.html':
-            # Do not append size_name to unresized images.
-            return path
-        else:
-            return "%s_%s%s" % (filename, size_name, extension)
 
     def _str_humanize(self, text):
         dash_replaced = text.replace('_', ' ')

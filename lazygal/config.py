@@ -41,25 +41,30 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
         except (ValueError, AttributeError):
             return ConfigParser.RawConfigParser.get(self, section, option)
 
-    def load(self, other_config):
+    def load(self, other_config, sections=None):
         '''
         Take another configuration object and overload values in this config
         object.
         '''
-        for section in other_config.sections():
-            if not self.has_section(section):
-                self.add_section(section)
-            for option in other_config.options(section):
-                self.set(section, option, other_config.get(section, option))
+        all_sections = False
+        if sections is None:
+            sections = other_config.sections()
+            all_sections = True
+
+        for section in sections:
+            if all_sections or other_config.has_section(section):
+                if not self.has_section(section):
+                    self.add_section(section)
+                for option in other_config.options(section):
+                    self.set(section, option, other_config.get(section, option))
 
 
-USER_CONFIG_PATH = '~/.lazygal/config'
+USER_CONFIG_PATH = os.path.expanduser('~/.lazygal/config')
 
 
 DEFAULT_CONFIG = BetterConfigParser()
 DEFAULT_CONFIG.readfp(open(os.path.join(os.path.dirname(__file__),
                                         'defaults.conf')))
-DEFAULT_CONFIG.read(os.path.expanduser(USER_CONFIG_PATH))
 
 
 class LazygalConfigDeprecated(BaseException): pass
@@ -78,12 +83,25 @@ class LazygalConfig(BetterConfigParser):
             raise LazygalConfigDeprecated("'lazygal' section is deprecated")
 
     def read(self, filenames):
-        BetterConfigParser.read(self, filenames)
+        conf = BetterConfigParser()
+        conf.read(filenames)
+        self.load(conf)
         self.check_deprecation()
 
-    def load(self, other_config):
+    def load(self, other_config, sections=None):
         self.check_deprecation(other_config)
-        BetterConfigParser.load(self, other_config)
+        BetterConfigParser.load(self, other_config, sections)
+
+
+class LazygalWebgalConfig(LazygalConfig):
+
+    def __init__(self, global_config):
+        LazygalConfig.__init__(self)
+        LazygalConfig.load(self, global_config)
+
+    def load(self, other_config):
+        LazygalConfig.load(self, other_config,
+                           sections=('webgal', 'template-vars', ))
 
 
 # vim: ts=4 sw=4 expandtab

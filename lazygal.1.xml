@@ -552,7 +552,23 @@ Album image identifier relative/path/to/image.jpg
             <filename><parameter>SOURCE_DIR</parameter>/.lazygal</filename>
         </term>
         <listitem>
-            <para>Gallery configuration file. See &lazygal-conf; for format.
+            <para>Album root configuration file. See &lazygal-conf; for format.
+            </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+            <filename><parameter>SOURCE_DIR/gal</parameter>/.lazygal</filename>
+        </term>
+        <listitem>
+            <para>Web gallery configuration file. Only the
+            <parameter>webgal</parameter> and
+            <parameter>template-vars</parameter> sections are red in these
+            files. The configuration applies to the gallery representing the
+            directory of the configuration file, and all of its sub-directories,
+            unless another configuration file in a sub-directory overloads some
+            of the defined configuration values. See &lazygal-conf; for format.
             </para>
         </listitem>
       </varlistentry>

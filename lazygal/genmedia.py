@@ -42,12 +42,12 @@ class ResizedImage(genfile.WebalbumFile):
         self.webgal = webgal
         self.source_media = source_media
         path = os.path.join(self.webgal.path,
-               self.webgal.album._add_size_qualifier(self.source_media.filename,
-                                                     size_name,
-                                                     self.force_extension))
+               self.webgal._add_size_qualifier(self.source_media.filename,
+                                               size_name,
+                                               self.force_extension))
         genfile.WebalbumFile.__init__(self, path, webgal)
 
-        self.newsizer = self.webgal.album.newsizers[size_name]
+        self.newsizer = self.webgal.newsizers[size_name]
         self.size = None
 
         self.add_dependency(self.source_media)
@@ -96,8 +96,8 @@ class ResizedImage(genfile.WebalbumFile):
         calibrated = False
         while not calibrated:
             try:
-                im.save(self.path, quality=self.webgal.album.quality,
-                                   **self.webgal.album.save_options)
+                im.save(self.path, quality=self.webgal.quality,
+                                   **self.webgal.save_options)
             except IOError, e:
                 if str(e).startswith('encoder error'):
                     PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
@@ -222,9 +222,8 @@ class WebalbumPicture(make.FileMakeObject):
     BASEFILENAME = 'index'
 
     def __init__(self, webgal_dir):
-        self.album = webgal_dir.album
         self.path = os.path.join(webgal_dir.path,
-                                 self.album.get_webalbumpic_filename())
+                                 webgal_dir.get_webalbumpic_filename())
         make.FileMakeObject.__init__(self, self.path)
 
         self.add_dependency(webgal_dir.source_dir)
@@ -245,7 +244,7 @@ class WebalbumPicture(make.FileMakeObject):
                 logging.error(_("Supplied album picture %s does not exist.")\
                               % webgal_dir.source_dir.album_picture)
 
-            md_dirpic_thumb = self.album._add_size_qualifier(\
+            md_dirpic_thumb = webgal_dir._add_size_qualifier(\
                                            webgal_dir.source_dir.album_picture,
                                            THUMB_SIZE_NAME)
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
@@ -257,8 +256,8 @@ class WebalbumPicture(make.FileMakeObject):
         # Use 800x600 as a random value to obtain a 4:3 aspect ratio (if
         # thumb size preserves aspect ratio)
         self.dirpic = eyecandy.PictureMess(pics, md_dirpic_thumb,
-                bg=self.album.webalbumpic_bg,
-                result_size=self.album.newsizers['thumb'].dest_size((800, 600)))
+                bg=webgal_dir.webalbumpic_bg,
+                result_size=webgal_dir.newsizers['thumb'].dest_size((800, 600)))
 
     def build(self):
         logging.info(_("  DIRPIC %s") % os.path.basename(self.path))
