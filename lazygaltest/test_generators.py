@@ -21,6 +21,8 @@ import os
 import datetime
 import shutil
 
+import Image
+
 from __init__ import LazygalTestGen
 import lazygal.config
 from lazygal.generators import WebalbumDir
@@ -146,6 +148,27 @@ class TestGenerators(LazygalTestGen):
 
         def long(): return dest_image['Exif.GPSInfo.GPSLatitude'].value
         self.assertRaises(KeyError, long)
+
+    def test_resize_rotate_size(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'image-size', 'std=800x600')
+        self.setup_album(config)
+
+        norotate_path = self.add_img(self.source_dir, 'norotate.jpg')
+        torotate_path = self.add_img(self.source_dir, 'torotate.jpg')
+        torotate = pyexiv2.ImageMetadata(torotate_path)
+        torotate.read()
+        torotate['Exif.Image.Orientation'] = 8
+        torotate.write()
+
+        # Generate album
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        dest_norotate_path = os.path.join(dest_dir, 'norotate_std.jpg')
+        self.assertEqual(Image.open(dest_norotate_path).size, (800, 533, ))
+        dest_torotate_path = os.path.join(dest_dir, 'torotate_std.jpg')
+        self.assertEqual(Image.open(dest_torotate_path).size, (400, 600, ))
 
     def test_feed(self):
         config = lazygal.config.LazygalConfig()
