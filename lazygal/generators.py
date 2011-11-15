@@ -434,7 +434,14 @@ class WebalbumDir(make.FileMakeObject):
         self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
 
-        self.set_webalbumpic(self.config.get('webgal', 'webalbumpic-bg'))
+        self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
+        try:
+            self.webalbumpic_size = map(int, self.config.get('webgal', 'webalbumpic-size').split('x'))
+            if len(self.webalbumpic_size) != 2:
+                raise ValueError
+        except ValueError:
+            logging.error(_('Bad syntax for webalbumpic-size.'))
+            sys.exit(1)
 
     def set_original(self, original=False, orig_base=None, orig_symlink=False):
         self.original = original or orig_symlink
@@ -443,9 +450,6 @@ class WebalbumDir(make.FileMakeObject):
             self.orig_base = orig_base
         else:
             self.orig_base = None
-
-    def set_webalbumpic(self, bg='transparent'):
-        self.webalbumpic_bg = bg
 
     def get_webalbumpic_filename(self):
         if self.webalbumpic_bg == 'transparent':
