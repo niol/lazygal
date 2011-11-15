@@ -242,9 +242,8 @@ class WebalbumPicture(make.FileMakeObject):
             albumpic_path = os.path.join(webgal_dir.source_dir.path,
                                          webgal_dir.source_dir.album_picture)
             if not os.path.isfile(albumpic_path):
-                self.album.log(_("Supplied album picture %s does not exist.")\
-                               % webgal_dir.source_dir.album_picture,
-                               'error')
+                logging.error(_("Supplied album picture %s does not exist.")\
+                              % webgal_dir.source_dir.album_picture)
 
             md_dirpic_thumb = self.album._add_size_qualifier(\
                                            webgal_dir.source_dir.album_picture,
