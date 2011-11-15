@@ -80,7 +80,7 @@ class LazygalTestGen(LazygalTest):
         self.album = Album(self.source_dir, config)
 
     def setup_subgal(self, name, pic_names):
-        subgal_path = os.path.join(self.source_dir, 'subgal')
+        subgal_path = os.path.join(self.source_dir, name)
         os.mkdir(subgal_path)
         for pic_name in pic_names:
             self.add_img(subgal_path, pic_name)
