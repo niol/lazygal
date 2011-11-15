@@ -18,6 +18,7 @@
 
 import os
 import sys
+import logging
 import ConfigParser
 
 
@@ -41,7 +42,7 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
         except (ValueError, AttributeError):
             return ConfigParser.RawConfigParser.get(self, section, option)
 
-    def load(self, other_config, sections=None):
+    def load(self, other_config, init=False, sections=None):
         '''
         Take another configuration object and overload values in this config
         object.
@@ -54,9 +55,19 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
         for section in sections:
             if all_sections or other_config.has_section(section):
                 if not self.has_section(section):
+                    if not init:
+                        self.new_section_cb(section)
                     self.add_section(section)
                 for option in other_config.options(section):
+                    if not init and not self.has_option(section, option):
+                        self.new_option_cb(section, option)
                     self.set(section, option, other_config.get(section, option))
+
+    def new_section_cb(self, section):
+        pass
+
+    def new_option_cb(self, section, option):
+        pass
 
 
 USER_CONFIG_PATH = os.path.expanduser('~/.lazygal/config')
@@ -74,7 +85,7 @@ class LazygalConfig(BetterConfigParser):
 
     def __init__(self):
         BetterConfigParser.__init__(self)
-        self.load(DEFAULT_CONFIG)
+        self.load(DEFAULT_CONFIG, init=True)
 
     def check_deprecation(self, config=None):
         if config is None: config = self
@@ -88,19 +99,28 @@ class LazygalConfig(BetterConfigParser):
         self.load(conf)
         self.check_deprecation()
 
-    def load(self, other_config, sections=None):
+    def load(self, other_config, init=False, sections=None):
         self.check_deprecation(other_config)
-        BetterConfigParser.load(self, other_config, sections)
+        BetterConfigParser.load(self, other_config, init, sections)
+
+    def new_section_cb(self, section):
+        if section != 'template-vars':
+            logging.warning(_("  Ignoring unknown section '%s'.") % section)
+
+    def new_option_cb(self, section, option):
+        if section != 'template-vars':
+            logging.warning(_("  Ignoring unknown option '%s' in section '%s'.")
+                            % (option, section, ))
 
 
 class LazygalWebgalConfig(LazygalConfig):
 
     def __init__(self, global_config):
         LazygalConfig.__init__(self)
-        LazygalConfig.load(self, global_config)
+        LazygalConfig.load(self, global_config, init=True)
 
-    def load(self, other_config):
-        LazygalConfig.load(self, other_config,
+    def load(self, other_config, init=False):
+        LazygalConfig.load(self, other_config, init,
                            sections=('webgal', 'template-vars', ))
 
 
