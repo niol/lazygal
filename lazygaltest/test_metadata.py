@@ -151,6 +151,11 @@ class TestFileMetadata(LazygalTest):
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_flash(), 'Yes, auto')
 
+    def test_focal_length(self):
+        sample = 'sample-model-pentax1.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_focal_length(), '18.0 mm (35 mm equivalent: 27.0 mm)')
+
 
 if __name__ == '__main__':
     unittest.main()
