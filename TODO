@@ -19,10 +19,6 @@ Ideas to improve Lazygal (in no particular order)
 
 * --exclude to exclude directories from processing.
 
-* Per directory config file.
-
-* Warn if config file contains unknown options.
-
 * Document input formats.
 
 * xinclude for XHTML <head />
