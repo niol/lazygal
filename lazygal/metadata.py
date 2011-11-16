@@ -288,10 +288,11 @@ class ImageInfoTags(object):
 
         try:
             try:
-                iwidth = float(str(self._metadata['Exif.Photo.ImageWidth']))
-            except IndexError:
-                iwidth = float(str(self._metadata['Exif.Photo.PixelXDimension']))
-            fresunit = str(self._metadata['Exif.Photo.FocalPlaneResolutionUnit'])
+                iwidth = self.get_exif_float_value('Exif.Photo.ImageWidth')
+            except (IndexError, KeyError):
+                iwidth = self.get_exif_float_value('Exif.Photo.PixelXDimension')
+
+            fresunit = str(self._metadata['Exif.Photo.FocalPlaneResolutionUnit'].value)
             factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
             try:
                 fresfactor = factors[fresunit]
