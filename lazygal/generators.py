@@ -419,7 +419,7 @@ class WebalbumDir(make.FileMakeObject):
 
         if self.config.getboolean('webgal', 'dirzip')\
         and self.source_dir.get_media_count() > 1:
-            self.dirzip = genfile.WebalbumArchive(dir)
+            self.dirzip = genfile.WebalbumArchive(self)
             self.add_dependency(self.dirzip)
         else:
             self.dirzip = None
