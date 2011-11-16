@@ -325,8 +325,6 @@ class WebalbumDir(make.FileMakeObject):
             self.medias.append(media_task)
             self.add_dependency(media_task)
 
-        self.dirzip = None
-
         self.index_pages = []
 
         if not self.should_be_flattened():
