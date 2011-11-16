@@ -306,10 +306,13 @@ class ImageInfoTags(object):
                 return ''
 
             foclength = self.get_exif_float_value('Exif.Photo.FocalLength')
-            lenstr = '%.01f' % (foclength / ccdwidth * 36 + 0.5)
+            try:
+                lenstr = '%.01f' % (foclength / ccdwidth * 36 + 0.5)
+            except ZeroDivisionError:
+                raise ValueError
 
             flen += _(' (35 mm equivalent: %s mm)') % lenstr
-        except (IndexError, KeyError):
+        except (IndexError, KeyError, ValueError):
             return flen
 
         return flen
