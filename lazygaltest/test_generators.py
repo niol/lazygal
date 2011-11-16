@@ -182,6 +182,19 @@ class TestGenerators(LazygalTestGen):
         self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'index.xml')),
                          True)
 
+    def test_dirzip(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'dirzip', 'Yes')
+        self.setup_album(config)
+
+        img_path = self.add_img(self.source_dir, 'img01.jpg')
+        img_path = self.add_img(self.source_dir, 'img02.jpg')
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'src.zip')),
+                         True)
+
 
 class TestSpecialGens(LazygalTestGen):
 
