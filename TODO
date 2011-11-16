@@ -22,3 +22,5 @@ Ideas to improve Lazygal (in no particular order)
 * Document input formats.
 
 * xinclude for XHTML <head />
+
+* Add an option preventing metadata from being published.
