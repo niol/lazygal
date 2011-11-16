@@ -45,7 +45,7 @@ def get_hg_rev():
         import mercurial.hg, mercurial.ui, mercurial.node
         repo = mercurial.hg.repository(mercurial.ui.ui(), lazygal_dir)
 
-        last_revs = repo.dirstate.parents()
+        last_revs = repo.changelog.parents(repo.dirstate.parents()[0])
         known_tags = repo.tags().items()
         for tag, rev in repo.tags().items():
             if tag != 'tip':
