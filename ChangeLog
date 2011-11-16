@@ -1,3 +1,17 @@
+Lazygal 0.7 (2011-11-16)
+  * fix 35mm equivalent calculation field retrieval and fallbacks
+  * add config option for webalbumpic size
+  * warn on unknown config options/sections
+  * per-directory config files support
+  * improve image rotation quality by using lossless rotation and by resizing after rotation
+  * generate webm vp8 vorbis for web videos
+  * --subgal-sort-by=exif : use mtimes only of none of the pics have exif date
+  * move README info into manpages
+  * integrate video thumbs
+  * config overhaul: fixup cmdline vs files, new cfg file format
+    (migration script provided in src dist: userscripts/lazygal-conf-migrate-07)
+  * remove --optimize and --progressive which have defaulted to On for a while
+
 Lazygal 0.6.2 (2011-06-30)
   * add gallery archive size in gallery index
   * fix retrieval of Nikon Lens info

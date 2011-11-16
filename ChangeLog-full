@@ -1,4 +1,98 @@
+Lazygal 0.7 (2011-11-16)
+  * add config module to translatable modules
+  * update fr translation
+  * update TODO
+  * handle missing pixel X width in EXIF for 35mm equivalent focal calculation
+  * fix 35mm equivalent calculation field retrieval and fallbacks
+  * add unit test for resize and rotate
+  * update TODO
+  * add focale_length metadata unit test
+  * add config option for webalbumpic size
+  * warn on unknown config options/sections
+  * remove trailing whitespace in man page
+  * per-directory config files support
+  * fix forgotten old log api statement
+  * use arg in setup_subgal() in unit tests
+  * install defaults.conf
+  * make album dirpics the same size as thumbs
+  * fix obeying size constraints (again...) for reduced pics
+  * quote some more urls
+  * improve image rotation quality by using lossless rotation and by resizing after rotation
+  * avoid unnecessary output if dir should be skipped
+  * fix --debug and --quiet by removing deprecated code
+  * get hg rev from dir state instead of tip
+  * use HTML5 doctype for the video element
+  * process webm files (now that we do not transcode them, see prev patch
+  * fix double decode of file path in video thumbnailer
+  * fix 'srcdir does not exist' error msg with non-ascii chars
+  * update TODO
+  * copy webm videos instead of transocding into the same format
+  * fix css comment in purple style
+  * do not reuse gst pipeline for media transcoding as it may raise problems
+  * fix non-english locales messing up RFC822 dates in feed
+  * do not forget tpl vars in conf migration script
+  * remove trailing whitspace
+  * shorten footer decl in default theme
+  * add video arrow and localized text to prevnext links
+  * remove whitespace
+  * generate webm vp8 vorbis for web videos
+  * tell genshi to strip xml comments from output
+  * also cleanup shared files for unexpected files
+  * use existing pathutils functions instead of re-implementing
+  * add missing files in src dist manifest
+  * add conffile migration script for new 0.7 format
+  * fix purple style regarding video arrow overlay on video thumbs
+  * fix video info retrieval with unicode path
+  * allow destdir with ~
+  * fail if parsing config file with old format
+  * update TODO
+  * fix typo in fr translation
+  * --subgal-sort-by=exif : use mtimes only of none of the pics have exif date
+  * handle exif comments with inconsistent encoding
+  * move README info into manpages
+  * integrate video thumbs
+  * handle .png pics
+  * pyexiv2 wrapper comment typo
+  * sort filenames according to locale instead of ascii sort
+  * fix double decode in album picture path in mathew md
+  * fix media sort when webgals are split across multiple pages
+  * add tests for media sort options
+  * remove useless PIL import
+  * fix retrieval of exif flash info
+  * try to get rid of _Suspension not allowed here_ messages from PIL
+  * fix tpl vars from conf file
+  * fix retrieval of pentax and minolta lens types
+  * default theme: simplify CSS output code
+  * fix conf parsing error messages (regression following config overhaul)
+  * use python std module logging instead of custom functions
+  * default theme: make CSS styling easier
+  * default theme: put one media in a div to ease styling
+  * simplify syntax for dirindex gallery and media links
+  * default theme: style enumerations with CSS instead of string generation
+  * the Nexus S seems to fill up the EXIF UserComment with the field name, ignore that
+  * --orig-symlink should imply --original
+  * add new man page output to .hgignore
+  * document config file format
+  * config overhaul: fixup cmdline vs files, new cfg file format
+  * man: fixup docbook-to-man xsl warnings
+  * remove --optimize and --progressive which have defaulted to On for a while
+  * improve --clean-destination desc in man page
+  * minor fix for log indent
+  * fix clean_destination from config file
+  * update TODO
+  * workaround Chrome rendering issue with links (underline is displayed on blanks
+  * merge
+  * try to ignore messed up jpeg comments
+  * fix upside down pics dimensions
+  * make lazygal-setcomment compatible with non-ascii filesystems
+  * add python shebang to lazygal-setcomment.py
+  * merge
+  * do not reference feed in header if it is not generated
+  * make some path utility functions more reusable and test them
+  * drop the s in the distutils command used to run the testsuite
+
 Lazygal 0.6.2 (2011-06-30)
+  * set version to 0.6.2
   * update fr translation
   * update TODO
   * make whitespace in theme files consistent
