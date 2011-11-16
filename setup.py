@@ -77,12 +77,13 @@ class build_manpages(Command):
 
         for xmlmanpage in self.manpages:
             manpage = xmlmanpage[:-4] # remove '.xml' at the end
+            section = manpage[-1:]
             if newer(xmlmanpage, manpage):
                 cmd = (self.executable, "--nonet", "-o", self.mandir, db2man,
                        xmlmanpage)
                 self.spawn(cmd)
 
-            targetpath = os.path.join("share", "man", 'man1')
+            targetpath = os.path.join("share", "man", 'man%s' % section)
             data_files.append((targetpath, (manpage, ), ))
 
 
