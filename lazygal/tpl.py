@@ -19,6 +19,7 @@ import os, time
 from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate,\
                             TemplateNotFound
+from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
 import __init__
 import locale
@@ -69,6 +70,9 @@ class LazygalTemplate(object):
                     except UnicodeDecodeError:
                         problematic_vars.append(key)
             print 'Problematic template vars : %s' % ', '.join(problematic_vars)
+            raise
+        except UndefinedError, e:
+            print 'W: %s' % e
             raise
         finally:
             page.close()
