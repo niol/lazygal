@@ -6,6 +6,7 @@ lazygal/tpl.py
 lazygal/genfile.py
 lazygal/genmedia.py
 lazygal/genpage.py
+lazygal/config.py
 themes/default/dirindex.thtml
 themes/default/browse.thtml
 themes/default/image.thtml
