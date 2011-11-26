@@ -1,4 +1,14 @@
+Lazygal 0.7.1 (2011-11-26)
+  * add publish-metadata configuration option
+  * quick and dirty warning on undefined tpl vars
+  * add basic unit test for dirzip gen
+  * do not blank dirzip var after it has been initialised
+  * fix lazygal.conf(5) installation path
+  * fix -z glitch
+
 Lazygal 0.7 (2011-11-16)
+  * fixup lazygal mercurial version retrieval
+  * set version to 0.7
   * add config module to translatable modules
   * update fr translation
   * update TODO

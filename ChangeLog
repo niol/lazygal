@@ -1,3 +1,8 @@
+Lazygal 0.7.1 (2011-11-26)
+  * add publish-metadata configuration option
+  * fix lazygal.conf(5) installation path
+  * fix -z glitch
+
 Lazygal 0.7 (2011-11-16)
   * fix 35mm equivalent calculation field retrieval and fallbacks
   * add config option for webalbumpic size
