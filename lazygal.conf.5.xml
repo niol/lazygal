@@ -198,9 +198,8 @@ foo = bar
       <varlistentry>
         <term>webalbumpic-size</term>
         <listitem>
-          <para>Size of picture mash-up representing galleries, eg. 200x150.
-          Refer to the IMAGE RESIZE DESCRIPTION section in &lazygal; for more
-          information on the available syntax.</para>
+          <para>Size of picture mash-up representing galleries,
+          eg. 200x150.</para>
         </listitem>
       </varlistentry>
 
