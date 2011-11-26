@@ -167,11 +167,7 @@ class ImageOtherSize(ResizedImage):
         'Exif.GPSInfo.GPSDestLatitude',
     )
 
-    def save(self, im):
-        super(ImageOtherSize, self).save(im)
-
-        # Copy exif tags to reduced img
-
+    def copy_metadata(self):
         imgtags = pyexiv2.ImageMetadata(self.source_media.path)
         imgtags.read()
         dest_imgtags = pyexiv2.ImageMetadata(self.path)
@@ -197,6 +193,12 @@ class ImageOtherSize(ResizedImage):
             dest_imgtags.write()
         except ValueError, e:
             logging.error(_("Could not copy metadata in reduced picture: %s") % e)
+
+    def save(self, im):
+        super(ImageOtherSize, self).save(im)
+
+        if self.webgal.config.getboolean('webgal', 'publish-metadata'):
+            self.copy_metadata()
 
 
 class VideoThumb(ResizedImage):

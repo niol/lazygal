@@ -303,6 +303,15 @@ foo = bar
         </listitem>
       </varlistentry>
 
+       <varlistentry>
+        <term>publish-metadata</term>
+        <listitem>
+          <para>Publish image metadata if <literal>True</literal>,
+          the default: copy original image metadata in reduced picture, and
+          include some information in the image page.</para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
   </refsect1>
 

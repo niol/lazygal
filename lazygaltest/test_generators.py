@@ -149,6 +149,32 @@ class TestGenerators(LazygalTestGen):
         def long(): return dest_image['Exif.GPSInfo.GPSLatitude'].value
         self.assertRaises(KeyError, long)
 
+    def test_metadata_osize_nopublish(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'publish-metadata', 'No')
+        self.setup_album(config)
+
+        img_path = self.add_img(self.source_dir, 'md_filled.jpg')
+
+        # Add some metadata
+        source_image = pyexiv2.ImageMetadata(img_path)
+        source_image.read()
+        dummy_comment = 'nice photo'
+        source_image['Exif.Photo.UserComment'] = dummy_comment
+        source_image.write()
+
+        # Generate album
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        dest_img_path = os.path.join(dest_dir, 'md_filled_small.jpg')
+        dest_image = pyexiv2.ImageMetadata(dest_img_path)
+        dest_image.read()
+
+        # Check that metadata is not here for reduced pictures.
+        def com(): return dest_image['Exif.Photo.UserComment'].value
+        self.assertRaises(KeyError, com)
+
     def test_resize_rotate_size(self):
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'image-size', 'std=800x600')
