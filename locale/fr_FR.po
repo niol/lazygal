@@ -260,7 +260,8 @@ msgstr ""
 #: ../lazygal/generators.py:397
 #, python-format
 msgid "  Trying loading gallery configs: %s"
-msgstr "  Tentative de chargement des fichiers de configuration par gallerie:"
+msgstr "  Tentative de chargement des fichiers de configuration par "
+"gallerie : %s"
 
 #: ../lazygal/generators.py:443
 msgid "Bad syntax for webalbumpic-size."
