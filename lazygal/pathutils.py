@@ -39,28 +39,4 @@ def is_subdir_of(dir_path, path):
         return False
 
 
-def relative_path(from_dir, to_path):
-    '''
-    Returns the relative path of to_path as if currently working in from_dir.
-    '''
-    if not os.path.isdir(to_path):
-        to_path, fn = os.path.split(to_path)
-    else:
-        fn = None
-
-    rel_path = ''
-    common_path = from_dir
-    while not is_subdir_of(common_path, to_path):
-        common_path, tail = os.path.split(common_path)
-        rel_path = os.path.join('..', rel_path)
-
-    if is_subdir_of(common_path, to_path):
-        rel_path = os.path.join(rel_path, to_path[len(common_path)+1:])
-
-    if fn:
-        rel_path = os.path.join(rel_path, fn)
-
-    return rel_path
-
-
 # vim: ts=4 sw=4 expandtab

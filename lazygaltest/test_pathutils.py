@@ -68,15 +68,6 @@ class TestPathutils(LazygalTest):
                                       self.f('/tmp/bar/baz/jay')))
         self.assertFalse(is_subdir_of(self.d('/tmp/john/mail'), self.f('/tmpz')))
 
-    def test_relative_path(self):
-        self.assertEqual(relative_path(self.d('/tmp'), self.f('/tmp/foo/jay')),
-                         'foo/jay')
-        self.assertEqual(relative_path(self.d('/tmp/baz/jay'), self.d('/tmp')),
-                         '../../')
-        self.assertEqual(relative_path(self.d('/tmp/baz/jay'),
-                                       self.f('/tmp/q')),
-                         '../../q')
-
 
 if __name__ == '__main__':
     unittest.main()

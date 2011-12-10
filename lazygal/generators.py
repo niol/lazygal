@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys
+import posixpath
 import glob
 import locale
 import logging
@@ -536,7 +537,7 @@ class WebalbumDir(make.FileMakeObject):
         Returns the relative path to go from this directory to the path supplied
         as argument.
         '''
-        return pathutils.relative_path(self.path, path)
+        return posixpath.relpath(path, self.path)
 
     def flattening_srcpath(self, srcdir_path):
         '''

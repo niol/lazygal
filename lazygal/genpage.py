@@ -17,6 +17,7 @@
 
 
 import os
+import posixpath
 import sys
 import logging
 import urllib
@@ -208,8 +209,8 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values['rel_root'] = self.dir.source_dir.rel_root()
 
         if self.dir.feed is not None:
-            tpl_values['feed_url'] = pathutils.relative_path(self.dir.path,
-                                                             self.dir.feed.path)
+            tpl_values['feed_url'] = posixpath.relpath(self.dir.feed.path,
+                                                       self.dir.path)
             tpl_values['feed_url'] = self.url_quote(tpl_values['feed_url'])
         else:
             tpl_values['feed_url'] = None
@@ -431,8 +432,8 @@ class WebalbumIndexPage(WebalbumPage):
         values['rel_path'] = self.dir.source_dir.strip_root()
 
         if self.dir.feed is not None:
-            values['feed_url'] = pathutils.relative_path(self.dir.path,
-                                                         self.dir.feed.path)
+            values['feed_url'] = posixpath.relpath(self.dir.feed.path,
+                                                   self.dir.path)
             values['feed_url'] = self.url_quote(values['feed_url'])
         else:
             values['feed_url'] = None
