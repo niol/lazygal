@@ -286,6 +286,28 @@ class WebMTranscoder(GstVideoTranscoder):
         self.videoenc.set_property('quality', 7)
 
 
+class MP4Transcoder(GstVideoTranscoder):
+
+    def __init__(self, mediapath):
+        # Working pipeline
+        # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
+        # demux. ! queue ! audioconvert ! faac profile=2 ! queue !
+        # ffmux_mp4 name=muxer
+        # demux. ! queue ! ffmpegcolorspace ! x264enc pass=4 quantizer=30
+        # subme=4 threads=0 ! queue !
+        # muxer. muxer. ! queue ! filesink location=newfile.mp4
+
+        super(MP4Transcoder, self).__init__(mediapath,
+                                            'faac', 'x264enc', 'ffmux_mp4')
+
+        self.audioenc.set_property('profile', 2)
+
+        self.videoenc.set_property('pass', 4)
+        self.videoenc.set_property('quantizer', 30)
+        self.videoenc.set_property('subme', 4)
+        self.videoenc.set_property('threads', 0)
+
+
 class VideoFrameExtractor(GstVideoReader):
 
     def __init__(self, path, fps):
@@ -440,21 +462,27 @@ class VideoThumbnailer(object):
 if __name__ == '__main__':
     import sys, os
 
-    converter_type = sys.argv[1]
-    if converter_type == 'ogg':
-        converter = OggTheoraTranscoder
-    elif converter_type == 'webm':
-        converter = WebMTranscoder
-    elif converter_type == 'jpeg':
-        converter = VideoThumbnailer
-    else:
-        raise ValueError
+    converter_types = sys.argv[1].split(',')
+    converters = {}
+    for converter_type in converter_types:
+        if converter_type == 'ogg':
+            converter = OggTheoraTranscoder
+        elif converter_type == 'webm':
+            converter = WebMTranscoder
+        elif converter_type == 'mp4':
+            converter = MP4Transcoder
+        elif converter_type == 'jpeg':
+            converter = VideoThumbnailer
+        else:
+            raise ValueError('unknwon converter type %s' % converter_type)
+        converters[converter_type] = converter
 
     for file_path in sys.argv[2:]:
         file_path = file_path.decode(sys.getfilesystemencoding())
         fn, ext = os.path.splitext(os.path.basename(file_path))
-        target_path = fn + '.' + converter_type
-        converter(file_path).convert(target_path)
+        for converter_type, converter in converters.items():
+            target_path = fn + '.' + converter_type
+            converter(file_path).convert(target_path)
 
 
 # vim: ts=4 sw=4 expandtab
