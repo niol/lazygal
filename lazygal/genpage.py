@@ -118,7 +118,8 @@ class WebalbumPage(genfile.WebalbumFile):
         if srcdir_path != self.dir.source_dir.path:
             index_path = srcdir_path
         if index_path is not None:
-            link_target = self.dir.rel_path_to_src(index_path) + link_target
+            link_target = posixpath.join(self.dir.rel_path_to_src(index_path),
+                                         link_target)
 
         return self.url_quote(link_target)
 
@@ -206,7 +207,7 @@ class WebalbumBrowsePage(WebalbumPage):
             tpl_values['index_link'] = index_rel_dir + tpl_values['index_link']
 
         tpl_values['osize_links'] = self._get_osize_links(self.media.name)
-        tpl_values['rel_root'] = self.dir.source_dir.rel_root()
+        tpl_values['rel_root'] = self.dir.source_dir.rel_root() + '/'
 
         if self.dir.feed is not None:
             tpl_values['feed_url'] = posixpath.relpath(self.dir.feed.path,
@@ -428,7 +429,7 @@ class WebalbumIndexPage(WebalbumPage):
 
         values.update(self._get_dir_info())
 
-        values['rel_root'] = self.dir.source_dir.rel_root()
+        values['rel_root'] = self.dir.source_dir.rel_root() + '/'
         values['rel_path'] = self.dir.source_dir.strip_root()
 
         if self.dir.feed is not None:
