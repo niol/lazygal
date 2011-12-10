@@ -189,35 +189,28 @@ for name, obj in globals().items():
 
 
 def get_newsizer(resize_string):
-    newsizer_it = iter(resize_patterns)
-    try:
-        while True:
-            newsizer_class = newsizer_it.next()
-            newsizer = newsizer_class(resize_string)
-            try:
-                newsizer.matches()
-            except NewsizeStringParseError:
-                # This is not the syntax used
-                pass
-            else:
-                return newsizer
-    except StopIteration:
-        raise NewsizeStringParseError
+    for newsizer_class in resize_patterns:
+        newsizer = newsizer_class(resize_string)
+        try:
+            newsizer.matches()
+        except NewsizeStringParseError:
+            # This is not the syntax used
+            pass
+        else:
+            return newsizer
+    raise NewsizeStringParseError
+
 
 def is_known_newsizer(resize_string):
-    newsizer_it = iter(resize_patterns)
-    try:
-        while True:
-            newsizer_class = newsizer_it.next()
-            try:
-                newsizer_class(resize_string).matches()
-            except NewsizeStringParseError:
-                # This is not the syntax used
-                pass
-            else:
-                return True
-    except StopIteration:
-        return False
+    for newsizer_class in resize_patterns:
+        try:
+            newsizer_class(resize_string).matches()
+        except NewsizeStringParseError:
+            # This is not the syntax used
+            pass
+        else:
+            return True
+    raise NewsizeStringParseError
 
 
 # vim: ts=4 sw=4 expandtab
