@@ -349,6 +349,7 @@ class WebalbumDir(make.FileMakeObject):
     def __parse_browse_sizes(self, sizes_string):
         for single_def in sizes_string.split(','):
             name, string_size = single_def.split('=')
+            name = name.decode(locale.getpreferredencoding())
             if name == '':
                 raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
             if name == genmedia.THUMB_SIZE_NAME:
