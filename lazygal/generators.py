@@ -364,7 +364,7 @@ class WebalbumDir(make.FileMakeObject):
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
             except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string.decode(locale.getpreferredencoding()), size_name, ))
 
     def __parse_sort(self, sort_string):
         try:

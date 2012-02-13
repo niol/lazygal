@@ -229,6 +229,9 @@ else:
     except KeyboardInterrupt:
         print >> sys.stderr, _("Interrupted.")
         sys.exit(1)
+    except ValueError, e:
+        print unicode(e)
+        sys.exit(1)
 
 
 # vim: ts=4 sw=4 expandtab
