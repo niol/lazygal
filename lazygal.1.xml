@@ -151,7 +151,8 @@
           <option>--template-vars=<replaceable>TPL_VARS</replaceable></option>
         </term>
         <listitem>
-          <para>Common variables to load all templates with.</para>
+          <para>Common variables to load all templates with, e.g.
+          footer=foo bar,color=baz.</para>
         </listitem>
       </varlistentry>
 
