@@ -24,3 +24,6 @@ Ideas to improve Lazygal (in no particular order)
 * xinclude for XHTML <head />
 
 * Add an option preventing metadata from being published.
+
+* Some sort of plugin architecture for generate pic post processing at least
+  (with an example for watermarking pics).
