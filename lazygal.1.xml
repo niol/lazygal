@@ -152,7 +152,9 @@
         </term>
         <listitem>
           <para>Common variables to load all templates with, e.g.
-          footer=foo bar,color=baz.</para>
+          <option>--template-vars='footer=foo bar,color=baz'</option>. For
+          longer variable contents, it is easier to use a configuration
+          file (see &lazygal-conf;).</para>
         </listitem>
       </varlistentry>
 
