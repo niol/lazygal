@@ -213,8 +213,10 @@ class VideoThumb(ResizedImage):
             thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
         except mediautils.TranscodeError, e:
             logging.error(_("  creating %s thumbnail failed, skipped")\
-                          % self.source_video.filename)
+                          % self.source_media.filename)
             logging.info(str(e))
+            self.clean_output()
+            raise IOError()
         else:
             return thumb
 
@@ -290,7 +292,8 @@ class WebVideo(genfile.WebalbumFile):
             logging.error(_("  transcoding %s failed, skipped")\
                           % self.source_video.filename)
             logging.info(str(e))
-            os.unlink(self.path)
+            self.source_media.broken = True
+            self.clean_output()
 
 
 # vim: ts=4 sw=4 expandtab
