@@ -41,6 +41,42 @@ import logging
 logging.basicConfig(format='%(message)s', level=logging.ERROR)
 
 
+def has_symlinks():
+    try:
+        os.symlink
+    except AttributeError:
+        return False
+    else:
+        return True
+
+
+class qnd_skipIf(object):
+    '''
+    Quick and dirty unittest.skipIf decorator implementation to be able to run
+    the test suite using python < 2.7 .
+    '''
+
+    def __init__(self, cond, reason):
+        self.cond = cond
+        self.reason = reason
+
+    def __call__(self, f):
+        def nf(*args, **kwargs):
+            if self.cond:
+                print 'skipped: %s' % self.reason
+                return
+            f(*args, **kwargs)
+        return nf
+
+
+try:
+    # Python >= 2.7
+    skip = unittest.skipIf
+except AttributeError:
+    # Python < 2.7
+    skip = qnd_skipIf
+
+
 class LazygalTest(unittest.TestCase):
 
     def setUp(self):

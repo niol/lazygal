@@ -23,7 +23,7 @@ import shutil
 
 import Image
 
-from __init__ import LazygalTestGen
+from __init__ import LazygalTestGen, skip, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
@@ -93,6 +93,7 @@ class TestGenerators(LazygalTestGen):
         self.assertEqual(sorted(dest_gal.list_foreign_files()),
                          [os.path.join(dest_path, 'extra_thumb.jpg')])
 
+    @skip(not has_symlinks(), 'symlinks not supported on platform')
     def test_originals_symlinks(self):
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'original', 'Yes')
@@ -266,6 +267,7 @@ class TestSpecialGens(LazygalTestGen):
         # FIXME: Check dest dir contents, test only catches uncaught exceptions
         # for now...
 
+    @skip(not has_symlinks(), 'symlinks not supported on platform')
     def test_dir_symlink(self):
         '''
         The generator should follow symlinks on directories, but should not get
