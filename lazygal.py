@@ -31,7 +31,7 @@ elif INSTALL_MODE == 'installed':
     LOCALES_PATH = os.path.join(INSTALL_PREFIX, 'share', 'locale')
 gettext.install('lazygal', LOCALES_PATH, unicode=1)
 
-locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
+locale.setlocale(locale.LC_ALL, '')
 
 
 import lazygal
