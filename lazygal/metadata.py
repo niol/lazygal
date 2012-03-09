@@ -41,16 +41,16 @@ class FileMetadata(object):
         self.path = path
 
     def contents(self, splitter=None):
+        enc = locale.getpreferredencoding().lower()
         try:
-            with codecs.open(self.path, 'r',
-                             locale.getpreferredencoding()) as f:
-
+            with codecs.open(self.path, 'r', enc) as f:
                 # Not sure why codecs.open() does not skip the UTF-8 BOM. Maybe
                 # this is because the BOM is not required and utf-8-sig handles
                 # this in a better way. Anyway, the following code skips the
                 # UTF-8 BOM if it is present.
-                maybe_bom = f.read(1).encode(locale.getpreferredencoding())
-                if maybe_bom != codecs.BOM_UTF8: f.seek(0)
+                if enc == 'utf-8':
+                    maybe_bom = f.read(1).encode(enc)
+                    if maybe_bom != codecs.BOM_UTF8: f.seek(0)
 
                 c = f.read()
         except IOError:

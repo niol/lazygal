@@ -19,6 +19,7 @@
 
 import unittest
 import os
+import locale
 import codecs
 from __init__ import LazygalTest
 from lazygal import metadata
@@ -38,8 +39,10 @@ class TestFileMetadata(LazygalTest):
 
     def create_file(self, path, contents):
         f = open(path, 'w')
-        f.write(codecs.BOM_UTF8)
-        f.write(contents.encode('utf-8'))
+        enc = locale.getpreferredencoding().lower()
+        if enc == 'utf-8':
+            f.write(codecs.BOM_UTF8)
+        f.write(contents.encode(enc))
         f.close()
 
     def test_album_name(self):
