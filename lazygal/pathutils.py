@@ -18,6 +18,20 @@
 import os, sys
 
 
+def is_root_posix(path):
+    return path == '/'
+
+
+def is_root_win32(path):
+    return path[1:] == ':\\' # strip drive letter in comparison
+
+
+if sys.platform == 'win32':
+    is_root = is_root_win32
+else:
+    is_root = is_root_posix
+
+
 def path2unicode(path):
     if type(path) is unicode:
         return path
@@ -30,7 +44,7 @@ def is_subdir_of(dir_path, path):
     Returns whether path is a subdirectory of dir_path.
     '''
     test_path = path
-    while test_path != dir_path and test_path != '/':
+    while test_path != dir_path and not is_root(test_path):
         test_path, tail = os.path.split(test_path)
 
     if test_path == dir_path:

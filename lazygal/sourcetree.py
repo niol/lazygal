@@ -85,7 +85,7 @@ class File(make.FileSimpleDependency):
         while cur_path != self.album.source_dir:
             cur_path, tail = os.path.split(cur_path)
             album_level += 1
-            if cur_path == '/':
+            if pathutils.is_root(cur_path):
                 raise RuntimeError(_('Root not found'))
         return album_level
 
@@ -301,7 +301,7 @@ class Directory(File):
         while not found:
             if head == self.album.source_dir:
                 found = True
-            elif head == "/":
+            elif pathutils.is_root(head):
                 raise RuntimeError(_("Root not found"))
             else:
                 head, tail = os.path.split(head)
