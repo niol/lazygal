@@ -194,7 +194,7 @@ if options.orig_base is not None:
     cmdline_config.set('webgal', 'original-baseurl', options.orig_base)
 if options.orig_symlink:
     try:
-        _ = os.symlink
+        os.symlink
     except AttributeError:
         print _("Option --orig-symlink is not available on this platform.")
         sys.exit(1)
