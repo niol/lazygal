@@ -27,3 +27,5 @@ Ideas to improve Lazygal (in no particular order)
 
 * Some sort of plugin architecture for generate pic post processing at least
   (with an example for watermarking pics).
+
+* Picture links in breadcrumbs.
