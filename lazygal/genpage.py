@@ -491,9 +491,11 @@ class WebalbumFeed(make.FileMakeObject):
 
 class SharedFileTemplate(make.FileMakeObject):
 
-    def __init__(self, album, shared_tpl_name, shared_file_dest_tplname):
+    def __init__(self, album, shared_tpl_name, shared_file_dest_tplname,
+                       tpl_vars):
         self.album = album
         self.tpl = self.album.tpl_loader.load(shared_tpl_name)
+        self.tpl_vars = tpl_vars
 
         # Remove the 't' from the beginning of ext
         filename, ext = os.path.splitext(shared_file_dest_tplname)
@@ -508,7 +510,7 @@ class SharedFileTemplate(make.FileMakeObject):
     def build(self):
         logging.info(_("TPL %%SHAREDDIR%%/%s") % os.path.basename(self.path))
         logging.debug("(%s)" % self.path)
-        self.tpl.dump({}, self.path)
+        self.tpl.dump(self.tpl_vars, self.path)
 
 
 # vim: ts=4 sw=4 expandtab

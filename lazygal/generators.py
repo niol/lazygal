@@ -595,7 +595,7 @@ class WebalbumDir(make.FileMakeObject):
 
 class SharedFiles(make.FileMakeObject):
 
-    def __init__(self, album, dest_dir):
+    def __init__(self, album, dest_dir, tpl_vars):
         self.path = os.path.join(dest_dir, DEST_SHARED_DIRECTORY_NAME)
         self.album = album
 
@@ -617,7 +617,8 @@ class SharedFiles(make.FileMakeObject):
 
             if self.album.tpl_loader.is_known_template_type(shared_file):
                 sf = genpage.SharedFileTemplate(album, shared_file,
-                                                shared_file_dest)
+                                                shared_file_dest,
+                                                tpl_vars)
                 self.expected_shared_files.append(sf.path)
             else:
                 sf = genfile.SharedFileCopy(shared_file, shared_file_dest)
@@ -824,6 +825,9 @@ class Album:
                 container_subdirs, container_subgals = dir_heap[container_dirname]
                 container_subdirs.append(source_dir)
                 container_subgals.append(destgal)
+            else:
+                # Use root config tpl vars for shared files
+                tpl_vars = destgal.tpl_vars
 
             if feed and source_dir.is_album_root():
                 feed.set_title(source_dir.human_name)
@@ -853,7 +857,7 @@ class Album:
             feed.make()
 
         # Force to check for unexpected files
-        SharedFiles(self, sane_dest_dir).make(True)
+        SharedFiles(self, sane_dest_dir, tpl_vars).make(True)
 
 
 # vim: ts=4 sw=4 expandtab
