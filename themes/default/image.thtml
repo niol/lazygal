@@ -9,15 +9,17 @@
         <div class="authorship" py:if="authorship">${_('Author')}&nbsp;: $authorship</div>
         <div py:if="original_link" class="original_link"><a href="$original_link">${_('Original picture')}</a></div>
         <div class="image_caption_tech">
-            <li>$image_name</li>
-            <li py:if="camera_name">${_('Camera:')} $camera_name
-                <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
-	        </li>
-            <li py:if="exposure">${_('Exposure')} $exposure</li>
-            <li py:if="iso">${_('Sensitivity ISO')} $iso</li>
-            <li py:if="fnumber">${_('Aperture')} $fnumber</li>
-            <li py:if="flash">${_('Flash')} $flash</li>
-            <li py:if="focal_length">${_('Focal length')} $focal_length</li>
+            <ul>
+                <li>$image_name</li>
+                <li py:if="camera_name">${_('Camera:')} $camera_name
+                    <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
+                </li>
+                <li py:if="exposure">${_('Exposure')} $exposure</li>
+                <li py:if="iso">${_('Sensitivity ISO')} $iso</li>
+                <li py:if="fnumber">${_('Aperture')} $fnumber</li>
+                <li py:if="flash">${_('Flash')} $flash</li>
+                <li py:if="focal_length">${_('Focal length')} $focal_length</li>
+            </ul>
         </div>
     </div>
 </div>
