@@ -57,9 +57,9 @@ class FileMetadata(object):
             return None
 
         if splitter is not None:
-            return map(lambda s: s.strip('\n '), c.split(splitter))
+            return map(lambda s: s.strip(), c.split(splitter))
         else:
-            return c.strip('\n ')
+            return c.strip()
 
 
 class ImageInfoTags(object):
