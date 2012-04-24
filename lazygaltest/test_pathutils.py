@@ -18,6 +18,7 @@
 
 import unittest
 import os
+import posixpath, ntpath
 from __init__ import LazygalTest
 from lazygal.pathutils import *
 from lazygal.sourcetree import Directory
@@ -67,6 +68,17 @@ class TestPathutils(LazygalTest):
         self.assertTrue(is_subdir_of(self.d('/tmp/bar'),
                                       self.f('/tmp/bar/baz/jay')))
         self.assertFalse(is_subdir_of(self.d('/tmp/john/mail'), self.f('/tmpz')))
+
+    def test_url_path(self):
+        self.assertEqual(url_path('/usr/bin/lazygal', posixpath),
+                         '/usr/bin/lazygal')
+        self.assertEqual(url_path('../bin/lazygal', posixpath),
+                         '../bin/lazygal')
+        self.assertEqual(url_path('C:\\Program Files\\Lazygal\\Lazygal.exe',
+                                  ntpath),
+                         'Program Files/Lazygal/Lazygal.exe')
+        self.assertEqual(url_path('..\\Lazygal\\Lazygal.exe', ntpath),
+                         '../Lazygal/Lazygal.exe')
 
 
 if __name__ == '__main__':

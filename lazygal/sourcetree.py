@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys, datetime, time
-import posixpath
 import locale
 import logging
 import Image
@@ -42,14 +41,14 @@ class File(make.FileSimpleDependency):
         if not path:
             path = self.path
 
-        relative_path = posixpath.relpath(path, self.album.source_dir)
+        relative_path = os.path.relpath(path, self.album.source_dir)
         if relative_path == '.':
             return ''
         else:
             return relative_path
 
     def rel_root(self):
-        return posixpath.relpath(self.album.source_dir, self.path)
+        return os.path.relpath(self.album.source_dir, self.path)
 
     def rel_path(self, from_dir, path=None):
         try:
@@ -60,7 +59,7 @@ class File(make.FileSimpleDependency):
         if path is None:
             path = self.path
 
-        return posixpath.relpath(path, from_dir)
+        return os.path.relpath(path, from_dir)
 
     def is_subdir_of(self, dir, path=None):
         if path is None:

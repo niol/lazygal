@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os, sys
+import posixpath
 
 
 def is_root_posix(path):
@@ -51,6 +52,24 @@ def is_subdir_of(dir_path, path):
         return True
     else:
         return False
+
+
+def url_path(physical_path, input_pathmodule=os.path):
+    '''
+    Convert a physical path to a path suitable for use in a URL link,
+    i.e. using forward slashes. This can only be used for relative paths
+    because while converting, the root (either '/' or 'C:\\') is irrelevant.
+    '''
+    if input_pathmodule == posixpath: return physical_path
+
+    head = physical_path
+    path_list = []
+    while head != '' and not is_root_posix(head) and not is_root_win32(head):
+        head, tail = input_pathmodule.split(head)
+        path_list.append(tail)
+
+    path_list.reverse()
+    return posixpath.join(*path_list)
 
 
 # vim: ts=4 sw=4 expandtab
