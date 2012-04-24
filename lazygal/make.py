@@ -257,7 +257,7 @@ class FileSymlink(FileMakeObject):
         self.add_file_dependency(self.src)
 
     def build(self):
-        if os.access(self.dst, os.F_OK):
+        if os.path.islink(self.dst):
             os.remove(self.dst)
         os.symlink(self.src, self.dst)
 
