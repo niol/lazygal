@@ -1,3 +1,12 @@
+Lazygal 0.7.2 (2012-05-10)
+  * fix re-creation of broken symlinks
+  * strip all whitespace when reading metadata files
+  * fix user config tpl vars not feeded to CSS templates
+  * fix video thumbnailing handling (Debian bug #662118)
+  * document how to use --template-vars
+  * allow non-ascii sizes names
+  * fix fr translation format string
+
 Lazygal 0.7.1 (2011-11-26)
   * add publish-metadata configuration option
   * fix lazygal.conf(5) installation path

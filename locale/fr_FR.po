@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-16 11:26+0100\n"
+"POT-Creation-Date: 2012-05-10 20:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -205,11 +205,11 @@ msgstr "L'option --orig-symlink n'est pas disponible sur cette plateforme."
 msgid "Interrupted."
 msgstr "Interrompu."
 
-#: ../lazygal/sourcetree.py:84 ../lazygal/sourcetree.py:300
+#: ../lazygal/sourcetree.py:88 ../lazygal/sourcetree.py:304
 msgid "Root not found"
 msgstr "La racine n'a pas été trouvée"
 
-#: ../lazygal/sourcetree.py:267
+#: ../lazygal/sourcetree.py:271
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  %s ignoré, format non supporté."
@@ -237,7 +237,7 @@ msgstr "  PAGINATION de la gallerie web"
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr "  MKDIR %%WEBALBUMROOT%%/%s"
 
-#: ../lazygal/generators.py:354
+#: ../lazygal/generators.py:353
 msgid ""
 "Sizes is a comma-separated list of size names and specs:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
@@ -246,35 +246,36 @@ msgstr ""
 "des virgules qui contiennes le nom et les spécifications:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
 
-#: ../lazygal/generators.py:356
+#: ../lazygal/generators.py:355
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr "La taille '%s' est réservée pour le fonctionnement interne."
 
-#: ../lazygal/generators.py:367
+#: ../lazygal/generators.py:366
 #, python-format
 msgid "'%s' for size '%s' does not describe a known size syntax."
 msgstr ""
 "'%s' pour la taille '%s' ne décrit pas un type connu de syntaxe de taille."
 
-#: ../lazygal/generators.py:397
+#: ../lazygal/generators.py:396
 #, python-format
 msgid "  Trying loading gallery configs: %s"
-msgstr "  Tentative de chargement des fichiers de configuration par "
-"gallerie : %s"
+msgstr ""
+"  Tentative de chargement des fichiers de configuration par gallerie : %s"
 
-#: ../lazygal/generators.py:443
+#: ../lazygal/generators.py:442
 msgid "Bad syntax for webalbumpic-size."
 msgstr "Syntaxe de webalbumpic-size erronée."
 
-#: ../lazygal/generators.py:604
+#: ../lazygal/generators.py:603
 msgid "MKDIR %SHAREDDIR%"
 msgstr "MKDIR %SHAREDDIR%"
 
 #: ../lazygal/generators.py:643
 #, python-format
 msgid "Trying loading user config %s"
-msgstr "Tentative de chargement du fichier de configuration %s de l'utilisateur"
+msgstr ""
+"Tentative de chargement du fichier de configuration %s de l'utilisateur"
 
 #: ../lazygal/generators.py:648
 #, python-format
@@ -286,8 +287,8 @@ msgstr "Chargement du fichier de configuration racine %s"
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
 msgstr ""
-"'%s' utilise une syntaxe obsolète: merci de consulter la page de manuel"
-"lazygal.conf(5)"
+"'%s' utilise une syntaxe obsolète: merci de consulter la page de "
+"manuellazygal.conf(5)"
 
 #: ../lazygal/generators.py:679
 #, python-format
@@ -350,14 +351,14 @@ msgstr ""
 msgid "(%s) and childs have no known medias, skipped"
 msgstr "(%s) et ses sous-répertoires n'ont pas de médias connus, ignoré"
 
-#: ../lazygal/generators.py:844
+#: ../lazygal/generators.py:847
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 "  IGNORE à cause de la mtime, utiliser touch ou --check-all-dirs pour "
 "débrayer."
 
-#: ../lazygal/generators.py:850
+#: ../lazygal/generators.py:853
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr "[Sortie de %%ALBUMROOT%%/%s]"
@@ -385,7 +386,7 @@ msgstr "  IGNORE car le fichier de description existe déjà."
 msgid "GEN %s"
 msgstr "GEN %s"
 
-#: ../lazygal/tpl.py:145
+#: ../lazygal/tpl.py:149
 #, python-format
 msgid "Unknown template type for %s"
 msgstr "Type de modèle inconnu %s"
@@ -409,62 +410,62 @@ msgstr "  %s est CASSE, ignoré"
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:199
+#: ../lazygal/genmedia.py:195
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:206
+#: ../lazygal/genmedia.py:208
 msgid "VIDEOTHUMB"
-msgstr ""
+msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:213
+#: ../lazygal/genmedia.py:215
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:244
+#: ../lazygal/genmedia.py:248
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:263
+#: ../lazygal/genmedia.py:267
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:283
+#: ../lazygal/genmedia.py:287
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:288
+#: ../lazygal/genmedia.py:292
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
 
-#: ../lazygal/genpage.py:181 ../lazygal/genpage.py:399
+#: ../lazygal/genpage.py:185 ../lazygal/genpage.py:405
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
 #. strftime does not work with unicode...
-#: ../lazygal/genpage.py:257
+#: ../lazygal/genpage.py:262
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "le %d/%m/%Y à %H:%M"
 
-#: ../lazygal/genpage.py:484
+#: ../lazygal/genpage.py:491
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:500
+#: ../lazygal/genpage.py:509
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 "Il y a un modèle avec une extension qui ne commence par par t. Abandon."
 
-#: ../lazygal/genpage.py:506
+#: ../lazygal/genpage.py:515
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
@@ -477,7 +478,8 @@ msgstr "  Section de configuration '%s' ignorée car inconnue."
 #: ../lazygal/config.py:112
 #, python-format
 msgid "  Ignoring unknown option '%s' in section '%s'."
-msgstr "  Option de configuration '%s' ignorée car inconnue dans la section '%s'."
+msgstr ""
+"  Option de configuration '%s' ignorée car inconnue dans la section '%s'."
 
 #: ../themes/default/dirindex.thtml:70
 msgid "All full scale pictures as an archive, for"
@@ -511,31 +513,31 @@ msgstr "Auteur"
 msgid "Original picture"
 msgstr "Image en taille originale"
 
-#: ../themes/default/image.thtml:13
+#: ../themes/default/image.thtml:14
 msgid "Camera:"
 msgstr "Appareil photo :"
 
-#: ../themes/default/image.thtml:14
+#: ../themes/default/image.thtml:15
 msgid "with"
 msgstr "avec"
 
-#: ../themes/default/image.thtml:16
+#: ../themes/default/image.thtml:17
 msgid "Exposure"
 msgstr "Temps d'exposition de"
 
-#: ../themes/default/image.thtml:17
+#: ../themes/default/image.thtml:18
 msgid "Sensitivity ISO"
 msgstr "Sensibilité ISO"
 
-#: ../themes/default/image.thtml:18
+#: ../themes/default/image.thtml:19
 msgid "Aperture"
 msgstr "Ouverture"
 
-#: ../themes/default/image.thtml:19
+#: ../themes/default/image.thtml:20
 msgid "Flash"
 msgstr "Flash"
 
-#: ../themes/default/image.thtml:20
+#: ../themes/default/image.thtml:21
 msgid "Focal length"
 msgstr "Focale"
 

@@ -1,4 +1,32 @@
+Lazygal 0.7.2 (2012-05-10)
+  * make test paths unicode
+  * work to move towards supporting win32 style paths
+  * fix re-creation of broken symlinks
+  * strip all whitespace when reading metadata files
+  * fix user config tpl vars not feeded to CSS templates
+  * add missing ul tag for image technical info in default theme
+  * update TODO
+  * do not try to search for BOM in non utf-8 encoded files
+  * skip symlinks unit tests on win3é platform
+  * do not mess with gettext function when testing for symlink support
+  * correctly initialize locale (fix on win32 platform)
+  * handle non-POSIX roots in paths
+  * fix vim modeline in css
+  * fix video thumbnailing handling (Debian bug #662118)
+  * update TODO
+  * be even more explicit in --template-vars usage
+  * document how to use --template-vars
+  * actually print the invalid siaze name message instead of a python traceback
+  * allow non-ascii sizes names
+  * fix some of the issues following os.path.relpath usage
+  * use rel path function from python 2.6 instead of custom one
+  * add experimental mp4 transcode pipeline code
+  * remove useless while loops
+  * fix fr translation format string
+  * webalbumpic-bg is a simple size, not a resize rule
+
 Lazygal 0.7.1 (2011-11-26)
+  * set version to 0.7.1
   * add publish-metadata configuration option
   * quick and dirty warning on undefined tpl vars
   * add basic unit test for dirzip gen
