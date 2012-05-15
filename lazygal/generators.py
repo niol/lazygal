@@ -271,7 +271,8 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
     def get_resized(self, size_name):
         if not self.webvideo:
-            self.webvideo = genmedia.WebVideo(self.webgal, self.media, size_name)
+            self.webvideo = genmedia.WebVideo(self.webgal, self.media,
+                                              self.webgal.default_size_name)
         return self.webvideo
 
 
