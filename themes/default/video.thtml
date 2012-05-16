@@ -1,9 +1,8 @@
 <div xmlns:py="http://genshi.edgewall.org/"
      id="video">
     <div id="video_vid">
-        <p><video src="$video_src" controls="controls">
+        <video src="$video_src" controls="controls">
 				your browser does not support the video tag</video>
-        </p>
         <p py:if="original_link"><a href="$original_link">${_('Original video')}</a></p>
     </div>
 </div>

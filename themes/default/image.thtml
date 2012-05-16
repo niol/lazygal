@@ -1,7 +1,7 @@
 <div xmlns:py="http://genshi.edgewall.org/"
      id="image">
     <div id="image_img">
-        <p><img src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" /></p>
+        <img src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
     </div>
     <div id="image_caption">
         <div class="image_comment" py:if="comment">$comment</div>
