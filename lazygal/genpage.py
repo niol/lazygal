@@ -29,6 +29,7 @@ import genshi
 import make
 import pathutils
 import genfile, genmedia, feeds
+import timeutils
 
 
 class WebalbumPage(genfile.WebalbumFile):
@@ -262,6 +263,7 @@ class WebalbumImagePage(WebalbumBrowsePage):
         time_format = _("on %d/%m/%Y at %H:%M").encode(locale.getpreferredencoding())
         time_str = img_date.strftime(time_format)
         tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
+        tpl_values['image_datetime'] = timeutils.unicodify_datetime(img_date)
 
         image_info = self.image.info()
         if image_info:

@@ -24,6 +24,8 @@ from genshi.input import XMLParser
 import __init__
 import locale
 
+import timeutils
+
 
 DEFAULT_TEMPLATE = 'default'
 
@@ -37,6 +39,7 @@ class LazygalTemplate(object):
 
     def __complement_values(self, values):
         values['gen_date'] = time.strftime("%c").decode(locale.getpreferredencoding())
+        values['gen_datetime'] = timeutils.unicode_datetime.now()
         values['lazygal_version'] = __init__.__version__
         return values
 
