@@ -196,6 +196,17 @@ foo = bar
       </varlistentry>
 
       <varlistentry>
+        <term>webalbumpic-type</term>
+        <listitem>
+          <para>Same as <option>--webalbum-pic-type=<replaceable>WEBALBUMPIC_BG</replaceable></option>
+          in &lazygal;.  If you set this to 'tidy' you may also consider
+          setting <varname>webalbumpic-size</varname> (see below) to
+          something smaller than the default 200x150.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>webalbumpic-size</term>
         <listitem>
           <para>Size of picture mash-up representing galleries,

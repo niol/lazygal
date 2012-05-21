@@ -129,6 +129,10 @@ parser.add_option("", "--webalbum-pic-bg",
                   action="store", type="string",
                   dest="webalbumpic_bg",
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
+parser.add_option("", "--webalbum-pic-type",
+                  action="store", type="choice", choices=('messy', 'tidy'),
+                  dest="webalbumpic_type",
+                  help=_("Webalbum picture type. Default is messy."))
 parser.add_option("", "--pic-sort-by",
                   action="store", metavar=_('ORDER'),
                   dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))
@@ -178,6 +182,8 @@ if options.default_style is not None:
     cmdline_config.set('webgal', 'default-style', options.default_style)
 if options.webalbumpic_bg is not None:
     cmdline_config.set('webgal', 'webalbumpic-bg', options.webalbumpic_bg)
+if options.webalbumpic_type is not None:
+    cmdline_config.set('webgal', 'webalbumpic-type', options.webalbumpic_type)
 if options.image_size is not None:
     cmdline_config.set('webgal', 'image-size', options.image_size)
 if options.thumbnail_size is not None:

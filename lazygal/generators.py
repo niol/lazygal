@@ -432,6 +432,7 @@ class WebalbumDir(make.FileMakeObject):
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
 
         self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
+        self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')
         try:
             self.webalbumpic_size = map(int, self.config.get('webgal', 'webalbumpic-size').split('x'))
             if len(self.webalbumpic_size) != 2:

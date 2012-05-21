@@ -391,6 +391,28 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term>
+          <option>--webalbum-pic-type=<replaceable>WEBALBUMPIC_TYPE</replaceable>
+          </option>
+        </term>
+        <listitem>
+          <para>What type of web album thumbnails to generate.  By default,
+          lazygal generates the well-loved "messy" thumbnails with
+          randomly selected pictures from the album each rotated by a
+          random amount and pasted together.  This default can also be
+          forced by specifying 'messy' as
+          <replaceable>WEBALBUMPIC_TYPE</replaceable>.
+          </para>
+          <para>On the other hand, specifying 'tidy' as the value of
+          this option forces lazygal to skip the rotations, resulting in
+          more regularly shaped thumbnails which can also be more
+          densely packed.  This can be an advantage if not all users of
+          your albums have huge screens :-)
+          </para>
+        </listitem>
+      </varlistentry>
+
   </variablelist>
   </refsect1>
 
