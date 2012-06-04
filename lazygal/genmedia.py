@@ -282,7 +282,9 @@ class WebVideo(genfile.WebalbumFile):
     def __init__(self, webgal, source_video, size_name):
         self.webgal = webgal
         self.source_video = source_video
-        path = os.path.join(self.webgal.path, source_video.name + '.webm')
+        path = os.path.join(self.webgal.path,
+                    self.webgal._add_size_qualifier(self.source_video.filename,
+                                                    size_name, '.webm'))
         genfile.WebalbumFile.__init__(self, path, webgal)
 
         self.newsizer = self.webgal.newsizers[size_name]
