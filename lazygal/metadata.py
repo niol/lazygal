@@ -24,6 +24,9 @@ from lazygal import pyexiv2api as pyexiv2
 from lazygal import make
 
 
+FILE_METADATA_ENCODING = locale.getpreferredencoding()
+
+
 MATEW_TAGS = {
     'album_name': 'Album name',
     'album_description': 'Album description',
@@ -41,15 +44,14 @@ class FileMetadata(object):
         self.path = path
 
     def contents(self, splitter=None):
-        enc = locale.getpreferredencoding().lower()
         try:
-            with codecs.open(self.path, 'r', enc) as f:
+            with codecs.open(self.path, 'r', FILE_METADATA_ENCODING) as f:
                 # Not sure why codecs.open() does not skip the UTF-8 BOM. Maybe
                 # this is because the BOM is not required and utf-8-sig handles
                 # this in a better way. Anyway, the following code skips the
                 # UTF-8 BOM if it is present.
-                if enc == 'utf-8':
-                    maybe_bom = f.read(1).encode(enc)
+                if FILE_METADATA_ENCODING == 'utf-8':
+                    maybe_bom = f.read(1).encode(FILE_METADATA_ENCODING)
                     if maybe_bom != codecs.BOM_UTF8: f.seek(0)
 
                 c = f.read()
@@ -386,7 +388,7 @@ class DirectoryMetadata(make.GroupTask):
                         data = data[1:]
                     if data[-1] == '"':
                         data = data[:-1]
-                    data = data.decode(locale.getpreferredencoding())
+                    data = data.decode(FILE_METADATA_ENCODING)
 
                     if tag == 'album_picture':
                         if subdir is not None:

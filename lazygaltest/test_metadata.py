@@ -23,6 +23,7 @@ import locale
 import codecs
 from __init__ import LazygalTest
 from lazygal import metadata
+metadata.FILE_METADATA_ENCODING = 'utf-8' # force for these tests
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
 from lazygal import pyexiv2api as pyexiv2
@@ -39,9 +40,8 @@ class TestFileMetadata(LazygalTest):
 
     def create_file(self, path, contents):
         f = open(path, 'w')
-        enc = locale.getpreferredencoding().lower()
-        if enc == 'utf-8':
-            f.write(codecs.BOM_UTF8)
+        enc = 'utf-8'
+        f.write(codecs.BOM_UTF8)
         f.write(contents.encode(enc))
         f.close()
 
