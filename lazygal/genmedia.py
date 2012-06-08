@@ -183,12 +183,15 @@ class ImageOtherSize(ResizedImage):
             # in a web browser. Fix orientation tag accordingly.
             dest_imgtags['Exif.Image.Orientation'] = 1
 
-        # Those are removed from published pics due to pivacy concerns
-        for tag in self.PRIVATE_IMAGE_TAGS:
-            try:
-                del dest_imgtags[tag]
-            except KeyError:
-                pass
+        # Those are removed from published pics due to pivacy concerns,
+        # unless explicitly told to keep them in. Option to retain GPS
+        # tags can only be set from command line.
+        if not self.webgal.keep_gps:
+            for tag in self.PRIVATE_IMAGE_TAGS:
+                try:
+                    del dest_imgtags[tag]
+                except KeyError:
+                    pass
         try:
             dest_imgtags.write()
         except ValueError, e:

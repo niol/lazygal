@@ -440,6 +440,7 @@ class WebalbumDir(make.FileMakeObject):
         except ValueError:
             logging.error(_('Bad syntax for webalbumpic-size.'))
             sys.exit(1)
+        self.keep_gps = self.config.getboolean('webgal', 'keep-gps')
 
     def set_original(self, original=False, orig_base=None, orig_symlink=False):
         self.original = original or orig_symlink

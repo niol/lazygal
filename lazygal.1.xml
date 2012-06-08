@@ -413,6 +413,20 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term>
+          <option>--keep-gps-data
+          </option>
+        </term>
+        <listitem>
+          <para>Do not remove GPS data from EXIF tags. By default the location
+          tags are removed for privacy reasons. However, there are situations
+          when having the location data makes sense and is desired. This is
+          mostly meant to be used with holiday photos.
+          </para>
+        </listitem>
+      </varlistentry>
+
   </variablelist>
   </refsect1>
 

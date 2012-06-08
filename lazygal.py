@@ -139,6 +139,10 @@ parser.add_option("", "--pic-sort-by",
 parser.add_option("", "--subgal-sort-by",
                   action="store", metavar=_('ORDER'),
                   dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname or mtime. Add ':reverse' to reverse the chosen order."))
+parser.add_option("", "--keep-gps-data",
+                    action="store_true",
+                    dest="keep_gps",
+                    help=_("Do not remove GPS location tags from EXIF metadata. Mostly useful with holiday photos."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -210,6 +214,8 @@ if options.dirzip:
     cmdline_config.set('webgal', 'dirzip', 'Yes')
 if options.quality is not None:
     cmdline_config.set('webgal', 'jpeg-quality', options.quality)
+if options.keep_gps:
+    cmdline_config.set('webgal', 'keep-gps', 'Yes')
 
 if options.tpl_vars is not None:
     cmdline_config.add_section('template-vars')
