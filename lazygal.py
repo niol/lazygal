@@ -37,6 +37,7 @@ locale.setlocale(locale.LC_ALL, '')
 import lazygal
 from lazygal.generators import Album
 import lazygal.config
+import lazygal.eyecandy
 
 
 usage = _("usage: %prog [options] albumdir")
@@ -130,7 +131,8 @@ parser.add_option("", "--webalbum-pic-bg",
                   dest="webalbumpic_bg",
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
 parser.add_option("", "--webalbum-pic-type",
-                  action="store", type="choice", choices=('messy', 'tidy'),
+                  action="store", type="choice",
+                  choices=lazygal.eyecandy.WEBALBUMPIC_TYPES.keys(),
                   dest="webalbumpic_type",
                   help=_("Webalbum picture type. Default is messy."))
 parser.add_option("", "--pic-sort-by",

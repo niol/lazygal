@@ -260,16 +260,13 @@ class WebalbumPicture(make.FileMakeObject):
 
         pics = [thumb.path for thumb in thumbs]
 
-        # use old messy style unless --webalbumpic-type=tidy was given
-        klass = eyecandy.PictureMess
-        if webgal_dir.webalbumpic_type == 'tidy':
-            klass = eyecandy.PictureTidy
+        multipic_repr = eyecandy.WEBALBUMPIC_TYPES[webgal_dir.webalbumpic_type]
 
         # Use 800x600 as a random value to obtain a 4:3 aspect ratio (if
         # thumb size preserves aspect ratio)
-        self.dirpic = klass(pics, md_dirpic_thumb,
-                            bg=webgal_dir.webalbumpic_bg,
-                            result_size=webgal_dir.webalbumpic_size)
+        self.dirpic = multipic_repr(pics, md_dirpic_thumb,
+                                    bg=webgal_dir.webalbumpic_bg,
+                                    result_size=webgal_dir.webalbumpic_size)
 
     def build(self):
         logging.info(_("  DIRPIC %s") % os.path.basename(self.path))

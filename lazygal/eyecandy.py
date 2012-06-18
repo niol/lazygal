@@ -147,12 +147,19 @@ class PictureTidy(PictureMess):
 
     THUMB_MAX_ROTATE_ANGLE = 0
 
+
+WEBALBUMPIC_TYPES = {
+    'messy': PictureMess,
+    'tidy' : PictureTidy,
+}
+
+
 if __name__ == '__main__':
     from optparse import OptionParser
 
     parser = OptionParser();
     parser.add_option("-s", "--seed", type="int", dest="seed")
-    parser.add_option("-t", "--tidy", dest="tidy",
+    parser.add_option("-t", "--type", dest="type",
                       action="store_true", default=False)
     parser.add_option("-b", "--background", type="string",
                       dest="color", default="transparent")
@@ -161,10 +168,10 @@ if __name__ == '__main__':
     if options.seed:
         random.seed(options.seed)
 
-    klass = PictureMess
-    if options.tidy:
-        klass = PictureTidy
-    klass(args[0:], bg=options.color).write('test.png')
+    MultipicRepr = PictureMess
+    if options.type:
+        MultipicRepr = WEBALBUMPIC_TYPES[options.type]
+    MultipicRepr(args[0:], bg=options.color).write('test.png')
 
 
 # vim: ts=4 sw=4 expandtab
