@@ -164,7 +164,8 @@ class WebalbumBrowsePage(WebalbumPage):
         self.media = self.webalbum_media.media
         WebalbumPage.__init__(self, dir, size_name, self.media.name)
 
-        self.add_dependency(self.webalbum_media.resized[size_name])
+        self.browse_media = self.webalbum_media.resized[size_name]
+        self.add_dependency(self.browse_media)
         if webalbum_media.original:
             self.add_dependency(self.webalbum_media.original)
 
@@ -243,8 +244,7 @@ class WebalbumImagePage(WebalbumBrowsePage):
         self.image = self.media
 
     def add_extra_vals(self, tpl_values):
-        tpl_values['img_src'] = self._add_size_qualifier(self.image.filename,
-                                                         self.size_name)
+        tpl_values['img_src'] = self.browse_media.filename
         tpl_values['img_src'] = self.url_quote(tpl_values['img_src'])
 
         tpl_values['image_name'] = self.image.filename
@@ -286,7 +286,7 @@ class WebalbumVideoPage(WebalbumBrowsePage):
         self.video = self.media
 
     def add_extra_vals(self, tpl_values):
-        tpl_values['video_src'] = self.video.name + '.webm'
+        tpl_values['video_src'] = self.browse_media.filename
         tpl_values['video_src'] = self.url_quote(tpl_values['video_src'])
 
 
