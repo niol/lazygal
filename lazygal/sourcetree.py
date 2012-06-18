@@ -21,7 +21,7 @@ import logging
 import Image
 
 from lazygal import pathutils, make, metadata
-from lazygal import mediautils
+from lazygal import mediautils, timeutils
 
 
 SOURCEDIR_CONFIGFILE = '.lazygal'
@@ -99,7 +99,7 @@ class File(make.FileSimpleDependency):
         return False
 
     def get_datetime(self):
-        return datetime.datetime.fromtimestamp(self.get_mtime())
+        return timeutils.Datetime(self.get_mtime())
 
     def compare_mtime(self, other_file):
         return int(self.get_mtime() - other_file.get_mtime())
@@ -121,8 +121,8 @@ class MediaFile(File):
             self.comment_file_path = None
 
     def compare_date_taken(self, other_img):
-        date1 = time.mktime(self.get_date_taken().timetuple())
-        date2 = time.mktime(other_img.get_date_taken().timetuple())
+        date1 = self.get_date_taken().timestamp
+        date2 = other_img.get_date_taken().timestamp
         delta = date1 - date2
         return int(delta)
 
@@ -164,7 +164,7 @@ class ImageFile(MediaFile):
             exif = None
             self.broken = True
         else:
-            self.reliable_date = exif.get_date()
+            self.reliable_date = timeutils.Datetime(datetime=exif.get_date())
         self.__date_probed = True
         return exif
 

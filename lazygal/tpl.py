@@ -15,14 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, time
+import os
 from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate,\
                             TemplateNotFound
 from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
 import __init__
-import locale
 
 import timeutils
 
@@ -38,8 +37,8 @@ class LazygalTemplate(object):
         self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
-        values['gen_date'] = time.strftime("%c").decode(locale.getpreferredencoding())
-        values['gen_datetime'] = timeutils.unicode_datetime.now()
+        values['gen_datetime'] = timeutils.Datetime()
+        values['gen_date'] = values['gen_datetime'].strftime('%c')
         values['lazygal_version'] = __init__.__version__
         return values
 

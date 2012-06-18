@@ -16,19 +16,24 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import datetime, locale
+import time, locale
 
 
-class unicode_datetime(datetime.datetime):
+class Datetime(object):
+
+    def __init__(self, timestamp=None, datetime=None):
+        if datetime is not None:
+            self.timestamp = int(datetime.strftime('%s'))
+        elif timestamp is not None:
+            self.timestamp = timestamp
+        else:
+            self.timestamp = time.time()
 
     def strftime(self, format):
+        # strftime does not work with unicode...
         enc = locale.getpreferredencoding()
-        return datetime.datetime.strftime(self, format.encode(enc)).decode(enc)
-
-
-def unicodify_datetime(dt):
-    return unicode_datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute,
-                            dt.second, dt.microsecond, dt.tzinfo)
+        return time.strftime(format.encode(enc),
+                             time.localtime(self.timestamp)).decode(enc)
 
 
 # vim: ts=4 sw=4 expandtab

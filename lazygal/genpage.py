@@ -22,7 +22,6 @@ import pathutils
 import sys
 import logging
 import urllib
-import locale
 
 import genshi
 
@@ -259,11 +258,8 @@ class WebalbumImagePage(WebalbumBrowsePage):
             tpl_values['img_height'] = self.image.get_size(browse_image_path)
 
         img_date = self.image.get_date_taken()
-        # strftime does not work with unicode...
-        time_format = _("on %d/%m/%Y at %H:%M").encode(locale.getpreferredencoding())
-        time_str = img_date.strftime(time_format)
-        tpl_values['image_date'] = time_str.decode(locale.getpreferredencoding())
-        tpl_values['image_datetime'] = timeutils.unicodify_datetime(img_date)
+        tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
+        tpl_values['image_datetime'] = img_date
 
         image_info = self.image.info()
         if image_info:
