@@ -422,7 +422,7 @@ msgstr "VIDEOTHUMB"
 #: ../lazygal/genmedia.py:215
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
-msgstr "  le transcodage de la vidéo %s a échoué"
+msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
 #: ../lazygal/genmedia.py:248
 #, python-format
