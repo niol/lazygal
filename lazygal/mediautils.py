@@ -206,7 +206,8 @@ class GstVideoReader(GstVideoOpener):
 
 class GstVideoTranscoder(GstVideoReader):
 
-    def __init__(self, mediapath, audiocodec, videocodec, muxer, width, height):
+    def __init__(self, mediapath, audiocodec, videocodec, muxer,
+                 width=None, height=None):
         super(GstVideoTranscoder, self).__init__(mediapath)
 
         # Audio
@@ -227,7 +228,10 @@ class GstVideoTranscoder(GstVideoReader):
         self.videoscale.set_property('method', 'bilinear')
         self.pipeline.add(self.videoscale)
         self.ff.link(self.videoscale)
-        caps = gst.Caps("video/x-raw-yuv, width=%d, height=%d" % (width, height))
+        caps_str = "video/x-raw-yuv"
+        if width is not None and height is not None:
+            caps_str += ", width=%d, height=%d" % (width, height)
+        caps = gst.Caps(caps_str)
         self.caps_filter = gst.element_factory_make("capsfilter", "filter")
         self.caps_filter.set_property("caps", caps)
         self.pipeline.add(self.caps_filter)
@@ -280,7 +284,7 @@ class OggTheoraTranscoder(GstVideoTranscoder):
 
 class WebMTranscoder(GstVideoTranscoder):
 
-    def __init__(self, mediapath, width, height):
+    def __init__(self, mediapath, width=None, height=None):
         # Working pipeline
         # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
         # queue ! ffmpegcolorspace ! vp8enc ! webmmux name=mux ! filesink
@@ -291,7 +295,8 @@ class WebMTranscoder(GstVideoTranscoder):
         # ! )
 
         super(WebMTranscoder, self).__init__(mediapath,
-                                             'vorbisenc', 'vp8enc', 'webmmux', width, height)
+                                             'vorbisenc', 'vp8enc', 'webmmux',
+                                             width, height)
 
         self.videoenc.set_property('quality', 7)
 
