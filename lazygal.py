@@ -199,7 +199,7 @@ if options.thumbs_per_page is not None:
 if options.pic_sort_by is not None:
     cmdline_config.set('webgal', 'sort-medias', options.pic_sort_by)
 if options.subgal_sort_by is not None:
-    cmdline_config.set('webgal', 'sort-subgals', options.pic_sort_by)
+    cmdline_config.set('webgal', 'sort-subgals', options.subgal_sort_by)
 if options.original:
     cmdline_config.set('webgal', 'original', 'Yes')
 if options.orig_base is not None:
