@@ -325,8 +325,10 @@ class TestSorting(LazygalTestGen):
         super(TestSorting, self).setUp(False)
         self.dest_path = os.path.join(self.tmpdir, 'dst')
 
-    def __setup_pics(self):
-        subgal_path = os.path.join(self.source_dir, 'subgal')
+    def __setup_pics(self, subgal_name=None):
+        if subgal_name is None:
+            subgal_name = 'subgal'
+        subgal_path = os.path.join(self.source_dir, subgal_name)
         os.mkdir(subgal_path)
 
         pics = ['4-december.jpg', '6-january.jpg', '1-february.jpg', '3-june.jpg', '5-august.jpg']
@@ -434,6 +436,36 @@ class TestSorting(LazygalTestGen):
         page_medias = dest_subgal.index_pages[1][0].galleries[0][1]
         self.assertEqual([media.media.filename for media in page_medias],
                          [u'5-august.jpg', u'6-january.jpg'])
+
+    def test_sortsubgals_dirnamereverse(self):
+        '''
+        It shall be possible to sort sub-galleries accoring to the directory
+        name.
+        '''
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'sort-subgals', 'dirname:reverse')
+        self.setup_album(config)
+
+        subgal_names = ('john', '2012_Trip', 'albert', '1999_Christmas', 'joe', )
+        subgals_src = []
+        subgals_dst = []
+        for subgal_name in subgal_names:
+            path, pics = self.__setup_pics(subgal_name)
+            src = Directory(path, [], pics, self.album)
+            dst = WebalbumDir(src, [], self.album,
+                              os.path.join(self.dest_path, subgal_name))
+            subgals_src.append(src)
+            subgals_dst.append(dst)
+
+        src_dir = Directory(self.source_dir, subgals_src, [], self.album)
+        dest_subgal = WebalbumDir(src_dir, subgals_dst, self.album, self.dest_path)
+
+        dest_subgal.sort_task.make()
+
+        self.assertEqual(
+            [subgal.source_dir.name for subgal in dest_subgal.subgals],
+            [u'john', u'joe', u'albert', u'2012_Trip', u'1999_Christmas']
+        )
 
 
 if __name__ == '__main__':
