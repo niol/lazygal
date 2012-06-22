@@ -23,7 +23,7 @@ class Datetime(object):
 
     def __init__(self, timestamp=None, datetime=None):
         if datetime is not None:
-            self.timestamp = int(datetime.strftime('%s'))
+            self.timestamp = time.mktime(datetime.timetuple())
         elif timestamp is not None:
             self.timestamp = timestamp
         else:
