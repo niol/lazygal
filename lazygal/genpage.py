@@ -59,16 +59,16 @@ class WebalbumPage(genfile.WebalbumFile):
         tpl_values.update(self.dir.tpl_vars)
         return tpl_values
 
-    def _gen_other_media_link(self, media, dir=None):
+    def _gen_other_media_link(self, media):
         if media:
             link_vals = {}
 
             link_vals['type'] = media.media.type
 
-            link_vals['link'] = media.browse_pages[self.size_name].rel_path(dir)
+            link_vals['link'] = media.browse_pages[self.size_name].rel_path(self.dir)
             link_vals['link'] = self.url_quote(link_vals['link'])
 
-            link_vals['thumb'] = media.thumb.rel_path(dir)
+            link_vals['thumb'] = media.thumb.rel_path(self.dir)
             link_vals['thumb'] = self.url_quote(link_vals['thumb'])
 
             if not media.media.broken:
