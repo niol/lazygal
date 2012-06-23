@@ -310,12 +310,15 @@ class WebalbumIndexPage(WebalbumPage):
             self.add_dependency(dir.source_dir)
             self.add_dependency(dir.sort_task)
 
-            for media in medias:
-                if media.thumb: self.add_dependency(media.thumb)
-                self.add_dependency(media.browse_pages[size_name])
-                # Ensure dir depends on browse page (usefull for cleanup checks
-                # when dir is flattenend).
-                dir.add_dependency(media.browse_pages[size_name])
+            if size_name in dir.browse_sizes:
+                for media in medias:
+                    if media.thumb: self.add_dependency(media.thumb)
+                    self.add_dependency(media.browse_pages[size_name])
+                    # Ensure dir depends on browse page (usefull for cleanup
+                    # checks when dir is flattenend).
+                    dir.add_dependency(media.browse_pages[size_name])
+            else:
+                logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index.") % (size_name, dir.path))
 
             if self.dir.dirzip is not None:
                 self.add_dependency(self.dir.dirzip)
@@ -424,8 +427,13 @@ class WebalbumIndexPage(WebalbumPage):
         values['medias'] = []
         for subdir, medias in self.galleries:
             info = self._get_dir_info(subdir)
-            media_links = [self._gen_other_media_link(media, subdir)
-                           for media in medias]
+            if self.size_name in subdir.browse_sizes:
+                media_links = [self._gen_other_media_link(media)
+                               for media in medias]
+            else:
+                # This happens when this dir index size is not available in the
+                # subdir.
+                media_links = []
             values['medias'].append((info, media_links, ))
 
         values.update(self._get_dir_info())
