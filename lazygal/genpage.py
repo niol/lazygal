@@ -18,7 +18,6 @@
 
 import os
 import posixpath
-import pathutils
 import sys
 import logging
 import urllib
@@ -27,8 +26,7 @@ import genshi
 
 import make
 import pathutils
-import genfile, genmedia, feeds
-import timeutils
+import genfile, feeds
 
 
 class WebalbumPage(genfile.WebalbumFile):

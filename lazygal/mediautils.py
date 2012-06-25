@@ -45,6 +45,7 @@ def signal_handler(signum, frame):
 
 
 def gobject_init():
+    global gobjects_threads_init
     gobject.threads_init()
     gobjects_threads_init = True
     signal.signal(signal.SIGINT, signal_handler)

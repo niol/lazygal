@@ -137,7 +137,7 @@ class MakeTask(object):
         """
         self.output_items.append(output)
 
-    def clean_output(self, output):
+    def clean_output(self):
         """
         Clean-up in case of interruption (KeyboardInterrupt).
         """

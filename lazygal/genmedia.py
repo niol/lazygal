@@ -149,7 +149,7 @@ class ImageOtherSize(ResizedImage):
 
     def resize(self, im):
         rotation = self.get_rotation()
-        new_size = self.get_size()
+        self.get_size()
 
         im.draft(None, self.unrotated_size)
         im = im.resize(self.unrotated_size, PILImage.ANTIALIAS)

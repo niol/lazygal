@@ -16,9 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import os
-import random, time
-import Image, ImageDraw, ImageChops, ImageFilter
+import random
+import Image, ImageChops, ImageFilter
 
 
 class Color:

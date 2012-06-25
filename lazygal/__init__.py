@@ -47,7 +47,7 @@ def get_hg_rev():
 
         last_revs = repo.changelog.parents(repo.dirstate.parents()[0])
         known_tags = repo.tags().items()
-        for tag, rev in repo.tags().items():
+        for tag, rev in known_tags:
             if tag != 'tip':
                 for last_rev in last_revs:
                     if rev == last_rev:
