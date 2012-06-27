@@ -22,6 +22,7 @@ import logging
 import zipfile
 
 import make
+import pathutils
 
 
 class MediaOriginal(make.FileCopy):
@@ -67,15 +68,21 @@ class WebalbumFile(make.FileMakeObject):
         self.dir = dir
         self.path = path
 
-    def rel_path(self, dir):
+    def rel_path(self, dir, url=False):
         """
         Returns the path of the current object relative to the supplied dir
-        object argument.
+        object argument. Force forward slashes if url is True.
         """
+        ret = None
         if dir is None or dir is self.dir:
-            return os.path.basename(self.path)
+            ret = os.path.basename(self.path)
         else:
-            return dir.rel_path(self.path)
+            ret = dir.rel_path(self.path)
+
+        if url:
+            return pathutils.url_path(ret)
+        else:
+            return ret
 
 
 class WebalbumArchive(WebalbumFile):

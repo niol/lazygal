@@ -63,10 +63,10 @@ class WebalbumPage(genfile.WebalbumFile):
 
             link_vals['type'] = media.media.type
 
-            link_vals['link'] = media.browse_pages[self.size_name].rel_path(self.dir)
+            link_vals['link'] = media.browse_pages[self.size_name].rel_path(self.dir, url=True)
             link_vals['link'] = self.url_quote(link_vals['link'])
 
-            link_vals['thumb'] = media.thumb.rel_path(self.dir)
+            link_vals['thumb'] = media.thumb.rel_path(self.dir, url=True)
             link_vals['thumb'] = self.url_quote(link_vals['thumb'])
 
             if not media.media.broken:
@@ -208,7 +208,7 @@ class WebalbumBrowsePage(WebalbumPage):
             tpl_values['index_link'] = index_rel_dir + tpl_values['index_link']
 
         tpl_values['osize_links'] = self._get_osize_links(self.media.name)
-        tpl_values['rel_root'] = self.dir.source_dir.rel_root() + '/'
+        tpl_values['rel_root'] = pathutils.url_path(self.dir.source_dir.rel_root()) + '/'
 
         if self.dir.feed is not None:
             tpl_values['feed_url'] = os.path.relpath(self.dir.feed.path,
@@ -220,10 +220,10 @@ class WebalbumBrowsePage(WebalbumPage):
 
         if self.dir.original:
             if self.dir.orig_base:
-                tpl_values['original_link'] = os.path.join(\
-                    self.dir.source_dir.rel_root(),
+                tpl_values['original_link'] = posixpath.join(\
+                    pathutils.url_path(self.dir.source_dir.rel_root()),
                     self.dir.orig_base,
-                    self.dir.source_dir.strip_root(),
+                    pathutils.url_path(self.dir.source_dir.strip_root()),
                     self.media.filename)
             else:
                 tpl_values['original_link'] = self.media.filename
@@ -374,7 +374,7 @@ class WebalbumIndexPage(WebalbumPage):
             dir_info['album_name'] = dir.source_dir.human_name
 
         if dir.dirzip:
-            archive_rel_path = dir.dirzip.rel_path(self.dir)
+            archive_rel_path = dir.dirzip.rel_path(self.dir, url=True)
             dir_info['dirzip'] = self.url_quote(archive_rel_path)
             dir_info['dirzip_size'] = self.format_filesize(dir.dirzip.size())
 
@@ -436,8 +436,8 @@ class WebalbumIndexPage(WebalbumPage):
 
         values.update(self._get_dir_info())
 
-        values['rel_root'] = self.dir.source_dir.rel_root() + '/'
-        values['rel_path'] = self.dir.source_dir.strip_root()
+        values['rel_root'] = pathutils.url_path(self.dir.source_dir.rel_root()) + '/'
+        values['rel_path'] = pathutils.url_path(self.dir.source_dir.strip_root())
 
         if self.dir.feed is not None:
             values['feed_url'] = os.path.relpath(self.dir.feed.path,
