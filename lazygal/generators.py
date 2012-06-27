@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -525,25 +525,27 @@ class WebalbumDir(make.FileMakeObject):
             return False
 
     def rel_path_to_src(self, target_srcdir_path):
-        '''
+        """
         Returns the relative path to go from this directory to
         target_srcdir_path.
-        '''
+        """
         return self.source_dir.rel_path(self.source_dir.path,
                                         target_srcdir_path)
 
     def rel_path(self, path):
-        '''
-        Returns the relative path to go from this directory to the path supplied
+        """
+        Returns the relative path to go from this directory to the path
+        supplied
         as argument.
-        '''
+        """
         return os.path.relpath(path, self.path)
 
     def flattening_srcpath(self, srcdir_path):
-        '''
+        """
         Returns the source path in which srcdir_path should flattened, that is
-        the path of the gallery index that will point to srcdir_path's pictures.
-        '''
+        the path of the gallery index that will point to srcdir_path's
+        pictures.
+        """
         if self.should_be_flattened(srcdir_path):
             cur_path = srcdir_path
             while self.should_be_flattened(cur_path):
@@ -725,14 +727,14 @@ class Album:
         logging.info(_('  %sRM %s') % (text, file_path))
 
     def walk(self, top, walked=None):
-        '''
+        """
         This is a wrapper around os.walk() from the standard library:
         - browsing with topdown=False
         - following symbolic links on directories
         - whith barriers in place against walking twice the same directory,
           which may happen when two directory trees have symbolic links to
           each other's contents.
-        '''
+        """
         if walked is None: walked = []
 
         for root, dirs, files in os.walk(top, topdown=False):
@@ -751,9 +753,9 @@ class Album:
             yield root, dirs, files
 
     def generate_default_metadata(self):
-        '''
+        """
         Generate default metada files if no exists.
-        '''
+        """
         logging.debug(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in self.walk(self.source_dir):

@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2010-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2010-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,10 +51,10 @@ def has_symlinks():
 
 
 class qnd_skipIf(object):
-    '''
+    """
     Quick and dirty unittest.skipIf decorator implementation to be able to run
     the test suite using python < 2.7 .
-    '''
+    """
 
     def __init__(self, cond, reason):
         self.cond = cond

@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,10 +68,10 @@ class WebalbumFile(make.FileMakeObject):
         self.path = path
 
     def rel_path(self, dir):
-        '''
+        """
         Returns the path of the current object relative to the supplied dir
         object argument.
-        '''
+        """
         if dir is None or dir is self.dir:
             return os.path.basename(self.path)
         else:

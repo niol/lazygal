@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ WEBALBUMPIC_TYPES = {
 if __name__ == '__main__':
     from optparse import OptionParser
 
-    parser = OptionParser();
+    parser = OptionParser()
     parser.add_option("-s", "--seed", type="int", dest="seed")
     parser.add_option("-t", "--type", dest="type",
                       action="store_true", default=False)

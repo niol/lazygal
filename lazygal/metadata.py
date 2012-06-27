@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,11 +80,11 @@ class ImageInfoTags(object):
             return self._metadata[name].value
 
     def get_date(self):
-        '''
+        """
         Get real time when photo has been taken. We prefer EXIF fields
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
-        '''
+        """
         for date_tag in ('Exif.Photo.DateTimeDigitized',
                          'Exif.Photo.DateTimeOriginal',
                          'Exif.Image.DateTime',
@@ -118,11 +118,11 @@ class ImageInfoTags(object):
             return 0
 
     def get_camera_name(self):
-        '''
+        """
         Gets vendor and model name from EXIF and tries to construct
         camera name out of this. This is a bit fuzzy, because diferent
         vendors put different information to both tags.
-        '''
+        """
         try:
             model = self.get_tag_value('Exif.Image.Model').strip()
             # Terminate string at \x00
@@ -148,12 +148,12 @@ class ImageInfoTags(object):
             return ''
 
     def get_lens_name(self):
-        '''
+        """
         Return name of used lenses. This usually makes sense only for
         SLR cameras and uses various maker notes. Currently supported
         for Pentax, Nikon and Minolta (as soon as Exiv2 supports others,
         support can be added here.
-        '''
+        """
 
         try:
             return self._metadata['Exif.Pentax.LensType'].human_value.strip()
@@ -173,24 +173,24 @@ class ImageInfoTags(object):
                     return ''
 
     def get_exif_string(self, name):
-        '''
+        """
         Reads string from EXIF information.
-        '''
+        """
         return str(self.get_tag_value(name)).strip(' ')
 
     def get_exif_float(self, name):
-        '''
+        """
         Reads float number from EXIF information (where it is stored as
         fraction).
-        '''
+        """
         val = self.get_exif_float_value(name)
         return str(round(val, 1))
 
     def get_exif_float_value(self, name):
-        '''
+        """
         Reads float number from EXIF information (where it is stored as
         fraction or int).
-        '''
+        """
         val = self.get_tag_value(name)
         if type(val) == int:
             return float(val)
@@ -336,9 +336,9 @@ class ImageInfoTags(object):
 
 
 class NoMetadata(Exception):
-    '''
+    """
     Exception indicating that no meta data has been found.
-    '''
+    """
     pass
 
 
@@ -364,9 +364,9 @@ class DirectoryMetadata(make.GroupTask):
                     self.add_file_dependency(file_md_path)
 
     def get_matew_metadata(self, metadata, subdir = None):
-        '''
+        """
         Return dictionary with meta data parsed from Matew like format.
-        '''
+        """
         if subdir is None:
             path = self.description_file
         else:
@@ -401,9 +401,9 @@ class DirectoryMetadata(make.GroupTask):
         return metadata
 
     def get_file_metadata(self, metadata, subdir=None):
-        '''
+        """
         Returns the file metadata that could be found in the directory.
-        '''
+        """
 
         if subdir is None: subdir = self.dir_path
 
@@ -425,10 +425,10 @@ class DirectoryMetadata(make.GroupTask):
         return metadata
 
     def get(self, subdir=None, dir=None):
-        '''
+        """
         Returns directory meta data. First tries to parse known formats
         and then fall backs to built in defaults.
-        '''
+        """
 
         result = {}
 
@@ -486,9 +486,9 @@ class DefaultMetadata(make.FileMakeObject):
             self.generate(md_data)
 
     def generate(self, md):
-        '''
+        """
         Generates new metadata file with default values.
-        '''
+        """
 
         logging.info(_("GEN %s") % self._path)
 
@@ -496,10 +496,10 @@ class DefaultMetadata(make.FileMakeObject):
         f.write(codecs.BOM_UTF8)
         f.write('# Directory metadata for lazygal, Matew format\n')
         f.write('Album name "%s"\n'\
-                % self.source_dir.human_name.encode('utf-8'));
-        f.write('Album description ""\n');
+                % self.source_dir.human_name.encode('utf-8'))
+        f.write('Album description ""\n')
         f.write('Album image identifier "%s"\n'\
-                % md['album_picture'].encode('utf-8'));
+                % md['album_picture'].encode('utf-8'))
         f.close()
 
 

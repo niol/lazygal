@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2011-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@ class TestPathutils(LazygalTest):
         self.test_root = self.get_working_path()
 
     def d(self, dpath):
-        '''
+        """
         Create a working directory in a test location if it does not exist.
-        '''
+        """
         if dpath[0] == '/': dpath = dpath[1:]
 
         dpath = os.path.join(self.test_root, dpath)
@@ -43,9 +43,9 @@ class TestPathutils(LazygalTest):
         return dpath
 
     def f(self, fpath):
-        '''
+        """
         Create a working file in a test location if it does not exist.
-        '''
+        """
         dpath = self.d(os.path.dirname(fpath))
         fpath = os.path.join(dpath, os.path.basename(fpath))
         if not os.path.exists(fpath):

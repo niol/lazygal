@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2011-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,10 +42,10 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
             return ConfigParser.RawConfigParser.get(self, section, option)
 
     def load(self, other_config, init=False, sections=None):
-        '''
+        """
         Take another configuration object and overload values in this config
         object.
-        '''
+        """
         all_sections = False
         if sections is None:
             sections = other_config.sections()

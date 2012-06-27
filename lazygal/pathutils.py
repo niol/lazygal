@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2011-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ def path2unicode(path):
 
 
 def is_subdir_of(dir_path, path):
-    '''
+    """
     Returns whether path is a subdirectory of dir_path.
-    '''
+    """
     test_path = path
     while test_path != dir_path and not is_root(test_path):
         test_path, tail = os.path.split(test_path)
@@ -55,11 +55,11 @@ def is_subdir_of(dir_path, path):
 
 
 def url_path(physical_path, input_pathmodule=os.path):
-    '''
+    """
     Convert a physical path to a path suitable for use in a URL link,
     i.e. using forward slashes. This can only be used for relative paths
     because while converting, the root (either '/' or 'C:\\') is irrelevant.
-    '''
+    """
     if input_pathmodule == posixpath: return physical_path
 
     head = physical_path

@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -357,13 +357,13 @@ class Directory(File):
         return all_subdirs
 
     def latest_media_stamp(self, hint=None):
-        '''
+        """
         Returns the latest media date:
             - first considering all pics that have an EXIF date
             - if none have a reliable date, use file mtimes.
         `hint` stops processing if one of the found values is higher. This is
         to speed up compare_latest_exif().
-        '''
+        """
         all_medias = self.get_all_medias()
         media_stamp_max = None
         for m in all_medias:

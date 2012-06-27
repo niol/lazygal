@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2011 Michal Čihař, Mickaël Royer, Alexandre Rossi
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Michal Čihař, Mickaël Royer, Alexandre Rossi
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ class build_lazygal(distutils.command.build.build):
         for path in build_manpages.db2mans:
             if os.path.exists(path): has_db2man = True
         return 'build_manpages' in self.distribution.cmdclass\
-            and has_db2man and build_manpages.executable != None
+            and has_db2man and build_manpages.executable is not None
 
     def __has_i18n(self, command):
         return 'build_i18n' in self.distribution.cmdclass
@@ -140,10 +140,10 @@ class build_lazygal(distutils.command.build.build):
 first_line_re = re.compile('^#!.*python[0-9.]*([ \t].*)?$')
 
 class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, object):
-    '''
+    """
     This is mostly distutils copy, it just renames script according
     to platform (.py for Windows, without extension for others)
-    '''
+    """
     def copy_scripts (self):
         """Copy each script listed in 'self.scripts'; if it's marked as a
         Python script in the Unix way (first line matches 'first_line_re',

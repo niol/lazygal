@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2011-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,10 +54,10 @@ class TestGenerators(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
     def test_filecleanup(self):
-        '''
+        """
         Files that are not part of what was generated or updated shall be
         spotted.
-        '''
+        """
         pics = [ 'img%d.jpg' % i for i in range(0, 8)]
         source_subgal = self.setup_subgal('subgal', pics)
 
@@ -230,9 +230,9 @@ class TestSpecialGens(LazygalTestGen):
         self.dest_path = os.path.join(self.tmpdir, 'dst')
 
     def test_paginate(self):
-        '''
+        """
         It shall be possible to split big galleries on mutiple index pages.
-        '''
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'thumbs-per-page', 4)
         self.setup_album(config)
@@ -269,11 +269,11 @@ class TestSpecialGens(LazygalTestGen):
 
     @skip(not has_symlinks(), 'symlinks not supported on platform')
     def test_dir_symlink(self):
-        '''
+        """
         The generator should follow symlinks on directories, but should not get
         stuck in infinite recursion if two distinct directory trees have
         symbolic links to each other.
-        '''
+        """
         self.setup_album()
 
         pics = [ 'img%d.jpg' % i for i in range(0, 2)]
@@ -348,9 +348,10 @@ class TestSorting(LazygalTestGen):
         return subgal_path, pics
 
     def test_sortbyexif(self):
-        '''
-        It shall be possible to sort images in a gallery according to EXIF date.
-        '''
+        """
+        It shall be possible to sort images in a gallery according to EXIF
+        date.
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'sort-medias', 'exif')
         self.setup_album(config)
@@ -365,10 +366,10 @@ class TestSorting(LazygalTestGen):
                          [u'6-january.jpg', u'1-february.jpg', u'3-june.jpg', u'5-august.jpg', u'4-december.jpg'])
 
     def test_sortbyexif_galsplit(self):
-        '''
+        """
         It shall be possible to sort images in galleries split on multiple
         pages according to EXIF date.
-        '''
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'sort-medias', 'exif')
         config.set('webgal', 'thumbs-per-page', 3)
@@ -393,9 +394,9 @@ class TestSorting(LazygalTestGen):
                          [u'5-august.jpg', u'4-december.jpg'])
 
     def test_sortbyfilename(self):
-        '''
+        """
         It shall be possible to sort images in a gallery by filename.
-        '''
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'sort-medias', 'filename')
         self.setup_album(config)
@@ -410,10 +411,10 @@ class TestSorting(LazygalTestGen):
                          [u'1-february.jpg', u'3-june.jpg', u'4-december.jpg', u'5-august.jpg', u'6-january.jpg'])
 
     def test_sortbyfilename_galsplit(self):
-        '''
+        """
         It shall be possible to sort images in galleries split on multiple
         pages by filename.
-        '''
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'sort-medias', 'filename')
         config.set('webgal', 'thumbs-per-page', 3)
@@ -438,10 +439,10 @@ class TestSorting(LazygalTestGen):
                          [u'5-august.jpg', u'6-january.jpg'])
 
     def test_sortsubgals_dirnamereverse(self):
-        '''
+        """
         It shall be possible to sort sub-galleries accoring to the directory
         name.
-        '''
+        """
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'sort-subgals', 'dirname:reverse')
         self.setup_album(config)

@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2010 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -75,9 +75,9 @@ class MakeTask(object):
         return self.__built_once
 
     def update_build_status(self):
-        '''
+        """
         Do stuff to update the build status (e.g. probe filesystem, deps).
-        '''
+        """
         pass
 
     def needs_build(self, return_culprit=False):

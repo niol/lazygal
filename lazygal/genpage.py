@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2007-2010 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2007-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -327,9 +327,9 @@ class WebalbumIndexPage(WebalbumPage):
         self.set_template('dirindex.thtml')
 
     def _get_paginated_name(self, page_number=None):
-        if page_number == None:
+        if page_number is None:
             page_number = self.page_number
-        assert page_number != None
+        assert page_number is not None
 
         if page_number < 1:
             return WebalbumIndexPage.FILENAME_BASE_STRING

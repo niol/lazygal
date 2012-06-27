@@ -1,5 +1,5 @@
-# Lazygal, a lazy satic web gallery generator.
-# Copyright (C) 2011 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Lazygal, a lazy static web gallery generator.
+# Copyright (C) 2011-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -146,9 +146,9 @@ class _ImageTag_0_1(object):
         return str(self._tag)
 
     def get_exif_date(self):
-        '''
+        """
         Parses date from EXIF information.
-        '''
+        """
         exif_date = str(self._metadata[self._key])
         date, time = exif_date.split(' ')
         year, month, day = date.split('-')
