@@ -535,8 +535,7 @@ class WebalbumDir(make.FileMakeObject):
     def rel_path(self, path):
         """
         Returns the relative path to go from this directory to the path
-        supplied
-        as argument.
+        supplied as argument.
         """
         return os.path.relpath(path, self.path)
 
