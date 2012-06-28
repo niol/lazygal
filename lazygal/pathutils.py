@@ -68,6 +68,8 @@ def url_path(physical_path, input_pathmodule=os.path):
         head, tail = input_pathmodule.split(head)
         path_list.append(tail)
 
+    if path_list == []: return ''
+
     path_list.reverse()
     return posixpath.join(*path_list)
 
