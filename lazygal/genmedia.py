@@ -302,7 +302,7 @@ class WebVideo(genfile.WebalbumFile):
             logging.error(_("  transcoding %s failed, skipped")\
                           % self.source_video.filename)
             logging.info(str(e))
-            self.source_media.broken = True
+            self.source_video.broken = True
             self.clean_output()
 
 
