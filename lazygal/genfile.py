@@ -27,36 +27,40 @@ import pathutils
 
 class MediaOriginal(make.FileCopy):
 
-    def __init__(self, dir, source_media, size_name=None):
+    def __init__(self, dir, source_media):
         self.dir = dir
+        self.source_media = source_media
 
-        dest_name = source_media.filename
-        if size_name:
-            dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
+        self.filename = source_media.filename
 
-        self.path = os.path.join(self.dir.path, dest_name)
+        self.path = os.path.join(self.dir.path, self.filename)
         make.FileCopy.__init__(self, source_media.path, self.path)
 
+    def get_size(self):
+        return self.source_media.get_size()
+
     def build(self):
-        logging.info("  CP %s" % os.path.basename(self.path))
+        logging.info("  CP %s" % self.filename)
         logging.debug("(%s)" % self.path)
         make.FileCopy.build(self)
 
 
 class SymlinkMediaOriginal(make.FileSymlink):
 
-    def __init__(self, dir, source_media, size_name=None):
+    def __init__(self, dir, source_media):
         self.dir = dir
+        self.source_media = source_media
 
-        dest_name = source_media.filename
-        if size_name:
-            dest_name = self.dir.album._add_size_qualifier(dest_name, size_name)
+        self.filename = source_media.filename
 
-        self.path = os.path.join(self.dir.path, dest_name)
+        self.path = os.path.join(self.dir.path, self.filename)
         make.FileSymlink.__init__(self, source_media.path, self.path)
 
+    def get_size(self):
+        return self.source_media.get_size()
+
     def build(self):
-        logging.info("  SYMLINK %s" % os.path.basename(self.path))
+        logging.info("  SYMLINK %s" % self.filename)
         logging.debug("(%s)" % self.path)
         make.FileSymlink.build(self)
 
