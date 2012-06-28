@@ -87,6 +87,10 @@ class ResizedImage(genfile.WebalbumFile):
             self.stamp_build()
 
     def resize(self, im):
+        self.source_media.get_size() # Probe brokenness
+        if self.source_media.broken:
+            raise IOError()
+
         new_size = self.get_size()
 
         im.draft(None, new_size)
@@ -128,6 +132,9 @@ class ImageOtherSize(ResizedImage):
     def get_size(self):
         if self.size is None:
             orig_size = self.source_media.get_size()
+            if self.source_media.broken:
+                return orig_size
+
             if self.get_rotation() in (90, 270, ):
                 # swap coords
                 orig_size = (orig_size[1], orig_size[0], )
@@ -148,6 +155,10 @@ class ImageOtherSize(ResizedImage):
     }
 
     def resize(self, im):
+        self.source_media.get_size() # Probe brokenness
+        if self.source_media.broken:
+            raise IOError()
+
         rotation = self.get_rotation()
         self.get_size()
 
