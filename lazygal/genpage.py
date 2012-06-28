@@ -247,13 +247,7 @@ class WebalbumImagePage(WebalbumBrowsePage):
 
         tpl_values['image_name'] = self.image.filename
 
-        browse_image_path = os.path.join(self.dir.path,
-                                         self._add_size_qualifier(\
-                                           self.image.filename, self.size_name))
-
-        if not self.image.broken:
-            tpl_values['img_width'],\
-            tpl_values['img_height'] = self.image.get_size(browse_image_path)
+        tpl_values['img_width'], tpl_values['img_height'] = self.webalbum_media.resized[self.size_name].get_size()
 
         img_date = self.image.get_date_taken()
         tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))

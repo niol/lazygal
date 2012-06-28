@@ -171,9 +171,14 @@ class ImageFile(MediaFile):
     def get_size(self, img_path=None):
         if not img_path:
             img_path = self.path
-        im = Image.open(img_path)
-        size = im.size
-        return size
+
+        try:
+            im = Image.open(img_path)
+        except IOError:
+            self.broken = True
+            return (None, None)
+        else:
+            return im.size
 
     def has_reliable_date(self):
         if not self.__date_probed:
