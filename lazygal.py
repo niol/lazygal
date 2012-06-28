@@ -70,6 +70,10 @@ parser.add_option("", "--template-vars",
                   action="store", type="string",
                   dest="tpl_vars",
                   help=_("Common variables to load all templates with."))
+parser.add_option("-f", "--force-gen-pages",
+                  action="store_true",
+                  dest="force_gen_pages",
+                  help=_("Force rebuild of all pages."))
 parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_destination",
@@ -174,6 +178,8 @@ if options.check_all_dirs:
 if options.dest_dir is not None:
     cmdline_config.set('global', 'destdir',
                        options.dest_dir.decode(sys.getfilesystemencoding()))
+if options.force_gen_pages:
+    cmdline_config.set('global', 'force-gen-pages', 'Yes')
 if options.clean_destination:
     cmdline_config.set('global', 'clean-destination', 'Yes')
 if options.dir_flattening_depth is not None:

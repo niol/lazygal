@@ -164,6 +164,19 @@
 
       <varlistentry>
         <term>
+          <option>-f</option>
+          <option>--force-gen-pages</option>
+        </term>
+        <listitem>
+          <para>Force rebuild of web pages, regardless of the modification
+          times of their dependencies. This is handy when changing a
+          configuration option affecting these (theme, directory
+          flattening, etc.).</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
           <option>--clean-destination</option>
         </term>
         <listitem>

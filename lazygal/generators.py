@@ -204,6 +204,8 @@ class WebalbumMediaTask(make.GroupTask):
                 self.add_dependency(self.get_original())
 
             self.browse_pages[size_name] = self.get_browse_page(size_name)
+            if self.webgal.album.force_gen_pages:
+                self.browse_pages[size_name].stamp_delete()
 
     def set_next(self, media):
         self.next = media
@@ -479,6 +481,8 @@ class WebalbumDir(make.FileMakeObject):
         for size_name in self.browse_sizes:
             page = genpage.WebalbumIndexPage(self, size_name, page_number,
                                              subgals, galleries)
+            if self.album.force_gen_pages:
+                page.stamp_delete()
             self.add_dependency(page)
             pages.append(page)
         self.index_pages.append(pages)
@@ -661,6 +665,7 @@ class Album:
             logging.getLogger().setLevel(logging.DEBUG)
 
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
+        self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
 
         self.tpl_loader = None
 
