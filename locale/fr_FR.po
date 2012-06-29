@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-10 20:26+0200\n"
+"POT-Creation-Date: 2012-06-29 16:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -17,24 +17,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:42
+#: ../lazygal.py:43
 msgid "usage: %prog [options] albumdir"
 msgstr "usage: %prog [options] albumdir"
 
 #. The help option must be changed to comply with i18n.
-#: ../lazygal.py:46
+#: ../lazygal.py:47
 msgid "Show this help message and exit."
 msgstr "Afficher ce message d'aide et quitter."
 
-#: ../lazygal.py:51
+#: ../lazygal.py:52
 msgid "Don't output anything except for errors."
 msgstr "N'afficher que les erreurs."
 
-#: ../lazygal.py:55
+#: ../lazygal.py:56
 msgid "Output everything that lazygal is doing."
 msgstr "Afficher tout ce que lazygal fait."
 
-#: ../lazygal.py:59
+#: ../lazygal.py:60
 msgid ""
 "Directory where web pages, slides and thumbs will be written (default is "
 "current directory)."
@@ -42,31 +42,35 @@ msgstr ""
 "Répertoire dans lequel les pages, les images et les miniatures seront écrits "
 "(par défaut le répertoire courant)."
 
-#: ../lazygal.py:63
+#: ../lazygal.py:64
 msgid "Theme name (looked up in theme directory) or theme full path."
 msgstr ""
 "Identifiant du thème (utilisé dans le répertoire des thèmes) ou chemin "
 "complet d'un thème."
 
-#: ../lazygal.py:67
+#: ../lazygal.py:68
 msgid "Default style to apply to the theme."
 msgstr "Style par défaut à appliquer au thème."
 
-#: ../lazygal.py:71
+#: ../lazygal.py:72
 msgid "Common variables to load all templates with."
 msgstr "Variables communes avec lesquelles charger tous les modèles."
 
-#: ../lazygal.py:75
+#: ../lazygal.py:76
+msgid "Force rebuild of all pages."
+msgstr "Forcer la reconstruction de toutes les pages."
+
+#: ../lazygal.py:80
 msgid "Clean destination directory of files that should not be there."
 msgstr ""
 "Supprimer dans le répertoire de destination tous les fichiers qui ne doivent "
 "pas s'y trouver."
 
-#: ../lazygal.py:79
+#: ../lazygal.py:84
 msgid "Display program version."
 msgstr "Afficher la version du programme."
 
-#: ../lazygal.py:83
+#: ../lazygal.py:88
 msgid ""
 "Exhaustively go through all directories regardless of source modification "
 "time."
@@ -74,7 +78,7 @@ msgstr ""
 "Parcourir exhaustivement tous les répertoires sans examiner la date de "
 "modification du répertoire source."
 
-#: ../lazygal.py:87
+#: ../lazygal.py:92
 msgid ""
 "Level below which the directory tree is flattened. Default is 'No' which "
 "disables this feature."
@@ -82,7 +86,7 @@ msgstr ""
 "Niveau de hierarchie au dessous duquel l'arborescence des galleries est "
 "rassemblée sur une page. Par défaut 'No' qui désactive cette fonctionnalité."
 
-#: ../lazygal.py:91
+#: ../lazygal.py:96
 msgid ""
 "Size of images, define as <name>=SIZE,..., eg. small=800x600,"
 "medium=1024x768. The special value 0x0 uses original size. See manual page "
@@ -92,7 +96,7 @@ msgstr ""
 "medium=1024x768. La valeur spéciale 0x0 conserve la taille originale. Voir "
 "le manuel pour la syntaxe de TAILLE."
 
-#: ../lazygal.py:95
+#: ../lazygal.py:100
 msgid ""
 "Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE "
 "syntax."
@@ -100,15 +104,15 @@ msgstr ""
 "Taille des miniatures, à définir comme suit TAILLE, eg. 150x113. Voir le "
 "manuel pour la syntaxe de TAILLE."
 
-#: ../lazygal.py:99
+#: ../lazygal.py:104
 msgid "Quality of generated JPEG images (default is 85)."
 msgstr "Qualité des JPEG générés (85 par défaut)"
 
-#: ../lazygal.py:103
+#: ../lazygal.py:108
 msgid "Include original photos in output."
 msgstr "Copier les photos originales dans ce qui est produit."
 
-#: ../lazygal.py:107
+#: ../lazygal.py:112
 msgid ""
 "Do not copy original photos in output directory, instead link them using "
 "submitted relative path as base."
@@ -117,7 +121,7 @@ msgstr ""
 "l'album web, au lieu de cela les référencer directement en utilisant le "
 "chemin relatif de base fourni"
 
-#: ../lazygal.py:111
+#: ../lazygal.py:116
 msgid ""
 "Do not copy original photos in output directory, instead create symlinks to "
 "their original locations."
@@ -125,12 +129,12 @@ msgstr ""
 "Ne pas copier les photos originales dans le répertoire de production de "
 "l'album web, au lieu de cela, créer un lien symbolique vers leur emplacement."
 
-#: ../lazygal.py:115
+#: ../lazygal.py:120
 msgid "Publication URL (only useful for feed generation)."
 msgstr ""
 "Adresse URL de publication (utilisé uniquement pour la génération du flux)."
 
-#: ../lazygal.py:119
+#: ../lazygal.py:124
 msgid ""
 "Generate metadata description files where they don't exist instead of "
 "generating the web gallery."
@@ -138,7 +142,7 @@ msgstr ""
 "Générer les fichiers de description qui n'existent pas au lieu de générer "
 "des galleries web."
 
-#: ../lazygal.py:123
+#: ../lazygal.py:128
 msgid ""
 "Maximum number of thumbs per index page. This enables index pagination (0 is "
 "unlimited)."
@@ -146,13 +150,13 @@ msgstr ""
 "Nombre maximum de miniatures par page d'index. Ceci active la pagination "
 "pour les index (0 correspond à sans limite)."
 
-#: ../lazygal.py:127
+#: ../lazygal.py:132
 msgid "Make a zip archive of original pictures for each directory."
 msgstr ""
 "Générer une archive zip contenant les images originales pour chaque "
 "répertoire."
 
-#: ../lazygal.py:131
+#: ../lazygal.py:136
 msgid ""
 "Webalbum picture background color. Default is transparent, and implies the "
 "PNG format. Any other value, e.g. red, white, blue, uses JPEG."
@@ -161,11 +165,15 @@ msgstr ""
 "transparente, ce qui implique le format PNG. Pour toutes autre valeur, par "
 "exemple red, white, blue, c'est le format JPEG qui est utilisé."
 
-#: ../lazygal.py:133 ../lazygal.py:136
+#: ../lazygal.py:141
+msgid "Webalbum picture type. Default is messy."
+msgstr "Type d'image représentant les galleries. Par défaut 'messy'."
+
+#: ../lazygal.py:143 ../lazygal.py:146
 msgid "ORDER"
 msgstr "TRI"
 
-#: ../lazygal.py:134
+#: ../lazygal.py:144
 msgid ""
 "Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' "
 "to reverse the chosen order."
@@ -174,7 +182,7 @@ msgstr ""
 "fichier'filename', date de modification de fichier 'mtime' ou date de prise "
 "de vue'exif'. Ajouter ':reverse' pour inverser l'ordre'"
 
-#: ../lazygal.py:137
+#: ../lazygal.py:147
 msgid ""
 "Sort order for sub galleries in a folder: dirname or mtime. Add ':reverse' "
 "to reverse the chosen order."
@@ -183,33 +191,40 @@ msgstr ""
 "'dirname' ou date de modification de fichier 'mtime'. Ajouter ':reverse' "
 "pour inverser l'ordre'"
 
-#: ../lazygal.py:141
+#: ../lazygal.py:151
+msgid ""
+"Do not remove GPS location tags from EXIF metadata. Mostly useful with "
+"holiday photos."
+msgstr "Ne pas enlever les coordonnées GPS dans les métadonnées avant la "
+"publication. Surtout utile pour les photos de vacances."
+
+#: ../lazygal.py:155
 #, python-format
 msgid "lazygal version %s"
 msgstr "lazygal version %s"
 
-#: ../lazygal.py:146
+#: ../lazygal.py:160
 msgid "Bad command line."
 msgstr "Mauvaise ligne de commande."
 
-#: ../lazygal.py:150
+#: ../lazygal.py:164
 #, python-format
 msgid "Directory %s does not exist."
 msgstr "Le répertoire %s n'existe pas."
 
-#: ../lazygal.py:199
+#: ../lazygal.py:217
 msgid "Option --orig-symlink is not available on this platform."
 msgstr "L'option --orig-symlink n'est pas disponible sur cette plateforme."
 
-#: ../lazygal.py:230
+#: ../lazygal.py:250
 msgid "Interrupted."
 msgstr "Interrompu."
 
-#: ../lazygal/sourcetree.py:88 ../lazygal/sourcetree.py:304
+#: ../lazygal/sourcetree.py:88 ../lazygal/sourcetree.py:309
 msgid "Root not found"
 msgstr "La racine n'a pas été trouvée"
 
-#: ../lazygal/sourcetree.py:271
+#: ../lazygal/sourcetree.py:276
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  %s ignoré, format non supporté."
@@ -263,26 +278,26 @@ msgid "  Trying loading gallery configs: %s"
 msgstr ""
 "  Tentative de chargement des fichiers de configuration par gallerie : %s"
 
-#: ../lazygal/generators.py:442
+#: ../lazygal/generators.py:443
 msgid "Bad syntax for webalbumpic-size."
 msgstr "Syntaxe de webalbumpic-size erronée."
 
-#: ../lazygal/generators.py:603
+#: ../lazygal/generators.py:608
 msgid "MKDIR %SHAREDDIR%"
 msgstr "MKDIR %SHAREDDIR%"
 
-#: ../lazygal/generators.py:643
+#: ../lazygal/generators.py:648
 #, python-format
 msgid "Trying loading user config %s"
 msgstr ""
 "Tentative de chargement du fichier de configuration %s de l'utilisateur"
 
-#: ../lazygal/generators.py:648
+#: ../lazygal/generators.py:653
 #, python-format
 msgid "Loading root config %s"
 msgstr "Chargement du fichier de configuration racine %s"
 
-#: ../lazygal/generators.py:652
+#: ../lazygal/generators.py:657
 #, python-format
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
@@ -290,54 +305,54 @@ msgstr ""
 "'%s' utilise une syntaxe obsolète: merci de consulter la page de "
 "manuellazygal.conf(5)"
 
-#: ../lazygal/generators.py:679
+#: ../lazygal/generators.py:685
 #, python-format
 msgid "Theme %s not found"
 msgstr "Thème %s non trouvé"
 
-#: ../lazygal/generators.py:724
+#: ../lazygal/generators.py:730
 msgid "you should "
 msgstr "vous devriez "
 
-#: ../lazygal/generators.py:725
+#: ../lazygal/generators.py:731
 #, python-format
 msgid "  %sRM %s"
 msgstr "  %sRM %s"
 
-#: ../lazygal/generators.py:749
+#: ../lazygal/generators.py:755
 #, python-format
 msgid ""
 "Not following symlink '%s' because directory has already been processed."
 msgstr ""
 "Lien symbolique '%s' non suivi car le répertoire cible a déjà été parcouru."
 
-#: ../lazygal/generators.py:757
+#: ../lazygal/generators.py:763
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Génération des fichiers de description dans %s"
 
-#: ../lazygal/generators.py:763 ../lazygal/generators.py:808
+#: ../lazygal/generators.py:769 ../lazygal/generators.py:814
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Entrée dans %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:779
+#: ../lazygal/generators.py:785
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 "Erreur fatale, le répertoire de génération se trouve sous le répertoire "
 "source."
 
-#: ../lazygal/generators.py:781
+#: ../lazygal/generators.py:787
 #, python-format
 msgid "Generating to %s"
 msgstr "Génération dans %s"
 
-#: ../lazygal/generators.py:801
+#: ../lazygal/generators.py:807
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) a été ignoré"
 
-#: ../lazygal/generators.py:805
+#: ../lazygal/generators.py:811
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
@@ -346,57 +361,57 @@ msgstr ""
 "(%s) a été ignoré car son nom est le même que celui du répertoire contenant "
 "les fichiers partagés par toutes les pages de l'album"
 
-#: ../lazygal/generators.py:814
+#: ../lazygal/generators.py:820
 #, python-format
 msgid "(%s) and childs have no known medias, skipped"
 msgstr "(%s) et ses sous-répertoires n'ont pas de médias connus, ignoré"
 
-#: ../lazygal/generators.py:847
+#: ../lazygal/generators.py:853
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 "  IGNORE à cause de la mtime, utiliser touch ou --check-all-dirs pour "
 "débrayer."
 
-#: ../lazygal/generators.py:853
+#: ../lazygal/generators.py:859
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr "[Sortie de %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/metadata.py:286 ../lazygal/metadata.py:314
+#: ../lazygal/metadata.py:288 ../lazygal/metadata.py:316
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (équivalent 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:374
+#: ../lazygal/metadata.py:376
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Impossible d'ouvrir le fichier de description %s"
 
-#: ../lazygal/metadata.py:480
+#: ../lazygal/metadata.py:482
 msgid "  SKIPPED because metadata exists."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:482
+#: ../lazygal/metadata.py:484
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:491
+#: ../lazygal/metadata.py:493
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
 
-#: ../lazygal/tpl.py:149
+#: ../lazygal/tpl.py:151
 #, python-format
 msgid "Unknown template type for %s"
 msgstr "Type de modèle inconnu %s"
 
-#: ../lazygal/genfile.py:97
+#: ../lazygal/genfile.py:108
 #, python-format
 msgid "  ZIP %s"
 msgstr "  ZIP %s"
 
-#: ../lazygal/genfile.py:119
+#: ../lazygal/genfile.py:130
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
@@ -406,76 +421,82 @@ msgstr "CP %%SHAREDDIR%%/%s"
 msgid "  %s is BROKEN, skipped"
 msgstr "  %s est CASSE, ignoré"
 
-#: ../lazygal/genmedia.py:116
+#: ../lazygal/genmedia.py:120
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:195
+#: ../lazygal/genmedia.py:209
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:208
+#: ../lazygal/genmedia.py:222
 msgid "VIDEOTHUMB"
 msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:215
+#: ../lazygal/genmedia.py:229
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:248
+#: ../lazygal/genmedia.py:262
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:283
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:307
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:292
+#: ../lazygal/genmedia.py:313
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
 
-#: ../lazygal/genpage.py:185 ../lazygal/genpage.py:405
+#: ../lazygal/genpage.py:184 ../lazygal/genpage.py:398
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#. strftime does not work with unicode...
-#: ../lazygal/genpage.py:262
+#: ../lazygal/genpage.py:253 ../themes/default/image.thtml:8
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "le %d/%m/%Y à %H:%M"
 
-#: ../lazygal/genpage.py:491
+#: ../lazygal/genpage.py:313
+#, python-format
+msgid ""
+"  Size '%s' is not available in '%s' due to configuration: medias won't be "
+"shown on index."
+msgstr ""
+
+#: ../lazygal/genpage.py:489
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:509
+#: ../lazygal/genpage.py:507
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 "Il y a un modèle avec une extension qui ne commence par par t. Abandon."
 
-#: ../lazygal/genpage.py:515
+#: ../lazygal/genpage.py:513
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
 
-#: ../lazygal/config.py:108
+#: ../lazygal/config.py:107
 #, python-format
 msgid "  Ignoring unknown section '%s'."
 msgstr "  Section de configuration '%s' ignorée car inconnue."
 
-#: ../lazygal/config.py:112
+#: ../lazygal/config.py:111
 #, python-format
 msgid "  Ignoring unknown option '%s' in section '%s'."
 msgstr ""
@@ -490,8 +511,9 @@ msgid "Generated by"
 msgstr "Généré par"
 
 #: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:52
-msgid "on"
-msgstr "le"
+#, python-format
+msgid "on %c"
+msgstr "le %c"
 
 #: ../themes/default/browse.thtml:39
 msgid "previous"
@@ -541,7 +563,7 @@ msgstr "Flash"
 msgid "Focal length"
 msgstr "Focale"
 
-#: ../themes/default/video.thtml:7
+#: ../themes/default/video.thtml:6
 msgid "Original video"
 msgstr "fichier vidéo d'origine"
 
@@ -554,3 +576,6 @@ msgstr "sous-galleries"
 #: ../themes/image-index/gallerylink.thtml:26
 msgid "photos"
 msgstr "photos"
+
+#~ msgid "on"
+#~ msgstr "le"
