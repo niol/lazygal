@@ -385,10 +385,10 @@ class WebalbumIndexPage(WebalbumPage):
         subgal_links = []
         for subgal in self.dir.subgals:
             dir_info = self._get_dir_info(subgal)
-            dir_info['link'] = '/'.join([subgal.source_dir.name,
-                                         self._get_related_index_fn()])
+            dir_info['link'] = posixpath.join(subgal.source_dir.name,
+                                              self._get_related_index_fn())
             dir_info['link'] = self.url_quote(dir_info['link'])
-            dir_info['album_picture'] = os.path.join(subgal.source_dir.name,
+            dir_info['album_picture'] = posixpath.join(subgal.source_dir.name,
                                             self.dir.get_webalbumpic_filename())
             dir_info['album_picture'] = self.url_quote(dir_info['album_picture'])
             subgal_links.append(dir_info)
