@@ -23,13 +23,14 @@ Ideas to improve Lazygal (in no particular order)
 
 * xinclude for XHTML <head />
 
-* Add an option preventing metadata from being published.
-
 * Some sort of plugin architecture for generate pic post processing at least
   (with an example for watermarking pics).
 
 * Picture links in breadcrumbs.
 
-* Simpler album pictures (another album pic style).
-
 * Alternate theme with one HTML page per dir and JS to change pics.
+
+* Detect config changes since last run et regenerate files (html, thumbs, etc.)
+  according to configuration changes.
+
+* Add an option to paginate by sub-galleries number per page.
