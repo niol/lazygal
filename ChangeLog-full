@@ -1,4 +1,43 @@
+Lazygal 0.7.3 (2012-06-29)
+  * update TODO
+  * update french translation
+  * fix album picture link on win32
+  * fix size probing with bad pic files
+  * add --force-gen-pages
+  * better handling of errors when probing size of orig pics for w/h tags in HTML
+  * remove useless code in orig and symlink building classes
+  * fix typo in transcode error exception code
+  * fix broken generation on win32
+  * fix media links on win32 when --dir-flattening-depth is changed
+  * remove unnecessary newline in comment
+  * fix spelling, copyright years, remove unnecessary semicolons and some PEP 8 and
+  * fix a wrong clean_output method and do some cleanups found with pyflakes
+  * explain limitations of lazy mechanism
+  * do not fail when using --dir-flattening-depth and a config file with other size defs
+  * fix media links when using --dir-flattening-depth
+  * add unit test for --subgal-sort-by
+  * fix typo breaking --subgal-sort-by
+  * fix %s in strftime not portable to win32
+  * fr translation fix
+  * fix video src= link (and related cleanups)
+  * fix mediautils cmdline qnd test code
+  * use our own datetime simple implementation to work around limitations of std lib
+  * make more weblbumpic types easier to add in the future
+  * update TODO
+  * ensure time difference in mtime compare unit test
+  * allow to keep GPS tags
+  * fix test suite failure when running with the C locale
+  * prevent original videos conflicting with resized videos
+  * introduce --webalbum-pic-type
+  * remove useless p containing medias in tpls
+  * add header/footer in new module
+  * merge date translated strings (no point translating %c)
+  * make time formats customizable in templates
+  * make it explicit that videos only get resized to the default size
+  * resize videos while transocding
+
 Lazygal 0.7.2 (2012-05-10)
+  * set version to 0.7.2
   * make test paths unicode
   * work to move towards supporting win32 style paths
   * fix re-creation of broken symlinks

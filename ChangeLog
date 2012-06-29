@@ -1,3 +1,13 @@
+Lazygal 0.7.3 (2012-06-29)
+  * fix album picture link on win32
+  * add --force-gen-pages
+  * fix media links on win32 when --dir-flattening-depth is changed
+  * allow to keep GPS tags
+  * fix test suite failure when running with the C locale
+  * introduce --webalbum-pic-type
+  * make time formats customizable in templates
+  * resize videos while transcoding
+
 Lazygal 0.7.2 (2012-05-10)
   * fix re-creation of broken symlinks
   * strip all whitespace when reading metadata files
