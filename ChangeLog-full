@@ -1,4 +1,8 @@
+Lazygal 0.7.4 (2012-07-16)
+  * set version to 0.7.4
+
 Lazygal 0.7.3 (2012-06-29)
+  * set version to 0.7.3
   * update TODO
   * update french translation
   * fix album picture link on win32

@@ -1,3 +1,6 @@
+Lazygal 0.7.4 (2012-07-16)
+  * add missing lazygal/defaults.conf in source tarball
+
 Lazygal 0.7.3 (2012-06-29)
   * fix album picture link on win32
   * add --force-gen-pages
