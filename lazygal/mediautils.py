@@ -51,7 +51,7 @@ def gobject_init():
     signal.signal(signal.SIGINT, signal_handler)
 
 
-import Image as PILImage
+from PIL import Image as PILImage
 
 
 class TranscodeError(Exception): pass

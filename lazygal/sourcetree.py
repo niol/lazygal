@@ -18,7 +18,7 @@
 import os, time
 import locale
 import logging
-import Image
+from PIL import Image
 
 from lazygal import pathutils, make, metadata
 from lazygal import mediautils, timeutils

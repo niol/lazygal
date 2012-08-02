@@ -35,7 +35,7 @@ import sys
 import datetime
 
 import pyexiv2
-import Image as PILImage
+from PIL import Image as PILImage
 
 
 def decode_exif_user_comment(raw, imgpath):

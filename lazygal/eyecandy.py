@@ -17,7 +17,7 @@
 
 
 import random
-import Image, ImageChops, ImageFilter
+from PIL import Image, ImageChops, ImageFilter
 
 
 class Color:

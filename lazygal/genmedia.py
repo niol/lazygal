@@ -19,9 +19,9 @@
 import os
 import logging
 
-import Image as PILImage
+from PIL import Image as PILImage
 # lazygal has her own ImageFile class, so avoid trouble
-import ImageFile as PILImageFile
+from PIL import ImageFile as PILImageFile
 PILImageFile.MAXBLOCK = 1024*1024 # default is 64k, not enough for big pics
 
 import make
