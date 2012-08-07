@@ -626,6 +626,8 @@ class SharedFiles(make.FileMakeObject):
                 sf = genpage.SharedFileTemplate(album, shared_file,
                                                 shared_file_dest,
                                                 tpl_vars)
+                if self.album.force_gen_pages:
+                    sf.stamp_delete()
                 self.expected_shared_files.append(sf.path)
             else:
                 sf = genfile.SharedFileCopy(shared_file, shared_file_dest)
