@@ -102,6 +102,13 @@ img {
     margin:1em;
 }
 
+
+\#image_img img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 img.subgal {
     border: none;
 }
