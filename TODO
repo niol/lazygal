@@ -34,3 +34,8 @@ Ideas to improve Lazygal (in no particular order)
   according to configuration changes.
 
 * Add an option to paginate by sub-galleries number per page.
+
+* Copy instead of processing through PIL pics which are not resized (because of
+  XxY> for instance).
+
+* Build picture and gallery map using EXIF GPS data.
