@@ -161,8 +161,11 @@ class SubgalBreak(make.MakeTask):
                 self.webgal_dir.add_index_page(subgals, galleries)
 
     def __fill_real_pagination(self):
-        how_many_pages = len(self.webgal_dir.medias)\
-                          // self.webgal_dir.thumbs_per_page + 1
+        medias_amount = len(self.webgal_dir.medias)
+        how_many_pages = medias_amount // self.webgal_dir.thumbs_per_page
+        if medias_amount % self.webgal_dir.thumbs_per_page > 0:
+            how_many_pages = how_many_pages + 1
+
         for page_number in range(0, how_many_pages):
             step = page_number * self.webgal_dir.thumbs_per_page
             end_index = step + self.webgal_dir.thumbs_per_page
