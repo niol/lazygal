@@ -1,0 +1,15 @@
+<div xmlns:py="http://genshi.edgewall.org/"
+     class="media_thumb media_$media.type">
+     
+    <!--! Display media thumb -->
+    <a href="$media.link"><img class="thumb_image media_$media.type"
+                               src="$media.thumb"
+                               width="$media.thumb_width"
+                               height="$media.thumb_height"
+                               alt="$media.thumb_name thumb" /></a>
+    <a py:if="media.type == 'video'"
+       href="$media.link">
+       <img class="video_arrow" src="${rel_root}shared/video_arrow.svg" alt="video arrow overlay" />
+       <span class="video_length" py:content="media.length" />
+    </a>
+</div>

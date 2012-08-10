@@ -1,0 +1,10 @@
+<div xmlns:py="http://genshi.edgewall.org/">
+    <!--! Generate feed: turn on with cmd option 'puburl' -->
+    <!--! or set in configuration file: '.lazygal': section: '[global]', variable: 'puburl' -->
+    <p py:if="desc" py:content="desc"></p>
+    <p><img src="$album_pic_path" alt="album picture"/></p>
+    <p>
+        <py:if test="subgal_count > 0">$subgal_count ${_('sub-galleries')},</py:if>
+        $picture_count ${_('photos')}
+    </p>
+</div>

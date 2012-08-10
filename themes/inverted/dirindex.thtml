@@ -1,0 +1,110 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<!--! <head>  -->
+<xi:include href="header.thtml"/>
+
+<body>
+    <!--! Site title = 'album_description': 'Album name'  -->
+    <div id="header_container">
+		<header class="wrapper clearfix">
+			<h1 id="site_title" py:content="album_name" />
+		</header>
+	</div>
+
+    <!--! Main site content  -->
+    <div id="main_container">
+		<div id="main" class="wrapper clearfix">
+            
+            <!--! Album description = 'album_description': 'Album description'  -->
+            <div class="album_description">
+                <p py:if="album_description" py:content="album_description" />
+            </div>
+
+            <!--! Breadcrumbs -->
+            <div class="breadcrumbs">
+                <ul>
+                    <li py:for="webgal in webgal_path">
+                        <a href="${webgal.link}" py:content="webgal.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»&nbsp;'" />
+                    </li>
+                    <li>
+                        <a class="bc_current" href="" py:content="album_name" />
+                    </li>
+                </ul>
+            </div>
+
+            <!--! Image size options -->
+            <div class="image_size" py:if="len(osize_index_links) > 1">
+                <ul>
+                    <li py:for="osize_index_link in osize_index_links">
+                        <span py:if=" not osize_index_link.link">$osize_index_link.name</span>
+                        <a py:if="osize_index_link.link"
+                           href="$osize_index_link.link">$osize_index_link.name</a>
+                    </li>
+                </ul>
+            </div>
+
+            
+            <!--! List of sub-galleries -->
+            <div id="sub_gallery_links">
+                <py:for each="subgal_link in subgal_links">
+                    <xi:include href="gallerylink.thtml" />
+                </py:for>
+            </div>
+
+            <!--! Display media (image or video) -->
+            <div py:for="subdir, medias in medias" py:if="medias" class="media_links">
+                <py:if test="not subdir.is_main">
+                    <h2><a name="$subdir.id"></a>$subdir.album_name</h2>
+                    <div py:if="subdir.album_description" class="sub_gallery_description">
+                        <p>$subdir.album_description</p>
+                    </div>
+                </py:if>
+
+                
+                <!--! Pagination -->
+                <div class="pagination" py:if="len(onum_index_links) > 1">
+                    <ul>
+                        <li py:for="onum_index_link in onum_index_links">
+                            <span py:if="not onum_index_link.link" 
+                                class="pg_current">${onum_index_link.name + 1}</span>
+                            <a py:if="onum_index_link.link"
+                                href="$onum_index_link.link">${onum_index_link.name + 1}</a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!--! Display media thumbs -->
+                <div id="media_thumbs">
+                    <xi:include href="thumb.thtml" py:for="media in medias" />
+                </div>
+                
+                <!--! Pagination -->
+                <div class="pagination" py:if="len(onum_index_links) > 1">
+                    <ul>
+                        <li py:for="onum_index_link in onum_index_links">
+                           <!---! <a py:strip="not onum_index_link.link" -->
+                            <span py:if="not onum_index_link.link" 
+                                class="pg_current">${onum_index_link.name + 1}</span>
+                            <a py:if="onum_index_link.link"
+                                href="$onum_index_link.link">${onum_index_link.name + 1}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--! Zipped folder -->
+                <div class="directory_zip" py:if="subdir.dirzip">
+                    <a class="zip_link" href="$subdir.dirzip">${_('All full scale pictures as an archive, for')} "$subdir.album_name"</a> ($subdir.dirzip_size).
+                </div>
+            </div>
+
+        </div> <!-- #main -->
+	</div> <!-- #main_container -->
+
+<!--! Site footer  -->
+<xi:include href="footer.thtml" />
+
+</body>
+</html>

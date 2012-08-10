@@ -1,0 +1,46 @@
+<div xmlns:py="http://genshi.edgewall.org/"
+     xmlns:xi="http://www.w3.org/2001/XInclude"
+     id="image_container">
+    
+    <!--! Display image -->
+    <div class="image_position">
+        <img class="image_file" src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
+    </div>
+    
+    <div id="main" class="wrapper clearfix">
+    
+        <!--! Display previous image thumb -->
+        <div py:if="prev_link" class="prevnext" id="prev_link">
+            <xi:include href="thumb.thtml" py:with="media=prev_link" />
+            <a class="prevnext_text" href="$prev_link.link" alt="${_('previous')}"></a>
+        </div>
+
+        <!--! Display next image thumb -->
+        <div py:if="next_link" class="prevnext" id="next_link">
+            <xi:include href="thumb.thtml" py:with="media=next_link" />
+            <a class="prevnext_text" href="$next_link.link" alt="${_('next')}"></a>
+        </div>
+        
+        <!--! Display image info -->
+        <div id="image_caption">
+            <div class="image_comment" py:if="comment">$comment</div>
+            <div py:if="original_link" class="image_original_link"><a href="$original_link">${_('Original picture')}</a></div>
+            <div class="image_date">${_('Taken')} ${image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}</div>
+            <div class="authorship" py:if="authorship">${_('Author')}&nbsp;: $authorship</div>
+            <div class="image_caption_tech">
+                <ul>
+                    <li>$image_name</li>
+                    <li py:if="camera_name">${_('Camera:')} $camera_name
+                        <py:if test="lens_name"> ${_('with')} $lens_name</py:if>
+                    </li>
+                    <li py:if="exposure">${_('Exposure')} $exposure</li>
+                    <li py:if="iso">${_('Sensitivity ISO')} $iso</li>
+                    <li py:if="fnumber">${_('Aperture')} $fnumber</li>
+                    <li py:if="flash">${_('Flash')} $flash</li>
+                    <li py:if="focal_length">${_('Focal length')} $focal_length</li>
+                </ul>
+            </div>
+        </div>
+    
+    </div> <!-- #main -->
+</div> <!-- #image_container -->

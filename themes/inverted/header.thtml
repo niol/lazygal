@@ -1,0 +1,37 @@
+<head xmlns:py="http://genshi.edgewall.org/">
+    
+    <!--! Site title = 'album_description': 'Album name'  -->
+    <title py:if="album_name" py:content="album_name" />
+    
+    <!--! Album title = 'album_description': 'Album name'  -->
+    <title py:if="name" py:content="name" />
+
+    <!--! Site description = '.lazygal': section: '[template-vars]', variable: 'site_description' -->
+    <meta name="description" content="${site_description}" />
+    
+    <!--! Site author = '.lazygal': section: '[template-vars]', variable: 'site_author' -->
+    <meta name="author" content="${site_author}" />
+    
+    <!--! Site keywords = '.lazygal': section: '[template-vars]', variable: 'site_keywords' -->
+    <meta name="keywords" content="${site_keywords}" />
+    
+    <!--! Feed url: turn on with cmd option 'puburl' -->
+    <!--! or set in configuration file: '.lazygal': section: '[global]', variable: 'puburl' -->
+    <link py:if="feed_url" rel="alternate" type="application/rss+xml" title="Recent galleries" href="$feed_url" />
+    
+    <!--! Display with what version of lazygal, site was generated -->
+    <meta name="Generator" content="lazygal $lazygal_version" />
+    
+    <!--! Load all styles from theme folder 'SHARED_.*\.[t]?css' -->
+    <link py:for="style in styles" type="text/css"
+          rel="$style.rel" media="screen,projection" title="$style.name"
+          href="${rel_root}shared/${style.filename}.css" />
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width" />
+    
+    <!--[if lt IE 9]>
+    <script src="shared/html5-3.4-respond-1.1.0.min.js"></script>
+    <![endif]-->
+</head>

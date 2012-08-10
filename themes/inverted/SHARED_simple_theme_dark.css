@@ -1,0 +1,231 @@
+/* ===============
+Dark Theme
+=============== */
+body.simple_theme_dark {
+    color: #dddddd;
+    background-color: #0e0e0e;
+}
+
+body.simple_theme_dark a:link {
+    color: #ff7733;
+}
+
+body.simple_theme_dark a:active {
+    color: #ff7733;
+}
+
+body.simple_theme_dark a:visited {
+    color: #ff7733;
+}
+
+body.simple_theme_dark a:hover {
+    color: #ff7733;
+}
+
+body.simple_theme_dark div#site_title {
+    color: black;
+}
+
+body.simple_theme_dark ::-moz-selection {
+    background: #bb7711;
+    color: #000;
+}
+
+body.simple_theme_dark ::selection {
+    background: #bb7711;
+    color: #000;
+}
+
+/* ===============
+Main site content
+=============== */
+body.simple_theme_dark header,
+body.simple_theme_dark div#main,
+body.simple_theme_dark footer {
+    background-color: #000000;
+    border: 1px solid #282828;
+
+    -webkit-box-shadow: 0 2px 5px 0 #333333;
+    box-shadow: 0 2px 5px 0 #333333;
+}
+
+/* ===============
+Breadcrumbs
+=============== */
+body.simple_theme_dark .breadcrumbs ul {
+    background: #0e0e0e;
+    border-color: #333333;
+
+    -webkit-box-shadow: inset 0 2px 5px 0 rgba(255,255,255,.2);
+    box-shadow: inset 0 2px 5px 0 rgba(255,255,255,.2);
+}
+body.simple_theme_dark .breadcrumbs ul li a:hover {
+    border-color: #333333;
+
+    -webkit-box-shadow: 0 2px 5px 0 rgba(255,255,255,.2);
+    box-shadow: 0 2px 5px 0 rgba(255,255,255,.2);
+}
+
+body.simple_theme_dark .breadcrumbs ul li a,
+body.simple_theme_dark .breadcrumbs ul li span {
+    color: #bbb;
+    text-shadow: 0 1px 0 rgba(0,0,0,.5);
+}
+
+body.simple_theme_dark .breadcrumbs ul li a:hover {
+    background: #000;
+}
+
+body.simple_theme_dark .breadcrumbs ul .bc_current,
+body.simple_theme_dark .breadcrumbs ul .bc_current:hover {
+    background: none;
+}
+
+/* ===============
+Image size select
+=============== */
+body.simple_theme_dark .image_size ul li:first-child a,
+body.simple_theme_dark .image_size ul li:first-child span {
+    /* Reduced Size Orange */
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABOElEQVQ4jbWTQUrDQBSGv5lMbBZSaWJABPeewI2HSEFwoZ7AVevagohbceEVFF3WQ3gQd4XQ1HYT2yYzLsbGamKKggMDw//e/7/5570RAOYsjHjjHAgATf2SwJAGV+ImfhKmG0ZM6ZfSjAadV9AdENKeG7QlU3qlJJ3DeAjKA6k+t/IsvhCe0lOAX6o8SeDe/GziWMBGAEL6suRZ59DaqnkCbNzeQsvKBJ3VCyzFqwV+sf5JoKp9X1iqQiCJIR3D5BVcr15gNLDzAKiC/GDg9hCCHTi6tq1qboL4Vnk0gKZfDJMVyIF8BgeXsL0LF3vgOmAyWB4HnS36X0CqsKGFJT/fwXoAzho4br0VkBJIUEDyYqH9Ezh9hDRdRQZIhOmEEXP6JDHMP2AXaIWr6R5tAWA6YcTsb9/5HX9aX4VJfhYmAAAAAElFTkSuQmCC');
+}
+
+body.simple_theme_dark .image_size ul li:last-child a,
+body.simple_theme_dark .image_size ul li:last-child span {
+    /* Full Size Orange */
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABO0lEQVQ4ja2TvUoDQRDHfzu3+bJIvAsHYiMWPoUPEUtFX0Ew2hoRYm9nZal2gj6EjU9gYa2RcBcVi0vuy2JNcpDjTsSBgZnZ/f+WmWEVQHrodgg4BtpAQrEJ4FHjTJ0P71XadTuMuSsRwWgI4U9cAWwXamxpxvR+Jb58h6WWyd+eobsBttsTwCkFNBpwsQ0PVyZ31iAykZDtOU0gDnN8Al8ebO7ByxNIOlUkMhMnMXx4oOsgeu5KQxjD6SPcHMHtCVhVsIxMz17+9OF6Rl60/VXwXqFehR0FjpsBJDHYK8VzCANoLoNVgca8nGkhKgaIlV8uVpXbPwJEl9zMPxdAEAtGg2LAaJA3B9GAj5J1mg7sKrON7EBFG3HTAbXQsS9U6aMw9FYbosAAph4Fpp63hTp9BZAeuB0mf/vO38krZYT7X62kAAAAAElFTkSuQmCC');
+}
+
+/* ===============
+Pagination
+=============== */
+body.simple_theme_dark .pagination a {
+    border: 1px solid #222;
+    color: #555;
+}
+
+body.simple_theme_dark .pagination a:hover,
+body.simple_theme_dark .pagination a:active {
+    border: 1px solid #5f5f5f;
+}
+
+body.simple_theme_dark .pagination span.pg_current {
+    border: 1px solid #303030;
+    background-color: #0f0f0f;
+    color: #bbb;
+}
+
+body.simple_theme_dark .pagination span.pg_disabled {
+    border: 1px solid #0c0c0c;
+    color: #333;
+}
+
+/* ===============
+List of sub-galleries
+=============== */
+body.simple_theme_dark .sub_gallery_link {
+    background-color: #000000;
+    border-color: #232323 #232323 #1e1e1e;
+}
+
+body.simple_theme_dark .sub_gallery_image img {
+    background-color: #000000;
+    border: 0 solid #999999;
+}
+
+body.simple_theme_dark h4.sub_gallery_name a:link {
+    color: #ffffff;
+}
+
+body.simple_theme_dark h4.sub_gallery_name a:active {
+    color: #ffffff;
+}
+
+body.simple_theme_dark h4.sub_gallery_name a:visited {
+    color: #ffffff;
+}
+
+body.simple_theme_dark h4.sub_gallery_name a:hover {
+    color: #ffffff;
+}
+
+body.simple_theme_dark .sub_gallery_stats {
+    color: #cccccc;
+}
+
+body.simple_theme_dark .sub_gallery_description {
+    color: #cccccc;
+}
+
+/* ===============
+Thumbs
+=============== */
+body.simple_theme_dark .thumb_image {
+    background-color: #0e0e0e;
+    border: 1px solid #232323;
+}
+
+body.simple_theme_dark .thumb_image:hover {
+    background-color: #080808;
+
+    -webkit-box-shadow: 0 0 5px rgba(255,255,255, 0.2);
+    box-shadow: 0 0 5px rgba(255,255,255, 0.2);
+}
+
+body.simple_theme_dark .image_file:hover {
+    background-color: #0e0e0e;
+}
+
+/* ===============
+Big image
+=============== */
+body.simple_theme_dark .image_file {
+    background-color: #000000;
+    border: 1px solid #282828;
+
+    -webkit-box-shadow: 5px 0 5px -5px #333333, -5px 0 5px -5px #333333;
+    box-shadow: 5px 0 5px -5px #333333, -5px 0 5px -5px #333333;
+}
+
+body.simple_theme_dark div#image_caption {
+    background-color: #060606;
+    border: 1px solid #292929;
+}
+
+/* ===============
+Footer
+=============== */
+body.simple_theme_dark .footer {
+    color: #999999;
+}
+
+/* ===============
+Simple themes
+=============== */
+body.simple_theme_dark .light_theme {
+    color: #0088CC;
+    background-color: #F1F1F1;
+    border: 1px solid #D7D7D7;
+
+    -webkit-box-shadow: 0 2px 5px 0 #CCCCCC;
+    box-shadow: 0 2px 5px 0 #CCCCCC;
+}
+
+body.simple_theme_dark a.light_theme,
+body.simple_theme_dark a.light_theme:hover {
+    color: #0088CC;
+}
+
+body.simple_theme_dark .dark_theme {
+    color: #FF7733;
+    background-color: #0e0e0e;
+    border: 1px solid #282828;
+    
+    -webkit-box-shadow: 0 2px 5px 0 #333333;
+    box-shadow: 0 2px 5px 0 #333333;
+}
+
+body.simple_theme_dark a.dark_theme,
+body.simple_theme_dark a.dark_theme:hover {
+    color: #FF7733;
+}

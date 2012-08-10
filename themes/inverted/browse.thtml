@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"
+    xmlns:py="http://genshi.edgewall.org/"
+    xmlns:xi="http://www.w3.org/2001/XInclude">
+
+<!--! <head>  -->
+<xi:include href="header.thtml"/>
+
+<body>
+    <!--! Main site content  -->
+    <div id="main_container">
+        <div id="main" class="wrapper clearfix">
+            
+            <!--! Breadcrumbs -->
+            <div class="breadcrumbs">
+                <ul>
+                    <li py:for="webgal in webgal_path">
+                        <a href="${webgal.link}" py:content="webgal.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»&nbsp;'" />
+                    </li>
+                    <li>
+                        <a class="bc_current" href="" py:content="name" />
+                    </li>
+                </ul>
+            </div>
+            
+            <!--! Image size options -->
+            <div class="image_size" py:if="len(osize_links) > 1">
+                <ul>
+                    <li py:for="osize_link in osize_links">
+                        <span py:if=" not osize_link.link"
+                           href="$osize_link.link">$osize_link.name</span>
+                        <a py:if="osize_link.link"
+                           href="$osize_link.link">$osize_link.name</a>
+                    </li>
+                </ul>
+            </div>
+            
+        </div> <!-- #main -->
+        
+        <!--! Display media (image or video) -->
+        <xi:include href="${mediatype}.thtml" />
+            
+    </div> <!-- #main_container -->
+
+    <!--! Site footer  -->
+    <xi:include href="footer.thtml" />
+
+</body>
+</html>
