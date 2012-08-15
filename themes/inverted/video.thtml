@@ -5,8 +5,8 @@
     <div id="video_position">
         <video src="$video_src" controls="controls">
 				your browser does not support the video tag</video>
-        <div id="main" class="wrapper clearfix">
+        <div id="media_options" class="wrapper clearfix">
             <p py:if="original_link"><a href="$original_link">${_('Original video')}</a></p>
-        </div> <!-- #main -->
+        </div> <!-- #media_options -->
     </div>
 </div>
