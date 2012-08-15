@@ -41,6 +41,7 @@ Main site content
 =============== */
 body.simple_theme_dark header,
 body.simple_theme_dark div#main,
+body.simple_theme_dark div#media_options,
 body.simple_theme_dark footer {
     background-color: #000000;
     border: 1px solid #282828;
