@@ -4,7 +4,16 @@
     
     <!--! Display image -->
     <div class="image_position">
-        <img class="image_file" src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
+        <py:choose test="">
+            <py:when test="next_link">
+                <a href="$next_link.link" alt="${_('next')}">
+                    <img class="image_file" src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
+                </a>
+            </py:when>
+            <py:otherwise>
+                <img class="image_file" src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
+            </py:otherwise>
+        </py:choose>
     </div>
     
     <div id="media_options" class="wrapper clearfix">
