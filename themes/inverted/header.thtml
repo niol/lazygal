@@ -4,7 +4,10 @@
     <title py:if="album_name" py:content="album_name" />
     
     <!--! Album title = 'album_description': 'Album name'  -->
-    <title py:if="name" py:content="name" />
+    <title py:if="name and (image_name == None)" py:content="name" />
+    
+    <!--! Image title -->
+    <title py:if="name and image_name" py:content="name.replace('-', ' ').replace('_', ' ')" />
 
     <!--! Site description = '.lazygal': section: '[template-vars]', variable: 'site_description' -->
     <meta py:if="site_description" name="description" content="${site_description}" />
