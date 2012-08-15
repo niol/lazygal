@@ -125,8 +125,9 @@ div#site_title {
     margin: 10px 0;
 }
 
-div#main {
-    padding:20px 0;
+div#main,
+div#media_options {
+    padding: 15px 0;
 }
 
 div#main article h1 {
@@ -159,6 +160,7 @@ Main site content
 =============== */
 header,
 div#main,
+div#media_options,
 footer {
     background-color: #FFFFFF;
     border: 1px solid #D7D7D7;
@@ -471,7 +473,7 @@ div#image_caption {
 Previous/Next image links
 =============== */
 .prevnext {
-    margin-top: 5px;
+    margin: 0px 15px;
 }
 
 .prevnext_text {
