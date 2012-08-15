@@ -7,7 +7,7 @@
     <title py:if="name and (image_name == None)" py:content="name" />
     
     <!--! Image title -->
-    <title py:if="name and image_name" py:content="name.replace('-', ' ').replace('_', ' ')" />
+    <title py:if="name and image_name" py:content="name.replace('-', ' ').replace('_', ' ').capitalize()" />
 
     <!--! Site description = '.lazygal': section: '[template-vars]', variable: 'site_description' -->
     <meta py:if="site_description" name="description" content="${site_description}" />
