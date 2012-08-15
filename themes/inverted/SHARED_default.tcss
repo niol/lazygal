@@ -400,9 +400,7 @@ div#media_thumbs {
     border: 1px solid #DCDCDC;
     border-radius: 6px 6px 6px 6px;
     display: inline-block;
-    margin-left: 7px;
-    margin-right: 7px;
-    margin-top: 0px;
+    margin: 5px;
     padding: 10px;
     text-align: left;
 }
