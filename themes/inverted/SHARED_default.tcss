@@ -120,7 +120,7 @@ div#header_container {
     border-bottom: 20px solid transparent;
 }
 
-div#site_title {
+h1#site_title {
     color: black;
     margin: 10px 0;
 }
@@ -153,7 +153,7 @@ div#footer_container {
 /* ===============
 ALL: IE Fixes
 =============== */
-.ie7 div#site_title { padding-top:20px; }
+.ie7 h1#site_title { padding-top:20px; }
 
 /* ===============
 Main site content
@@ -626,7 +626,7 @@ nav ul li {
 WIDE: Menu
 ============ */
 
-div#site_title {
+h1#site_title {
     padding: 0 10px;
 }
 
