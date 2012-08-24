@@ -1,30 +1,30 @@
 <head xmlns:py="http://genshi.edgewall.org/">
-    
+
     <!--! Site title = 'album_description': 'Album name'  -->
     <title py:if="album_name" py:content="album_name" />
-    
+
     <!--! Album title = 'album_description': 'Album name'  -->
     <title py:if="name and (image_name == None)" py:content="name" />
-    
+
     <!--! Image title -->
     <title py:if="name and image_name" py:content="name.replace('-', ' ').replace('_', ' ').capitalize()" />
 
     <!--! Site description = '.lazygal': section: '[template-vars]', variable: 'site_description' -->
     <meta py:if="site_description" name="description" content="${site_description}" />
-    
+
     <!--! Site author = '.lazygal': section: '[template-vars]', variable: 'site_author' -->
     <meta py:if="site_author" name="author" content="${site_author}" />
-    
+
     <!--! Site keywords = '.lazygal': section: '[template-vars]', variable: 'site_keywords' -->
     <meta py:if="site_keywords" name="keywords" content="${site_keywords}" />
-    
+
     <!--! Feed url: turn on with cmd option 'puburl' -->
     <!--! or set in configuration file: '.lazygal': section: '[global]', variable: 'puburl' -->
     <link py:if="feed_url" rel="alternate" type="application/rss+xml" title="Recent galleries" href="$feed_url" />
-    
+
     <!--! Display with what version of lazygal, site was generated -->
-    <meta py:if="lazygal_genetator_info" name="Generator" content="lazygal $lazygal_version" />
-    
+    <meta name="Generator" content="lazygal $lazygal_version" />
+
     <!--! Load all styles from theme folder 'SHARED_.*\.[t]?css' -->
     <link py:for="style in styles" type="text/css"
           rel="$style.rel" media="screen,projection" title="$style.name"
@@ -33,7 +33,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width" />
-    
+
     <!--[if lt IE 9]>
     <script src="shared/html5-3.4-respond-1.1.0.min.js"></script>
     <![endif]-->
