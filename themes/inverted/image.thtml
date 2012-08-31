@@ -23,11 +23,34 @@
             <xi:include href="thumb.thtml" py:with="media=prev_link" />
             <a class="prevnext_text" href="$prev_link.link" alt="${_('previous')}"></a>
         </div>
-
+        
         <!--! Display next image thumb -->
         <div py:if="next_link" class="prevnext" id="next_link">
             <xi:include href="thumb.thtml" py:with="media=next_link" />
             <a class="prevnext_text" href="$next_link.link" alt="${_('next')}"></a>
+        </div>
+        
+        <!--! Display social buttons = '.lazygal': section: '[template-vars]', variable: 'display_social_buttons' -->
+        <div py:if="display_social_buttons" id="share">
+            <div id="share_icons">
+                <p>Share:</p>
+                <a href="#" class="share_facebook" title="Post to Facebook" target="_blank"></a>
+                <a href="#" class="share_twitter" title="Post to Twitter" target="_blank"></a>
+                <a href="#" class="share_google_plus" title="Post to Google+" target="_blank"></a>
+                <!--! FIXME: Link to Pinterest need 'media' (direct image link)
+                <a href="https://pinterest.com/pin/create/button/?url=IMAGE_PAGE_URL&amp;media=IMAGE_URL" class="share_pinterest" title="Post to Pinterest" target="_blank"></a>
+                -->
+                <a href="#" class="share_delicious" title="Add to Delicious" target="_blank"></a>
+                <a href="#" class="share_stumbleupon" title="Post to StumbleUpon" target="_blank"></a>
+                <!--! FIXME: Go straight to posting photo on Thumblr, need 'source' (direct image link)
+                http://www.tumblr.com/docs/en/buttons
+                http://www.tumblr.com/share/photo?clickthru=IMAGE_PAGE_URL&amp;source=IMAGE_URL
+                -->
+                <a href="#" class="share_tumblr" title="Add to Tumblr" target="_blank"></a>
+            </div>
+            <noscript>
+                <p>Javascript is not enabled, social media share links won't work</p>
+            </noscript>
         </div>
         
         <!--! Display image info -->
