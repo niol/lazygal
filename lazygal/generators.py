@@ -386,9 +386,13 @@ class WebalbumDir(make.FileMakeObject):
         if self.config.has_section('template-vars'):
             tpl_vars = {}
             for option in self.config.options('template-vars'):
-                value = self.config.get('template-vars', option)
-                value = value.decode(locale.getpreferredencoding())
-                tpl_vars[option] = genshi.core.Markup(value)
+                try:
+                    value = self.config.getboolean('template-vars', option)
+                    tpl_vars[option] = value
+                except ValueError:
+                    value = self.config.get('template-vars', option)
+                    value = value.decode(locale.getpreferredencoding())
+                    tpl_vars[option] = genshi.core.Markup(value)
 
         return tpl_vars
 
