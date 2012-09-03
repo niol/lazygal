@@ -1,7 +1,7 @@
 <div xmlns:py="http://genshi.edgewall.org/"
      xmlns:xi="http://www.w3.org/2001/XInclude"
      id="image_container">
-    
+
     <!--! Display image -->
     <div class="image_position">
         <py:choose test="">
@@ -15,21 +15,9 @@
             </py:otherwise>
         </py:choose>
     </div>
-    
+
     <div id="media_options" class="wrapper clearfix">
-    
-        <!--! Display previous image thumb -->
-        <div py:if="prev_link" class="prevnext" id="prev_link">
-            <xi:include href="thumb.thtml" py:with="media=prev_link" />
-            <a class="prevnext_text" href="$prev_link.link" alt="${_('previous')}"></a>
-        </div>
-        
-        <!--! Display next image thumb -->
-        <div py:if="next_link" class="prevnext" id="next_link">
-            <xi:include href="thumb.thtml" py:with="media=next_link" />
-            <a class="prevnext_text" href="$next_link.link" alt="${_('next')}"></a>
-        </div>
-        
+
         <!--! Display social buttons = '.lazygal': section: '[template-vars]', variable: 'display_social_buttons' -->
         <div py:if="display_social_buttons" id="share">
             <div id="share_icons">
@@ -52,7 +40,19 @@
                 <p>Javascript is not enabled, social media share links won't work</p>
             </noscript>
         </div>
-        
+
+        <!--! Display previous image thumb -->
+        <div py:if="prev_link" class="prevnext" id="prev_link">
+            <xi:include href="thumb.thtml" py:with="media=prev_link" />
+            <a class="prevnext_text" href="$prev_link.link" alt="${_('previous')}"></a>
+        </div>
+
+        <!--! Display next image thumb -->
+        <div py:if="next_link" class="prevnext" id="next_link">
+            <xi:include href="thumb.thtml" py:with="media=next_link" />
+            <a class="prevnext_text" href="$next_link.link" alt="${_('next')}"></a>
+        </div>
+
         <!--! Display image info -->
         <div id="image_caption">
             <div class="image_comment" py:if="comment">$comment</div>
@@ -73,6 +73,6 @@
                 </ul>
             </div>
         </div>
-    
+
     </div> <!-- #media_options -->
 </div> <!-- #image_container -->
