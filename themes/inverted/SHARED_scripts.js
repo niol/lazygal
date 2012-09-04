@@ -43,7 +43,7 @@ $(document).ready( function() {
     $("body").addClass("simple_theme_" + val);
     createCookie('simple_theme', val, 365);
     });
-}); 
+});
 
 $(document).ready( function() {
     document.body.className = "simple_theme_" + readCookie("simple_theme");
@@ -65,7 +65,7 @@ function readCookie(name) {
     for(var i=0; i < ca.length; i++) {
         var c = ca[i];
         while (c.charAt(0)==' ') c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) 
+        if (c.indexOf(nameEQ) == 0)
             return c.substring(nameEQ.length, c.length);
     }
     return null;
@@ -86,4 +86,4 @@ $('.share_google_plus').attr('href', 'https://plus.google.com/share?url=' + enco
 /* $('.share_pinterest').attr('href', 'https://pinterest.com/pin/create/button/?url=' + encoded_location_href + '&amp;media=IMAGE_URL') */
 $('.share_delicious').attr('href', 'https://delicious.com/post?url=' + encoded_location_href)
 $('.share_stumbleupon').attr('href', 'https://www.stumbleupon.com/submit?url=' + encoded_location_href)
-$('.share_tumblr').attr('href', 'http://www.tumblr.com/share?v=3&amp;s=&amp;u=' + encoded_location_href)
+$('.share_tumblr').attr('href', 'http://www.tumblr.com/share?v=3&s=&u=' + encoded_location_href)
