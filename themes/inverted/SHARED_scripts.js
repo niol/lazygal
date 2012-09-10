@@ -83,6 +83,7 @@ encoded_location_href = encodeURIComponent(location.href);
 $('.share_facebook').attr('href', 'https://www.facebook.com/share.php?u=' + encoded_location_href)
 $('.share_twitter').attr('href', 'https://twitter.com/intent/tweet?url=' + encoded_location_href)
 $('.share_google_plus').attr('href', 'https://plus.google.com/share?url=' + encoded_location_href)
+$('.share_reddit').attr('href', 'http://reddit.com/submit?url=' + encoded_location_href)
 /* $('.share_pinterest').attr('href', 'https://pinterest.com/pin/create/button/?url=' + encoded_location_href + '&amp;media=IMAGE_URL') */
 $('.share_delicious').attr('href', 'https://delicious.com/post?url=' + encoded_location_href)
 $('.share_stumbleupon').attr('href', 'https://www.stumbleupon.com/submit?url=' + encoded_location_href)
