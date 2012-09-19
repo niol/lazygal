@@ -5,7 +5,9 @@
     </div>
     <div id="image_caption">
         <div class="image_comment" py:if="comment">$comment</div>
-        <div class="image_date">${_('Taken')} ${image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}</div>
+        <div class="image_date" py:if="image_datetime">
+            ${_('Taken')} ${image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}
+        </div>
         <div class="authorship" py:if="authorship">${_('Author')}&nbsp;: $authorship</div>
         <div py:if="original_link" class="original_link"><a href="$original_link">${_('Original picture')}</a></div>
         <div class="image_caption_tech">

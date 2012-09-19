@@ -249,26 +249,26 @@ class WebalbumImagePage(WebalbumBrowsePage):
 
         tpl_values['img_width'], tpl_values['img_height'] = self.webalbum_media.resized[self.size_name].get_size()
 
-        img_date = self.image.get_date_taken()
-        tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
-        tpl_values['image_datetime'] = img_date
+        if self.dir.config.getboolean('webgal', 'publish-metadata'):
+            img_date = self.image.get_date_taken()
+            tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
+            tpl_values['image_datetime'] = img_date
 
-        image_info = self.image.info()
-        if image_info:
-            comment = image_info.get_comment()
-            if comment == '' or comment is None:
-                tpl_values['comment'] = None
-            else:
-                tpl_values['comment'] = self._do_not_escape(comment)
-            if self.dir.config.getboolean('webgal', 'publish-metadata'):
-                tpl_values['camera_name'] = image_info.get_camera_name()
-                tpl_values['lens_name'] = image_info.get_lens_name()
-                tpl_values['flash'] = image_info.get_flash()
-                tpl_values['exposure'] = image_info.get_exposure()
-                tpl_values['iso'] = image_info.get_iso()
-                tpl_values['fnumber'] = image_info.get_fnumber()
-                tpl_values['focal_length'] = image_info.get_focal_length()
-                tpl_values['authorship'] = image_info.get_authorship()
+            image_info = self.image.info()
+            if image_info:
+                comment = image_info.get_comment()
+                if comment == '' or comment is None:
+                    tpl_values['comment'] = None
+                else:
+                    tpl_values['comment'] = self._do_not_escape(comment)
+                    tpl_values['camera_name'] = image_info.get_camera_name()
+                    tpl_values['lens_name'] = image_info.get_lens_name()
+                    tpl_values['flash'] = image_info.get_flash()
+                    tpl_values['exposure'] = image_info.get_exposure()
+                    tpl_values['iso'] = image_info.get_iso()
+                    tpl_values['fnumber'] = image_info.get_fnumber()
+                    tpl_values['focal_length'] = image_info.get_focal_length()
+                    tpl_values['authorship'] = image_info.get_authorship()
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
