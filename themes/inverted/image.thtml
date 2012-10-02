@@ -6,7 +6,7 @@
     <div class="image_position">
         <py:choose test="">
             <py:when test="next_link">
-                <a href="$next_link.link" alt="${_('next')}">
+                <a href="$next_link.link" title="${_('next')}">
                     <img class="image_file" src="$img_src" width="$img_width" height="$img_height" alt="Image $image_name" />
                 </a>
             </py:when>
@@ -45,13 +45,13 @@
         <!--! Display previous image thumb -->
         <div py:if="prev_link" class="prevnext" id="prev_link">
             <xi:include href="thumb.thtml" py:with="media=prev_link" />
-            <a class="prevnext_text" href="$prev_link.link" alt="${_('previous')}"></a>
+            <a class="prevnext_text" href="$prev_link.link" title="${_('previous')}"></a>
         </div>
 
         <!--! Display next image thumb -->
         <div py:if="next_link" class="prevnext" id="next_link">
             <xi:include href="thumb.thtml" py:with="media=next_link" />
-            <a class="prevnext_text" href="$next_link.link" alt="${_('next')}"></a>
+            <a class="prevnext_text" href="$next_link.link" title="${_('next')}"></a>
         </div>
 
         <!--! Display image info -->
