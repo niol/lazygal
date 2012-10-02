@@ -27,14 +27,4 @@
     <script src="${rel_root}shared/plugins.js"></script>
     <script src="${rel_root}shared/scripts.js"></script>
 
-    <!--! Google analytics tracking ID = '.lazygal': section: '[template-vars]', variable: 'google_analytics_tracking_id' -->
-    <py:if test="google_analytics_tracking_id">
-    <script>
-        var _gaq=[['_setAccount','${google_analytics_tracking_id}'],['_trackPageview']];
-        (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-        s.parentNode.insertBefore(g,s)}(document,'script'));
-    </script>
-    </py:if>
-
 </div>
