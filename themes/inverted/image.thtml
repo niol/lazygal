@@ -29,6 +29,7 @@
                 <!--! FIXME: Link to Pinterest need 'media' (direct image link)
                 <a href="https://pinterest.com/pin/create/button/?url=IMAGE_PAGE_URL&amp;media=IMAGE_URL" class="share_pinterest" title="Post to Pinterest" target="_blank"></a>
                 -->
+                <a href="#" class="share_google_bookmarks" title="Add to Google Bookmarks" target="_blank"></a>
                 <a href="#" class="share_delicious" title="Add to Delicious" target="_blank"></a>
                 <a href="#" class="share_stumbleupon" title="Post to StumbleUpon" target="_blank"></a>
                 <!--! FIXME: Go straight to posting photo on Thumblr, need 'source' (direct image link)
