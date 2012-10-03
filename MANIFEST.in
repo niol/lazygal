@@ -13,6 +13,7 @@ recursive-include themes *.tcss
 recursive-include themes *.png
 recursive-include themes *.svg
 recursive-include themes *.js
+recursive-include themes *.tjs
 include locale/*.po
 include locale/lazygal.pot
 include locale/POTFILES.in
