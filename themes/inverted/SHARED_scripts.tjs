@@ -27,7 +27,7 @@ $(document).keypress(function(e) {
       }
 });
 
-
+#if display_theme_selector
 /**
  * Change background colors
  */
@@ -74,6 +74,7 @@ function eraseCookie(name) {
     createCookie(name, "", -1);
 }
 // /cookie functions
+#end
 
 #if display_social_buttons
 /**
