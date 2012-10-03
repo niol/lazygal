@@ -230,3 +230,71 @@ body.simple_theme_dark a.dark_theme,
 body.simple_theme_dark a.dark_theme:hover {
     color: #FF7733;
 }
+
+
+/* Inverted TipTip CSS - Version 1.2 */
+
+body.simple_theme_dark div#tiptip_content {
+	color: #000;
+	text-shadow: 0 0 2px #fff;
+	border: 1px solid rgba(0,0,0,0.25);
+	background-color: rgb(230,230,230);
+	background-color: rgba(230,230,230,0.92);
+	background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(transparent), to(#fff));
+	box-shadow: 0 0 3px #aaa;
+	-webkit-box-shadow: 0 0 3px #aaa;
+	-moz-box-shadow: 0 0 3px #aaa;
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_top #tiptip_arrow {
+	border-top-color: #000;
+	border-top-color: rgba(0,0,0,0.35);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_bottom #tiptip_arrow {
+	border-bottom-color: #000;
+	border-bottom-color: rgba(0,0,0,0.35);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_right #tiptip_arrow {
+	border-right-color: #000;
+	border-right-color: rgba(0,0,0,0.35);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_left #tiptip_arrow {
+	border-left-color: #000;
+	border-left-color: rgba(0,0,0,0.35);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_top #tiptip_arrow_inner {
+	border-top-color: rgb(230,230,230);
+	border-top-color: rgba(230,230,230,0.92);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_bottom #tiptip_arrow_inner {
+	border-bottom-color: rgb(230,230,230);
+	border-bottom-color: rgba(230,230,230,0.92);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_right #tiptip_arrow_inner {
+	border-right-color: rgb(230,230,230);
+	border-right-color: rgba(230,230,230,0.92);
+}
+
+body.simple_theme_dark div#tiptip_holder.tip_left #tiptip_arrow_inner {
+	border-left-color: rgb(230,230,230);
+	border-left-color: rgba(230,230,230,0.92);
+}
+
+/* Webkit Hacks  */
+@media screen and (-webkit-min-device-pixel-ratio:0) {	
+	body.simple_theme_dark div#tiptip_content {
+		background-color: rgba(215,215,215,0.88);
+	}
+	body.simple_theme_dark div#tiptip_holder.tip_bottom #tiptip_arrow_inner { 
+		border-bottom-color: rgba(215,215,215,0.88);
+	}
+	body.simple_theme_dark div#tiptip_holder.tip_top #tiptip_arrow_inner { 
+		border-top-color: rgba(235,235,235,0.92);
+	}
+}
