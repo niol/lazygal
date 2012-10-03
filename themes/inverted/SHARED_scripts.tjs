@@ -75,6 +75,7 @@ function eraseCookie(name) {
 }
 // /cookie functions
 
+#if display_social_buttons
 /**
  * Set social buttons proper link
  */
@@ -94,3 +95,4 @@ $('.share_twitter').attr('href', 'https://twitter.com/intent/tweet?url=' + encod
 $(function(){
     $('#share_icons').children().not('p').tipTip({defaultPosition: 'top', delay: 300, maxWidth: 'auto'});
 });
+#end
