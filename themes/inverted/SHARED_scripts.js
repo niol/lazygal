@@ -89,3 +89,8 @@ $('.share_reddit').attr('href', 'http://reddit.com/submit?url=' + encoded_locati
 $('.share_stumbleupon').attr('href', 'https://www.stumbleupon.com/submit?url=' + encoded_location_href)
 $('.share_tumblr').attr('href', 'http://www.tumblr.com/share?v=3&s=&u=' + encoded_location_href)
 $('.share_twitter').attr('href', 'https://twitter.com/intent/tweet?url=' + encoded_location_href)
+
+// Share buttons tooltip
+$(function(){
+    $('#share_icons').children().not('p').tipTip({defaultPosition: 'top', delay: 300, maxWidth: 'auto'});
+});
