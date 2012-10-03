@@ -10,7 +10,7 @@
     <!--! Main site content  -->
     <div id="main_container">
         <div id="main" class="wrapper clearfix">
-            
+
             <!--! Breadcrumbs -->
             <div class="breadcrumbs">
                 <ul>
@@ -22,7 +22,7 @@
                     </li>
                 </ul>
             </div>
-            
+
             <!--! Image size options -->
             <div class="image_size" py:if="len(osize_links) > 1">
                 <ul>
@@ -34,12 +34,12 @@
                     </li>
                 </ul>
             </div>
-            
+
         </div> <!-- #main -->
-        
+
         <!--! Display media (image or video) -->
         <xi:include href="${mediatype}.thtml" />
-            
+
     </div> <!-- #main_container -->
 
     <!--! Site footer  -->

@@ -571,7 +571,7 @@ a.light_theme:hover {
     background-color: #0e0e0e;
     border: 1px solid #282828;
     border-radius: 6px 6px 0px 0px;
-    
+
     -webkit-box-shadow: 0 2px 5px 0 #333333;
     box-shadow: 0 2px 5px 0 #333333;
 }
@@ -615,9 +615,9 @@ INTERMEDIATE: IE Fixes
 
 nav ul li {
     display:inline;
-}    
+}
 .oldie nav a {
-    margin:0 0.7%;        
+    margin:0 0.7%;
 }
 
 }
@@ -645,7 +645,7 @@ div#main article {
     float:left;
     width:57%;
 }
-    
+
 div#main aside {
     float:right;
     width:28%;

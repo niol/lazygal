@@ -221,7 +221,7 @@ body.simple_theme_dark .dark_theme {
     color: #FF7733;
     background-color: #0e0e0e;
     border: 1px solid #282828;
-    
+
     -webkit-box-shadow: 0 2px 5px 0 #333333;
     box-shadow: 0 2px 5px 0 #333333;
 }
@@ -287,14 +287,14 @@ body.simple_theme_dark div#tiptip_holder.tip_left #tiptip_arrow_inner {
 }
 
 /* Webkit Hacks  */
-@media screen and (-webkit-min-device-pixel-ratio:0) {	
+@media screen and (-webkit-min-device-pixel-ratio:0) {
 	body.simple_theme_dark div#tiptip_content {
 		background-color: rgba(215,215,215,0.88);
 	}
-	body.simple_theme_dark div#tiptip_holder.tip_bottom #tiptip_arrow_inner { 
+	body.simple_theme_dark div#tiptip_holder.tip_bottom #tiptip_arrow_inner {
 		border-bottom-color: rgba(215,215,215,0.88);
 	}
-	body.simple_theme_dark div#tiptip_holder.tip_top #tiptip_arrow_inner { 
+	body.simple_theme_dark div#tiptip_holder.tip_top #tiptip_arrow_inner {
 		border-top-color: rgba(235,235,235,0.92);
 	}
 }

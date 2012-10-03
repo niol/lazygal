@@ -1,20 +1,20 @@
 <div xmlns:py="http://genshi.edgewall.org/" class="sub_gallery_link">
-    
+
     <!--! Display thumb for sub-gallery -->
     <div py:if="subgal_link.album_picture" class="sub_gallery_image">
         <a href="$subgal_link.link">
             <img src="$subgal_link.album_picture" alt="$subgal_link.album_name album picture" />
         </a>
     </div>
-    
+
     <!--! Display sub-gallery info -->
     <div class="sub_gallery_name">
-    
+
         <!--! Sub-gallery title = 'sub_gallery/album_description': 'Album name'  -->
         <h4 class="sub_gallery_name">
             <a href="$subgal_link.link" py:content="subgal_link.album_name" />
         </h4>
-        
+
         <!--! Display sub-gallery stats -->
         <div py:if="subgal_link.image_count > 0 or subgal_link.subgal_count > 0"
              class="sub_gallery_stats">
@@ -26,7 +26,7 @@
                 $subgal_link.subgal_count ${_('sub-galleries')}
             </py:if>
         </div>
-        
+
         <!--! Sub-gallery description = 'sub_gallery/album_description': 'Album description'  -->
         <div py:if="subgal_link.album_description" class="sub_gallery_description">
             <p>$subgal_link.album_description</p>

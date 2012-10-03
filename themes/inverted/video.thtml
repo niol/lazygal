@@ -1,6 +1,6 @@
 <div xmlns:py="http://genshi.edgewall.org/"
      id="video_container">
-    
+
     <!--! Display video -->
     <div id="video_position">
         <video src="$video_src" controls="controls">

@@ -1,7 +1,6 @@
 <div xmlns:py="http://genshi.edgewall.org/"
     id="footer_container">
 
-
     <footer class="wrapper">
 
         <div class="footer_info">

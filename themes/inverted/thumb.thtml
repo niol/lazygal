@@ -1,6 +1,6 @@
 <div xmlns:py="http://genshi.edgewall.org/"
      class="media_thumb media_$media.type">
-     
+
     <!--! Display media thumb -->
     <a href="$media.link"><img class="thumb_image media_$media.type"
                                src="$media.thumb"

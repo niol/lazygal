@@ -17,7 +17,7 @@
     <!--! Main site content  -->
     <div id="main_container">
 		<div id="main" class="wrapper clearfix">
-            
+
             <!--! Album description = 'album_description': 'Album description'  -->
             <div class="album_description">
                 <p py:if="album_description" py:content="album_description" />
@@ -46,7 +46,7 @@
                 </ul>
             </div>
 
-            
+
             <!--! List of sub-galleries -->
             <div id="sub_gallery_links">
                 <py:for each="subgal_link in subgal_links">
@@ -63,30 +63,30 @@
                     </div>
                 </py:if>
 
-                
+
                 <!--! Pagination -->
                 <div class="pagination" py:if="len(onum_index_links) > 1">
                     <ul>
                         <li py:for="onum_index_link in onum_index_links">
-                            <span py:if="not onum_index_link.link" 
+                            <span py:if="not onum_index_link.link"
                                 class="pg_current">${onum_index_link.name + 1}</span>
                             <a py:if="onum_index_link.link"
                                 href="$onum_index_link.link">${onum_index_link.name + 1}</a>
                         </li>
                     </ul>
                 </div>
-                
+
                 <!--! Display media thumbs -->
                 <div id="media_thumbs">
                     <xi:include href="thumb.thtml" py:for="media in medias" />
                 </div>
-                
+
                 <!--! Pagination -->
                 <div class="pagination" py:if="len(onum_index_links) > 1">
                     <ul>
                         <li py:for="onum_index_link in onum_index_links">
                            <!---! <a py:strip="not onum_index_link.link" -->
-                            <span py:if="not onum_index_link.link" 
+                            <span py:if="not onum_index_link.link"
                                 class="pg_current">${onum_index_link.name + 1}</span>
                             <a py:if="onum_index_link.link"
                                 href="$onum_index_link.link">${onum_index_link.name + 1}</a>
