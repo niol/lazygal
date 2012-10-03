@@ -103,8 +103,8 @@
         </div> <!-- #main -->
 	</div> <!-- #main_container -->
 
-<!--! Site footer  -->
-<xi:include href="footer.thtml" />
+    <!--! Site footer  -->
+    <xi:include href="footer.thtml" />
 
 </body>
 </html>
