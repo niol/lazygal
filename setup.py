@@ -187,7 +187,7 @@ class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, objec
 
             if adjust:
                 distutils.log.info("copying and adjusting %s -> %s", script,
-                         self.build_dir)
+                                   self.build_dir)
                 if not self.dry_run:
                     outf = open(outfile, "w")
                     if not distutils.sysconfig.python_build:
@@ -218,7 +218,7 @@ class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, objec
                     newmode = (oldmode | 0555) & 07777
                     if newmode != oldmode:
                         distutils.log.info("changing mode of %s from %o to %o",
-                                 file, oldmode, newmode)
+                                           file, oldmode, newmode)
                         os.chmod(file, newmode)
 
     # copy_scripts ()
@@ -233,7 +233,8 @@ for theme in themes:
             (os.path.join('share', 'lazygal', 'themes', themename),
                 glob.glob(os.path.join('themes', themename, '*'))))
 
-setup(name = 'lazygal',
+setup(
+    name = 'lazygal',
     version = lazygal.__version__,
     description = 'Static web gallery generator',
     long_description = '',

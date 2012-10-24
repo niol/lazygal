@@ -41,13 +41,15 @@ class TestDeps(LazygalTestGen):
         dest_path = os.path.join(self.tmpdir, 'dst')
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
-        self.assertTrue(dest_subgal.needs_build(),
-               'Webalbum subgal has not been built and does not need build.')
+        self.assertTrue(
+            dest_subgal.needs_build(),
+            'Webalbum subgal has not been built and does not need build.')
 
         self.album.generate(dest_path)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
-        self.assertFalse(dest_subgal.needs_build(),
+        self.assertFalse(
+            dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
@@ -72,7 +74,8 @@ class TestDeps(LazygalTestGen):
         self.album.generate(dest_path)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
-        self.assertFalse(dest_subgal.needs_build(),
+        self.assertFalse(
+            dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
@@ -84,7 +87,8 @@ class TestDeps(LazygalTestGen):
                                   self.album)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
-        self.assertTrue(dest_subgal.needs_build(),
+        self.assertTrue(
+            dest_subgal.needs_build(),
             'Webalbum subgal should need build because of updated dir md.')
 
     def test_subgal_update(self):
@@ -99,7 +103,8 @@ class TestDeps(LazygalTestGen):
         self.album.generate(dest_path)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
-        self.assertFalse(dest_subgal.needs_build(),
+        self.assertFalse(
+            dest_subgal.needs_build(),
             'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
@@ -111,21 +116,24 @@ class TestDeps(LazygalTestGen):
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         # Subgal should need build.
-        self.assertTrue(dest_subgal.needs_build(),
+        self.assertTrue(
+            dest_subgal.needs_build(),
             'Webalbum subgal should need build because of added pic in subgal.')
 
         # Parent directory should need build.
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
-        self.assertTrue(dest_gal.needs_build(),
+        self.assertTrue(
+            dest_gal.needs_build(),
             'Webalbum gal should need build because of added pic in subgal.')
 
         # Parent directory should need build.
         parent_index = WebalbumIndexPage(dest_gal, 'small', 0,
                                          [dest_subgal],
                                          [(dest_subgal, dest_subgal.medias)])
-        self.assertTrue(parent_index.needs_build(),
-         'Webalbum gal index should need build because of added pic in subgal.')
+        self.assertTrue(
+            parent_index.needs_build(),
+            'Webalbum gal index should need build because of added pic in subgal.')
 
 
 if __name__ == '__main__':

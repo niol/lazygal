@@ -389,8 +389,9 @@ class WebalbumIndexPage(WebalbumPage):
             dir_info['link'] = posixpath.join(subgal.source_dir.name,
                                               self._get_related_index_fn())
             dir_info['link'] = self.url_quote(dir_info['link'])
-            dir_info['album_picture'] = posixpath.join(subgal.source_dir.name,
-                                            self.dir.get_webalbumpic_filename())
+            dir_info['album_picture'] = \
+                posixpath.join(subgal.source_dir.name,
+                               self.dir.get_webalbumpic_filename())
             dir_info['album_picture'] = self.url_quote(dir_info['album_picture'])
             subgal_links.append(dir_info)
         return subgal_links
@@ -476,8 +477,8 @@ class WebalbumFeed(make.FileMakeObject):
         url = os.path.join(self.pub_url, webalbumdir.source_dir.strip_root())
 
         desc_values = {}
-        desc_values['album_pic_path'] = os.path.join(url,
-                                         webalbumdir.get_webalbumpic_filename())
+        desc_values['album_pic_path'] = \
+            os.path.join(url, webalbumdir.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
         desc_values['picture_count'] = webalbumdir.source_dir.get_media_count('image')
         desc_values['desc'] = webalbumdir.source_dir.desc

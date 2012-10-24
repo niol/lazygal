@@ -97,8 +97,8 @@ class GstVideoOpener(object):
         if not gobjects_threads_init:
             gobject_init()
 
-        self.filesrc.set_property("location",
-                            self.input_file.encode(sys.getfilesystemencoding()))
+        self.filesrc.set_property(
+            "location", self.input_file.encode(sys.getfilesystemencoding()))
 
     def check_interrupt(self):
         if interrupted:
@@ -346,8 +346,8 @@ class VideoFrameExtractor(GstVideoReader):
 
         # RGB is what is assumed in order to load the frame into a PIL Image.
         self.capsfilter = gst.element_factory_make('capsfilter')
-        self.capsfilter.set_property('caps',
-                              gst.Caps('video/x-raw-rgb,framerate=%s/1' % fps))
+        self.capsfilter.set_property(
+            'caps', gst.Caps('video/x-raw-rgb,framerate=%s/1' % fps))
         self.pipeline.add(self.capsfilter)
         videorate.link(self.capsfilter)
 
