@@ -37,9 +37,9 @@ class RSS20:
                                   'xmlns:atom': 'http://www.w3.org/2005/Atom'})
 
         channel = ET.SubElement(root, 'channel')
-        ET.SubElement(channel, 'title' ).text = self.title
-        ET.SubElement(channel, 'link' ).text = self.__url_quote(self.link)
-        ET.SubElement(channel, 'description' ).text = self.description
+        ET.SubElement(channel, 'title').text = self.title
+        ET.SubElement(channel, 'link').text = self.__url_quote(self.link)
+        ET.SubElement(channel, 'description').text = self.description
         ET.SubElement(channel, 'atom:link', {'href': self.link + feed_filename,
                                              'rel' : 'self',
                                              'type': 'application/rss+xml'})
@@ -74,7 +74,7 @@ class RSS20:
     def dump(self, path):
         (root, channel) = self.__get_root_and_channel(os.path.basename(path))
 
-        pubdate = ET.SubElement(channel, 'pubDate' )
+        pubdate = ET.SubElement(channel, 'pubDate')
 
         self.items.sort(lambda x, y: int(x['timestamp'] - y['timestamp']))
         for item in self.items:
