@@ -364,7 +364,7 @@ class DirectoryMetadata(make.GroupTask):
                 if os.path.isfile(file_md_path):
                     self.add_file_dependency(file_md_path)
 
-    def get_matew_metadata(self, metadata, subdir = None):
+    def get_matew_metadata(self, metadata, subdir=None):
         """
         Return dictionary with meta data parsed from Matew like format.
         """

@@ -315,7 +315,7 @@ class WebalbumDir(make.FileMakeObject):
             logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
                          % self.source_dir.strip_root())
             logging.debug("(%s)" % self.path)
-            os.makedirs(self.path, mode = 0755)
+            os.makedirs(self.path, mode=0755)
             # Directory did not exist, mark it as so
             self.stamp_delete()
 
@@ -621,7 +621,7 @@ class SharedFiles(make.FileMakeObject):
         if not os.path.isdir(self.path):
             logging.info(_("MKDIR %SHAREDDIR%"))
             logging.debug("(%s)" % self.path)
-            os.makedirs(self.path, mode = 0755)
+            os.makedirs(self.path, mode=0755)
 
         super(SharedFiles, self).__init__(self.path)
 

@@ -143,7 +143,7 @@ def run():
         module_path = '.'.join(['lazygaltest', os.path.basename(fn[:-3])])
         m = my_import(module_path)
         suitelist.append(unittest.defaultTestLoader.loadTestsFromModule(m))
-    runner = unittest.TextTestRunner(verbosity = 2)
+    runner = unittest.TextTestRunner(verbosity=2)
     runner.run(unittest.TestSuite(suitelist))
 
 
