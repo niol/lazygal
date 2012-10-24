@@ -263,8 +263,7 @@ class WebalbumPicture(make.FileMakeObject):
                               % webgal_dir.source_dir.album_picture)
 
             md_dirpic_thumb = webgal_dir._add_size_qualifier(
-                                           webgal_dir.source_dir.album_picture,
-                                           THUMB_SIZE_NAME)
+                webgal_dir.source_dir.album_picture, THUMB_SIZE_NAME)
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None

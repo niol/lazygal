@@ -23,8 +23,8 @@ import gc
 import genshi
 import sys
 
-from config import LazygalConfig, LazygalWebgalConfig,\
-                   USER_CONFIG_PATH, LazygalConfigDeprecated
+from config import LazygalConfig, LazygalWebgalConfig
+from config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from sourcetree import SOURCEDIR_CONFIGFILE
 
 import make
@@ -627,7 +627,8 @@ class SharedFiles(make.FileMakeObject):
 
         self.expected_shared_files = []
         for shared_file in glob.glob(
-          os.path.join(self.album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
+                os.path.join(self.album.tpl_dir,
+                             THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
                 replace(THEME_SHARED_FILE_PREFIX, '')
             shared_file_dest = os.path.join(self.path,
