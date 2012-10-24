@@ -196,7 +196,7 @@ class WebalbumBrowsePage(WebalbumPage):
 
         prev = self.webalbum_media.previous
         if prev:
-            tpl_values['prev_link']  = self._gen_other_media_link(prev)
+            tpl_values['prev_link'] = self._gen_other_media_link(prev)
 
         next = self.webalbum_media.next
         if next:
