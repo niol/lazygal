@@ -151,7 +151,7 @@ class MakeTask(object):
         print indent, self, self.get_mtime()
 
     def print_dep_tree(self, depth=1, parent_level=-1):
-        level = parent_level+1
+        level = parent_level + 1
         if level > depth: return
 
         self.print_dep_entry(level)

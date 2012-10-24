@@ -47,7 +47,7 @@ class Scale(_Newsize):
     def dest_size(self, orig_size):
         match = self.matches()
         scale = int(match.group('scale'))
-        return tuple(map(lambda x: x*scale//100, orig_size))
+        return tuple(map(lambda x: x * scale // 100, orig_size))
 
 
 class XYScale(_Newsize):

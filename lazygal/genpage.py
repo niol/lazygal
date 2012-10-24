@@ -146,7 +146,7 @@ class WebalbumPage(genfile.WebalbumFile):
     def url_quote(self, url):
         return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/#')
 
-    UNIT_PREFIXES = (('T', 2**40), ('G', 2**30), ('M', 2**20), ('K', 2**10),)
+    UNIT_PREFIXES = (('T', 2 ** 40), ('G', 2 ** 30), ('M', 2 ** 20), ('K', 2 ** 10),)
 
     def format_filesize(self, size_bytes):
         for unit_prefix, limit in self.UNIT_PREFIXES:
@@ -178,7 +178,7 @@ class WebalbumBrowsePage(WebalbumPage):
         self.add_dependency(self.dir.sort_task)
 
         self.set_template('browse.thtml')
-        self.load_tpl(self.media.type+'.thtml')
+        self.load_tpl(self.media.type + '.thtml')
 
     def build(self):
         page_rel_path = self.rel_path(self.dir.flattening_dir)

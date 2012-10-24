@@ -54,7 +54,7 @@ class TestSizeParser(unittest.TestCase):
         orig_size = self.get_random_size()
         scale = self.get_random_percentage()
         size_string = '%d%%' % scale
-        real_dest_size = tuple(map(lambda x: x*scale//100, orig_size))
+        real_dest_size = tuple(map(lambda x: x * scale // 100, orig_size))
 
         self.check(orig_size, size_string, real_dest_size)
 
@@ -71,7 +71,7 @@ class TestSizeParser(unittest.TestCase):
         size_string = '%d%%%d%%' % (xscale, yscale)
         x = orig_size[0]
         y = orig_size[1]
-        real_dest_size = (x*xscale//100, y*yscale//100)
+        real_dest_size = (x * xscale // 100, y * yscale // 100)
 
         self.check(orig_size, size_string, real_dest_size, ratiocheck=False)
 

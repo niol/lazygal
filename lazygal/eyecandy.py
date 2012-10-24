@@ -50,7 +50,7 @@ class PictureMess:
         self.bg = bg != 'transparent' and bg or Color.TRANSPARENT
 
         self.result_size = result_size
-        self.thumb_size = [3*max(self.result_size)//5 for i in range(2)]
+        self.thumb_size = [3 * max(self.result_size) // 5 for i in range(2)]
 
         self.picture_mess = None
 
@@ -58,17 +58,17 @@ class PictureMess:
         img = Image.open(image_path)
         img.thumbnail(self.thumb_size, Image.ANTIALIAS)
 
-        white_size = [ x + 2*self.THUMB_WHITE_WIDTH for x in img.size ]
+        white_size = [ x + 2 * self.THUMB_WHITE_WIDTH for x in img.size ]
 
         white = Image.new('RGB', white_size, 'white')
         white.paste(img, (self.THUMB_WHITE_WIDTH, self.THUMB_WHITE_WIDTH))
 
-        maxi = 2*max(white_size)
+        maxi = 2 * max(white_size)
 
         thumb = Image.new('RGBA', (maxi, maxi))
 
-        thumb.paste(white, ((maxi - white_size[0])// 2,
-                            (maxi - white_size[1])// 2))
+        thumb.paste(white, ((maxi - white_size[0]) // 2,
+                            (maxi - white_size[1]) // 2))
 
         rotation = random.randint(-self.THUMB_MAX_ROTATE_ANGLE,
                                   self.THUMB_MAX_ROTATE_ANGLE)

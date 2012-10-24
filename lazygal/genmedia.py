@@ -22,7 +22,7 @@ import logging
 from PIL import Image as PILImage
 # lazygal has her own ImageFile class, so avoid trouble
 from PIL import ImageFile as PILImageFile
-PILImageFile.MAXBLOCK = 1024*1024 # default is 64k, not enough for big pics
+PILImageFile.MAXBLOCK = 1024 * 1024 # default is 64k, not enough for big pics
 
 import make
 import genfile

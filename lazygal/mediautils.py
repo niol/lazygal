@@ -427,7 +427,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
         for value_index in range(n_values):
             average = 0.0
             for histogram in self.histograms:
-                average = average + (float(histogram[value_index])/n_samples)
+                average = average + (float(histogram[value_index]) / n_samples)
             average_hist.append(average)
 
         # Find histogram closest to average histogram
@@ -438,7 +438,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
             mse = 0.0
             for value_index in range(n_values):
                 gap = average_hist[value_index] - hist[value_index]
-                mse = mse + gap*gap
+                mse = mse + gap * gap
 
             if min_mse is None or mse < min_mse:
                 min_mse = mse
