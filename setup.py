@@ -139,6 +139,7 @@ class build_lazygal(distutils.command.build.build):
 # check if Python is called on the first line with this expression
 first_line_re = re.compile('^#!.*python[0-9.]*([ \t].*)?$')
 
+
 class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, object):
     """
     This is mostly distutils copy, it just renames script according

@@ -39,6 +39,8 @@ else:
 
 
 interrupted = False
+
+
 def signal_handler(signum, frame):
     global interrupted
     interrupted = True

@@ -230,6 +230,7 @@ class FileSimpleDependency(FileMakeObject):
     def clean_output(self):
         pass
 
+
 class FileCopy(FileMakeObject):
     """
     Simple file copy make target.
