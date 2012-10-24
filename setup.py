@@ -106,7 +106,7 @@ class build_i18n_lazygal(Command):
 
         for po_file in self.po_files:
             lang = os.path.basename(po_file[:-3])
-            mo_dir =  os.path.join("build", "mo", lang, "LC_MESSAGES")
+            mo_dir = os.path.join("build", "mo", lang, "LC_MESSAGES")
             mo_file = os.path.join(mo_dir, "%s.mo" % self.po_package)
             if not os.path.exists(mo_dir):
                 os.makedirs(mo_dir)

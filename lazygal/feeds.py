@@ -56,7 +56,7 @@ class RSS20:
         item = {}
         item['title'] = title
         item['link'] = link
-        item['contents'] =  contents
+        item['contents'] = contents
         item['timestamp'] = timestamp
 
         i = 0
