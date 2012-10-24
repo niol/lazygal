@@ -61,7 +61,7 @@ class RSS20:
 
         i = 0
         while i < len(self.items)\
-        and self.__item_older(item, self.items[i]) > 0:
+                and self.__item_older(item, self.items[i]) > 0:
             i = i + 1
 
         if i < self.__maxitems:

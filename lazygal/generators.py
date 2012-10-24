@@ -74,7 +74,7 @@ class SubgalSort(make.MakeTask):
             subgal_sorter = \
                 lambda x, y: x.source_dir.compare_mtime(y.source_dir)
         elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
-        or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
+                or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
             subgal_sorter = \
                 lambda x, y: x.source_dir.compare_filename(y.source_dir)
         else:
@@ -170,7 +170,7 @@ class SubgalBreak(make.MakeTask):
         medias_amount = len(self.webgal_dir.medias)
         how_many_pages = medias_amount // self.webgal_dir.thumbs_per_page
         if medias_amount == 0\
-        or medias_amount % self.webgal_dir.thumbs_per_page > 0:
+                or medias_amount % self.webgal_dir.thumbs_per_page > 0:
             how_many_pages = how_many_pages + 1
 
         for page_number in range(0, how_many_pages):
@@ -431,7 +431,7 @@ class WebalbumDir(make.FileMakeObject):
         self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
 
         if self.config.getboolean('webgal', 'dirzip')\
-        and self.source_dir.get_media_count() > 1:
+                and self.source_dir.get_media_count() > 1:
             self.dirzip = genfile.WebalbumArchive(self)
             self.add_dependency(self.dirzip)
         else:
@@ -482,8 +482,8 @@ class WebalbumDir(make.FileMakeObject):
             # Do not append default size name to HTML page filename
             return path
         elif size_name in self.browse_sizes\
-        and self.newsizers[size_name] == 'original'\
-        and extension != '.html':
+                and self.newsizers[size_name] == 'original'\
+                and extension != '.html':
             # Do not append size_name to unresized images.
             return path
         else:
@@ -530,7 +530,7 @@ class WebalbumDir(make.FileMakeObject):
     def should_be_flattened(self, path=None):
         if path is None: path = self.source_dir.path
         return self.album.dir_flattening_depth is not False\
-        and self.source_dir.get_album_level(path) > self.album.dir_flattening_depth
+            and self.source_dir.get_album_level(path) > self.album.dir_flattening_depth
 
     def flatten_below(self):
         if self.album.dir_flattening_depth is False:

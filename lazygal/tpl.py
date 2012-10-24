@@ -96,7 +96,7 @@ class XmlTemplate(LazygalTemplate):
                 if kind is START:
                     tag, attrib = data
                     if tag.namespace == 'http://www.w3.org/2001/XInclude'\
-                    and tag.localname == 'include':
+                            and tag.localname == 'include':
                         subtpl_ident = attrib.get('href')
                         try:
                             subtpl = self.loader.load(subtpl_ident)

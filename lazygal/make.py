@@ -89,7 +89,7 @@ class MakeTask(object):
 
         for dependency in self.deps:
             if dependency.get_mtime() > self.get_mtime()\
-            or dependency.needs_build():
+                    or dependency.needs_build():
                 if not dependency.is_dep_only():
                     if return_culprit:
                         mtime_gap = dependency.get_mtime() - self.get_mtime()

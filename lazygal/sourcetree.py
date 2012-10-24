@@ -139,7 +139,7 @@ class MediaFile(File):
         if self.has_reliable_date() and other_media.has_reliable_date():
             return self.compare_date_taken(other_media)
         elif not self.has_reliable_date()\
-        and not other_media.has_reliable_date():
+                and not other_media.has_reliable_date():
             return self.compare_filename(other_media)
         else:
             # One of the picture has no EXIF date, so we arbitrary sort it

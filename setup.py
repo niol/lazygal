@@ -195,11 +195,12 @@ class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, objec
                                    (os.path.normpath(sys.executable),
                                     post_interp))
                     else:
-                        outf.write("#!%s%s\n" %
-                                   (os.path.join(
-                            distutils.sysconfig.get_config_var("BINDIR"),
-                            "python" + distutils.sysconfig.get_config_var("EXE")),
-                                    post_interp))
+                        outf.write(
+                            "#!%s%s\n" %
+                            (os.path.join(
+                             distutils.sysconfig.get_config_var("BINDIR"),
+                             "python" + distutils.sysconfig.get_config_var("EXE")),
+                             post_interp))
                     outf.writelines(f.readlines())
                     outf.close()
                 if f:
