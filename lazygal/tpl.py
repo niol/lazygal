@@ -126,9 +126,9 @@ class PlainTemplate(LazygalTemplate, TextTemplate):
 class TplFactory(object):
 
     known_exts = {
-        '.thtml' : XmlTemplate,
-        '.tcss'  : PlainTemplate,
-        '.tjs'   : PlainTemplate,
+        '.thtml': XmlTemplate,
+        '.tcss' : PlainTemplate,
+        '.tjs'  : PlainTemplate,
     }
 
     def __init__(self, default_tpl_dir, tpl_dir):

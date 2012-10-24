@@ -149,9 +149,9 @@ class ImageOtherSize(ResizedImage):
         return PILImage.open(self.source_media.path)
 
     TRANSPOSE_METHODS = {
-        90  : PILImage.ROTATE_90,
-        180 : PILImage.ROTATE_180,
-        270 : PILImage.ROTATE_270,
+        90 : PILImage.ROTATE_90,
+        180: PILImage.ROTATE_180,
+        270: PILImage.ROTATE_270,
     }
 
     def resize(self, im):

@@ -422,7 +422,7 @@ class WebalbumDir(make.FileMakeObject):
         self.tpl_vars = self.__load_tpl_vars()
         styles = self.album.get_avail_styles(self.album.theme,
                                      self.config.get('webgal', 'default-style'))
-        self.tpl_vars.update({'styles' : styles})
+        self.tpl_vars.update({'styles': styles})
 
         self.set_original(self.config.getboolean('webgal', 'original'),
                           self.config.getstr('webgal', 'original-baseurl'),

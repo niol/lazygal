@@ -169,11 +169,11 @@ class _ImageTag_0_1(object):
         return decode_exif_user_comment(self._tag, self._imgpath)
 
     TAG_PYTRANSLATORS = {
-        'Exif.Photo.DateTimeDigitized' : 'get_exif_date',
-        'Exif.Photo.DateTimeOriginal'  : 'get_exif_date',
-        'Exif.Photo.UserComment'       : 'get_decoded_exif_user_comment',
-        'Exif.Image.DateTime'          : 'get_exif_date',
-        'Exif.Image.Orientation'       : 'get_int',
+        'Exif.Photo.DateTimeDigitized': 'get_exif_date',
+        'Exif.Photo.DateTimeOriginal' : 'get_exif_date',
+        'Exif.Photo.UserComment'      : 'get_decoded_exif_user_comment',
+        'Exif.Image.DateTime'         : 'get_exif_date',
+        'Exif.Image.Orientation'      : 'get_int',
     }
 
     def get_value(self):

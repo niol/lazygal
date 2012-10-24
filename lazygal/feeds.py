@@ -33,8 +33,8 @@ class RSS20:
         self.__maxitems = maxitems
 
     def __get_root_and_channel(self, feed_filename):
-        root = ET.Element('rss', {'version'    : '2.0',
-                                  'xmlns:atom' : 'http://www.w3.org/2005/Atom'})
+        root = ET.Element('rss', {'version'   : '2.0',
+                                  'xmlns:atom': 'http://www.w3.org/2005/Atom'})
 
         channel = ET.SubElement(root, 'channel')
         ET.SubElement(channel, 'title' ).text = self.title
