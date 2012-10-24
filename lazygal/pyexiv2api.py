@@ -225,6 +225,7 @@ class _ImageMetadata_0_1(object):
                 self.__try_copy_tag_to(tag_key, dest_imgtags)
 
     def get_comment(self): return self._metadata.getComment()
+
     def set_comment(self, value): self._metadata.setComment(value)
     comment = property(get_comment, set_comment)
 
