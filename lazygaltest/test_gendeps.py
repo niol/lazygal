@@ -48,7 +48,7 @@ class TestDeps(LazygalTestGen):
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'\
+            'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
     def test_dirmetadata_update(self):
@@ -73,7 +73,7 @@ class TestDeps(LazygalTestGen):
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'\
+            'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
         # touch the description file
@@ -100,7 +100,7 @@ class TestDeps(LazygalTestGen):
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'\
+            'Webalbum subgal has been built and does need build because of %s.'
             % str(dest_subgal.needs_build(True)))
 
         self.add_img(source_subgal.path, 'subgal_img2.jpg')

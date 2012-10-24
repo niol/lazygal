@@ -89,7 +89,7 @@ class WebalbumPage(genfile.WebalbumFile):
                 osize_info['name'] = osize_name
             else:
                 osize_info['name'] = osize_name
-                osize_info['link'] = self._add_size_qualifier(filename\
+                osize_info['link'] = self._add_size_qualifier(filename
                                                               + '.html',
                                                               osize_name)
                 osize_info['link'] = self.url_quote(osize_info['link'])
@@ -221,7 +221,7 @@ class WebalbumBrowsePage(WebalbumPage):
 
         if self.dir.original:
             if self.dir.orig_base:
-                tpl_values['original_link'] = posixpath.join(\
+                tpl_values['original_link'] = posixpath.join(
                     pathutils.url_path(self.dir.source_dir.rel_root()),
                     self.dir.orig_base,
                     pathutils.url_path(self.dir.source_dir.strip_root()),
@@ -333,7 +333,7 @@ class WebalbumIndexPage(WebalbumPage):
                              str(page_number)])
 
     def _get_related_index_fn(self):
-        return self._add_size_qualifier(\
+        return self._add_size_qualifier(
                             WebalbumIndexPage.FILENAME_BASE_STRING + '.html',
                             self.size_name)
 

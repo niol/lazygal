@@ -77,7 +77,7 @@ class ResizedImage(genfile.WebalbumFile):
             self.build()
         except IOError:
             if not self.source_media.broken:
-                logging.error(_("  %s is BROKEN, skipped")\
+                logging.error(_("  %s is BROKEN, skipped")
                               % self.source_media.filename)
                 self.source_media.broken = True
 
@@ -226,7 +226,7 @@ class VideoThumb(ResizedImage):
         try:
             thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
         except mediautils.TranscodeError, e:
-            logging.error(_("  creating %s thumbnail failed, skipped")\
+            logging.error(_("  creating %s thumbnail failed, skipped")
                           % self.source_media.filename)
             logging.info(str(e))
             self.clean_output()
@@ -248,7 +248,7 @@ class WebalbumPicture(make.FileMakeObject):
 
         # Use already generated thumbs for better performance (lighter to
         # rotate, etc.).
-        thumbs = [image.thumb\
+        thumbs = [image.thumb
                   for image in webgal_dir.get_all_medias_tasks()
                   if image.thumb and not image.media.broken]
 
@@ -259,10 +259,10 @@ class WebalbumPicture(make.FileMakeObject):
             albumpic_path = os.path.join(webgal_dir.source_dir.path,
                                          webgal_dir.source_dir.album_picture)
             if not os.path.isfile(albumpic_path):
-                logging.error(_("Supplied album picture %s does not exist.")\
+                logging.error(_("Supplied album picture %s does not exist.")
                               % webgal_dir.source_dir.album_picture)
 
-            md_dirpic_thumb = webgal_dir._add_size_qualifier(\
+            md_dirpic_thumb = webgal_dir._add_size_qualifier(
                                            webgal_dir.source_dir.album_picture,
                                            THUMB_SIZE_NAME)
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
@@ -310,7 +310,7 @@ class WebVideo(genfile.WebalbumFile):
             width, height = self.newsizer.dest_size(self.source_video.get_size())
             mediautils.WebMTranscoder(self.source_video.path, width, height).convert(self.path)
         except mediautils.TranscodeError, e:
-            logging.error(_("  transcoding %s failed, skipped")\
+            logging.error(_("  transcoding %s failed, skipped")
                           % self.source_video.filename)
             logging.info(str(e))
             self.source_video.broken = True

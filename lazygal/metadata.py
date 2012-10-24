@@ -496,10 +496,10 @@ class DefaultMetadata(make.FileMakeObject):
         f = file(self._path, 'w')
         f.write(codecs.BOM_UTF8)
         f.write('# Directory metadata for lazygal, Matew format\n')
-        f.write('Album name "%s"\n'\
+        f.write('Album name "%s"\n'
                 % self.source_dir.human_name.encode('utf-8'))
         f.write('Album description ""\n')
-        f.write('Album image identifier "%s"\n'\
+        f.write('Album image identifier "%s"\n'
                 % md['album_picture'].encode('utf-8'))
         f.close()
 

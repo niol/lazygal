@@ -274,7 +274,7 @@ class Directory(File):
                 self.medias.append(media)
             elif not self.is_metadata(filename)and\
                  filename != SOURCEDIR_CONFIGFILE:
-                logging.info(_("  Ignoring %s, format not supported.")\
+                logging.info(_("  Ignoring %s, format not supported.")
                              % filename)
                 logging.debug("(%s)" % os.path.join(self.path, filename))
 

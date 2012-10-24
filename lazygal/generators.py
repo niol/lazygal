@@ -78,7 +78,7 @@ class SubgalSort(make.MakeTask):
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_filename(y.source_dir)
         else:
-            raise ValueError(_("Unknown sorting criterion '%s'")\
+            raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.subgal_sort_by[0])
         self.webgal_dir.subgals.sort(subgal_sorter,
                                      reverse=self.webgal_dir.subgal_sort_by[1])
@@ -90,7 +90,7 @@ class SubgalSort(make.MakeTask):
         elif self.webgal_dir.pic_sort_by[0] == 'filename':
             sorter = lambda x, y: x.media.compare_filename(y.media)
         else:
-            raise ValueError(_("Unknown sorting criterion '%s'")\
+            raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.pic_sort_by[0])
         self.webgal_dir.medias.sort(sorter,
                                     reverse=self.webgal_dir.pic_sort_by[1])
@@ -312,7 +312,7 @@ class WebalbumDir(make.FileMakeObject):
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path):
-            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")\
+            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
                          % self.source_dir.strip_root())
             logging.debug("(%s)" % self.path)
             os.makedirs(self.path, mode = 0755)
@@ -330,7 +330,7 @@ class WebalbumDir(make.FileMakeObject):
             elif media.type == 'video':
                 media_task = WebalbumVideoTask(self, media)
             else:
-                raise NotImplementedError("Unknown media type '%s'"\
+                raise NotImplementedError("Unknown media type '%s'"
                                           % media.type)
             self.medias.append(media_task)
             self.add_dependency(media_task)
@@ -626,7 +626,7 @@ class SharedFiles(make.FileMakeObject):
         super(SharedFiles, self).__init__(self.path)
 
         self.expected_shared_files = []
-        for shared_file in glob.glob(\
+        for shared_file in glob.glob(
           os.path.join(self.album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
                                      replace(THEME_SHARED_FILE_PREFIX, '')
