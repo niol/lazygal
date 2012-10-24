@@ -17,8 +17,8 @@
 
 import os
 from genshi.core import START
-from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate,\
-                            TemplateNotFound
+from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
+from genshi.template import TemplateNotFound
 from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
 import __init__

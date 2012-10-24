@@ -334,8 +334,7 @@ class WebalbumIndexPage(WebalbumPage):
 
     def _get_related_index_fn(self):
         return self._add_size_qualifier(
-                            WebalbumIndexPage.FILENAME_BASE_STRING + '.html',
-                            self.size_name)
+            WebalbumIndexPage.FILENAME_BASE_STRING + '.html', self.size_name)
 
     def _get_onum_links(self):
         onum_index_links = []
