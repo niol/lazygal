@@ -58,7 +58,7 @@ class TestGenerators(LazygalTestGen):
         Files that are not part of what was generated or updated shall be
         spotted.
         """
-        pics = [ 'img%d.jpg' % i for i in range(0, 8)]
+        pics = ['img%d.jpg' % i for i in range(0, 8)]
         source_subgal = self.setup_subgal('subgal', pics)
 
         dest_path = self.get_working_path()
@@ -237,7 +237,7 @@ class TestSpecialGens(LazygalTestGen):
         config.set('webgal', 'thumbs-per-page', 4)
         self.setup_album(config)
 
-        pics = [ 'img%d.jpg' % i for i in range(0, 9)]
+        pics = ['img%d.jpg' % i for i in range(0, 9)]
         source_subgal = self.setup_subgal('subgal', pics)
 
         self.album.generate(self.dest_path)
@@ -260,7 +260,7 @@ class TestSpecialGens(LazygalTestGen):
         config.set('global', 'dir-flattening-depth', 1)
         self.setup_album(config)
 
-        pics = [ 'img%d.jpg' % i for i in range(0, 9)]
+        pics = ['img%d.jpg' % i for i in range(0, 9)]
         source_subgal = self.setup_subgal('subgal', pics)
 
         self.album.generate(self.dest_path)
@@ -276,7 +276,7 @@ class TestSpecialGens(LazygalTestGen):
         """
         self.setup_album()
 
-        pics = [ 'img%d.jpg' % i for i in range(0, 2)]
+        pics = ['img%d.jpg' % i for i in range(0, 2)]
         source_subgal = self.setup_subgal('subgal', pics)
 
         # cp -ar to create an out-of-tree source dir with pics

@@ -58,7 +58,7 @@ class PictureMess:
         img = Image.open(image_path)
         img.thumbnail(self.thumb_size, Image.ANTIALIAS)
 
-        white_size = [ x + 2 * self.THUMB_WHITE_WIDTH for x in img.size ]
+        white_size = [x + 2 * self.THUMB_WHITE_WIDTH for x in img.size ]
 
         white = Image.new('RGB', white_size, 'white')
         white.paste(img, (self.THUMB_WHITE_WIDTH, self.THUMB_WHITE_WIDTH))
