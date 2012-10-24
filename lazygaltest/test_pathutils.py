@@ -18,7 +18,8 @@
 
 import unittest
 import os
-import posixpath, ntpath
+import posixpath
+import ntpath
 from __init__ import LazygalTest
 from lazygal.pathutils import *
 from lazygal.sourcetree import Directory

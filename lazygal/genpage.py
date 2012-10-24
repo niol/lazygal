@@ -26,7 +26,8 @@ import genshi
 
 import make
 import pathutils
-import genfile, feeds
+import genfile
+import feeds
 
 
 class WebalbumPage(genfile.WebalbumFile):

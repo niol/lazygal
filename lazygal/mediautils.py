@@ -476,7 +476,8 @@ class VideoThumbnailer(object):
 
 
 if __name__ == '__main__':
-    import sys, os
+    import sys
+    import os
 
     converter_types = sys.argv[1].split(',')
     converters = {}

@@ -15,10 +15,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-
-import os
-import sys, urllib
 import email.utils
+import os
+import sys
+import urllib
 from xml.etree import cElementTree as ET
 
 

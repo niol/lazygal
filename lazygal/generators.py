@@ -15,12 +15,13 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import os, sys
+import os
 import glob
 import locale
 import logging
 import gc
 import genshi
+import sys
 
 from config import LazygalConfig, LazygalWebgalConfig,\
                    USER_CONFIG_PATH, LazygalConfigDeprecated
@@ -28,8 +29,13 @@ from sourcetree import SOURCEDIR_CONFIGFILE
 
 import make
 import pathutils
-import sourcetree, tpl, newsize, metadata
-import genpage, genmedia, genfile
+import sourcetree
+import tpl
+import newsize
+import metadata
+import genpage
+import genmedia
+import genfile
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX

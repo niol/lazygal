@@ -16,7 +16,8 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import random, time
+import random
+import time
 import unittest
 from lazygal import newsize
 

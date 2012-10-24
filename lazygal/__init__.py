@@ -42,7 +42,9 @@ def get_hg_rev():
         if not os.path.isdir(os.path.join(lazygal_dir, '.hg')):
             raise IOError
 
-        import mercurial.hg, mercurial.ui, mercurial.node
+        import mercurial.hg
+        import mercurial.node
+        import mercurial.ui
         repo = mercurial.hg.repository(mercurial.ui.ui(), lazygal_dir)
 
         last_revs = repo.changelog.parents(repo.dirstate.parents()[0])
