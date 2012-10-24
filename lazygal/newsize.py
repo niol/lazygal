@@ -115,7 +115,7 @@ class MaximumWidthHeight(_WidthHeight):
     def dest_size(self, orig_size):
         width, height = self.requested_widthheight()
         return self.appropriate_widthheight(orig_size, width, height,
-                                            lambda x,y: x <= y)
+                                            lambda x, y: x <= y)
 
 
 class MinimumWidthHeight(_WidthHeight):
@@ -125,7 +125,7 @@ class MinimumWidthHeight(_WidthHeight):
     def dest_size(self, orig_size):
         width, height = self.requested_widthheight()
         return self.appropriate_widthheight(orig_size, width, height,
-                                            lambda x,y: x >= y)
+                                            lambda x, y: x >= y)
 
 
 class MandatoryWidthHeight(_WidthHeight):
@@ -146,7 +146,7 @@ class WidthHeightIfLarger(_WidthHeight):
         x, y = orig_size
         if x > width or y > height:
             return self.appropriate_widthheight(orig_size, width, height,
-                                                lambda x,y: x <= y)
+                                                lambda x, y: x <= y)
         else:
             return orig_size
 
@@ -160,7 +160,7 @@ class WidthHeightIfSmaller(_WidthHeight):
         x, y = orig_size
         if x < width and y < height:
             return self.appropriate_widthheight(orig_size, width, height,
-                                                lambda x,y: x >= y)
+                                                lambda x, y: x >= y)
         else:
             return orig_size
 

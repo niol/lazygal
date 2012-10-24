@@ -138,7 +138,7 @@ class PictureMess:
         tmp = self.picture_mess
         self.picture_mess = shadow
 
-        self.__paste_img_to_mess_top(tmp, (0,0))
+        self.__paste_img_to_mess_top(tmp, (0, 0))
         self.picture_mess.save(output_file)
 
 

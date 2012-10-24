@@ -228,7 +228,7 @@ themes = glob.glob(os.path.join('themes', '*'))
 for theme in themes:
     themename = os.path.basename(theme)
     theme_data.append(
-            (os.path.join('share','lazygal','themes', themename),
+            (os.path.join('share', 'lazygal', 'themes', themename),
                 glob.glob(os.path.join('themes', themename, '*'))))
 
 setup(name = 'lazygal',
