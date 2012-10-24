@@ -22,7 +22,7 @@ import logging
 from PIL import Image as PILImage
 # lazygal has her own ImageFile class, so avoid trouble
 from PIL import ImageFile as PILImageFile
-PILImageFile.MAXBLOCK = 1024 * 1024 # default is 64k, not enough for big pics
+PILImageFile.MAXBLOCK = 1024 * 1024  # default is 64k, not enough for big pics
 
 import make
 import genfile
@@ -87,7 +87,7 @@ class ResizedImage(genfile.WebalbumFile):
             self.stamp_build()
 
     def resize(self, im):
-        self.source_media.get_size() # Probe brokenness
+        self.source_media.get_size()  # Probe brokenness
         if self.source_media.broken:
             raise IOError()
 
@@ -155,7 +155,7 @@ class ImageOtherSize(ResizedImage):
     }
 
     def resize(self, im):
-        self.source_media.get_size() # Probe brokenness
+        self.source_media.get_size()  # Probe brokenness
         if self.source_media.broken:
             raise IOError()
 

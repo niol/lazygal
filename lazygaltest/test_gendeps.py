@@ -77,7 +77,7 @@ class TestDeps(LazygalTestGen):
             % str(dest_subgal.needs_build(True)))
 
         # touch the description file
-        time.sleep(1) # ensure time diffrence for some systems
+        time.sleep(1)  # ensure time diffrence for some systems
         os.utime(os.path.join(source_subgal.path, 'album_description'), None)
         # New objects in order to probe filesystem
         source_subgal = Directory(subgal_path, [], ['subgal_img.jpg'],

@@ -68,7 +68,7 @@ class MakeTask(object):
         self.__built_once = True
 
     def stamp_delete(self):
-        self.__last_build_time = -1 # older than oldest epoch
+        self.__last_build_time = -1  # older than oldest epoch
         self.__built_once = False
 
     def built_once(self):
@@ -98,7 +98,7 @@ class MakeTask(object):
                         elif dependency.needs_build():
                             reason = dependency.needs_build(True)
                         else:
-                            raise RuntimeError # should never go here
+                            raise RuntimeError  # should never go here
                         return dependency, reason
                     else:
                         return True
@@ -107,7 +107,7 @@ class MakeTask(object):
     def make(self, force=False):
         if force or self.needs_build():
             for d in self.deps:
-                d.make() # dependency building not forced
+                d.make()  # dependency building not forced
             self.call_build()
 
     def call_build(self):
@@ -166,7 +166,7 @@ class GroupTask(MakeTask):
     """
 
     def built_once(self):
-        return True # GroupTask is all about the deps.
+        return True  # GroupTask is all about the deps.
 
     def update_build_status(self):
         super(GroupTask, self).update_build_status()

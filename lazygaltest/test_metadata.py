@@ -23,7 +23,7 @@ import locale
 import codecs
 from __init__ import LazygalTest
 from lazygal import metadata
-metadata.FILE_METADATA_ENCODING = 'utf-8' # force for these tests
+metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
 from lazygal import pyexiv2api as pyexiv2

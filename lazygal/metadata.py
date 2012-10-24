@@ -113,7 +113,7 @@ class ImageInfoTags(object):
                 return 180
             elif orientation_code == 6:
                 return 270
-            else: # Should be orientation_code == 1 but catch all
+            else:  # Should be orientation_code == 1 but catch all
                 return 0
         except KeyError:
             return 0
@@ -324,7 +324,7 @@ class ImageInfoTags(object):
         try:
             comment = self._metadata.comment.strip(' ')
             if '\x00' in comment:
-                raise ValueError # ignore broken JPEG comments
+                raise ValueError  # ignore broken JPEG comments
             return self._fallback_to_encoding(comment)
         except (AttributeError, ValueError):
             return ''

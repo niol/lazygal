@@ -76,7 +76,7 @@ class build_manpages(Command):
                 continue
 
         for xmlmanpage in self.manpages:
-            manpage = xmlmanpage[:-4] # remove '.xml' at the end
+            manpage = xmlmanpage[:-4]  # remove '.xml' at the end
             section = manpage[-1:]
             if newer(xmlmanpage, manpage):
                 cmd = (self.executable, "--nonet", "-o", self.mandir, db2man,

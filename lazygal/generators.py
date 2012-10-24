@@ -74,7 +74,7 @@ class SubgalSort(make.MakeTask):
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_mtime(y.source_dir)
         elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
-        or self.webgal_dir.subgal_sort_by[0] == 'filename': # Backward compatibility
+        or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
             subgal_sorter = lambda x, y:\
                                 x.source_dir.compare_filename(y.source_dir)
         else:
@@ -148,7 +148,7 @@ class SubgalBreak(make.MakeTask):
         """
         Loose pagination not breaking subgals (chosen if subgals are flattened).
         """
-        subgals = [] # No subgal links as they are flattened
+        subgals = []  # No subgal links as they are flattened
 
         galleries = []
         how_many_medias = 0
@@ -403,8 +403,8 @@ class WebalbumDir(make.FileMakeObject):
         return tpl_vars
 
     def __configure(self):
-        config_dirs = self.source_dir.parent_paths()[:-1] # strip root dir
-        config_dirs.reverse() # from root to deepest
+        config_dirs = self.source_dir.parent_paths()[:-1]  # strip root dir
+        config_dirs.reverse()  # from root to deepest
         config_files = map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
                            config_dirs)
         logging.debug(_("  Trying loading gallery configs: %s")
@@ -468,7 +468,7 @@ class WebalbumDir(make.FileMakeObject):
 
     def get_webalbumpic_filename(self):
         if self.webalbumpic_bg == 'transparent':
-            ext = '.png' # JPEG does not have an alpha channel
+            ext = '.png'  # JPEG does not have an alpha channel
         else:
             ext = '.jpg'
         return genmedia.WebalbumPicture.BASEFILENAME + ext
@@ -516,13 +516,13 @@ class WebalbumDir(make.FileMakeObject):
             len(self.source_dir.subdirs)
 
     def get_all_subgals(self):
-        all_subgals = list(self.subgals) # We want a copy here.
+        all_subgals = list(self.subgals)  # We want a copy here.
         for subgal in self.subgals:
             all_subgals.extend(subgal.get_all_subgals())
         return all_subgals
 
     def get_all_medias_tasks(self):
-        all_medias = list(self.medias) # We want a copy here.
+        all_medias = list(self.medias)  # We want a copy here.
         for subgal in self.subgals:
             all_medias.extend(subgal.get_all_medias_tasks())
         return all_medias
@@ -672,7 +672,7 @@ class Album:
             except LazygalConfigDeprecated:
                 logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page.") % sourcedir_configfile)
                 sys.exit(1)
-        if config is not None: # Supplied config
+        if config is not None:  # Supplied config
             self.config.load(config)
 
         if self.config.getboolean('runtime', 'quiet'):
@@ -779,8 +779,8 @@ class Album:
         logging.debug(_("Generating metadata in %s") % self.source_dir)
 
         for root, dirnames, filenames in self.walk(self.source_dir):
-            filenames.sort() # This is required for the ignored files
-                             # checks to be reliable.
+            filenames.sort()  # This is required for the ignored files
+                              # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
             logging.info(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root())
             logging.debug("(%s)" % source_dir.path)
@@ -812,7 +812,7 @@ class Album:
 
             if root in dir_heap:
                 subdirs, subgals = dir_heap[root]
-                del dir_heap[root] # No need to keep it there
+                del dir_heap[root]  # No need to keep it there
             else:
                 subdirs = []
                 subgals = []
@@ -864,7 +864,7 @@ class Album:
             if check_all_dirs:
                 destgal.make()
             elif destgal.needs_build():
-                destgal.make(force=True) # avoid another needs_build() call in make()
+                destgal.make(force=True)  # avoid another needs_build() call in make()
             else:
                 logging.debug(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 

@@ -25,7 +25,7 @@ def is_root_posix(path):
 
 
 def is_root_win32(path):
-    return path[1:] == ':\\' # strip drive letter in comparison
+    return path[1:] == ':\\'  # strip drive letter in comparison
 
 
 if sys.platform == 'win32':

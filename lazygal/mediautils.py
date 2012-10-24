@@ -104,7 +104,7 @@ class GstVideoOpener(object):
                                               gst.Structure('interrupted'))
             self.pipeline.get_bus().post(msg)
         if interrupted or not self.running:
-            return False # Remove timeout handler
+            return False  # Remove timeout handler
         return True
 
     def __stop_pipeline(self):
@@ -402,7 +402,7 @@ class VideoBestFrameFinder(VideoFrameExtractor):
     def __init__(self, path, fps, intro_seconds):
         super(VideoBestFrameFinder, self).__init__(path, fps)
 
-        self.max_frames = self.fps * intro_seconds # Frames to go through
+        self.max_frames = self.fps * intro_seconds  # Frames to go through
         self.histograms = []
 
     def cb_grabbed_frame_buf(self, buf):

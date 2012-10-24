@@ -348,7 +348,7 @@ class Directory(File):
         return all_medias_count
 
     def get_all_medias(self):
-        all_medias = list(self.medias) # We want a copy here.
+        all_medias = list(self.medias)  # We want a copy here.
         for subdir in self.subdirs:
             all_medias.extend(subdir.get_all_medias())
         return all_medias
@@ -357,7 +357,7 @@ class Directory(File):
         return [m.path for m in self.get_all_medias()]
 
     def get_all_subdirs(self):
-        all_subdirs = list(self.subdirs) # We want a copy here.
+        all_subdirs = list(self.subdirs)  # We want a copy here.
         for subdir in self.subdirs:
             all_subdirs.extend(subdir.get_all_subdirs())
         return all_subdirs
