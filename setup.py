@@ -53,7 +53,7 @@ class build_manpages(Command):
         "/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl",
         # gentoo
         "/usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl",
-        ]
+    ]
     mandir = "./"
     executable = find_executable('xsltproc')
 
@@ -269,8 +269,8 @@ setup(name = 'lazygal',
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
         'test'          : test_lazygal,
-        },
+    },
     data_files = theme_data
-    )
+)
 
 # vim: ts=4 sw=4 expandtab

@@ -18,9 +18,7 @@
 import os
 
 
-__all__ = [
-        'generators',
-        ]
+__all__ = ['generators', ]
 
 
 # Compute installation prefix
