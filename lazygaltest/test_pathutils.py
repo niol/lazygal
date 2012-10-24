@@ -67,7 +67,7 @@ class TestPathutils(LazygalTest):
         self.assertFalse(is_subdir_of(self.d('/tmp'),
                                       self.f('/tmpx/foo')))
         self.assertTrue(is_subdir_of(self.d('/tmp/bar'),
-                                      self.f('/tmp/bar/baz/jay')))
+                                     self.f('/tmp/bar/baz/jay')))
         self.assertFalse(is_subdir_of(self.d('/tmp/john/mail'), self.f('/tmpz')))
 
     def test_url_path(self):

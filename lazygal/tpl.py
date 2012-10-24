@@ -136,7 +136,7 @@ class TplFactory(object):
         # a template variable is defined, or the empty string, thus defined()
         # will only work for the 'whether it is defined' part of the test.
         self.loader = TemplateLoader([tpl_dir, default_tpl_dir],
-                                      variable_lookup='lenient')
+                                     variable_lookup='lenient')
 
     def is_known_template_type(self, file):
         filename, ext = os.path.splitext(os.path.basename(file))

@@ -139,7 +139,7 @@ def run():
     import glob
     suitelist = []
     for fn in glob.glob(os.path.join(os.path.dirname(__file__),
-                                           "test_*.py")):
+                                     "test_*.py")):
         module_path = '.'.join(['lazygaltest', os.path.basename(fn[:-3])])
         m = my_import(module_path)
         suitelist.append(unittest.defaultTestLoader.loadTestsFromModule(m))

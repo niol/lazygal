@@ -78,7 +78,7 @@ class TestGenerators(LazygalTestGen):
                                   [], pics, self.album)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
         expected = map(lambda fn:
-                             unicode(os.path.join(dest_path, 'subgal', fn)),
+                       unicode(os.path.join(dest_path, 'subgal', fn)),
                        ['extra_thumb2.jpg',
                         'img6_thumb.jpg',
                         'img6_small.jpg', 'img6_medium.jpg',

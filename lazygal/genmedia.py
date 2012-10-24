@@ -101,7 +101,7 @@ class ResizedImage(genfile.WebalbumFile):
         while not calibrated:
             try:
                 im.save(self.path, quality=self.webgal.quality,
-                                   **self.webgal.save_options)
+                        **self.webgal.save_options)
             except IOError, e:
                 if str(e).startswith('encoder error'):
                     PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK

@@ -149,9 +149,9 @@ parser.add_option("", "--subgal-sort-by",
                   action="store", metavar=_('ORDER'),
                   dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname or mtime. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--keep-gps-data",
-                    action="store_true",
-                    dest="keep_gps",
-                    help=_("Do not remove GPS location tags from EXIF metadata. Mostly useful with holiday photos."))
+                  action="store_true",
+                  dest="keep_gps",
+                  help=_("Do not remove GPS location tags from EXIF metadata. Mostly useful with holiday photos."))
 (options, args) = parser.parse_args()
 
 if options.show_version:

@@ -495,7 +495,7 @@ class WebalbumFeed(make.FileMakeObject):
 class SharedFileTemplate(make.FileMakeObject):
 
     def __init__(self, album, shared_tpl_name, shared_file_dest_tplname,
-                       tpl_vars):
+                 tpl_vars):
         self.album = album
         self.tpl = self.album.tpl_loader.load(shared_tpl_name)
         self.tpl_vars = tpl_vars

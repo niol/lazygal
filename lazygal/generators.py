@@ -68,15 +68,15 @@ class SubgalSort(make.MakeTask):
         logging.info(_("  SORTING pics and subdirs"))
 
         if self.webgal_dir.subgal_sort_by[0] == 'exif':
-            subgal_sorter = lambda x, y:\
-                                x.source_dir.compare_latest_exif(y.source_dir)
+            subgal_sorter = \
+                lambda x, y: x.source_dir.compare_latest_exif(y.source_dir)
         elif self.webgal_dir.subgal_sort_by[0] == 'mtime':
-            subgal_sorter = lambda x, y:\
-                                x.source_dir.compare_mtime(y.source_dir)
+            subgal_sorter = \
+                lambda x, y: x.source_dir.compare_mtime(y.source_dir)
         elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
         or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
-            subgal_sorter = lambda x, y:\
-                                x.source_dir.compare_filename(y.source_dir)
+            subgal_sorter = \
+                lambda x, y: x.source_dir.compare_filename(y.source_dir)
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.subgal_sort_by[0])
@@ -409,7 +409,7 @@ class WebalbumDir(make.FileMakeObject):
                            config_dirs)
         logging.debug(_("  Trying loading gallery configs: %s")
                       % ', '.join(map(self.source_dir.strip_root,
-                                          config_files)))
+                                      config_files)))
         self.config.read(config_files)
 
         self.browse_sizes = []
@@ -588,8 +588,8 @@ class WebalbumDir(make.FileMakeObject):
                 # FIXME: No clue why this happens, but it happens!
                 dest_file = dest_file.decode(sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
-               dest_file not in expected_dirs and\
-               dest_file not in extra_files:
+                dest_file not in expected_dirs and\
+                    dest_file not in extra_files:
                 foreign_files.append(dest_file)
 
         return foreign_files
@@ -629,7 +629,7 @@ class SharedFiles(make.FileMakeObject):
         for shared_file in glob.glob(
           os.path.join(self.album.tpl_dir, THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
-                                     replace(THEME_SHARED_FILE_PREFIX, '')
+                replace(THEME_SHARED_FILE_PREFIX, '')
             shared_file_dest = os.path.join(self.path,
                                             shared_file_name)
 
