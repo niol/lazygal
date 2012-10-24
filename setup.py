@@ -145,7 +145,7 @@ class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, objec
     This is mostly distutils copy, it just renames script according
     to platform (.py for Windows, without extension for others)
     """
-    def copy_scripts (self):
+    def copy_scripts(self):
         """Copy each script listed in 'self.scripts'; if it's marked as a
         Python script in the Unix way (first line matches 'first_line_re',
         ie. starts with "\#!" and contains "python"), then adjust the first
