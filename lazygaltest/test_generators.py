@@ -83,8 +83,8 @@ class TestGenerators(LazygalTestGen):
                         'img6_thumb.jpg',
                         'img6_small.jpg', 'img6_medium.jpg',
                         'img6.html', 'img6_medium.html',
-                       ]
-                      )
+                        ]
+                       )
         self.assertEqual(sorted(dest_subgal.list_foreign_files()),
                          sorted(expected))
 
@@ -341,7 +341,7 @@ class TestSorting(LazygalTestGen):
             for tag in ('Exif.Photo.DateTimeDigitized',
                         'Exif.Photo.DateTimeOriginal',
                         'Exif.Image.DateTime',
-                       ):
+                        ):
                 img_exif[tag] = datetime.datetime(2011, months[index], 1)
             img_exif.write()
 

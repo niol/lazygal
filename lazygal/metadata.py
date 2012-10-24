@@ -89,7 +89,7 @@ class ImageInfoTags(object):
         for date_tag in ('Exif.Photo.DateTimeDigitized',
                          'Exif.Photo.DateTimeOriginal',
                          'Exif.Image.DateTime',
-                        ):
+                         ):
             try:
                 date = self.get_tag_value(date_tag)
                 if type(date) is not datetime.datetime:
