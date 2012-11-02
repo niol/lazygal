@@ -374,7 +374,7 @@ class Directory(File):
         media_stamp_max = None
         for m in all_medias:
             if m.has_reliable_date():
-                media_stamp = time.mktime(m.get_date_taken().timetuple())
+                media_stamp = m.get_date_taken().timestamp
                 if media_stamp_max is None or media_stamp > media_stamp_max:
                     media_stamp_max = media_stamp
                     if hint is not None and media_stamp_max > hint:
