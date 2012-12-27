@@ -339,7 +339,7 @@
           <option>--dir-flattening-depth=<replaceable>LEVEL</replaceable></option>
         </term>
         <listitem>
-          <para>Level below witch the directory tree is flattened. Default is
+          <para>Level below which the directory tree is flattened. Default is
           no flattening ('No').</para>
           <para>This option makes the program include the web gallery index
           of child galleries in their parent's gallery index, if their level is
