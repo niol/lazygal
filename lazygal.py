@@ -179,7 +179,7 @@ if options.check_all_dirs:
     cmdline_config.set('runtime', 'check-all-dirs', 'Yes')
 
 if options.dest_dir is not None:
-    cmdline_config.set('global', 'destdir',
+    cmdline_config.set('global', 'output-directory',
                        options.dest_dir.decode(sys.getfilesystemencoding()))
 if options.force_gen_pages:
     cmdline_config.set('global', 'force-gen-pages', 'Yes')

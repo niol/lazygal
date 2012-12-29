@@ -790,7 +790,7 @@ class Album:
 
     def generate(self, dest_dir=None):
         if dest_dir is None:
-            dest_dir = self.config.getstr('global', 'destdir')
+            dest_dir = self.config.getstr('global', 'output-directory')
         else:
             dest_dir = dest_dir.decode(sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))

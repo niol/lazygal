@@ -129,7 +129,7 @@ foo = bar
     <variablelist>
 
       <varlistentry>
-        <term>destdir</term>
+        <term>output-directory</term>
         <listitem>
           <para>Same as <option>--output-directory=<replaceable>DEST_DIR</replaceable></option>
           in &lazygal; (default is current directory).</para>

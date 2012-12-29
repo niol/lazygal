@@ -23,7 +23,7 @@ import ConfigParser
 
 TRANSLATION_TABLE_07 = {
     'quiet'               : ('runtime', 'quiet'),
-    'output-directory'    : ('global' , 'destdir'),
+    'output-directory'    : ('global' , 'output-directory'),
     'puburl'              : ('global' , 'puburl'),
     'theme'               : ('global' , 'theme'),
     'default-style'       : ('webgal' , 'default-style'),
