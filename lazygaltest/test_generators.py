@@ -27,7 +27,7 @@ from __init__ import LazygalTestGen, skip, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
-from lazygal import pyexiv2api as pyexiv2
+from gi.repository import GExiv2
 
 
 class TestGenerators(LazygalTestGen):
@@ -115,39 +115,35 @@ class TestGenerators(LazygalTestGen):
         img_path = self.add_img(self.source_dir, 'md_filled.jpg')
 
         # Add some metadata
-        gps_data = pyexiv2.ImageMetadata(self.get_sample_path('sample-with-gps.jpg'))
-        gps_data.read()
-        source_image = pyexiv2.ImageMetadata(img_path)
-        source_image.read()
-        gps_data.copy(source_image)
+        gps_data = GExiv2.Metadata(self.get_sample_path('sample-with-gps.jpg'))
+        source_image = GExiv2.Metadata(img_path)
+        for tag in gps_data.get_exif_tags():
+            source_image[tag] = gps_data[tag]
         dummy_comment = 'nice photo'
         source_image['Exif.Photo.UserComment'] = dummy_comment
         dummy_date = datetime.datetime(2011, 2, 3, 12, 51, 43)
-        source_image['Exif.Photo.DateTimeDigitized'] = dummy_date
-        assert 'Exif.GPSInfo.GPSLongitude' in source_image.exif_keys
-        assert 'Exif.GPSInfo.GPSLatitude' in source_image.exif_keys
-        source_image.write()
+        source_image.set_date_time(dummy_date)
+        assert 'Exif.GPSInfo.GPSLongitude' in source_image
+        assert 'Exif.GPSInfo.GPSLatitude' in source_image
+        source_image.save_file()
 
         # Generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
         dest_img_path = os.path.join(dest_dir, 'md_filled_small.jpg')
-        dest_image = pyexiv2.ImageMetadata(dest_img_path)
-        dest_image.read()
+        dest_image = GExiv2.Metadata(dest_img_path)
 
         # Check that metadata is still here for reduced pictures.
-        self.assertEqual(dest_image['Exif.Photo.UserComment'].value,
-                         dummy_comment)
-        self.assertEqual(dest_image['Exif.Photo.DateTimeDigitized'].value,
-                         dummy_date)
+        self.assertEqual(dest_image['Exif.Photo.UserComment'], dummy_comment)
+        self.assertEqual(dest_image['Exif.Photo.DateTimeDigitized'], dummy_date.strftime('%Y:%m:%d %H:%M:%S'))
 
         # Check that blacklised tags are not present anymore in the reduced
         # picture.
-        def lat(): return dest_image['Exif.GPSInfo.GPSLongitude'].value
+        def lat(): return dest_image['Exif.GPSInfo.GPSLongitude']
         self.assertRaises(KeyError, lat)
 
-        def long(): return dest_image['Exif.GPSInfo.GPSLatitude'].value
+        def long(): return dest_image['Exif.GPSInfo.GPSLatitude']
         self.assertRaises(KeyError, long)
 
     def test_metadata_osize_nopublish(self):
@@ -158,22 +154,20 @@ class TestGenerators(LazygalTestGen):
         img_path = self.add_img(self.source_dir, 'md_filled.jpg')
 
         # Add some metadata
-        source_image = pyexiv2.ImageMetadata(img_path)
-        source_image.read()
+        source_image = GExiv2.Metadata(img_path)
         dummy_comment = 'nice photo'
         source_image['Exif.Photo.UserComment'] = dummy_comment
-        source_image.write()
+        source_image.save_file()
 
         # Generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
         dest_img_path = os.path.join(dest_dir, 'md_filled_small.jpg')
-        dest_image = pyexiv2.ImageMetadata(dest_img_path)
-        dest_image.read()
+        dest_image = GExiv2.Metadata(dest_img_path)
 
         # Check that metadata is not here for reduced pictures.
-        def com(): return dest_image['Exif.Photo.UserComment'].value
+        def com(): return dest_image['Exif.Photo.UserComment']
         self.assertRaises(KeyError, com)
 
     def test_resize_rotate_size(self):
@@ -183,10 +177,9 @@ class TestGenerators(LazygalTestGen):
 
         norotate_path = self.add_img(self.source_dir, 'norotate.jpg')
         torotate_path = self.add_img(self.source_dir, 'torotate.jpg')
-        torotate = pyexiv2.ImageMetadata(torotate_path)
-        torotate.read()
-        torotate['Exif.Image.Orientation'] = 8
-        torotate.write()
+        torotate = GExiv2.Metadata(torotate_path)
+        torotate['Exif.Image.Orientation'] = '8'
+        torotate.save_file()
 
         # Generate album
         dest_dir = self.get_working_path()
@@ -336,14 +329,14 @@ class TestSorting(LazygalTestGen):
         for index, pic in enumerate(pics):
 
             img_path = self.add_img(subgal_path, pic)
-            img_exif = pyexiv2.ImageMetadata(img_path)
-            img_exif.read()
+            img_exif = GExiv2.Metadata(img_path)
             for tag in ('Exif.Photo.DateTimeDigitized',
                         'Exif.Photo.DateTimeOriginal',
                         'Exif.Image.DateTime',
                         ):
-                img_exif[tag] = datetime.datetime(2011, months[index], 1)
-            img_exif.write()
+                img_exif[tag] = datetime.datetime(
+                    2011, months[index], 1).strftime('%Y:%m:%d %H:%M:%S')
+            img_exif.save_file()
 
         return subgal_path, pics
 

@@ -24,7 +24,6 @@ from __init__ import LazygalTestGen
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal.genpage import WebalbumIndexPage
-from lazygal import pyexiv2api as pyexiv2
 
 
 class TestDeps(LazygalTestGen):

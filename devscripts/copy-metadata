@@ -23,33 +23,31 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
-from lazygal import pyexiv2api as pyexiv2
+from gi.repository import GExiv2
 
 
 def copy_metadata(src, dst):
-    source_image = pyexiv2.ImageMetadata(src)
-    source_image.read()
-    dest_image = pyexiv2.ImageMetadata(dst)
-    dest_image.read()
+    source_image = GExiv2.Metadata(src)
+    dest_image = GExiv2.Metadata(dst)
 
     # Save dimensions
-    if 'Exif.Photo.PixelXDimension' in dest_image.exif_keys\
-    and 'Exif.Photo.PixelYDimension' in dest_image.exif_keys:
+    if 'Exif.Photo.PixelXDimension' in dest_image \
+    and 'Exif.Photo.PixelYDimension' in dest_image:
         dst_width = dest_image["Exif.Photo.PixelXDimension"]
         dst_height = dest_image["Exif.Photo.PixelYDimension"]
         has_dims = True
     else:
         has_dims = False
 
-    source_image.copy(dest_image)
+    for tag in source_image.get_exif_tags():
+        dest_image[tag] = source_image[tag]
 
     if has_dims:
         # set EXIF image size info to resized size
         dest_image["Exif.Photo.PixelXDimension"] = dst_width
         dest_image["Exif.Photo.PixelYDimension"] = dst_height
 
-    dest_image.comment = source_image.comment
-    dest_image.write()
+    dest_image.save_file()
 
 
 if __name__ == "__main__":
