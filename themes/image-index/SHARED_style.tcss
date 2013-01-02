@@ -1,47 +1,47 @@
-#if bgcolor
+{% if bgcolor %}
 body{
     background-color:${bgcolor}
 }
-#end
+{% end %}
 
-#if txtcolor
+{% if txtcolor %}
 body{
     color:${txtcolor}
 }
-#end
+{% end %}
 
 p{
     text-align:center;
 }
 
 a{
-#if lnkcolor
+{% if lnkcolor %}
     color:${lnkcolor};
-#end
-#if not lnkcolor
+{% end %}
+{% if not lnkcolor %}
     color:blue;
-#end
-#if lnkdecoration
+{% end %}
+{% if lnkdecoration %}
     text-decoration:${lnkdecoration};
-#end
-#if not lnkdecoration
+{% end %}
+{% if not lnkdecoration %}
     text-decoration:none;
-#end
+{% end %}
 }
 
-\#image_links{
+#image_links{
     clear: both;
     padding-left:7em;
     padding-right:7em;
 }
 
-\#prev_link{
+#prev_link{
     position:absolute;
     top:50%;
     left:0.1em;
 }
 
-\#next_link{
+#next_link{
     position:absolute;
     top:50%;
     right:0.1em;
@@ -71,19 +71,19 @@ div.subgal_image img {
     margin: 0;
 }
 
-\#subgal_links li {
+#subgal_links li {
     margin: 0.5em;
 }
 
-\#image_links p{
+#image_links p{
     text-align:justify;
 }
 
-\#footer {
+#footer {
     clear: both;
 }
 
-\#footer p {
+#footer p {
     text-align:justify;
 }
 

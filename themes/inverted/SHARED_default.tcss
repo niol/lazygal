@@ -1,8 +1,8 @@
 @import url("basic.css");
 @import url("images_data.css");
-#if display_theme_selector
+{% if display_theme_selector %}
 @import url("simple_theme_dark.css");
-#end
+{% end %}
 
 /* ============================================================================
 HTML5 Boilerplate CSS: h5bp.com/css

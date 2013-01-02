@@ -29,7 +29,7 @@ Icon set 'Web 2.0 Buttons - Rounded'
     padding-bottom:1px;
 }
 
-#if display_social_buttons
+{% if display_social_buttons %}
 /* ============================================================================
 Free social icons from http://icondock.com/free/vector-social-media-icons/
 Vector Social Media Icons
@@ -162,4 +162,4 @@ div#tiptip_holder.tip_left #tiptip_arrow_inner {
 		border-top-color: rgba(20,20,20,0.92);
 	}
 }
-#end
+{% end %}

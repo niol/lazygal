@@ -17,7 +17,7 @@
 
 import os
 from genshi.core import START
-from genshi.template import TemplateLoader, MarkupTemplate, TextTemplate
+from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 from genshi.template import TemplateNotFound
 from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
@@ -117,10 +117,10 @@ class XmlTemplate(LazygalTemplate):
         return subtemplates
 
 
-class PlainTemplate(LazygalTemplate, TextTemplate):
+class PlainTemplate(LazygalTemplate):
 
     serialization_method = 'text'
-    genshi_tpl_class = TextTemplate
+    genshi_tpl_class = NewTextTemplate
 
 
 class TplFactory(object):

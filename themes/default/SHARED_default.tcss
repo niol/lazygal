@@ -1,34 +1,34 @@
 @import url("basic.css");
 
-#if bgcolor
+{% if bgcolor %}
 body{
 		background-color:${bgcolor}
 }
-#end
+{% end %}
 
-#if txtcolor
+{% if txtcolor %}
 body{
 		color:${txtcolor}
 }
-#end
+{% end %}
 
 p{
     text-align:center;
 }
 
 a{
-#if lnkcolor
+{% if lnkcolor %}
 		color:${lnkcolor};
-#end
-#if not lnkcolor
+{% end %}
+{% if not lnkcolor %}
 		color:blue;
-#end
-#if lnkdecoration
+{% end %}
+{% if lnkdecoration %}
 		text-decoration:${lnkdecoration};
-#end
-#if not lnkdecoration
+{% end %}
+{% if not lnkdecoration %}
 		text-decoration:none;
-#end
+{% end %}
 }
 
 .media_links{
@@ -41,13 +41,13 @@ a{
     display: none;
 }
 
-\#prev_link{
+#prev_link{
     position:absolute;
     top:50%;
     left:0.1em;
 }
 
-\#next_link{
+#next_link{
     position:absolute;
     top:50%;
     right:0.1em;
@@ -67,33 +67,33 @@ a{
     display: inline;
 }
 
-\#breadcrumbs {
+#breadcrumbs {
     padding: 3px;
     margin-bottom: 25px;
     font-size: small;
 }
 
-\#breadcrumbs ul li:after {
+#breadcrumbs ul li:after {
     content: "\0020 \0020 \0020 \00BB \0020";
 }
 
-\#breadcrumbs ul li.bc_current:after {
+#breadcrumbs ul li.bc_current:after {
     content: " ";
 }
 
-\#osize_links ul li:after {
+#osize_links ul li:after {
     content: "   |";
 }
 
-\#osize_links ul li:last-child:after {
+#osize_links ul li:last-child:after {
     content: " ";
 }
 
-\#onum_links ul li:after {
+#onum_links ul li:after {
     content: "   |";
 }
 
-\#onum_links ul li:last-child:after {
+#onum_links ul li:last-child:after {
     content: " ";
 }
 
@@ -103,7 +103,7 @@ img {
 }
 
 
-\#image_img img{
+#image_img img{
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -129,7 +129,7 @@ div.subgal_image img {
     border: none;
 }
 
-\#subgal_links li {
+#subgal_links li {
     margin: 0.5em;
 }
 
