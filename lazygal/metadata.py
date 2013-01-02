@@ -239,7 +239,8 @@ class ImageInfoTags(object):
 
     def get_flash(self):
         try:
-            return self._metadata['Exif.Photo.Flash'].human_value
+            flash_info = self._metadata['Exif.Photo.Flash'].human_value
+            return self._fallback_to_encoding(flash_info)
         except KeyError:
             return ''
 
