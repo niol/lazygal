@@ -331,7 +331,8 @@ class ImageInfoTags(object):
 
     def get_authorship(self):
         try:
-            return self.get_exif_string('Exif.Image.Artist')
+            author = self.get_exif_string('Exif.Image.Artist')
+            return self._fallback_to_encoding(author)
         except KeyError:
             return ''
 

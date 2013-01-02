@@ -159,6 +159,11 @@ class TestFileMetadata(LazygalTest):
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_focal_length(), '18.0 mm (35 mm equivalent: 27.0 mm)')
 
+    def test_authorship(self):
+        sample = 'sample-author-badencoding.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_authorship(), u'\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd')
+
 
 if __name__ == '__main__':
     unittest.main()
