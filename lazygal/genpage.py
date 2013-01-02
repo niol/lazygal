@@ -262,14 +262,15 @@ class WebalbumImagePage(WebalbumBrowsePage):
                     tpl_values['comment'] = None
                 else:
                     tpl_values['comment'] = self._do_not_escape(comment)
-                    tpl_values['camera_name'] = image_info.get_camera_name()
-                    tpl_values['lens_name'] = image_info.get_lens_name()
-                    tpl_values['flash'] = image_info.get_flash()
-                    tpl_values['exposure'] = image_info.get_exposure()
-                    tpl_values['iso'] = image_info.get_iso()
-                    tpl_values['fnumber'] = image_info.get_fnumber()
-                    tpl_values['focal_length'] = image_info.get_focal_length()
-                    tpl_values['authorship'] = image_info.get_authorship()
+
+                tpl_values['camera_name'] = image_info.get_camera_name()
+                tpl_values['lens_name'] = image_info.get_lens_name()
+                tpl_values['flash'] = image_info.get_flash()
+                tpl_values['exposure'] = image_info.get_exposure()
+                tpl_values['iso'] = image_info.get_iso()
+                tpl_values['fnumber'] = image_info.get_fnumber()
+                tpl_values['focal_length'] = image_info.get_focal_length()
+                tpl_values['authorship'] = image_info.get_authorship()
 
 
 class WebalbumVideoPage(WebalbumBrowsePage):
