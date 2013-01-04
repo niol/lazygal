@@ -246,7 +246,7 @@ class TestSpecialGens(LazygalTestGen):
 
     def test_flatten(self):
         config = lazygal.config.LazygalConfig()
-        config.set('global', 'dir-flattening-depth', 1)
+        config.set('global', 'dir-flattening-depth', 0)
         self.setup_album(config)
 
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
@@ -257,7 +257,7 @@ class TestSpecialGens(LazygalTestGen):
     def test_flattenpaginate(self):
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'thumbs-per-page', 4)
-        config.set('global', 'dir-flattening-depth', 1)
+        config.set('global', 'dir-flattening-depth', 0)
         self.setup_album(config)
 
         pics = ['img%d.jpg' % i for i in range(0, 9)]
