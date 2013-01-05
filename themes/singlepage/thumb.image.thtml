@@ -1,0 +1,31 @@
+<li xmlns:py="http://genshi.edgewall.org/"
+     class="media media_$media.type">
+    <a class="thumb" href="$media.link" title="$media.comment">
+        <img class="media media_$media.type" src="$media.thumb"
+             width="$media.thumb_width" height="$media.thumb_height"
+             alt="$media.thumb_name thumb" />
+    </a>
+
+    <div class="caption">
+        <div class="image_comment" py:if="media.comment">$media.comment</div>
+        <div class="image_date" py:if="media.image_datetime">
+            ${_('Taken')} ${media.image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}
+        </div>
+        <div class="authorship" py:if="media.authorship">${_('Author')}&nbsp;: $media.authorship</div>
+        <div py:if="media.original_link" class="original_link"><a href="$media.original_link">${_('Original picture')}</a></div>
+        <div class="image_caption_tech">
+            <ul>
+                <li>$media.image_name</li>
+                <li py:if="media.camera_name">${_('Camera:')} $media.camera_name
+                    <py:if test="media.lens_name"> ${_('with')} $media.lens_name</py:if>
+                </li>
+                <li py:if="media.exposure">${_('Exposure')} $media.exposure</li>
+                <li py:if="media.iso">${_('Sensitivity ISO')} $media.iso</li>
+                <li py:if="media.fnumber">${_('Aperture')} $media.fnumber</li>
+                <li py:if="media.flash">${_('Flash')} $media.flash</li>
+                <li py:if="media.focal_length">${_('Focal length')} $media.focal_length</li>
+            </ul>
+        </div>
+    </div>
+</li>
+<!--! vim: set fenc=utf-8 ts=4 sw=4 expandtab: -->

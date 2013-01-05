@@ -16,6 +16,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
+import glob
 from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 from genshi.template import TemplateNotFound
@@ -26,7 +27,9 @@ import __init__
 import timeutils
 
 
-DEFAULT_TEMPLATE = 'default'
+DEFAULT_THEME = 'default'
+USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
+THEME_SHARED_FILE_PREFIX = 'SHARED_'
 
 
 class LazygalTemplate(object):
@@ -150,6 +153,57 @@ class TplFactory(object):
             return tpl_class(self, tpl)
         else:
             raise ValueError(_('Unknown template type for %s' % tpl_ident))
+
+
+class Theme(object):
+
+    def __init__(self, themes_dir, name):
+        self.name = name
+
+        # First try user directory
+        self.tpl_dir = os.path.join(USER_THEME_DIR, self.name)
+        if not os.path.exists(self.tpl_dir):
+            # Fallback to system themes
+            self.tpl_dir = os.path.join(themes_dir, self.name)
+            if not os.path.exists(self.tpl_dir):
+                raise ValueError(_('Theme %s not found') % self.name)
+
+        self.tpl_loader = TplFactory(os.path.join(themes_dir, DEFAULT_THEME),
+                                     self.tpl_dir)
+
+        # Load styles templates
+        for style in self.get_avail_styles():
+            style_filename = style['filename']
+            try:
+                self.tpl_loader.load(style_filename)
+            except ValueError:
+                # Not a known emplate ext, ignore
+                pass
+
+        # find out theme kind
+        try:
+            self.tpl_loader.load('dynindex.thtml')
+        except TemplateNotFound:
+            self.kind = 'static'
+        else:
+            self.kind = 'dynamic'
+
+    def get_avail_styles(self, default_style=None):
+        style_files_mask = os.path.join(self.tpl_dir,
+                                        THEME_SHARED_FILE_PREFIX + '*' + 'css')
+        styles = []
+        for style_tpl_file in glob.glob(style_files_mask):
+            style = {}
+            tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
+            style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
+            style['name'] = style['filename'].replace('_', ' ')
+            if default_style is not None:
+                if style['filename'] == default_style:
+                    style['rel'] = 'stylesheet'
+                else:
+                    style['rel'] = 'alternate stylesheet'
+            styles.append(style)
+        return styles
 
 
 # vim: ts=4 sw=4 expandtab

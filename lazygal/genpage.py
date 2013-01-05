@@ -28,6 +28,7 @@ import make
 import pathutils
 import genfile
 import feeds
+import tplvars
 
 
 class WebalbumPage(genfile.WebalbumFile):
@@ -47,7 +48,7 @@ class WebalbumPage(genfile.WebalbumFile):
         self.page_template = self.load_tpl(tpl_ident)
 
     def load_tpl(self, tpl_ident):
-        tpl = self.dir.album.tpl_loader.load(tpl_ident)
+        tpl = self.dir.album.theme.tpl_loader.load(tpl_ident)
         self.add_file_dependency(tpl.path)
         for subtpl in tpl.subtemplates():
             self.add_file_dependency(subtpl.path)
@@ -57,28 +58,6 @@ class WebalbumPage(genfile.WebalbumFile):
         tpl_values = {}
         tpl_values.update(self.dir.tpl_vars)
         return tpl_values
-
-    def _gen_other_media_link(self, media):
-        if media:
-            link_vals = {}
-
-            link_vals['type'] = media.media.type
-
-            link_vals['link'] = media.browse_pages[self.size_name].rel_path(self.dir, url=True)
-            link_vals['link'] = self.url_quote(link_vals['link'])
-
-            link_vals['thumb'] = media.thumb.rel_path(self.dir, url=True)
-            link_vals['thumb'] = self.url_quote(link_vals['thumb'])
-
-            if not media.media.broken:
-                link_vals['thumb_width'],\
-                    link_vals['thumb_height'] = media.thumb.get_size()
-
-            link_vals['thumb_name'] = self.dir.album._str_humanize(media.media.name)
-
-            return link_vals
-        else:
-            return None
 
     def _get_osize_links(self, filename):
         osize_index_links = []
@@ -97,47 +76,10 @@ class WebalbumPage(genfile.WebalbumFile):
 
         return osize_index_links
 
-    def _get_webgal_id(self, srcdir_path):
-        if self.dir.should_be_flattened(srcdir_path):
-            rawid = self.dir.source_dir.rel_path(self.dir.flattening_srcpath(srcdir_path), srcdir_path)
-        else:
-            rawid = os.path.basename(srcdir_path)
-        return rawid.replace(' /\\', '_')
+    def _add_size_qualifier(self, path, size_name=None):
+        if size_name is None:
+            size_name = self.size_name
 
-    def _get_webgal_link(self, srcdir_path):
-        link_target = self._add_size_qualifier('index.html', self.size_name)
-
-        if self.dir.should_be_flattened(srcdir_path):
-            # Add anchor target to get straight to gallery listing
-            link_target = link_target + '#' + self._get_webgal_id(srcdir_path)
-
-        # Add relative path to link if needed
-        index_path = None
-        if self.dir.should_be_flattened(srcdir_path):
-            index_path = self.dir.flattening_srcpath(srcdir_path)
-        if srcdir_path != self.dir.source_dir.path:
-            index_path = srcdir_path
-        if index_path is not None:
-            index_path = self.dir.rel_path_to_src(index_path)
-            index_path = pathutils.url_path(index_path)
-            link_target = posixpath.join(index_path, link_target)
-
-        return self.url_quote(link_target)
-
-    def _gen_webgal_path(self):
-        wg_path = []
-        for dirmd in self.dir.source_dir.parents_metadata():
-            wg = {}
-            wg['link'] = self._get_webgal_link(dirmd.dir_path)
-            wg['name'] = dirmd.get_title()
-            wg['root'] = dirmd.dir_path == self.dir.album.source_dir
-            wg['current'] = dirmd.dir_path == self.dir.source_dir.path
-            wg_path.append(wg)
-
-        wg_path.reverse()
-        return wg_path
-
-    def _add_size_qualifier(self, path, size_name):
         return self.dir._add_size_qualifier(path, size_name)
 
     def _do_not_escape(self, value):
@@ -163,8 +105,7 @@ class WebalbumBrowsePage(WebalbumPage):
         self.media = self.webalbum_media.media
         WebalbumPage.__init__(self, dir, size_name, self.media.name)
 
-        self.browse_media = self.webalbum_media.resized[size_name]
-        self.add_dependency(self.browse_media)
+        self.add_dependency(self.webalbum_media.resized[size_name])
         if webalbum_media.original:
             self.add_dependency(self.webalbum_media.original)
 
@@ -180,6 +121,9 @@ class WebalbumBrowsePage(WebalbumPage):
         self.set_template('browse.thtml')
         self.load_tpl(self.media.type + '.thtml')
 
+    def add_extra_vals(self, tpl_values):
+        tpl_values.update(tplvars.media_vars(self, self.webalbum_media).full())
+
     def build(self):
         page_rel_path = self.rel_path(self.dir.flattening_dir)
         logging.info(_("  XHTML %s") % page_rel_path)
@@ -188,7 +132,7 @@ class WebalbumBrowsePage(WebalbumPage):
         tpl_values = self.init_tpl_values()
 
         # Breadcrumbs
-        tpl_values['webgal_path'] = self._gen_webgal_path()
+        tpl_values['webgal_path'] = tplvars.Webgal(self, self.dir).path()
 
         tpl_values['name'] = self.media.filename
         tpl_values['mediatype'] = self.media.type
@@ -196,11 +140,11 @@ class WebalbumBrowsePage(WebalbumPage):
 
         prev = self.webalbum_media.previous
         if prev:
-            tpl_values['prev_link'] = self._gen_other_media_link(prev)
+            tpl_values['prev_link'] = tplvars.Media(self, prev).link()
 
         next = self.webalbum_media.next
         if next:
-            tpl_values['next_link'] = self._gen_other_media_link(next)
+            tpl_values['next_link'] = tplvars.Media(self, next).link()
 
         tpl_values['index_link'] = self._add_size_qualifier('index.html',
                                                             self.size_name)
@@ -236,54 +180,6 @@ class WebalbumBrowsePage(WebalbumPage):
         self.page_template.dump(tpl_values, self.page_path)
 
 
-class WebalbumImagePage(WebalbumBrowsePage):
-
-    def __init__(self, dir, size_name, webalbum_image):
-        WebalbumBrowsePage.__init__(self, dir, size_name, webalbum_image)
-        self.image = self.media
-
-    def add_extra_vals(self, tpl_values):
-        tpl_values['img_src'] = self.browse_media.filename
-        tpl_values['img_src'] = self.url_quote(tpl_values['img_src'])
-
-        tpl_values['image_name'] = self.image.filename
-
-        tpl_values['img_width'], tpl_values['img_height'] = self.webalbum_media.resized[self.size_name].get_size()
-
-        if self.dir.config.getboolean('webgal', 'publish-metadata'):
-            img_date = self.image.get_date_taken()
-            tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
-            tpl_values['image_datetime'] = img_date
-
-            image_info = self.image.info()
-            if image_info:
-                comment = image_info.get_comment()
-                if comment == '' or comment is None:
-                    tpl_values['comment'] = None
-                else:
-                    tpl_values['comment'] = self._do_not_escape(comment)
-
-                tpl_values['camera_name'] = image_info.get_camera_name()
-                tpl_values['lens_name'] = image_info.get_lens_name()
-                tpl_values['flash'] = image_info.get_flash()
-                tpl_values['exposure'] = image_info.get_exposure()
-                tpl_values['iso'] = image_info.get_iso()
-                tpl_values['fnumber'] = image_info.get_fnumber()
-                tpl_values['focal_length'] = image_info.get_focal_length()
-                tpl_values['authorship'] = image_info.get_authorship()
-
-
-class WebalbumVideoPage(WebalbumBrowsePage):
-
-    def __init__(self, webgal, size_name, webalbum_video):
-        WebalbumBrowsePage.__init__(self, webgal, size_name, webalbum_video)
-        self.video = self.media
-
-    def add_extra_vals(self, tpl_values):
-        tpl_values['video_src'] = self.browse_media.filename
-        tpl_values['video_src'] = self.url_quote(tpl_values['video_src'])
-
-
 class WebalbumIndexPage(WebalbumPage):
 
     FILENAME_BASE_STRING = 'index'
@@ -306,11 +202,13 @@ class WebalbumIndexPage(WebalbumPage):
 
             if size_name in dir.browse_sizes:
                 for media in medias:
-                    if media.thumb: self.add_dependency(media.thumb)
-                    self.add_dependency(media.browse_pages[size_name])
-                    # Ensure dir depends on browse page (usefull for cleanup
-                    # checks when dir is flattenend).
-                    dir.add_dependency(media.browse_pages[size_name])
+                    if media.thumb:
+                        self.add_dependency(media.thumb)
+                    if self.dir.album.theme.kind == 'static':
+                        self.add_dependency(media.browse_pages[size_name])
+                        # Ensure dir depends on browse page (usefull for cleanup
+                        # checks when dir is flattenend).
+                        dir.add_dependency(media.browse_pages[size_name])
             else:
                 logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index.") % (size_name, dir.path))
 
@@ -320,7 +218,10 @@ class WebalbumIndexPage(WebalbumPage):
         for subgal in self.subgals:
             self.add_dependency(subgal.source_dir)
 
-        self.set_template('dirindex.thtml')
+        if self.dir.album.theme.kind == 'static':
+            self.set_template('dirindex.thtml')
+        elif self.dir.album.theme.kind == 'dynamic':
+            self.set_template('dynindex.thtml')
 
     def _get_paginated_name(self, page_number=None):
         if page_number is None:
@@ -354,45 +255,10 @@ class WebalbumIndexPage(WebalbumPage):
 
         return onum_index_links
 
-    def _get_dir_info(self, dir=None):
-        if dir is None:
-            dir = self.dir
-
-        dir_info = {}
-        if dir.source_dir.metadata:
-            dir_info.update(dir.source_dir.metadata.get())
-            if 'album_description' in dir_info.keys():
-                dir_info['album_description'] =\
-                    self._do_not_escape(dir_info['album_description'])
-
-        if 'album_name' not in dir_info.keys():
-            dir_info['album_name'] = dir.source_dir.human_name
-
-        if dir.dirzip:
-            archive_rel_path = dir.dirzip.rel_path(self.dir, url=True)
-            dir_info['dirzip'] = self.url_quote(archive_rel_path)
-            dir_info['dirzip_size'] = self.format_filesize(dir.dirzip.size())
-
-        dir_info['is_main'] = dir is self.dir
-
-        dir_info['image_count'] = dir.source_dir.get_media_count('image')
-        dir_info['subgal_count'] = len(dir.source_dir.subdirs)
-
-        dir_info['id'] = self.url_quote(self._get_webgal_id(dir.source_dir.path))
-
-        return dir_info
-
     def _get_subgal_links(self):
         subgal_links = []
         for subgal in self.dir.subgals:
-            dir_info = self._get_dir_info(subgal)
-            dir_info['link'] = posixpath.join(subgal.source_dir.name,
-                                              self._get_related_index_fn())
-            dir_info['link'] = self.url_quote(dir_info['link'])
-            dir_info['album_picture'] = \
-                posixpath.join(subgal.source_dir.name,
-                               self.dir.get_webalbumpic_filename())
-            dir_info['album_picture'] = self.url_quote(dir_info['album_picture'])
+            dir_info = tplvars.Webgal(self, subgal).link_info()
             subgal_links.append(dir_info)
         return subgal_links
 
@@ -404,7 +270,7 @@ class WebalbumIndexPage(WebalbumPage):
 
         # Breadcrumbs (current is static, see dirindex.thtml, that's why the
         # last item of the list is removed).
-        values['webgal_path'] = self._gen_webgal_path()[:-1]
+        values['webgal_path'] = tplvars.Webgal(self, self.dir).path()[:-1]
 
         if not self.dir.source_dir.is_album_root():
             # Parent index link not for album root
@@ -420,9 +286,9 @@ class WebalbumIndexPage(WebalbumPage):
 
         values['medias'] = []
         for subdir, medias in self.galleries:
-            info = self._get_dir_info(subdir)
+            info = tplvars.Webgal(self, subdir).info()
             if self.size_name in subdir.browse_sizes:
-                media_links = [self._gen_other_media_link(media)
+                media_links = [tplvars.media_vars(self, media).full()
                                for media in medias]
             else:
                 # This happens when this dir index size is not available in the
@@ -430,7 +296,7 @@ class WebalbumIndexPage(WebalbumPage):
                 media_links = []
             values['medias'].append((info, media_links, ))
 
-        values.update(self._get_dir_info())
+        values.update(tplvars.Webgal(self, self.dir).info())
 
         values['rel_root'] = pathutils.url_path(self.dir.source_dir.rel_root()) + '/'
         values['rel_path'] = pathutils.url_path(self.dir.source_dir.strip_root())
@@ -460,7 +326,7 @@ class WebalbumFeed(make.FileMakeObject):
             self.pub_url = self.pub_url + '/'
 
         self.feed = feeds.RSS20(self.pub_url)
-        self.item_template = self.album.tpl_loader.load('feeditem.thtml')
+        self.item_template = self.album.theme.tpl_loader.load('feeditem.thtml')
 
     def set_title(self, title):
         self.feed.title = title
@@ -498,7 +364,7 @@ class SharedFileTemplate(make.FileMakeObject):
     def __init__(self, album, shared_tpl_name, shared_file_dest_tplname,
                  tpl_vars):
         self.album = album
-        self.tpl = self.album.tpl_loader.load(shared_tpl_name)
+        self.tpl = self.album.theme.tpl_loader.load(shared_tpl_name)
         self.tpl_vars = tpl_vars
 
         # Remove the 't' from the beginning of ext

@@ -48,9 +48,6 @@ elif INSTALL_MODE == 'installed':
         sys.exit(1)
 
 
-THEME_DIR = os.path.join(DATAPATH, 'themes')
-USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
-THEME_SHARED_FILE_PREFIX = 'SHARED_'
 DEST_SHARED_DIRECTORY_NAME = 'shared'
 
 
@@ -213,9 +210,10 @@ class WebalbumMediaTask(make.GroupTask):
             if self.webgal.original and not self.webgal.orig_base:
                 self.add_dependency(self.get_original())
 
-            self.browse_pages[size_name] = self.get_browse_page(size_name)
-            if self.webgal.album.force_gen_pages:
-                self.browse_pages[size_name].stamp_delete()
+            if self.webgal.album.theme.kind == 'static':
+                self.browse_pages[size_name] = self.get_browse_page(size_name)
+                if self.webgal.album.force_gen_pages:
+                    self.browse_pages[size_name].stamp_delete()
 
     def set_next(self, media):
         self.next = media
@@ -231,7 +229,7 @@ class WebalbumMediaTask(make.GroupTask):
 
     def get_original_or_symlink(self):
         if not self.webgal.orig_symlink:
-            return genfile.MediaOriginal(self.webgal, self.media)
+            return genfile.CopyMediaOriginal(self.webgal, self.media)
         else:
             return genfile.SymlinkMediaOriginal(self.webgal, self.media)
 
@@ -239,6 +237,9 @@ class WebalbumMediaTask(make.GroupTask):
         if not self.original:
             self.original = self.get_original_or_symlink()
         return self.original
+
+    def get_browse_page(self, size_name):
+        return genpage.WebalbumBrowsePage(self.webgal, size_name, self)
 
 
 class WebalbumImageTask(WebalbumMediaTask):
@@ -257,10 +258,14 @@ class WebalbumImageTask(WebalbumMediaTask):
         if self.webgal.newsizers[size_name] == 'original':
             return self.get_original_or_symlink()
         else:
-            return genmedia.ImageOtherSize(self.webgal, self.media, size_name)
-
-    def get_browse_page(self, size_name):
-        return genpage.WebalbumImagePage(self.webgal, size_name, self)
+            sized = genmedia.ImageOtherSize(self.webgal, self.media, size_name)
+            self.media.get_size() # probe size to check if media is broken
+            if not self.media.broken\
+            and sized.get_size() == sized.source_media.get_size():
+                # Do not process if size is the same
+                return self.get_original()
+            else:
+                return sized
 
 
 class WebalbumVideoTask(WebalbumMediaTask):
@@ -277,9 +282,6 @@ class WebalbumVideoTask(WebalbumMediaTask):
                                          genmedia.THUMB_SIZE_NAME)
 
         self.add_dependency(self.webvideo)
-
-    def get_browse_page(self, size_name):
-        return genpage.WebalbumVideoPage(self.webgal, size_name, self)
 
     def get_resized(self, size_name):
         if not self.webvideo:
@@ -420,8 +422,8 @@ class WebalbumDir(make.FileMakeObject):
         self.default_size_name = self.browse_sizes[0]
 
         self.tpl_vars = self.__load_tpl_vars()
-        styles = self.album.get_avail_styles(
-            self.album.theme, self.config.get('webgal', 'default-style'))
+        styles = self.album.theme.get_avail_styles(
+            self.config.get('webgal', 'default-style'))
         self.tpl_vars.update({'styles': styles})
 
         self.set_original(self.config.getboolean('webgal', 'original'),
@@ -627,14 +629,14 @@ class SharedFiles(make.FileMakeObject):
 
         self.expected_shared_files = []
         for shared_file in glob.glob(
-                os.path.join(self.album.tpl_dir,
-                             THEME_SHARED_FILE_PREFIX + '*')):
+                os.path.join(self.album.theme.tpl_dir,
+                             tpl.THEME_SHARED_FILE_PREFIX + '*')):
             shared_file_name = os.path.basename(shared_file).\
-                replace(THEME_SHARED_FILE_PREFIX, '')
+                replace(tpl.THEME_SHARED_FILE_PREFIX, '')
             shared_file_dest = os.path.join(self.path,
                                             shared_file_name)
 
-            if self.album.tpl_loader.is_known_template_type(shared_file):
+            if self.album.theme.tpl_loader.is_known_template_type(shared_file):
                 sf = genpage.SharedFileTemplate(album, shared_file,
                                                 shared_file_dest,
                                                 tpl_vars)
@@ -684,52 +686,12 @@ class Album:
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
         self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
 
-        self.tpl_loader = None
-
         self.set_theme(self.config.get('global', 'theme'))
 
         self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
 
-    def set_theme(self, theme=tpl.DEFAULT_TEMPLATE):
-        self.theme = theme
-
-        # First try user directory
-        self.tpl_dir = os.path.join(USER_THEME_DIR, self.theme)
-        if not os.path.exists(self.tpl_dir):
-            # Fallback to system themes
-            self.tpl_dir = os.path.join(THEME_DIR, self.theme)
-            if not os.path.exists(self.tpl_dir):
-                raise ValueError(_('Theme %s not found') % self.theme)
-
-        self.tpl_loader = tpl.TplFactory(os.path.join(THEME_DIR,
-                                                      tpl.DEFAULT_TEMPLATE),
-                                         self.tpl_dir)
-
-        # Load styles templates
-        for style in self.get_avail_styles(theme):
-            style_filename = style['filename']
-            try:
-                self.tpl_loader.load(style_filename)
-            except ValueError:
-                # Not a known emplate ext, ignore
-                pass
-
-    def get_avail_styles(self, theme, default_style=None):
-        style_files_mask = os.path.join(self.tpl_dir,
-                                        THEME_SHARED_FILE_PREFIX + '*' + 'css')
-        styles = []
-        for style_tpl_file in glob.glob(style_files_mask):
-            style = {}
-            tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
-            style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
-            style['name'] = self._str_humanize(style['filename'])
-            if default_style is not None:
-                if style['filename'] == default_style:
-                    style['rel'] = 'stylesheet'
-                else:
-                    style['rel'] = 'alternate stylesheet'
-            styles.append(style)
-        return styles
+    def set_theme(self, theme=tpl.DEFAULT_THEME):
+        self.theme = tpl.Theme(os.path.join(DATAPATH, 'themes'), theme)
 
     def _str_humanize(self, text):
         dash_replaced = text.replace('_', ' ')

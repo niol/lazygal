@@ -1,0 +1,118 @@
+@import url("basic.css");
+@import url("colorbox.css");
+
+body{
+    background: white;
+}
+
+a {
+    color: black;
+}
+
+.title {
+    display: none;
+}
+
+.title h1{
+    margin-top: .1em;
+}
+
+.inline_enum ul{
+    margin-left: 0;
+    padding-left: 0;
+    display: inline;
+}
+
+.inline_enum ul li {
+    margin-left: 0;
+    padding-left: 2px;
+    border: none;
+    list-style: none;
+    display: inline;
+}
+
+#breadcrumbs {
+    padding: 3px;
+    margin-bottom: 25px;
+    font-size: small;
+}
+
+#breadcrumbs ul li:after {
+    content: "\0020 \0020 \0020 \00BB \0020";
+}
+
+#breadcrumbs ul li.bc_current:after {
+    content: " ";
+}
+
+#osize_links ul li:after {
+    content: "   |";
+}
+
+#osize_links ul li:last-child:after {
+    content: " ";
+}
+
+#onum_links ul li:after {
+    content: "   |";
+}
+
+#onum_links ul li:last-child:after {
+    content: " ";
+}
+
+#osize_links {
+    font-size: small;
+    text-align:center;
+    margin: 1em;
+}
+
+#onum_links{
+    font-size: small;
+    text-align:center;
+}
+
+div.subgal_link {
+    float: left;
+    padding: 1em;
+    width: 50em;
+}
+
+div.subgal_image {
+    float: left;
+    margin-right: 2em;
+    margin-left: 4em;
+    width:180px;
+}
+
+div.subgal_image img {
+    margin: 0;
+    border: none;
+}
+
+div.subgal_description p{
+    text-align:justify;
+}
+
+.media_links{
+    padding: 2em;
+}
+
+img.media{
+    border: solid black 1px;
+    margin: 1em;
+}
+
+.caption {
+    display:none;
+}
+
+#lazygalfooter{
+    padding-top: 3em;
+    clear: both;
+    font-size: x-small;
+}
+
+/*
+ * vim: ts=4 sw=4 expandtab
+ */

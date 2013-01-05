@@ -1,0 +1,14 @@
+<li xmlns:py="http://genshi.edgewall.org/"
+     class="media media_$media.type">
+    <a class="thumb" href="$media.link"><img class="media media_$media.type"
+                                             src="$media.thumb"
+                                             width="$media.thumb_width"
+                                             height="$media.thumb_height"
+                                             alt="$media.thumb_name thumb" /></a>
+    <a href="$media.link"><img class="video_arrow" src="${rel_root}shared/video_arrow.svg" alt="video arrow overlay" /><span class="video_length" py:content="media.length" /></a>
+
+    <div class="caption">
+        <p py:if="original_link"><a href="$original_link">${_('Original video')}</a></p>
+    </div>
+</li>
+<!--! vim: set fenc=utf-8 ts=4 sw=4 expandtab: -->

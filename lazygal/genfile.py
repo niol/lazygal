@@ -25,50 +25,10 @@ import make
 import pathutils
 
 
-class MediaOriginal(make.FileCopy):
-
-    def __init__(self, dir, source_media):
-        self.dir = dir
-        self.source_media = source_media
-
-        self.filename = source_media.filename
-
-        self.path = os.path.join(self.dir.path, self.filename)
-        make.FileCopy.__init__(self, source_media.path, self.path)
-
-    def get_size(self):
-        return self.source_media.get_size()
-
-    def build(self):
-        logging.info("  CP %s" % self.filename)
-        logging.debug("(%s)" % self.path)
-        make.FileCopy.build(self)
-
-
-class SymlinkMediaOriginal(make.FileSymlink):
-
-    def __init__(self, dir, source_media):
-        self.dir = dir
-        self.source_media = source_media
-
-        self.filename = source_media.filename
-
-        self.path = os.path.join(self.dir.path, self.filename)
-        make.FileSymlink.__init__(self, source_media.path, self.path)
-
-    def get_size(self):
-        return self.source_media.get_size()
-
-    def build(self):
-        logging.info("  SYMLINK %s" % self.filename)
-        logging.debug("(%s)" % self.path)
-        make.FileSymlink.build(self)
-
-
 class WebalbumFile(make.FileMakeObject):
 
     def __init__(self, path, dir):
-        make.FileMakeObject.__init__(self, path)
+        super(WebalbumFile, self).__init__(path)
         self.dir = dir
         self.path = path
 
@@ -87,6 +47,43 @@ class WebalbumFile(make.FileMakeObject):
             return pathutils.url_path(ret)
         else:
             return ret
+
+
+class MediaOriginal(WebalbumFile):
+
+    def __init__(self, dir, source_media):
+        self.filename = source_media.filename
+        path = os.path.join(dir.path, self.filename)
+        super(MediaOriginal, self).__init__(path, dir)
+
+        self.source_media = source_media
+
+        self.set_dep_only()
+
+    def get_size(self):
+        return self.source_media.get_size()
+
+
+class CopyMediaOriginal(MediaOriginal):
+
+    def __init__(self, dir, source_media):
+        super(CopyMediaOriginal, self).__init__(dir, source_media)
+        self.add_dependency(make.FileCopy(self.source_media.path, self.path))
+
+    def build(self):
+        logging.info("  CP %s" % self.filename)
+        logging.debug("(%s)" % self.path)
+
+
+class SymlinkMediaOriginal(MediaOriginal):
+
+    def __init__(self, dir, source_media):
+        super(SymlinkMediaOriginal, self).__init__(dir, source_media)
+        self.add_dependency(make.FileSymlink(self.source_media.path, self.path))
+
+    def build(self):
+        logging.info("  SYMLINK %s" % self.filename)
+        logging.debug("(%s)" % self.path)
 
 
 class WebalbumArchive(WebalbumFile):

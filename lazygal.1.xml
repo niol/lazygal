@@ -454,22 +454,41 @@
 
     <variablelist>
 
-      <varlistentry>
-        <term><filename><replaceable>theme</replaceable>/browse.thtml</filename></term>
-        <listitem>
-            <para>The XHTML template for the theme browse page (displaying
-            one picture).</para>
-        </listitem>
-      </varlistentry>
+        <varlistentry>
+            <term><filename><replaceable>theme</replaceable>/browse.thtml</filename></term>
+            <listitem>
+                <para>The XHTML template for the theme browse page (displaying
+                one picture).</para>
+            </listitem>
+        </varlistentry>
 
-      <varlistentry>
-        <term><filename><replaceable>theme</replaceable>/dirindex.thtml</filename></term>
-        <listitem>
-            <para>The XHTML template for the directory index page (pictures
-            and sub-galleries links).</para>
-        </listitem>
-      </varlistentry>
+        <varlistentry>
+            <term><filename><replaceable>theme</replaceable>/dirindex.thtml</filename> or <filename><replaceable>theme</replaceable>/dynindex.thtml</filename></term>
+            <listitem>
+                <para>The XHTML template for the directory index page (pictures
+                and sub-galleries links).</para>
+            </listitem>
+        </varlistentry>
 
+    </variablelist>
+
+    <para>Depending on which index file is present, the theme will be:</para>
+
+    <variablelist>
+        <varlistentry>
+            <term><filename>dirindex.thtml</filename>: fully static</term>
+            <listitem>
+                <para>one HTML page per picture, per size and one index per
+                size, or</para>
+            </listitem>
+        </varlistentry>
+
+        <varlistentry>
+            <term><filename>dynindex.thtml</filename>: dynamic</term>
+            <listitem>
+                <para>only one index per directory is to be generated.</para>
+            </listitem>
+        </varlistentry>
     </variablelist>
 
     <para>Missing template files will be searched for in the
