@@ -39,3 +39,5 @@ Ideas to improve Lazygal (in no particular order)
   XxY> for instance).
 
 * Build picture and gallery map using EXIF GPS data.
+
+* Add a way to disable video transcoding.
