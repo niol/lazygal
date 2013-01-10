@@ -2,7 +2,7 @@ include ChangeLog
 include ChangeLog-full
 include MANIFEST.in
 include COPYING
-include README
+include README.md
 include TODO
 include lazygal.ent
 include lazygal.1.xml
