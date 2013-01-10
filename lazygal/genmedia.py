@@ -28,7 +28,7 @@ import make
 import genfile
 import eyecandy
 import mediautils
-from lazygal import pyexiv2api as pyexiv2
+from gi.repository import GExiv2
 
 
 THUMB_SIZE_NAME = 'thumb'
@@ -179,20 +179,19 @@ class ImageOtherSize(ResizedImage):
     )
 
     def copy_metadata(self):
-        imgtags = pyexiv2.ImageMetadata(self.source_media.path)
-        imgtags.read()
-        dest_imgtags = pyexiv2.ImageMetadata(self.path)
-        dest_imgtags.read()
-        imgtags.copy(dest_imgtags)
+        imgtags = GExiv2.Metadata(self.source_media.path)
+        dest_imgtags = GExiv2.Metadata(self.path)
+        for tag in imgtags.get_exif_tags():
+            dest_imgtags[tag] = imgtags[tag]
 
         new_size = self.get_size()
-        dest_imgtags['Exif.Photo.PixelXDimension'] = new_size[0]
-        dest_imgtags['Exif.Photo.PixelYDimension'] = new_size[1]
+        dest_imgtags['Exif.Photo.PixelXDimension'] = str(new_size[0])
+        dest_imgtags['Exif.Photo.PixelYDimension'] = str(new_size[1])
 
         if self.get_rotation() != 0:
             # Smaller image has been rotated in order to be displayed correctly
             # in a web browser. Fix orientation tag accordingly.
-            dest_imgtags['Exif.Image.Orientation'] = 1
+            dest_imgtags['Exif.Image.Orientation'] = '1'
 
         # Those are removed from published pics due to pivacy concerns,
         # unless explicitly told to keep them in. Option to retain GPS
@@ -200,12 +199,12 @@ class ImageOtherSize(ResizedImage):
         if not self.webgal.keep_gps:
             for tag in self.PRIVATE_IMAGE_TAGS:
                 try:
-                    del dest_imgtags[tag]
+                    dest_imgtags.clear_tag(tag)
                 except KeyError:
                     pass
         try:
-            dest_imgtags.write()
-        except ValueError, e:
+            dest_imgtags.save_file()
+        except Exception, e:
             logging.error(_("Could not copy metadata in reduced picture: %s") % e)
 
     def save(self, im):

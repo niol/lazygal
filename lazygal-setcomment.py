@@ -2,15 +2,14 @@
 
 import sys
 
-from lazygal import pyexiv2api as pyexiv2
+from gi.repository import GExiv2
 
 fn = sys.argv[1]
 comment = sys.argv[2]
 
-im = pyexiv2.ImageMetadata(fn.decode(sys.getfilesystemencoding()))
-im.read()
+im = GExiv2.Metadata(fn.decode(sys.getfilesystemencoding()))
 
 # Assume comment is in utf-8, more encoding processing example using
 # sys.stdin.encoding and example processing in lazygal/metadata.py
 im['Exif.Photo.UserComment'] = comment
-im.write()
+im.save_file()
