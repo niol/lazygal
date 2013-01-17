@@ -455,6 +455,15 @@
     <variablelist>
 
         <varlistentry>
+            <term><filename><replaceable>theme</replaceable>/SHARED_*</filename></term>
+            <listitem>
+                <para>Files to put in the web gallery
+                <filename>shared</filename> directory, e.g. CSS, Javascript,
+                images or other ressources common to all galleries.</para>
+            </listitem>
+        </varlistentry>
+
+        <varlistentry>
             <term><filename><replaceable>theme</replaceable>/browse.thtml</filename></term>
             <listitem>
                 <para>The XHTML template for the theme browse page (displaying
@@ -491,26 +500,31 @@
         </varlistentry>
     </variablelist>
 
-    <para>Missing template files will be searched for in the
-    <parameter>default</parameter> theme.</para>
-
-    <para>This must be valid XML. See
+    <para><filename><replaceable>theme</replaceable>/*.thtml</filename> must
+    be valid XML. See
     <filename>http://genshi.edgewall.org/wiki/Documentation/xml-templates.html</filename>
     for syntax. Dependencies for statically included templates (i.e. with
     filenames not computed from variables) are automatically computed: when
     an included template is modified, the software will automatically figure
-    out which pages to re-generate.</para>
+    out which pages to re-generate. Missing template files will be searched for
+    in the <parameter>default</parameter> theme.</para>
 
-    <para>Each file which name starts with <parameter>SHARED_</parameter> is
-    copied to the web album destination under the directory
-    <parameter>shared</parameter> and is aimed at being a shared resource
-    accross your web album (CSS stylesheet, button, etc.).</para>
+    <para><filename><replaceable>theme</replaceable>/SHARED_*</filename> files
+    (common ressources for the <filename>shared</filename> directory) are
+    renamed to strip the <parameter>SHARED_</parameter> prefix and:</para>
 
-    <para>Each file which extension starts with <parameter>t</parameter>
-    is processed through the Genshi text template engine before being copied.
-    See
-    <filename>http://genshi.edgewall.org/wiki/Documentation/text-templates.html</filename>
-    for syntax.</para>
+    <itemizedlist>
+        <listitem>
+            <para>Processed using the Genshi text template engine (see
+            <filename>http://genshi.edgewall.org/wiki/Documentation/text-templates.html</filename>
+            for syntax.) if their file extension starts with
+            <parameter>t</parameter>,</para>
+        </listitem>
+
+        <listitem>
+            <para>Copied to the web album destination otherwise.</para>
+        </listitem>
+    </itemizedlist>
 
     <para>Please refer to the examples supplied in
     <filename>/usr/share/lazygal/themes</filename></para>
