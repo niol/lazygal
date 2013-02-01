@@ -24,6 +24,8 @@ import codecs
 import datetime
 
 from gi.repository import GExiv2
+from PIL import Image as PILImage
+
 from lazygal import make
 
 from fractions import Fraction
@@ -55,6 +57,52 @@ VENDOR_EXIF_CODES = (
     'Exif.Sigma.LensRange',
     'Exif.Sony1.LensID',
     )
+
+
+def decode_exif_user_comment(raw, imgpath):
+    """
+    GExiv2 does not decode EXIF user comment.
+    """
+    # This field can contain charset information
+    if raw.startswith('charset='):
+        tokens = raw.split(' ')
+        csetfield = tokens[0]
+        text = ' '.join(tokens[1:])
+        ignore, cset = csetfield.split('=')
+        cset = cset.strip('"')
+    else:
+        cset = None
+        text = raw
+
+    if cset == 'Unicode':
+        encoding = None
+        try:
+            text.decode('utf-8')
+        except UnicodeDecodeError:
+            im = PILImage.open(imgpath)
+            endianess = im.app['APP1'][6:8]
+            if endianess == 'MM':
+                encoding = 'utf-16be'
+            elif endianess == 'II':
+                encoding = 'utf-16le'
+            else:
+                raise ValueError
+        else:
+            encoding = 'utf-8'
+    elif cset == 'Ascii':
+        encoding = 'ascii'
+    elif cset == 'Jis':
+        encoding = 'shift_jis'
+    else:
+        # Fallback to utf-8 as this is mostly the default for Linux
+        # distributions.
+        encoding = 'utf-8'
+
+    # Return the decoded string according to the found encoding.
+    try:
+        return text.decode(encoding)
+    except UnicodeDecodeError:
+        return text.decode(encoding, 'replace')
 
 
 class FileMetadata(object):
@@ -173,6 +221,7 @@ class ImageInfoTags(object):
         return val.numerator / val.denominator
 
     def _fallback_to_encoding(self, encoded_string, encoding='utf-8'):
+        if encoded_string is None: raise ValueError
         if type(encoded_string) is unicode: return encoded_string
         try:
             return encoded_string.decode(encoding)
@@ -181,6 +230,7 @@ class ImageInfoTags(object):
 
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00')
+        ret = decode_exif_user_comment(ret, self.image_path)
         if ret == 'User comments':
             return ''
         return ret
@@ -194,7 +244,6 @@ class ImageInfoTags(object):
             ret = self.get_file_comment()
             if ret is None:
                 ret = self.get_exif_usercomment()
-                ret = self._fallback_to_encoding(ret)
                 if ret == '':
                     raise ValueError
         except (ValueError, KeyError):
@@ -213,7 +262,7 @@ class ImageInfoTags(object):
         try:
             flash_info = self._metadata.get_tag_interpreted_string('Exif.Photo.Flash')
             return self._fallback_to_encoding(flash_info)
-        except KeyError:
+        except (ValueError, KeyError):
             return ''
 
     def get_exposure(self):

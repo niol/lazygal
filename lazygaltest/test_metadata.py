@@ -61,6 +61,22 @@ class TestFileMetadata(LazygalTest):
         md = metadata.DirectoryMetadata(self.album_root.path)
         self.assertEqual(md.get()['album_description'], album_desc)
 
+    def test_img_desc(self):
+        img_path = self.add_img(self.source_dir, 'captioned_pic.jpg')
+
+        # Set dumy comment which should be ignored.
+        im = GExiv2.Metadata(img_path)
+        im['Exif.Photo.UserComment'] = 'comment not to show'
+        im.save_file()
+
+        # Output real comment which should be chosen over the dummy comment.
+        image_caption = u'Les élèves forment une ronde dans la <em>cour</em>.'
+        self.create_file(os.path.join(self.source_dir, img_path + '.comment'),
+                         image_caption)
+
+        imgmd = metadata.ImageInfoTags(img_path)
+        self.assertEqual(imgmd.get_comment(), image_caption)
+
     def test_album_picture(self):
         img_names = ('ontop.jpg', 'second.jpg', )
         for img_name in img_names:
@@ -75,14 +91,14 @@ class TestFileMetadata(LazygalTest):
         self.assertEqual(img_names[0], self.album_root.album_picture)
 
     def test_comment_none(self):
-        im = GExiv2.Metadata(self.get_sample_path('sample.jpg'))
-        self.assertEqual(im.get_comment(), None)
+        im_md = metadata.ImageInfoTags(self.get_sample_path('sample.jpg'))
+        self.assertEqual(im_md.get_comment(), '')
 
     def test_image_description(self):
         sample = 'sample-image-description.jpg'
-        im = GExiv2.Metadata(self.get_sample_path(sample))
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
 
-        self.assertEqual(im.get_comment(), 'test ImageDescription')
+        self.assertEqual(im_md.get_comment(), 'test ImageDescription')
 
     def test_jpeg_comment(self):
         sample = 'sample-jpeg-comment.jpg'
@@ -100,19 +116,19 @@ class TestFileMetadata(LazygalTest):
         sample = 'sample-usercomment-ascii.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
 
-        self.assertEqual(im_md.get_comment(), u'charset="Ascii" deja vu')
+        self.assertEqual(im_md.get_comment(), u'deja vu')
 
     def test_usercomment_unicode_le(self):
         sample = 'sample-usercomment-unicode-ii.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
 
-        self.assertEqual(im_md.get_comment(), u'charset="Unicode" unicode test éà')
+        self.assertEqual(im_md.get_comment(), u'unicode test éà')
 
     def test_usercomment_unicode_be(self):
         sample = 'sample-usercomment-unicode-mm.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
 
-        self.assertEqual(im_md.get_comment(), u'charset="Unicode" unicode test : éàê')
+        self.assertEqual(im_md.get_comment(), u'unicode test : éàê')
 
     def test_model(self):
         sample = 'sample-model-nikon1.jpg'
