@@ -51,7 +51,7 @@ It can be summed up by the following features :
 
   *   [Python][1] >= 2.6.
   *   [Python imaging library (PIL)][4] >= 1.1.6.
-  *   [pyexiv2][5], a Python binding to [exiv2][6], a library to access image metadata.
+  *   [GExiv2][5] >= 0.5 (to have GObject introspection) which provides Python binding to [exiv2][6], a library to access image metadata.
   *   [Genshi][7] >= 0.5, a *Python toolkit for generation of output for the web*.
   *   [Python GStreamer][23] and associated plugins for video transcoding.
 
@@ -61,7 +61,7 @@ Building a `lazygal` installation requires :
   *   `xsltproc` to build manpages from docbook sources. It is included in the [libxslt package][8].
 
  [4]: http://www.pythonware.com/products/pil/
- [5]: http://tilloy.net/dev/pyexiv2/
+ [5]: http://redmine.yorba.org/projects/gexiv2/wiki
  [6]: http://exiv2.org/
  [7]: http://genshi.edgewall.org/
  [23]: http://gstreamer.freedesktop.org/modules/gst-python.html
