@@ -21,7 +21,7 @@ import os
 import datetime
 import shutil
 
-import Image
+from PIL import Image
 
 from __init__ import LazygalTestGen, skip, has_symlinks
 import lazygal.config
