@@ -15,9 +15,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+
 import os
 import sys
 import posixpath
+import logging
 
 
 def is_root_posix(path):
@@ -34,11 +36,11 @@ else:
     is_root = is_root_posix
 
 
-def path2unicode(path):
+def path2unicode(path, errors='strict'):
     if type(path) is unicode:
         return path
     else:
-        return path.decode(sys.getfilesystemencoding())
+        return path.decode(sys.getfilesystemencoding(), errors)
 
 
 def is_subdir_of(dir_path, path):
@@ -73,6 +75,45 @@ def url_path(physical_path, input_pathmodule=os.path):
 
     path_list.reverse()
     return posixpath.join(*path_list)
+
+
+def walk(top, walked=None, topdown=False):
+    """
+    This is a wrapper around os.walk() from the standard library:
+    - following symbolic links on directories
+    - whith barriers in place against walking twice the same directory,
+      which may happen when two directory trees have symbolic links to
+      each other's contents.
+    """
+    if walked is None: walked = []
+
+    for root, dirs, files in os.walk(top, topdown=topdown):
+        walked.append(os.path.realpath(root))
+
+        # Follow symlinks if they have not been walked yet
+        for d in dirs:
+            d_path = os.path.join(root, d)
+            if os.path.islink(d_path):
+                if os.path.realpath(d_path) not in walked:
+                    for x in walk(d_path, walked):
+                        yield x
+                else:
+                    logging.error("Not following symlink '%s' because directory has already been processed." % d_path)
+
+        yield root, dirs, files
+
+
+def walk_and_do(top=None, walked=None, dcb=None, fcb=None, topdown=False):
+    """
+    This walk calls dcb on each found directory and fcb on each found
+    file with the following arguments :
+        - path
+    """
+    for root, dirs, files in walk(top, walked, topdown=topdown):
+        if dcb is not None:
+            dcb(root, dirs, files)
+        if fcb is not None:
+            map(lambda f: fcb(os.path.join(root, f)), files)
 
 
 # vim: ts=4 sw=4 expandtab
