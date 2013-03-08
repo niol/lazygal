@@ -41,6 +41,7 @@ import lazygal
 from lazygal.generators import Album
 import lazygal.config
 import lazygal.eyecandy
+import lazygal.log
 
 
 usage = _("usage: %prog [options] albumdir")
@@ -236,19 +237,35 @@ if options.tpl_vars is not None:
         cmdline_config.set('template-vars',
                            name, value.decode(sys.stdin.encoding))
 
-logging.basicConfig(format='%(message)s', level=logging.INFO)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+output_log = lazygal.log.ProgressConsoleHandler()
+output_log.setFormatter(logging.Formatter('%(message)s'))
+logger.addHandler(output_log)
 
 try:
     album = Album(source_dir, cmdline_config)
 except ValueError, e:
     print unicode(e)
     sys.exit(1)
+else:
+    if sys.stdout.isatty():
+        progress = lazygal.generators.AlbumGenProgress(\
+            len(album.stats()['bydir'].keys()), album.stats()['total'])
+
+        def update_progress():
+            output_log.update_progress(unicode(progress))
+        progress.updated = update_progress
+        progress.updated()
+    else:
+        progress = None
+
 
 if options.metadata:
     album.generate_default_metadata()
 else:
     try:
-        album.generate()
+        album.generate(progress=progress)
     except KeyboardInterrupt:
         print >> sys.stderr, _("Interrupted.")
         sys.exit(1)

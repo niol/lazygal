@@ -241,6 +241,10 @@ class WebalbumMediaTask(make.GroupTask):
     def get_browse_page(self, size_name):
         return genpage.WebalbumBrowsePage(self.webgal, size_name, self)
 
+    def make(self):
+        super(WebalbumMediaTask, self).make()
+        self.webgal.media_done()
+
 
 class WebalbumImageTask(WebalbumMediaTask):
     """
@@ -295,7 +299,7 @@ class WebalbumDir(make.FileMakeObject):
     This is a built web gallery with its files, thumbs and reduced pics.
     """
 
-    def __init__(self, dir, subgals, album, album_dest_dir):
+    def __init__(self, dir, subgals, album, album_dest_dir, progress=None):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         if self.path.endswith(os.sep): self.path = os.path.dirname(self.path)
@@ -356,6 +360,8 @@ class WebalbumDir(make.FileMakeObject):
             self.add_dependency(self.webgal_pic)
         else:
             self.break_task = None
+
+        self.progress = progress
 
     def __parse_browse_sizes(self, sizes_string):
         for single_def in sizes_string.split(','):
@@ -612,6 +618,10 @@ class WebalbumDir(make.FileMakeObject):
         # update here if something has been built.
         if needed_build: os.utime(self.path, None)
 
+    def media_done(self):
+        if self.progress is not None:
+            self.progress.media_done()
+
 
 class SharedFiles(make.FileMakeObject):
 
@@ -657,7 +667,36 @@ class SharedFiles(make.FileMakeObject):
                 self.album.cleanup(file_path)
 
 
-class Album:
+class AlbumGenProgress(object):
+
+    def __init__(self, dirs_total, medias_total):
+        self._dirs_total = dirs_total
+        self._dirs_done = 0
+
+        self._medias_total = medias_total
+        self._medias_done = 0
+
+    def dir_done(self):
+        self._dirs_done = self._dirs_done + 1
+        self.updated()
+
+    def media_done(self, how_many=1):
+        self._medias_done = self._medias_done + how_many
+        self.updated()
+
+    def __unicode__(self):
+        return _("Progress: dir %d/%d (%d%%), media %d/%d (%d%%)")\
+               % (self._dirs_done, self._dirs_total,
+                  100 * self._dirs_done // self._dirs_total,
+                  self._medias_done, self._medias_total,
+                  100 * self._medias_done // self._medias_total,
+                 )
+
+    def updated(self):
+        pass
+
+
+class Album(object):
 
     def __init__(self, source_dir, config=None):
         self.source_dir = os.path.abspath(source_dir)
@@ -740,7 +779,7 @@ class Album:
                 self.__statistics['bydir'][root] = dir_medias
         return self.__statistics
 
-    def generate(self, dest_dir=None):
+    def generate(self, dest_dir=None, progress=None):
         if dest_dir is None:
             dest_dir = self.config.getstr('global', 'output-directory')
         else:
@@ -790,7 +829,8 @@ class Album:
                               % source_dir.path)
                 continue
 
-            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir)
+            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir,
+                                  progress)
 
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
@@ -819,11 +859,16 @@ class Album:
             elif destgal.needs_build():
                 destgal.make(force=True)  # avoid another needs_build() call in make()
             else:
+                if progress is not None:
+                    progress.media_done(len(destgal.medias))
                 logging.debug(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
             # Force some memory cleanups, this is usefull for big albums.
             del destgal
             gc.collect()
+
+            if progress is not None:
+                progress.dir_done()
 
             logging.info(_("[Leaving  %%ALBUMROOT%%/%s]") % source_dir.strip_root())
 
