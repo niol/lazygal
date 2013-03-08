@@ -500,7 +500,18 @@ if __name__ == '__main__':
         file_path = file_path.decode(sys.getfilesystemencoding())
         fn, ext = os.path.splitext(os.path.basename(file_path))
         for converter_type, converter in converters.items():
-            target_path = fn + '.' + converter_type
+
+            counter_str = ''
+            counter = 0
+            filename_free = False
+            while not filename_free:
+                target_path = fn + counter_str + '.' + converter_type
+                if os.path.isfile(target_path):
+                    counter = counter + 1
+                    counter_str = '_%d' % counter
+                else:
+                    filename_free = True
+
             converter(file_path).convert(target_path)
 
 
