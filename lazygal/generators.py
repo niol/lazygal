@@ -709,39 +709,13 @@ class Album:
             text = _('you should ')
         logging.info(_('  %sRM %s') % (text, file_path))
 
-    def walk(self, top, walked=None):
-        """
-        This is a wrapper around os.walk() from the standard library:
-        - browsing with topdown=False
-        - following symbolic links on directories
-        - whith barriers in place against walking twice the same directory,
-          which may happen when two directory trees have symbolic links to
-          each other's contents.
-        """
-        if walked is None: walked = []
-
-        for root, dirs, files in os.walk(top, topdown=False):
-            walked.append(os.path.realpath(root))
-
-            # Follow symlinks if they have not been walked yet
-            for d in dirs:
-                d_path = os.path.join(root, d)
-                if os.path.islink(d_path):
-                    if os.path.realpath(d_path) not in walked:
-                        for x in self.walk(d_path, walked):
-                            yield x
-                    else:
-                        logging.warning(_("Not following symlink '%s' because directory has already been processed.") % d_path)
-
-            yield root, dirs, files
-
     def generate_default_metadata(self):
         """
         Generate default metada files if no exists.
         """
         logging.debug(_("Generating metadata in %s") % self.source_dir)
 
-        for root, dirnames, filenames in self.walk(self.source_dir):
+        for root, dirnames, filenames in pathutils.walk(self.source_dir):
             filenames.sort()  # This is required for the ignored files
                               # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
@@ -771,7 +745,7 @@ class Album:
             feed = None
 
         dir_heap = {}
-        for root, dirnames, filenames in self.walk(self.source_dir):
+        for root, dirnames, filenames in pathutils.walk(self.source_dir):
 
             if root in dir_heap:
                 subdirs, subgals = dir_heap[root]
