@@ -32,6 +32,20 @@ from gi.repository import GExiv2
 
 class TestGenerators(LazygalTestGen):
 
+    def test_albumstats(self):
+        pics = ['img%d.jpg' % i for i in range(0, 8)]
+        self.setup_subgal('subgal', pics)
+        self.setup_subgal('vidgal', ['vid.webm'])
+
+        expected_stats = {
+            self.source_dir: 0,
+            os.path.join(self.source_dir, 'subgal') : 8,
+            os.path.join(self.source_dir, 'vidgal') : 1,
+        }
+
+        self.assertEqual(self.album.stats()['total'], 9)
+        self.assertEqual(self.album.stats()['bydir'], expected_stats)
+
     def test_genfile_filelayout(self):
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
 

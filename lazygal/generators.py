@@ -690,6 +690,8 @@ class Album:
 
         self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
 
+        self.__statistics = None
+
     def set_theme(self, theme=tpl.DEFAULT_THEME):
         self.theme = tpl.Theme(os.path.join(DATAPATH, 'themes'), theme)
 
@@ -723,6 +725,20 @@ class Album:
             logging.debug("(%s)" % source_dir.path)
 
             metadata.DefaultMetadata(source_dir, self).make()
+
+    def stats(self):
+        if self.__statistics is None:
+            self.__statistics = {
+                'total' : 0,
+                'bydir' : {}
+            }
+            for root, dirnames, filenames in pathutils.walk(self.source_dir):
+                dir_medias = len([f for f in filenames\
+                                  if sourcetree.MediaHandler.is_known_media(f)])
+                self.__statistics['total'] = self.__statistics['total']\
+                                             + dir_medias
+                self.__statistics['bydir'][root] = dir_medias
+        return self.__statistics
 
     def generate(self, dest_dir=None):
         if dest_dir is None:

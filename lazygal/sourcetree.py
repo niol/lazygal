@@ -232,7 +232,8 @@ class MediaHandler(object):
     def __init__(self, album):
         self.album = album
 
-    def is_known_media(self, path):
+    @staticmethod
+    def is_known_media(path):
         filename, extension = os.path.splitext(path)
         extension = extension.lower()
         return extension in MediaHandler.FORMATS.keys()
