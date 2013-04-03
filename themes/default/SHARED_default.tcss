@@ -2,13 +2,13 @@
 
 {% if bgcolor %}
 body{
-		background-color:${bgcolor}
+		background-color:${bgcolor};
 }
 {% end %}
 
 {% if txtcolor %}
 body{
-		color:${txtcolor}
+		color:${txtcolor};
 }
 {% end %}
 
