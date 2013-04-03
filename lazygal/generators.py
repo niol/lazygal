@@ -454,6 +454,7 @@ class WebalbumDir(make.FileMakeObject):
 
         self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
+        self.filter_by_tag = self.config.get('webgal', 'filter-by-tag')
 
         self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
         self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')

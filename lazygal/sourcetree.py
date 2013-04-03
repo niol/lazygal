@@ -264,6 +264,8 @@ class Directory(File):
 
         self.human_name = self.album._str_humanize(self.name)
 
+        self.tagfilter = album.config.get('webgal', 'filter-by-tag')
+
         media_handler = MediaHandler(self.album)
         self.medias = []
         self.medias_names = []
@@ -271,8 +273,13 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
             media = media_handler.get_media(media_path)
             if media:
-                self.medias_names.append(filename)
-                self.medias.append(media)
+                if self.tagfilter is not None:
+                    if self.tagfilter in media.info().get_keywords():
+                        self.medias_names.append(filename)
+                        self.medias.append(media)
+                else:
+                        self.medias_names.append(filename)
+                        self.medias.append(media)
             elif not self.is_metadata(filename) and\
                     filename != SOURCEDIR_CONFIGFILE:
                 logging.info(_("  Ignoring %s, format not supported.")
