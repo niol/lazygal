@@ -143,7 +143,9 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         """
-        return self._metadata.get_date_time()
+        dt = self._metadata['Exif.Photo.DateTimeOriginal']
+        # returned format is 'Year:Month:Day Hour:Min:Sec'
+        return datetime.datetime.strptime(dt, "%Y:%m:%d %H:%M:%S")
 
     def get_required_rotation(self):
         try:
