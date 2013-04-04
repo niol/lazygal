@@ -27,6 +27,7 @@ from __init__ import LazygalTestGen, skip, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
+from lazygal.metadata import GEXIV2_DATE_FORMAT
 from gi.repository import GExiv2
 
 
@@ -136,7 +137,7 @@ class TestGenerators(LazygalTestGen):
         dummy_comment = 'nice photo'
         source_image['Exif.Photo.UserComment'] = dummy_comment
         dummy_date = datetime.datetime(2011, 2, 3, 12, 51, 43)
-        source_image.set_date_time(dummy_date)
+        source_image['Exif.Photo.DateTimeDigitized'] = dummy_date.strftime(GEXIV2_DATE_FORMAT)
         assert 'Exif.GPSInfo.GPSLongitude' in source_image
         assert 'Exif.GPSInfo.GPSLatitude' in source_image
         source_image.save_file()

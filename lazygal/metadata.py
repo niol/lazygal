@@ -58,6 +58,8 @@ VENDOR_EXIF_CODES = (
     'Exif.Sony1.LensID',
     )
 
+GEXIV2_DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
+
 
 def decode_exif_user_comment(raw, imgpath):
     """
@@ -143,9 +145,17 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         """
-        # FIXME
-        #return self._metadata.get_date_time()
-        return None
+        for tag in ('Exif.Photo.DateTimeOriginal',
+                    'Exif.Image.DateTimeDigitized',
+                    'Exif.Image.DateTime',
+                   ):
+            try:
+                dt_str = self._metadata[tag]
+                dt = datetime.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
+            except KeyError:
+                pass
+            else:
+                return dt
 
     def get_required_rotation(self):
         try:
