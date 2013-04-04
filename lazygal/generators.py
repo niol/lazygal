@@ -753,7 +753,7 @@ class Album(object):
 
     def generate_default_metadata(self):
         """
-        Generate default metada files if no exists.
+        Generate default metadata files if no exists.
         """
         logging.debug(_("Generating metadata in %s") % self.source_dir)
 

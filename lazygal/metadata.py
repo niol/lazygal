@@ -143,7 +143,9 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be update by
         software when editing photos later.
         """
-        return self._metadata.get_date_time()
+        # FIXME
+        #return self._metadata.get_date_time()
+        return None
 
     def get_required_rotation(self):
         try:
@@ -348,6 +350,13 @@ class ImageInfoTags(object):
             return self._fallback_to_encoding(author)
         except KeyError:
             return ''
+
+    def get_keywords(self):
+        """ 
+        returns all the image tags in a list
+        """
+        kw = self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
+        return kw
 
 
 class NoMetadata(Exception):
