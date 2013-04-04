@@ -310,6 +310,17 @@
 
       <varlistentry>
         <term>
+          <option>--filter-by-tag=<replaceable>TAG</replaceable>
+          </option>
+        </term>
+        <listitem>
+            <para>If set, lazygal will only export the pictures that have one
+                of their (IPTC) tags matching TAG.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
           <option>--pic-sort-by=<replaceable>ORDER</replaceable></option>
         </term>
         <listitem>

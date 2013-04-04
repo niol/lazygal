@@ -322,6 +322,14 @@ foo = bar
         </listitem>
       </varlistentry>
 
+       <varlistentry>
+        <term>filter-by-tag</term>
+        <listitem>
+          <para>Same as <option>--filter-by-tag=<replaceable>TAG</replaceable></option>
+          in &lazygal;.</para>
+        </listitem>
+      </varlistentry>
+
     </variablelist>
   </refsect1>
 
