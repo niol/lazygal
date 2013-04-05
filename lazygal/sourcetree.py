@@ -273,7 +273,7 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
             media = media_handler.get_media(media_path)
             if media:
-                if self.tagfilter is not None:
+                if self.tagfilter != '':
                     if self.tagfilter in media.info().get_keywords():
                         self.medias_names.append(filename)
                         self.medias.append(media)
