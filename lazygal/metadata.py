@@ -142,7 +142,7 @@ class ImageInfoTags(object):
     def get_date(self):
         """
         Get real time when photo has been taken. We prefer EXIF fields
-        as those were filled by camera, Image DateTime can be update by
+        as those were filled by camera, Image DateTime can be updated by
         software when editing photos later.
         """
         for tag in ('Exif.Photo.DateTimeOriginal',
