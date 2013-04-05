@@ -150,8 +150,8 @@ parser.add_option("", "--subgal-sort-by",
                   action="store", metavar=_('ORDER'),
                   dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname, exif or mtime. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--filter-by-tag", type="string",
-                  action="store", metavar=_('TAG'),
-                  dest="filter_by_tag", help=_("Only include in the gallery pics whose IPTC keywords match the supplied argument."))
+                  action="append", metavar=_('TAG'),
+                  dest="filter_by_tag", help=_("Only include in the gallery pics whose IPTC keywords match the supplied filter(s)."))
 parser.add_option("", "--keep-gps-data",
                   action="store_true",
                   dest="keep_gps",

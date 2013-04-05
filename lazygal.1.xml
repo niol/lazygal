@@ -315,7 +315,10 @@
         </term>
         <listitem>
             <para>If set, lazygal will only export the pictures that have one
-                of their (IPTC) tags matching TAG.</para>
+                of their (IPTC) tags matching TAG. 
+                It is also possible to use an equivalent of AND and OR boolean tests to filter tags.
+                For more details, read below the section <replaceable>TAG FILTERING</replaceable>.
+            </para>
         </listitem>
       </varlistentry>
 
@@ -763,6 +766,54 @@ Album image identifier relative/path/to/image.jpg
             ratio is preserved.</para>
         </listitem>
       </varlistentry>
+
+  </refsect1>
+
+  <refsect1>
+    <title>TAG FILTERING</title>
+    <para> Tag filtering supports regular expression matching thanks to the 're' module of Python.
+        All the filter matchings can be indicated to lazygal by successive uses of the 'filter-by-tag' option, or by giving a coma-separated list of keywords. </para>
+
+    <para> 
+        We illustrate here how more elaorated tag filtering can be done. </para>
+
+    <para> We want to export only the images that have the tags 'lazygal' AND 'hiking'. 
+    </para>
+
+    <informalexample><programlisting>
+        $ lazygal --filter-by-tag=lazygal --filter-by-tag=hiking 
+    </programlisting></informalexample>
+
+    <para>
+        or:
+    </para>
+
+    <informalexample><programlisting>
+        $ lazygal --filter-by-tag=lazygal,hiking
+    </programlisting></informalexample>
+
+    <para>
+        We want to export the images that have the tags 'lazygal' OR 'hiking'.
+    </para>
+    <informalexample><programlisting>
+        $ lazygal --filter-by-tag="(lazygal|hiking)"
+    </programlisting></informalexample>
+
+    <para>
+        We want to export the images that have one of the tags 'hiking_2012', 'hiking_2013', 'hiking_France', etc.
+    </para>
+
+    <informalexample><programlisting>
+        $ lazygal --filter-by-tag="hiking_.*"
+    </programlisting></informalexample>
+
+    <para>
+        We want to export the images that have the tag 'lazygal', AND one of the tags 'hiking_2012', 'hiking_2013', 'hiking_France', etc.
+    </para>
+
+    <informalexample><programlisting>
+        $ lazygal --filter-by-tag="lazygal,hiking_.*"
+    </programlisting></informalexample>
 
   </refsect1>
 
