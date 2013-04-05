@@ -47,6 +47,8 @@ class test_lazygal(Command):
 
 
 class build_manpages(Command):
+    user_options = []
+
     manpages = None
     db2mans = [
         # debian
