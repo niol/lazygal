@@ -825,13 +825,17 @@ class Album(object):
 
             source_dir = sourcetree.Directory(root, subdirs, filenames, self)
 
+            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir,
+                                  progress)
+
+            if source_dir.is_album_root():
+                # Use root config tpl vars for shared files
+                tpl_vars = destgal.tpl_vars
+
             if source_dir.get_all_medias_count() < 1:
                 logging.debug(_("(%s) and childs have no known medias, skipped")
                               % source_dir.path)
                 continue
-
-            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir,
-                                  progress)
 
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
@@ -840,9 +844,6 @@ class Album(object):
                 container_subdirs, container_subgals = dir_heap[container_dirname]
                 container_subdirs.append(source_dir)
                 container_subgals.append(destgal)
-            else:
-                # Use root config tpl vars for shared files
-                tpl_vars = destgal.tpl_vars
 
             if feed and source_dir.is_album_root():
                 feed.set_title(source_dir.human_name)
