@@ -265,14 +265,7 @@ class Directory(File):
 
         self.human_name = self.album._str_humanize(self.name)
 
-        self.tagfilters = album.config.get('webgal', 'filter-by-tag')
-
-        # join the list, in case the option filter-by-tag is used several times
-        self.tagfilters = ','.join(self.tagfilters) 
-
-        # then create a new list from the ',' separator, in case several
-        # filters were given at once (separated by comas)
-        self.tagfilters = self.tagfilters.split(',') 
+        tagfilters = album.config.getlist('webgal', 'filter-by-tag')
 
         media_handler = MediaHandler(self.album)
         self.medias = []
@@ -281,16 +274,16 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
             media = media_handler.get_media(media_path)
             if media:
-                if self.tagfilters != '':
+                if len(tagfilters) > 0:
                     res = True
-                    for tagf in self.tagfilters:
+                    for tagf in tagfilters:
                         # concatenate the list of tags as a string of words,
                         # space-separated.  to ensure that we match the full
                         # keyword and not only a subpart of it, we also surround
                         # the matching pattern with spaces
 
                         # we look for tag words, partial matches are not wanted
-                        regex = re.compile(r"\b" + tagf + r"\b") 
+                        regex = re.compile(r"\b" + tagf + r"\b")
 
                         kwlist = ' '.join(media.info().get_keywords())
                         if re.search(regex, kwlist) is None:

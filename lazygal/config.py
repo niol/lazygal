@@ -41,6 +41,24 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
         except (ValueError, AttributeError):
             return ConfigParser.RawConfigParser.get(self, section, option)
 
+    def getlist(self, section, option):
+        str_vlist = self.get(section, option)
+
+        if str_vlist == '':
+            return []
+
+        if type(str_vlist) is not list:
+            str_vlist = str_vlist.split(',')
+
+        # handle the case several vals were given at once (separated by comas)
+        vlist = []
+        for v in str_vlist:
+            multiple_v = v.split(',')
+            for mv in multiple_v:
+                vlist.append(mv)
+
+        return vlist
+
     def load(self, other_config, init=False, sections=None):
         """
         Take another configuration object and overload values in this config
