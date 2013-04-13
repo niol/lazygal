@@ -102,7 +102,7 @@ class Video(Media):
 
     def full(self):
         tpl_values = self.link()
-        tpl_values['video_src'] = self.media.filename
+        tpl_values['video_src'] = self.webalbum_media.resized[self.page.size_name].filename
         tpl_values['video_src'] = self.page.url_quote(tpl_values['video_src'])
         return tpl_values
 
