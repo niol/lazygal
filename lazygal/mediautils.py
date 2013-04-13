@@ -148,6 +148,23 @@ class GstVideoInfo(object):
         self.loop = gobject.MainLoop()
 
     def __stream_discovered(self, obj, success):
+        if success:
+            self.videowidth = obj.videowidth
+            self.videoheight = obj.videoheight
+            self.videorate = obj.videorate
+            self.audiorate = obj.audiorate
+            self.audiodepth = obj.audiodepth
+            self.audiowidth = obj.audiowidth
+            self.audiochannels = obj.audiochannels
+
+            self.audiolength = obj.audiolength
+            self.videolength = obj.videolength
+
+            self.is_video = obj.is_video
+            self.is_audio = obj.is_audio
+        else: # TODO : handle error
+            pass
+
         self.loop.quit()
 
     def inspect(self):
@@ -159,21 +176,6 @@ class GstVideoInfo(object):
         discoverer.connect('discovered', self.__stream_discovered)
         discoverer.discover()
         self.loop.run()
-
-        self.videowidth = discoverer.videowidth
-        self.videoheight = discoverer.videoheight
-        self.videorate = discoverer.videorate
-        self.audiorate = discoverer.audiorate
-        self.audiodepth = discoverer.audiodepth
-        self.audiowidth = discoverer.audiowidth
-        self.audiochannels = discoverer.audiochannels
-
-        self.audiolength = discoverer.audiolength
-        self.videolength = discoverer.videolength
-
-        self.is_video = discoverer.is_video
-        self.is_audio = discoverer.is_audio
-
 
 class GstVideoReader(GstVideoOpener):
 
