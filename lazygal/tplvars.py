@@ -74,6 +74,7 @@ class Image(Media):
         tpl_values['img_width'], tpl_values['img_height'] = self.webalbum_media.resized[self.page.size_name].get_size()
 
         if self.page.dir.config.getboolean('webgal', 'publish-metadata'):
+            tpl_values['publish_metadata'] = True
             img_date = self.media.get_date_taken()
             tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
             tpl_values['image_datetime'] = img_date
