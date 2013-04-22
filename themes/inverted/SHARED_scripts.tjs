@@ -27,7 +27,7 @@ $(document).keypress(function(e) {
       }
 });
 
-#if display_theme_selector
+{% if display_theme_selector %}
 /**
  * Change background colors
  */
@@ -74,9 +74,9 @@ function eraseCookie(name) {
     createCookie(name, "", -1);
 }
 // /cookie functions
-#end
+{% end %}
 
-#if display_social_buttons
+{% if display_social_buttons %}
 /**
  * Set social buttons proper link
  */
@@ -96,4 +96,4 @@ $('.share_twitter').attr('href', 'https://twitter.com/intent/tweet?url=' + encod
 $(function(){
     $('#share_icons').children().not('p').tipTip({defaultPosition: 'top', delay: 300, maxWidth: 'auto'});
 });
-#end
+{% end %}
