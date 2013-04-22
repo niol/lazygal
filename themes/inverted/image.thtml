@@ -19,7 +19,7 @@
     <div id="media_options" class="wrapper clearfix">
 
         <!--! Display social buttons = '.lazygal': section: '[template-vars]', variable: 'display_social_buttons' -->
-        <div py:if="display_social_buttons" id="share">
+        <div id="share" py:if="display_social_buttons">
             <div id="share_icons">
                 <p>Share:</p>
                 <a href="#" class="share_facebook" title="Post to Facebook" target="_blank"></a>
@@ -44,13 +44,13 @@
         </div>
 
         <!--! Display previous image thumb -->
-        <div py:if="prev_link" class="prevnext" id="prev_link">
+        <div class="prevnext" id="prev_link" py:if="prev_link">
             <xi:include href="thumb.thtml" py:with="media=prev_link" />
             <a class="prevnext_text" href="$prev_link.link" title="${_('previous')}"></a>
         </div>
 
         <!--! Display next image thumb -->
-        <div py:if="next_link" class="prevnext" id="next_link">
+        <div class="prevnext" id="next_link" py:if="next_link">
             <xi:include href="thumb.thtml" py:with="media=next_link" />
             <a class="prevnext_text" href="$next_link.link" title="${_('next')}"></a>
         </div>
@@ -58,7 +58,7 @@
         <!--! Display image info -->
         <div id="image_caption">
             <div class="image_comment" py:if="comment">$comment</div>
-            <div py:if="original_link" class="image_original_link"><a href="$original_link">${_('Original picture')}</a></div>
+            <div class="image_original_link" py:if="original_link"><a href="$original_link">${_('Original picture')}</a></div>
             <div class="image_date" py:if="image_datetime">
                 ${_('Taken')} ${image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}
             </div>
