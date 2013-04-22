@@ -56,7 +56,7 @@
         </div>
 
         <!--! Display image info -->
-        <div id="image_caption">
+        <div id="image_caption" py:if="publish_metadata or original_link">
             <div class="image_comment" py:if="comment">$comment</div>
             <div class="image_original_link" py:if="original_link"><a href="$original_link">${_('Original picture')}</a></div>
             <div class="image_date" py:if="image_datetime">
