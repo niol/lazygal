@@ -97,3 +97,12 @@ $(function(){
     $('#share_icons').children().not('p').tipTip({defaultPosition: 'top', delay: 300, maxWidth: 'auto'});
 });
 {% end %}
+
+{% if google_analytics_tracking_id %}
+/**
+ * Track image_original_link clicks
+ */
+$('.image_original_link a').click(function(){
+    _gaq.push(['_trackEvent', 'image_original_link', $(this).attr('href'), 'Show original image']);  
+});
+{% end %}
