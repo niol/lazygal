@@ -457,7 +457,11 @@ div#image_caption {
 }
 
 .image_comment {
-    margin: 5px 0 15px;
+    margin: 5px 0;
+}
+
+.image_original_link {
+    margin: 5px 0;
 }
 
 .image_date,

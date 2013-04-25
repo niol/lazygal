@@ -80,6 +80,7 @@ function eraseCookie(name) {
 /**
  * Set social buttons proper link
  */
+// Show social icons only if javascript is turned on
 $('#share_icons').show();
 encoded_location_href = encodeURIComponent(location.href);
 $('.share_delicious').attr('href', 'https://delicious.com/post?url=' + encoded_location_href)
