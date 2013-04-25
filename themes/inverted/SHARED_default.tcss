@@ -118,7 +118,7 @@ a:hover {
     text-decoration: underline;
 }
 
-div#header_container {
+#header_container {
     border-bottom: 20px solid transparent;
 }
 
@@ -127,16 +127,16 @@ h1#site_title {
     margin: 10px 0;
 }
 
-div#main,
-div#media_options {
+#main,
+#media_options {
     padding: 15px 0;
 }
 
-div#main article h1 {
+#main article h1 {
     font-size:2em;
 }
 
-div#footer_container {
+#footer_container {
     border-top: 20px solid transparent;
 }
 
@@ -161,8 +161,8 @@ ALL: IE Fixes
 Main site content
 =============== */
 header,
-div#main,
-div#media_options,
+#main,
+#media_options,
 footer {
     background-color: #FFFFFF;
     border: 1px solid #D7D7D7;
@@ -391,7 +391,7 @@ h4.sub_gallery_name a:hover {
 /* ===============
 Thumbs
 =============== */
-div#media_thumbs {
+#media_thumbs {
     margin-top: 15px;
 }
 
@@ -423,8 +423,8 @@ div#media_thumbs {
 /* ===============
 Big image
 =============== */
-div#image_container,
-div#video_container {
+#image_container,
+#video_container {
     margin: 0px auto;
 }
 
@@ -445,7 +445,7 @@ div#video_container {
     padding: 10px;
 }
 
-div#image_caption {
+#image_caption {
     border-radius: 6px;
     background-color: #f9f9f9;
     border: 1px solid #d6d6d6;
@@ -486,13 +486,13 @@ Previous/Next image links
     display: none;
 }
 
-div#prev_link {
+#prev_link {
     position: relative;
     float: left;
     left: 0.1em;
 }
 
-div#next_link {
+#next_link {
     position: relative;
     float: right;
     right: 0.1em;
@@ -645,12 +645,12 @@ nav {
 WIDE: Main
 ============ */
 
-div#main article {
+#main article {
     float:left;
     width:57%;
 }
 
-div#main aside {
+#main aside {
     float:right;
     width:28%;
 }
