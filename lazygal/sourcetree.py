@@ -274,6 +274,8 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
             media = media_handler.get_media(media_path)
             if media:
+
+                # tag-filtering is requested
                 if len(tagfilters) > 0:
                     res = True
                     for tagf in tagfilters:
@@ -292,6 +294,8 @@ class Directory(File):
                     if res is True:
                         self.medias_names.append(filename)
                         self.medias.append(media)
+
+                # no tag-filtering  
                 else:
                         self.medias_names.append(filename)
                         self.medias.append(media)
