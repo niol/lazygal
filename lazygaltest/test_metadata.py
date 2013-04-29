@@ -163,6 +163,19 @@ class TestFileMetadata(LazygalTest):
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_authorship(), u'\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd \ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd')
 
+    def test_keywords(self):
+        sample = 'sample-image-keywords.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_keywords(), 
+                set(['lazygal',
+                    'Iptc.Application2.Keywords.lazygal',
+                    'Xmp.MicrosoftPhoto.LastKeywordXMP.lazygal',
+                    'Xmp.dc.subject.lazygal',
+                    'Xmp.digiKam.TagsList.lazygal'
+                    #'Xmp.lr.hierarchicalSubject.lazygal'
+                    ])
+                )
+
 
 if __name__ == '__main__':
     unittest.main()

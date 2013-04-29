@@ -371,11 +371,14 @@ class ImageInfoTags(object):
         """
         kw = list()
         kw += self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
+        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
         kw += self._metadata.get_tag_multiple('Xmp.dc.subject')
-        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
         kw += self._metadata.get_tag_multiple('Xmp.digiKam.TagsList')
-        kw += self._metadata.get_tag_multiple('Xmp.lr.hierarchicalSubject')
-        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
+        # FIXME 
+        # Reading the metadata Xmp.lr.hierarchicalSubject produces error
+        # messages:
+        #   "No namespace info available for XMP prefix `lr'"
+        #kw += self._metadata.get_tag_multiple('Xmp.lr.hierarchicalSubject')
 
         #remove duplicates 
         kw = set(kw)
