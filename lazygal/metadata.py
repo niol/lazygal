@@ -363,9 +363,26 @@ class ImageInfoTags(object):
 
     def get_keywords(self):
         """ 
-        returns all the image tags in a list
+        Returns all the image tags in a list.
+
+        Try to find the maximum number of keywords. Photo applications store
+        keywords in various places. For a comprehensive list, see
+        http://redmine.yorba.org/projects/shotwell/wiki/PhotoTags 
         """
-        kw = self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
+        kw = list()
+        kw += self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
+        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
+        kw += self._metadata.get_tag_multiple('Xmp.dc.subject')
+        kw += self._metadata.get_tag_multiple('Xmp.digiKam.TagsList')
+        # FIXME 
+        # Reading the metadata Xmp.lr.hierarchicalSubject produces error
+        # messages:
+        #   "No namespace info available for XMP prefix `lr'"
+        #kw += self._metadata.get_tag_multiple('Xmp.lr.hierarchicalSubject')
+
+        #remove duplicates 
+        kw = set(kw)
+
         return kw
 
 
