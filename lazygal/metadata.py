@@ -207,8 +207,17 @@ class ImageInfoTags(object):
         SLR cameras and uses various maker notes.
         """
         interpret = self._metadata.get_tag_interpreted_string
-        vendor_values = [interpret(v) for v in VENDOR_EXIF_CODES]
-        return ' '.join([s.strip() for s in vendor_values if s])
+        vendor_values = []
+        for key in VENDOR_EXIF_CODES:
+            try:
+                v = self._metadata.get_tag_interpreted_string(key)
+                if v is None:
+                    raise KeyError
+            except KeyError:
+                pass
+            else:
+                vendor_values.append(v.strip())
+        return ' '.join([s for s in vendor_values if s])
 
     def get_exif_string(self, name):
         """
