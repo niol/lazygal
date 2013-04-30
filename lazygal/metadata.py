@@ -251,7 +251,8 @@ class ImageInfoTags(object):
 
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00')
-        ret = decode_exif_user_comment(ret, self.image_path)
+        if type(ret) is not unicode: # the EXIF lib did not do the work for us
+            ret = decode_exif_user_comment(ret, self.image_path)
         if ret == 'User comments':
             return ''
         return ret
