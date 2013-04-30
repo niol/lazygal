@@ -250,7 +250,7 @@ class TestGenerators(LazygalTestGen):
         # generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
-        #print os.listdir(dest_dir)
+
         self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
         self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
         self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
@@ -276,7 +276,7 @@ class TestGenerators(LazygalTestGen):
         # generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
-        print os.listdir(dest_dir)
+
         self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
         self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
         self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
