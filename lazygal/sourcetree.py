@@ -276,7 +276,7 @@ class Directory(File):
             if media:
 
                 # tag-filtering is requested
-                if len(tagfilters) > 0:
+                if len(tagfilters) > 0 and media.type == 'image':
                     res = True
                     for tagf in tagfilters:
                         # concatenate the list of tags as a string of words,
