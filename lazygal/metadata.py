@@ -380,10 +380,17 @@ class ImageInfoTags(object):
         http://redmine.yorba.org/projects/shotwell/wiki/PhotoTags
         """
         kw = list()
-        kw += self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
-        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
-        kw += self._metadata.get_tag_multiple('Xmp.dc.subject')
-        kw += self._metadata.get_tag_multiple('Xmp.digiKam.TagsList')
+        for key in ('Iptc.Application2.Keywords',
+                    'Xmp.MicrosoftPhoto.LastKeywordXMP',
+                    'Xmp.dc.subject',
+                    'Xmp.digiKam.TagsList', ):
+            try:
+                values = self._metadata.get_tag_multiple(key)
+            except KeyError:
+                pass
+            else:
+                for value in values:
+                    kw.append(value)
         # FIXME
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:
