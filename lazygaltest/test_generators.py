@@ -122,7 +122,7 @@ class TestGenerators(LazygalTestGen):
 
         symlink = os.path.join(dest_dir, os.path.basename(img_path))
         # Test if the original in the webgal is a symlink
-        self.assertEqual(os.path.islink(symlink), True)
+        self.assertTrue(os.path.islink(symlink))
         # Test if that symlink point to the image in the source_dir
         self.assertEqual(os.path.realpath(symlink), img_path)
 
@@ -214,8 +214,7 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'index.xml')),
-                         True)
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'index.xml')))
 
     def test_dirzip(self):
         config = lazygal.config.LazygalConfig()
@@ -227,8 +226,7 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'src.zip')),
-                         True)
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
 
     def test_filter_by_tag(self):
         config = lazygal.config.LazygalConfig()
