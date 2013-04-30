@@ -255,19 +255,23 @@ class TestGenerators(LazygalTestGen):
         self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
 
     def test_filter_and_dirzip(self):
-        # FIXME the option dirzip does not work when tag filtering is used...
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'dirzip', 'Yes')
         config.set('webgal', 'filter-by-tag', 'lazygal')
         self.setup_album(config)
 
         good_path = self.add_img(self.source_dir, 'good.jpg')
+        good_path2 = self.add_img(self.source_dir, 'good2.jpg')
         false_path = self.add_img(self.source_dir, 'false.jpg')
         good = GExiv2.Metadata(good_path)
+        good2 = GExiv2.Metadata(good_path2)
         false = GExiv2.Metadata(false_path)
         good['Iptc.Application2.Keywords'] = 'lazygal'
         good['Xmp.dc.subject'] = 'lazygal2'
         good.save_file()
+        good2['Iptc.Application2.Keywords'] = 'lazygalagain'
+        good2['Xmp.dc.subject'] = 'lazygal'
+        good2.save_file()
         false['Iptc.Application2.Keywords'] = 'another_tag'
         false.save_file()
 
