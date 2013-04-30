@@ -357,11 +357,11 @@ class ImageInfoTags(object):
 
     def get_jpeg_comment(self):
         try:
-            comment = self._metadata.get_comment().strip(' ')
-            if '\x00' in comment:
-                raise ValueError  # ignore broken JPEG comments
-            return self._fallback_to_encoding(comment)
-        except (AttributeError, ValueError):
+            comment = self._metadata.get_comment()
+            if comment is None or '\x00' in comment:
+                raise ValueError  # ignore missing or broken JPEG comments
+            return self._fallback_to_encoding(comment.strip(' '))
+        except ValueError:
             return ''
 
     def get_authorship(self):
