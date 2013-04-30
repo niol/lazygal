@@ -530,7 +530,6 @@ class TestSorting(LazygalTestGen):
         )
 
 
-
 if __name__ == '__main__':
     unittest.main()
 
