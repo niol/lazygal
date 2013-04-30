@@ -251,10 +251,10 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
         #print os.listdir(dest_dir)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')), False)
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
 
     def test_filter_and_dirzip(self):
         # FIXME the option dirzip does not work when tag filtering is used...
@@ -277,11 +277,11 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
         print os.listdir(dest_dir)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'src.zip')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')), False)
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
 
 
 class TestSpecialGens(LazygalTestGen):
