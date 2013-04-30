@@ -295,7 +295,7 @@ class Directory(File):
                         self.medias_names.append(filename)
                         self.medias.append(media)
 
-                # no tag-filtering  
+                # no tag-filtering
                 else:
                         self.medias_names.append(filename)
                         self.medias.append(media)
