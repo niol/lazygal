@@ -279,65 +279,6 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
-
-    def test_filter_by_tag(self):
-        config = lazygal.config.LazygalConfig()
-        config.set('webgal', 'filter-by-tag', 'lazygal')
-        self.setup_album(config)
-
-        self.add_img(self.source_dir, 'no_kw_1.jpg')
-        self.add_img(self.source_dir, 'no_kw_2.jpg')
-        good_path = self.add_img(self.source_dir, 'good.jpg')
-        false_path = self.add_img(self.source_dir, 'false.jpg')
-        good = GExiv2.Metadata(good_path)
-        false = GExiv2.Metadata(false_path)
-        good['Iptc.Application2.Keywords'] = 'lazygal'
-        good['Xmp.dc.subject'] = 'lazygal2'
-        good.save_file()
-        false['Iptc.Application2.Keywords'] = 'another_tag'
-        false.save_file()
-
-        # generate album
-        dest_dir = self.get_working_path()
-        self.album.generate(dest_dir)
-        #print os.listdir(dest_dir)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')), False)
-
-    def test_filter_and_dirzip(self):
-        # FIXME the option dirzip does not work when tag filtering is used...
-        config = lazygal.config.LazygalConfig()
-        config.set('webgal', 'dirzip', 'Yes')
-        config.set('webgal', 'filter-by-tag', 'lazygal')
-        self.setup_album(config)
-
-        good_path = self.add_img(self.source_dir, 'good.jpg')
-        false_path = self.add_img(self.source_dir, 'false.jpg')
-        good = GExiv2.Metadata(good_path)
-        false = GExiv2.Metadata(false_path)
-        good['Iptc.Application2.Keywords'] = 'lazygal'
-        good['Xmp.dc.subject'] = 'lazygal2'
-        good.save_file()
-        false['Iptc.Application2.Keywords'] = 'another_tag'
-        false.save_file()
-
-        # generate album
-        dest_dir = self.get_working_path()
-        self.album.generate(dest_dir)
-        print os.listdir(dest_dir)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'src.zip')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')), False)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')), True)
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')), False)
-
 
 class TestSpecialGens(LazygalTestGen):
 
