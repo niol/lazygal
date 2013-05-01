@@ -122,7 +122,7 @@ class TestGenerators(LazygalTestGen):
 
         symlink = os.path.join(dest_dir, os.path.basename(img_path))
         # Test if the original in the webgal is a symlink
-        self.assertEqual(os.path.islink(symlink), True)
+        self.assertTrue(os.path.islink(symlink))
         # Test if that symlink point to the image in the source_dir
         self.assertEqual(os.path.realpath(symlink), img_path)
 
@@ -214,8 +214,7 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'index.xml')),
-                         True)
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'index.xml')))
 
     def test_dirzip(self):
         config = lazygal.config.LazygalConfig()
@@ -227,8 +226,64 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertEqual(os.path.isfile(os.path.join(dest_dir, 'src.zip')),
-                         True)
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
+
+    def test_filter_by_tag(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'filter-by-tag', 'lazygal')
+        self.setup_album(config)
+
+        self.add_img(self.source_dir, 'no_kw_1.jpg')
+        self.add_img(self.source_dir, 'no_kw_2.jpg')
+        good_path = self.add_img(self.source_dir, 'good.jpg')
+        false_path = self.add_img(self.source_dir, 'false.jpg')
+        good = GExiv2.Metadata(good_path)
+        false = GExiv2.Metadata(false_path)
+        good['Iptc.Application2.Keywords'] = 'lazygal'
+        good['Xmp.dc.subject'] = 'lazygal2'
+        good.save_file()
+        false['Iptc.Application2.Keywords'] = 'another_tag'
+        false.save_file()
+
+        # generate album
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
+
+    def test_filter_and_dirzip(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'dirzip', 'Yes')
+        config.set('webgal', 'filter-by-tag', 'lazygal')
+        self.setup_album(config)
+
+        good_path = self.add_img(self.source_dir, 'good.jpg')
+        good_path2 = self.add_img(self.source_dir, 'good2.jpg')
+        false_path = self.add_img(self.source_dir, 'false.jpg')
+        good = GExiv2.Metadata(good_path)
+        good2 = GExiv2.Metadata(good_path2)
+        false = GExiv2.Metadata(false_path)
+        good['Iptc.Application2.Keywords'] = 'lazygal'
+        good['Xmp.dc.subject'] = 'lazygal2'
+        good.save_file()
+        good2['Iptc.Application2.Keywords'] = 'lazygalagain'
+        good2['Xmp.dc.subject'] = 'lazygal'
+        good2.save_file()
+        false['Iptc.Application2.Keywords'] = 'another_tag'
+        false.save_file()
+
+        # generate album
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
+        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
 
     def test_filter_by_tag(self):
         config = lazygal.config.LazygalConfig()
