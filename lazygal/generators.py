@@ -317,7 +317,7 @@ class WebalbumDir(make.FileMakeObject):
         self.__configure()
 
         # Create the directory if it does not exist
-        if not os.path.isdir(self.path):
+        if not os.path.isdir(self.path) and (self.source_dir.get_media_count() > 0):
             logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
                          % self.source_dir.strip_root())
             logging.debug("(%s)" % self.path)
