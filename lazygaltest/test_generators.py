@@ -236,12 +236,17 @@ class TestGenerators(LazygalTestGen):
         self.add_img(self.source_dir, 'no_kw_1.jpg')
         self.add_img(self.source_dir, 'no_kw_2.jpg')
         good_path = self.add_img(self.source_dir, 'good.jpg')
+        good_path2 = self.add_img(self.source_dir, 'good2.jpg')
         false_path = self.add_img(self.source_dir, 'false.jpg')
         good = GExiv2.Metadata(good_path)
+        good2 = GExiv2.Metadata(good_path2)
         false = GExiv2.Metadata(false_path)
         good['Iptc.Application2.Keywords'] = 'lazygal'
         good['Xmp.dc.subject'] = 'lazygal2'
         good.save_file()
+        good2['Iptc.Application2.Keywords'] = 'lazygalagain'
+        good2['Xmp.dc.subject'] = 'lazygal'
+        good2.save_file()
         false['Iptc.Application2.Keywords'] = 'another_tag'
         false.save_file()
 
@@ -249,10 +254,16 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
-        self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
-        self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
+        try:
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
+        except AssertionError:
+            print "\n contents of dest_dir : "
+            print os.listdir(dest_dir)
+            raise
 
     def test_filter_and_dirzip(self):
         config = lazygal.config.LazygalConfig()
@@ -260,6 +271,8 @@ class TestGenerators(LazygalTestGen):
         config.set('webgal', 'filter-by-tag', 'lazygal')
         self.setup_album(config)
 
+        # We need at least two pictures to display, because lazygal generates a
+        # zip archive only if there is more than one picture.
         good_path = self.add_img(self.source_dir, 'good.jpg')
         good_path2 = self.add_img(self.source_dir, 'good2.jpg')
         false_path = self.add_img(self.source_dir, 'false.jpg')
@@ -279,6 +292,12 @@ class TestGenerators(LazygalTestGen):
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
+        try:
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
+        except AssertionError:
+            print "\n contents of dest_dir : "
+            print os.listdir(dest_dir)
+            raise
 
 class TestSpecialGens(LazygalTestGen):
 
