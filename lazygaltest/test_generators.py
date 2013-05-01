@@ -233,33 +233,48 @@ class TestGenerators(LazygalTestGen):
         config.set('webgal', 'filter-by-tag', 'lazygal')
         self.setup_album(config)
 
-        self.add_img(self.source_dir, 'no_kw_1.jpg')
-        self.add_img(self.source_dir, 'no_kw_2.jpg')
-        good_path = self.add_img(self.source_dir, 'good.jpg')
-        good_path2 = self.add_img(self.source_dir, 'good2.jpg')
-        false_path = self.add_img(self.source_dir, 'false.jpg')
-        good = GExiv2.Metadata(good_path)
-        good2 = GExiv2.Metadata(good_path2)
-        false = GExiv2.Metadata(false_path)
-        good['Iptc.Application2.Keywords'] = 'lazygal'
-        good['Xmp.dc.subject'] = 'lazygal2'
+        # good pictures will be pushed on the destination, false pictures
+        # should be filtered out.
+        # The sub-directory 'subfalse' should not be created on the destination
+        # side, because it should be empty.
+        good_path         = self.add_img(self.source_dir, 'good.jpg')
+        good_path2        = self.add_img(self.source_dir, 'good2.jpg')
+        false_path        = self.add_img(self.source_dir, 'false.jpg')
+        subgood           = self.setup_subgal('subgood', ['subgood.jpg', 'subfalse.jpg'])
+        subfalse          = self.setup_subgal('subfalse', ['subgood.jpg', 'subfalse.jpg'])
+        good_subdir_path  = os.path.join(self.source_dir, subgood.name, 'subgood.jpg')
+        false_subdir_path = os.path.join(self.source_dir, subfalse.name, 'subfalse.jpg')
+        good     = GExiv2.Metadata(good_path)
+        good2    = GExiv2.Metadata(good_path2)
+        false    = GExiv2.Metadata(false_path)
+        good_sd  = GExiv2.Metadata(good_subdir_path)
+        false_sd = GExiv2.Metadata(false_subdir_path)
+        good['Iptc.Application2.Keywords']     = 'lazygal'
+        good['Xmp.dc.subject']                 = 'lazygal2'
         good.save_file()
-        good2['Iptc.Application2.Keywords'] = 'lazygalagain'
-        good2['Xmp.dc.subject'] = 'lazygal'
+        good2['Iptc.Application2.Keywords']    = 'lazygalagain'
+        good2['Xmp.dc.subject']                = 'lazygal'
         good2.save_file()
-        false['Iptc.Application2.Keywords'] = 'another_tag'
+        false['Iptc.Application2.Keywords']    = 'another_tag'
         false.save_file()
+        good_sd['Iptc.Application2.Keywords']  = 'lazygal'
+        good_sd['Xmp.dc.subject']              = 'lazygal2'
+        good_sd.save_file()
+        false_sd['Iptc.Application2.Keywords'] = 'lazygal_lazygal'
+        false_sd['Xmp.dc.subject']             = 'lazygal2'
+        false_sd.save_file()
 
         # generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
         try:
-            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_1.jpg')))
-            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'no_kw_2.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'subgood', 'subgood_thumb.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'subfalse', 'subfalse_thumb.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'subfalse')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)
@@ -294,6 +309,9 @@ class TestGenerators(LazygalTestGen):
 
         try:
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)
