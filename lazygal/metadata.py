@@ -209,8 +209,17 @@ class ImageInfoTags(object):
         SLR cameras and uses various maker notes.
         """
         interpret = self._metadata.get_tag_interpreted_string
-        vendor_values = [interpret(v) for v in VENDOR_EXIF_CODES]
-        return ' '.join([s.strip() for s in vendor_values if s])
+        vendor_values = []
+        for key in VENDOR_EXIF_CODES:
+            try:
+                v = self._metadata.get_tag_interpreted_string(key)
+                if v is None:
+                    raise KeyError
+            except KeyError:
+                pass
+            else:
+                vendor_values.append(v.strip())
+        return ' '.join([s for s in vendor_values if s])
 
     def get_exif_string(self, name):
         """
@@ -244,7 +253,8 @@ class ImageInfoTags(object):
 
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00')
-        ret = decode_exif_user_comment(ret, self.image_path)
+        if type(ret) is not unicode: # the EXIF lib did not do the work for us
+            ret = decode_exif_user_comment(ret, self.image_path)
         if ret == 'User comments':
             return ''
         return ret
@@ -349,11 +359,11 @@ class ImageInfoTags(object):
 
     def get_jpeg_comment(self):
         try:
-            comment = self._metadata.get_comment().strip(' ')
-            if '\x00' in comment:
-                raise ValueError  # ignore broken JPEG comments
-            return self._fallback_to_encoding(comment)
-        except (AttributeError, ValueError):
+            comment = self._metadata.get_comment()
+            if comment is None or '\x00' in comment:
+                raise ValueError  # ignore missing or broken JPEG comments
+            return self._fallback_to_encoding(comment.strip(' '))
+        except ValueError:
             return ''
 
     def get_authorship(self):
@@ -364,25 +374,32 @@ class ImageInfoTags(object):
             return ''
 
     def get_keywords(self):
-        """ 
+        """
         Returns all the image tags in a list.
 
         Try to find the maximum number of keywords. Photo applications store
         keywords in various places. For a comprehensive list, see
-        http://redmine.yorba.org/projects/shotwell/wiki/PhotoTags 
+        http://redmine.yorba.org/projects/shotwell/wiki/PhotoTags
         """
         kw = list()
-        kw += self._metadata.get_tag_multiple('Iptc.Application2.Keywords')
-        kw += self._metadata.get_tag_multiple('Xmp.MicrosoftPhoto.LastKeywordXMP')
-        kw += self._metadata.get_tag_multiple('Xmp.dc.subject')
-        kw += self._metadata.get_tag_multiple('Xmp.digiKam.TagsList')
-        # FIXME 
+        for key in ('Iptc.Application2.Keywords',
+                    'Xmp.MicrosoftPhoto.LastKeywordXMP',
+                    'Xmp.dc.subject',
+                    'Xmp.digiKam.TagsList', ):
+            try:
+                values = self._metadata.get_tag_multiple(key)
+            except KeyError:
+                pass
+            else:
+                for value in values:
+                    kw.append(value)
+        # FIXME
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:
         #   "No namespace info available for XMP prefix `lr'"
         #kw += self._metadata.get_tag_multiple('Xmp.lr.hierarchicalSubject')
 
-        #remove duplicates 
+        #remove duplicates
         kw = set(kw)
 
         return kw
