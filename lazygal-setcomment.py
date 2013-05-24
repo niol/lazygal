@@ -2,7 +2,7 @@
 
 import sys
 
-from gi.repository import GExiv2
+from lazygal.pygexiv2 import GExiv2
 
 fn = sys.argv[1]
 comment = sys.argv[2]

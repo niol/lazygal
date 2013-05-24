@@ -28,7 +28,7 @@ import make
 import genfile
 import eyecandy
 import mediautils
-from gi.repository import GExiv2
+from lazygal.pygexiv2 import GExiv2
 
 
 THUMB_SIZE_NAME = 'thumb'

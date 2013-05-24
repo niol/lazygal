@@ -23,7 +23,7 @@ import logging
 import codecs
 import datetime
 
-from gi.repository import GExiv2
+from lazygal.pygexiv2 import GExiv2
 from PIL import Image as PILImage
 
 from lazygal import make

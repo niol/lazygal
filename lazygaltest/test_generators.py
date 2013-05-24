@@ -28,7 +28,7 @@ import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal.metadata import GEXIV2_DATE_FORMAT
-from gi.repository import GExiv2
+from lazygal.pygexiv2 import GExiv2
 
 
 class TestGenerators(LazygalTestGen):
