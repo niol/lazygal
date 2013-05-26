@@ -92,6 +92,13 @@ class Metadata_withPyExiv2(object):
 class GExiv2_withPyExiv2(object):
     Metadata = Metadata_withPyExiv2
 
+    class LogLevel(object):
+        ERROR = None
+
+    @staticmethod
+    def log_set_level(dummy):
+        pass
+
 
 try:
     from gi.repository import GExiv2
