@@ -1,3 +1,144 @@
+Lazygal 0.8 (2013-05-28)
+  * update translation template and french translation
+  * add dummy set_log_level method to fix pyexiv2 support
+  * Fix #3 useless warnings while running test suite
+  * add a fallback to pyexiv2 if GExiv2 is not available
+  * bring back metadata processing fixes forgotten in the merge request
+  * test that empty directories are not created on destination
+  * do not push empty dirs
+  * get_date: bypass ValueError exceptions
+  * minor improvements in tests filter_by_tag and filter_and_zipdir
+  * Fix bad merge from upstream
+  * Merge from upstream
+  * merge from the upstream repo
+  * handle KeyError for metadata keywords
+  * improve None JPEG comment case handling
+  * do not try to decode unicode usercomment
+  * handle KeyError in vendor codes
+  * fix filter_by_tag and dirzip test
+  * more usage of assertTrue in tests
+  * remove debugging statements
+  * use assertTrue and assertFalse in filter_by_tag tests
+  * remove extra newline
+  * only check tagfilters on pics (not on videos)
+  * remove trailing whitespace
+  * Merged in damien_courouss/lazygal (pull request #8)
+  * tests for filter-by-tag
+  * Extend keyword support for filter-by-tag
+  * inverted theme: remove all `div` from css
+  * inverted theme: css fixes
+  * inverted theme: hide image caption div if nothing to show
+  * inverted theme: small fix
+  * indicate template can use image metadata
+  * inverted theme: Track original image clicks if google analytics is set
+  * inverted theme: use genshi NewTextTemplate syntax also in JS
+  * inverted theme: display social icons
+  * use gst.discoverer return code to prevent lazygal failure
+  * fix video src path in video tag
+  * do not fail if all medias are filtered out
+  * make config list helpers available to other vars
+  * tag filtering: add support for regexes and for combination of several filters
+  * fix tagfilter empty value check
+  * fix spelling in comment
+  * add --filter-by-tag cmdline help
+  * fix default conf file syntax for filter-by-tag
+  * fix #1 ./setup.py build_manpages command
+  * default value for filter-by-tag in the conf file
+  * describe --filter-by-tag in manpages
+  * merge from niol
+  * fixing the previous commit that was incomplete
+  * add an option 'filter-by-tag'
+  * minor fix: missing semicolons in the default theme
+  * more GExiv2 API cleanup fallout
+  * handle gexiv2 API cleanup
+  * do not overwrite generated media in mediautils test code
+  * make the console output give some basic progress info
+  * make some quick album stats available
+  * use pathutils walk()
+  * update pathutils with walk() and decoding error handling
+  * merge migration to GExiv2
+  * fix last PIL import
+  * document GEXiv2 dep
+  * restore test cases forgotten in gexiv2 patch
+  * merge GExviv2 porting patch
+  * improve SHARED_ files documentation
+  * Port from pyexiv2 to GExiv2.
+  * put README change in MANIFEST
+  * update TODO
+  * use markdown readme
+  * single page themes support
+  * make flattening basic unit test actually test something
+  * use genshi NewTextTemplate syntax and convert themes CSS templates
+  * fix indentation error
+  * do not crash on bad encoding of EXIF flash info
+  * do not crash on bad encoding of EXIF Artist
+  * rename config option global/destdir to global/output-directory for consistency
+  * fix typo in man page
+  * fix broken --subgal-sort-by=exif
+  * add help hint of exif option for --subgal-sort-by
+  * fix: pep8 E121 continuation line indentation is not a multiple of four
+  * fix: pep8 E126 continuation line over-indented for hanging indent
+  * fix: pep8 E128 continuation line under-indented for visual indent
+  * fix: pep8 E122 continuation line missing indentation or outdented
+  * Fix: pep8 E124 closing bracket does not match visual indentation
+  * Fix: pep8 E123 closing bracket does not match indentation of opening bracket's line
+  * Fix: pep E127 continuation line over-indented for visual indent
+  * Fix: pep8 E211 whitespace before '('
+  * Fix: pep8 E222 multiple spaces after operator
+  * Fix: pep8 E202 whitespace before ')' or ']'
+  * Fix: pep8 E221 multiple spaces before operator
+  * Fix: pep8 E302 expected 2 blank lines, found 0
+  * Fix: pep8 E231 missing whitespace after ','
+  * Fix: pep8 E301 expected 1 blank line, found 0
+  * Fix: pep8 E251 no spaces around keyword / parameter equals (not in setup.py)
+  * Fix: pep8 E502 the backslash is redundant between brackets
+  * Fix: pep8 E261 at least two spaces before inline comment
+  * Fix: pep8 E203 whitespace before ':' (not all removed)
+  * Fix: pep8 E201 whitespace after '[' or '{'
+  * Fix: pep8 E225 missing whitespace around operator
+  * Fix: pep8 E401 multiple imports on one line
+  * inverted theme: add prev next links for videos and fix key nav
+  * inverted theme: small code fixes
+  * inverted theme: trim whitespaces
+  * inverted theme: inverted social buttons tooltips colors for dark theme
+  * inverted theme: add simple theme js/css only when 'display_theme_selector = True'
+  * inverted theme: remove unnecessary js code
+  * inverted theme: add social buttons js only when 'display_social_buttons = True'
+  * add treat *.tjs files as genshi template files
+  * inverted theme: add text tooltips to share buttons
+  * inverted theme: update Google Analytics code and move it to header
+  * inverted theme: change share buttons order
+  * inverted theme: add google bookmarks share link
+  * inverted theme: fix validation errors
+  * inverted theme: bump jQuery to ver 1.8.2
+  * do not publish image date when publish-metdata=No
+  * inverted theme: add reddit social button
+  * inverted theme: fix tumblr share link
+  * inverted theme: fix social buttons centering problems
+  * inverted theme: strip media file extension from media page title
+  * inverted theme: add TODO file
+  * inverted theme: add social share buttons [template-vars]: display_social_buttons
+  * fix allow boolean value in 'template-vars' options
+  * inverted theme: clean template-vars, always add lazygal info
+  * inverted theme: remove reference to jQuery on google CDN, use only local version
+  * inverted theme: fix css for '#site_title'
+  * inverted theme: update jQuery to v1.8.0 and fix jQuery googleapis.com link
+  * inverted theme capitalize first letter in the image page title
+  * inverted theme replace "-" and "_" with " " in the image page title
+  * inverted theme clicking big image move to next image
+  * inverted theme update dark theme with div#media_options
+  * inverted theme fix margins and style div#media_options
+  * inverted theme fix duplicate id
+  * inverted theme fix thumbnails margins
+  * inverted theme more template vars
+  * new inverted theme
+  * fix generation of html index for dir with no pics (pagination enabled)
+  * change 'import Image' to 'from PIL import Image'
+  * update TODO
+  * also force regen of shared tpls when -f is used
+  * fix --thumbs-per-page when thumbs % thumbs-per-page = 0
+  * fix image not centered in browse page
+
 Lazygal 0.7.4 (2012-07-16)
   * set version to 0.7.4
 

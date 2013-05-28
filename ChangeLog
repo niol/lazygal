@@ -1,3 +1,14 @@
+Lazygal 0.8 (2013-05-28)
+  * add a fallback to pyexiv2 if GExiv2 is not available
+  * tag filtering
+  * make the console output give some basic progress info
+  * Port from pyexiv2 to GExiv2.
+  * single page themes support (js)
+  * use genshi NewTextTemplate syntax and convert themes CSS templates
+  * rename config option global/destdir to global/output-directory for consistency
+  * do not publish image date when publish-metdata=No
+  * new inverted theme
+
 Lazygal 0.7.4 (2012-07-16)
   * add missing lazygal/defaults.conf in source tarball
 
