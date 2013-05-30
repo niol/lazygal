@@ -193,13 +193,14 @@ msgstr ""
 
 #: ../lazygal.py:153
 msgid "TAG"
-msgstr ""
+msgstr "MOT-CLÉ"
 
 #: ../lazygal.py:154
 msgid ""
 "Only include in the gallery pics whose IPTC keywords match the supplied "
 "filter(s)."
-msgstr ""
+msgstr "Ne prendre en compte que les images dont l'un des most-clés IPTC "
+"est présent dans la liste donnée en argument."
 
 #: ../lazygal.py:158
 msgid ""
@@ -300,7 +301,7 @@ msgstr "MKDIR %SHAREDDIR%"
 #: ../lazygal/generators.py:689
 #, python-format
 msgid "Progress: dir %d/%d (%d%%), media %d/%d (%d%%)"
-msgstr ""
+msgstr "Progression: répertoire %d/%d (%d%%), média %d/%d (%d%%)"
 
 #: ../lazygal/generators.py:707
 #, python-format
@@ -478,7 +479,8 @@ msgstr "  XHTML %s"
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
 "shown on index."
-msgstr ""
+msgstr "  La taille '%s' n'est pas disponible dans '%s' à cause de la "
+"configuration : les médias correspondants ne seront par présents sur l'index."
 
 #: ../lazygal/genpage.py:357
 #, python-format
