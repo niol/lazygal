@@ -1,7 +1,5 @@
 # Lazygal
 
-[[!toc levels=2]]
-
 ## About
 
 `lazygal` is another static web gallery generator written in [Python][1].
@@ -36,6 +34,7 @@ It can be summed up by the following features :
     - Add template variables from the command line or from a configuration
       file.
     - Per-directory configuration.
+    - Javascript or fully static navigation.
   *   Does not change your original pictures directories (the source argument).
 
  [1]: http://python.org
@@ -91,9 +90,9 @@ A [user friendly changelog for lazygal][32] exists.
 
  [32]: http://sousmonlit.dyndns.org/~niol/repositories/lazygal/raw-file/tip/ChangeLog
 
-The latest version is [Lazygal 0.7.4][10].
+The latest version is [Lazygal 0.8][10].
 
- [10]: http://sousmonlit.dyndns.org/~niol/reposnapshots/lazygal-0.7.4.tar.gz
+ [10]: http://sousmonlit.dyndns.org/~niol/reposnapshots/lazygal-0.8.tar.gz
 
 (full log of changes may be browsed in [Lazygal's repository browser][16])
 
