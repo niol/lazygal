@@ -473,7 +473,7 @@
             <listitem>
                 <para>Files to put in the web gallery
                 <filename>shared</filename> directory, e.g. CSS, Javascript,
-                images or other ressources common to all galleries.</para>
+                images or other resources common to all galleries.</para>
             </listitem>
         </varlistentry>
 
@@ -524,7 +524,7 @@
     in the <parameter>default</parameter> theme.</para>
 
     <para><filename><replaceable>theme</replaceable>/SHARED_*</filename> files
-    (common ressources for the <filename>shared</filename> directory) are
+    (common resources for the <filename>shared</filename> directory) are
     renamed to strip the <parameter>SHARED_</parameter> prefix and:</para>
 
     <itemizedlist>
