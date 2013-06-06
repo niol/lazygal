@@ -100,12 +100,26 @@ class GstVideoOpener(object):
         self.filesrc.set_property(
             "location", self.input_file.encode(sys.getfilesystemencoding()))
 
-    def check_interrupt(self):
+    def __post_msg(self, msg_txt):
+        msg = gst.message_new_application(self.pipeline, gst.Structure(msg_txt))
+        self.pipeline.get_bus().post(msg)
+
+    def monitor_progress(self):
+        # check if CTRL+C'd
         if interrupted:
-            msg = gst.message_new_application(self.pipeline,
-                                              gst.Structure('interrupted'))
-            self.pipeline.get_bus().post(msg)
-        if interrupted or not self.running:
+            self.__post_msg('interrupted')
+
+        # check if stalled
+        stalled = False
+        current_position, fmt = self.pipeline.query_position(gst.FORMAT_TIME)
+        if self.last_position is not None\
+        and current_position <= self.last_position:
+            stalled = True
+            self.__post_msg('stalled')
+        else:
+            self.last_position = current_position
+
+        if interrupted or stalled or not self.running:
             return False  # Remove timeout handler
         return True
 
@@ -116,8 +130,9 @@ class GstVideoOpener(object):
     def run_pipeline(self):
         self.pipeline.set_state(gst.STATE_PLAYING)
         self.running = True
+        self.last_position = None
 
-        gobject.timeout_add(250, self.check_interrupt)
+        gobject.timeout_add(250, self.monitor_progress)
 
         while self.running:
             message = self.pipeline.get_bus().poll(gst.MESSAGE_ANY, -1)
@@ -134,6 +149,8 @@ class GstVideoOpener(object):
                     elif struct_name == 'interrupted':
                         self.__stop_pipeline()
                         raise KeyboardInterrupt
+                    elif struct_name == 'stalled':
+                        raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
     def stop_pipeline(self):
         msg = gst.message_new_application(self.pipeline,
