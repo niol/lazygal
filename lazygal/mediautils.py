@@ -111,13 +111,17 @@ class GstVideoOpener(object):
 
         # check if stalled
         stalled = False
-        current_position, fmt = self.pipeline.query_position(gst.FORMAT_TIME)
-        if self.last_position is not None\
-        and current_position <= self.last_position:
-            stalled = True
-            self.__post_msg('stalled')
+        try:
+            current_position, fmt = self.pipeline.query_position(gst.FORMAT_TIME)
+        except gst.QueryError:
+            pass
         else:
-            self.last_position = current_position
+            if self.last_position is not None\
+            and current_position <= self.last_position:
+                stalled = True
+                self.__post_msg('stalled')
+            else:
+                self.last_position = current_position
 
         if interrupted or stalled or not self.running:
             return False  # Remove timeout handler
