@@ -272,6 +272,13 @@ class Directory(File):
         self.medias_names = []
         for filename in self.filenames:
             media_path = os.path.join(self.path, filename)
+
+            if not os.path.isfile(media_path):
+                logging.info(_("  Ignoring %s, cannot open file (broken symlink?).")
+                             % filename)
+                logging.debug("(%s)" % os.path.join(self.path, filename))
+                continue
+
             media = media_handler.get_media(media_path)
             if media:
 
