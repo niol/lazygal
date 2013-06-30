@@ -154,6 +154,7 @@ class GstVideoOpener(object):
                         self.__stop_pipeline()
                         raise KeyboardInterrupt
                     elif struct_name == 'stalled':
+                        self.__stop_pipeline()
                         raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
     def stop_pipeline(self):
