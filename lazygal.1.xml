@@ -315,7 +315,7 @@
         </term>
         <listitem>
             <para>If set, lazygal will only export the pictures that have one
-                of their (IPTC) tags matching TAG. 
+                of their (IPTC) tags matching TAG.
                 It is also possible to use an equivalent of AND and OR boolean tests to filter tags.
                 For more details, read below the section <replaceable>TAG FILTERING</replaceable>.
             </para>
@@ -788,14 +788,14 @@ Album image identifier relative/path/to/image.jpg
     <para> Tag filtering supports regular expression matching thanks to the 're' module of Python.
         All the filter matchings can be indicated to lazygal by successive uses of the 'filter-by-tag' option, or by giving a coma-separated list of keywords. </para>
 
-    <para> 
+    <para>
         We illustrate here how more elaorated tag filtering can be done. </para>
 
-    <para> We want to export only the images that have the tags 'lazygal' AND 'hiking'. 
+    <para> We want to export only the images that have the tags 'lazygal' AND 'hiking'.
     </para>
 
     <informalexample><programlisting>
-        $ lazygal --filter-by-tag=lazygal --filter-by-tag=hiking 
+        $ lazygal --filter-by-tag=lazygal --filter-by-tag=hiking
     </programlisting></informalexample>
 
     <para>
