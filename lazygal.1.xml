@@ -600,7 +600,21 @@ Album image identifier relative/path/to/image.jpg
         </listitem>
       </varlistentry>
 
-   </variablelist>
+    </variablelist>
+
+    <para>Lazygal also extracts information from many metadata tags in
+    image files. Regarding image description, Lazygal searches for comments
+    in this order:</para>
+
+    <orderedlist>
+      <listitem><para>
+        <filename><replaceable>pic.jpeg</replaceable>.comment</filename> file
+      </para></listitem>
+      <listitem><para><literal>Exif.Photo.UserComment</literal></para></listitem>
+      <listitem><para><literal>Exif.Image.ImageDescription</literal></para></listitem>
+      <listitem><para><literal>Iptc.Application2.ObjectName</literal></para></listitem>
+      <listitem><para>JPEG comment</para></listitem>
+    </orderedlist>
 
   </refsect1>
 
