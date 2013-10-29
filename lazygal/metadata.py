@@ -59,7 +59,7 @@ VENDOR_EXIF_CODES = (
     )
 
 GEXIV2_DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
-GExiv2.log_set_level(GExiv2.LogLevel.ERROR) # hide exiv2 warnings
+GExiv2.log_set_level(GExiv2.LogLevel.MUTE) # hide exiv2 errors
 
 
 def decode_exif_user_comment(raw, imgpath):

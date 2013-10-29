@@ -27,6 +27,7 @@ import re
 from config import LazygalConfig, LazygalWebgalConfig
 from config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from sourcetree import SOURCEDIR_CONFIGFILE
+from pygexiv2 import GExiv2
 
 import make
 import pathutils
@@ -754,6 +755,7 @@ class Album(object):
             logging.getLogger().setLevel(logging.ERROR)
         if self.config.getboolean('runtime', 'debug'):
             logging.getLogger().setLevel(logging.DEBUG)
+            GExiv2.log_set_level(GExiv2.LogLevel.INFO)
 
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
         self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
