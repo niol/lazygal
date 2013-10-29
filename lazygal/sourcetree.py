@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-import re
+
 import os
 import time
 import locale
@@ -217,6 +217,9 @@ class VideoFile(MediaFile):
     def get_date_taken(self):
         return self.get_datetime()
 
+    def info(self):
+        return None
+
 
 class MediaHandler(object):
 
@@ -265,8 +268,6 @@ class Directory(File):
 
         self.human_name = self.album._str_humanize(self.name)
 
-        tagfilters = album.config.getlist('webgal', 'filter-by-tag')
-
         media_handler = MediaHandler(self.album)
         self.medias = []
         self.medias_names = []
@@ -281,31 +282,8 @@ class Directory(File):
 
             media = media_handler.get_media(media_path)
             if media:
-
-                # tag-filtering is requested
-                if len(tagfilters) > 0:
-                    res = True
-                    for tagf in tagfilters:
-                        # concatenate the list of tags as a string of words,
-                        # space-separated.  to ensure that we match the full
-                        # keyword and not only a subpart of it, we also surround
-                        # the matching pattern with spaces
-
-                        # we look for tag words, partial matches are not wanted
-                        regex = re.compile(r"\b" + tagf + r"\b")
-
-                        kwlist = ' '.join(media.info().get_keywords())
-                        if re.search(regex, kwlist) is None:
-                            res = False
-                            break
-                    if res is True:
-                        self.medias_names.append(filename)
-                        self.medias.append(media)
-
-                # no tag-filtering  
-                else:
-                        self.medias_names.append(filename)
-                        self.medias.append(media)
+                self.medias_names.append(filename)
+                self.medias.append(media)
             elif not self.is_metadata(filename) and\
                     filename != SOURCEDIR_CONFIGFILE:
                 logging.info(_("  Ignoring %s, format not supported.")

@@ -22,6 +22,7 @@ import logging
 import gc
 import genshi
 import sys
+import re
 
 from config import LazygalConfig, LazygalWebgalConfig
 from config import USER_CONFIG_PATH, LazygalConfigDeprecated
@@ -325,11 +326,32 @@ class WebalbumDir(make.FileMakeObject):
             # Directory did not exist, mark it as so
             self.stamp_delete()
 
+        tagfilters = self.config.getlist('webgal', 'filter-by-tag')
+
         self.medias = []
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
         for media in self.source_dir.medias:
             self.sort_task.add_dependency(media)
+
+            if len(tagfilters) > 0 and media.info() is not None:
+                # tag-filtering is requested
+                res = True
+                for tagf in tagfilters:
+                    # concatenate the list of tags as a string of words,
+                    # space-separated.  to ensure that we match the full
+                    # keyword and not only a subpart of it, we also surround
+                    # the matching pattern with spaces
+
+                    # we look for tag words, partial matches are not wanted
+                    regex = re.compile(r"\b" + tagf + r"\b")
+
+                    kwlist = ' '.join(media.info().get_keywords())
+                    if re.search(regex, kwlist) is None:
+                        res = False
+                        break
+                if res is False:
+                    continue
 
             if media.type == 'image':
                 media_task = WebalbumImageTask(self, media)
