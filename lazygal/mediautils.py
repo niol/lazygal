@@ -168,6 +168,7 @@ class GstVideoInfo(object):
     def __init__(self, path):
         self.path = path
         self.loop = gobject.MainLoop()
+        self.broken = False
 
     def __stream_discovered(self, obj, success):
         if success:
@@ -184,8 +185,8 @@ class GstVideoInfo(object):
 
             self.is_video = obj.is_video
             self.is_audio = obj.is_audio
-        else: # TODO : handle error
-            pass
+        else:
+            self.broken = True
 
         self.loop.quit()
 
