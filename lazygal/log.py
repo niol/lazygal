@@ -24,10 +24,13 @@ class ProgressConsoleHandler(logging.StreamHandler):
     last_progress_lengh = 0
     progress_msg = ''
 
+    def clear_last_progress(self):
+        self.stream.write('\r' + ' '*self.last_progress_lengh + '\r')
+
     def emit(self, record):
         try:
-            self.stream.write('\r' + ' '*self.last_progress_lengh)
-            self.stream.write('\r' + self.format(record) + '\n')
+            self.clear_last_progress()
+            self.stream.write(self.format(record) + '\n')
             self.stream.write(self.progress_msg)
             self.last_progress_lengh = len(self.progress_msg)
             self.flush()
@@ -38,6 +41,11 @@ class ProgressConsoleHandler(logging.StreamHandler):
 
     def update_progress(self, s):
         self.progress_msg = s
+
+    def close(self):
+        self.clear_last_progress()
+        self.flush()
+        super(ProgressConsoleHandler, self).close()
 
 
 # vim: ts=4 sw=4 expandtab
