@@ -154,7 +154,7 @@ class SubgalBreak(make.MakeTask):
         try:
             while True:
                 subgal = subgals_it.next()
-                how_many_medias += subgal.source_dir.get_media_count()
+                how_many_medias += subgal.get_media_count()
                 galleries.append((subgal, subgal.medias))
                 if how_many_medias > self.webgal_dir.thumbs_per_page:
                     self.webgal_dir.add_index_page(subgals, galleries)
@@ -363,6 +363,13 @@ class WebalbumDir(make.FileMakeObject):
             self.medias.append(media_task)
             self.add_dependency(media_task)
 
+        if self.config.getboolean('webgal', 'dirzip')\
+                and self.get_media_count() > 1:
+            self.dirzip = genfile.WebalbumArchive(self)
+            self.add_dependency(self.dirzip)
+        else:
+            self.dirzip = None
+
         self.index_pages = []
 
         if not self.should_be_flattened():
@@ -460,13 +467,6 @@ class WebalbumDir(make.FileMakeObject):
 
         self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
 
-        if self.config.getboolean('webgal', 'dirzip')\
-                and self.source_dir.get_media_count() > 1:
-            self.dirzip = genfile.WebalbumArchive(self)
-            self.add_dependency(self.dirzip)
-        else:
-            self.dirzip = None
-
         self.quality = self.config.getint('webgal', 'jpeg-quality')
         self.save_options = {}
         if self.config.getboolean('webgal', 'jpeg-optimize'):
@@ -551,6 +551,16 @@ class WebalbumDir(make.FileMakeObject):
         for subgal in self.subgals:
             all_subgals.extend(subgal.get_all_subgals())
         return all_subgals
+
+    def get_media_count(self, media_type=None):
+        if media_type is None:
+            return len(self.medias)
+        else:
+            typed_media_count = 0
+            for mediatask in self.medias:
+                if mediatask.media.type == media_type:
+                    typed_media_count += 1
+            return typed_media_count
 
     def get_all_medias_tasks(self):
         all_medias = list(self.medias)  # We want a copy here.

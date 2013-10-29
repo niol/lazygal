@@ -335,7 +335,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.description = description
 
     def push_dir(self, webalbumdir):
-        if webalbumdir.source_dir.get_media_count() > 0:
+        if webalbumdir.get_media_count() > 0:
             self.add_dependency(webalbumdir)
             self.__add_item(webalbumdir)
 
@@ -346,7 +346,7 @@ class WebalbumFeed(make.FileMakeObject):
         desc_values['album_pic_path'] = \
             os.path.join(url, webalbumdir.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
-        desc_values['picture_count'] = webalbumdir.source_dir.get_media_count('image')
+        desc_values['picture_count'] = webalbumdir.get_media_count('image')
         desc_values['desc'] = webalbumdir.source_dir.desc
         desc = self.item_template.instanciate(desc_values)
 

@@ -194,7 +194,7 @@ class Webgal(SrcPath):
 
         dir_info['is_main'] = self.webgal is self.page.dir
 
-        dir_info['image_count'] = self.webgal.source_dir.get_media_count('image')
+        dir_info['image_count'] = self.webgal.get_media_count('image')
         dir_info['subgal_count'] = len(self.webgal.source_dir.subdirs)
 
         dir_info['id'] = self.page.url_quote(self.id())
