@@ -1,3 +1,12 @@
+Lazygal 0.8.1 (2013-10-30)
+  * make keywords available in image pages
+  * hide exiv2 warnings in normal operation
+  * clear progress info upon exit
+  * Fix #7 handle video size error
+  * Fix #4 make filter-by-tag= work in sub dirs
+  * Fix #5 prevent broken img symlinks from crashing lazygal
+  * monitor if pipeline is stalled while transcoding
+
 Lazygal 0.8 (2013-05-28)
   * add a fallback to pyexiv2 if GExiv2 is not available
   * tag filtering

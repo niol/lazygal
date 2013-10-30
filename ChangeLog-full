@@ -1,4 +1,26 @@
+Lazygal 0.8.1 (2013-10-30)
+  * update translation template
+  * update fr translation
+  * make keywords available in image pages
+  * decode utf-8 keywords
+  * hide exiv2 warnings in normal operation
+  * clear progress info upon exit
+  * Fix #7 handle video size error
+  * make dirzip honor filter-by-tag filters
+  * fix subgal count when filter-by-tag is used
+  * Fix #4 make filter-by-tag= work in sub dirs
+  * manpage whitespace fixes
+  * document how pic comments are loaded
+  * Fix #5 prevent broken img symlinks from crashing lazygal
+  * actually stop stalled pipeline
+  * handle query error which may happen when monitoring the gst pipeline
+  * monitor if pipeline is stalled while transcoding
+  * Fixed typo in man page
+  * update README
+  * translate new string in french translation
+
 Lazygal 0.8 (2013-05-28)
+  * set version to 0.8
   * update translation template and french translation
   * add dummy set_log_level method to fix pyexiv2 support
   * Fix #3 useless warnings while running test suite
