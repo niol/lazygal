@@ -9,6 +9,7 @@
             ${_('Taken')} ${image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}
         </div>
         <div class="authorship" py:if="authorship">${_('Author')}&nbsp;: $authorship</div>
+        <div class="keywords" py:if="keywords">${_('Keywords')}&nbsp;: $keywords</div>
         <div py:if="original_link" class="original_link"><a href="$original_link">${_('Original picture')}</a></div>
         <div class="image_caption_tech">
             <ul>

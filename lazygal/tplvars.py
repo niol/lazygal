@@ -95,6 +95,7 @@ class Image(Media):
                 tpl_values['fnumber'] = image_info.get_fnumber()
                 tpl_values['focal_length'] = image_info.get_focal_length()
                 tpl_values['authorship'] = image_info.get_authorship()
+                tpl_values['keywords'] = ', '.join(image_info.get_keywords())
 
         return tpl_values
 
