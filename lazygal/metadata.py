@@ -43,6 +43,8 @@ MATEW_METADATA = 'album_description'
 FILE_METADATA = ('album-name', 'album-description', 'album-picture', )
 FILE_METADATA_MEDIA_SUFFIX = '.comment'
 
+FALLBACK_ENCODING = 'utf-8' # encoding used when guessing
+
 # As per http://www.exiv2.org/tags.html
 VENDOR_EXIF_CODES = (
     'Exif.Canon.LensModel',
@@ -97,9 +99,7 @@ def decode_exif_user_comment(raw, imgpath):
     elif cset == 'Jis':
         encoding = 'shift_jis'
     else:
-        # Fallback to utf-8 as this is mostly the default for Linux
-        # distributions.
-        encoding = 'utf-8'
+        encoding = FALLBACK_ENCODING
 
     # Return the decoded string according to the found encoding.
     try:
@@ -244,7 +244,7 @@ class ImageInfoTags(object):
         val = self._metadata.get_exif_tag_rational(name)
         return val.numerator / val.denominator
 
-    def _fallback_to_encoding(self, encoded_string, encoding='utf-8'):
+    def _fallback_to_encoding(self, encoded_string, encoding=FALLBACK_ENCODING):
         if encoded_string is None: raise ValueError
         if type(encoded_string) is unicode: return encoded_string
         try:
@@ -393,7 +393,7 @@ class ImageInfoTags(object):
                 pass
             else:
                 for value in values:
-                    kw.append(value)
+                    kw.append(self._fallback_to_encoding(value))
         # FIXME
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:
