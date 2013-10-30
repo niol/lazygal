@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-28 22:27+0200\n"
+"POT-Creation-Date: 2013-10-30 21:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -193,138 +193,143 @@ msgstr ""
 msgid "Interrupted."
 msgstr ""
 
-#: ../lazygal/sourcetree.py:90 ../lazygal/sourcetree.py:337
+#: ../lazygal/sourcetree.py:90 ../lazygal/sourcetree.py:325
 msgid "Root not found"
 msgstr ""
 
-#: ../lazygal/sourcetree.py:304
+#: ../lazygal/sourcetree.py:281
+#, python-format
+msgid "  Ignoring %s, cannot open file (broken symlink?)."
+msgstr ""
+
+#: ../lazygal/sourcetree.py:292
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr ""
 
-#: ../lazygal/generators.py:47
+#: ../lazygal/generators.py:49
 msgid "Could not find themes dir, check your installation!"
 msgstr ""
 
-#: ../lazygal/generators.py:65
+#: ../lazygal/generators.py:67
 msgid "  SORTING pics and subdirs"
 msgstr ""
 
-#: ../lazygal/generators.py:78 ../lazygal/generators.py:90
+#: ../lazygal/generators.py:80 ../lazygal/generators.py:92
 #, python-format
 msgid "Unknown sorting criterion '%s'"
 msgstr ""
 
-#: ../lazygal/generators.py:123
+#: ../lazygal/generators.py:125
 msgid "  BREAKING web gallery into multiple pages"
 msgstr ""
 
-#: ../lazygal/generators.py:321
+#: ../lazygal/generators.py:323
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:371
+#: ../lazygal/generators.py:401
 msgid ""
 "Sizes is a comma-separated list of size names and specs:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
 msgstr ""
 
-#: ../lazygal/generators.py:373
+#: ../lazygal/generators.py:403
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr ""
 
-#: ../lazygal/generators.py:384
+#: ../lazygal/generators.py:414
 #, python-format
 msgid "'%s' for size '%s' does not describe a known size syntax."
 msgstr ""
 
-#: ../lazygal/generators.py:418
+#: ../lazygal/generators.py:448
 #, python-format
 msgid "  Trying loading gallery configs: %s"
 msgstr ""
 
-#: ../lazygal/generators.py:466
+#: ../lazygal/generators.py:489
 msgid "Bad syntax for webalbumpic-size."
 msgstr ""
 
-#: ../lazygal/generators.py:635
+#: ../lazygal/generators.py:668
 msgid "MKDIR %SHAREDDIR%"
 msgstr ""
 
-#: ../lazygal/generators.py:689
+#: ../lazygal/generators.py:722
 #, python-format
 msgid "Progress: dir %d/%d (%d%%), media %d/%d (%d%%)"
 msgstr ""
 
-#: ../lazygal/generators.py:707
+#: ../lazygal/generators.py:740
 #, python-format
 msgid "Trying loading user config %s"
 msgstr ""
 
-#: ../lazygal/generators.py:712
+#: ../lazygal/generators.py:745
 #, python-format
 msgid "Loading root config %s"
 msgstr ""
 
-#: ../lazygal/generators.py:716
+#: ../lazygal/generators.py:749
 #, python-format
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
 msgstr ""
 
-#: ../lazygal/generators.py:751
+#: ../lazygal/generators.py:785
 msgid "you should "
 msgstr ""
 
-#: ../lazygal/generators.py:752
+#: ../lazygal/generators.py:786
 #, python-format
 msgid "  %sRM %s"
 msgstr ""
 
-#: ../lazygal/generators.py:758
+#: ../lazygal/generators.py:792
 #, python-format
 msgid "Generating metadata in %s"
 msgstr ""
 
-#: ../lazygal/generators.py:764 ../lazygal/generators.py:823
+#: ../lazygal/generators.py:798 ../lazygal/generators.py:857
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr ""
 
-#: ../lazygal/generators.py:794
+#: ../lazygal/generators.py:828
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 
-#: ../lazygal/generators.py:796
+#: ../lazygal/generators.py:830
 #, python-format
 msgid "Generating to %s"
 msgstr ""
 
-#: ../lazygal/generators.py:816
+#: ../lazygal/generators.py:850
 #, python-format
 msgid "(%s) has been skipped"
 msgstr ""
 
-#: ../lazygal/generators.py:820
+#: ../lazygal/generators.py:854
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
 "directory name"
 msgstr ""
 
-#: ../lazygal/generators.py:836
+#: ../lazygal/generators.py:870
 #, python-format
 msgid "(%s) and childs have no known medias, skipped"
 msgstr ""
 
-#: ../lazygal/generators.py:866
+#: ../lazygal/generators.py:900
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 
-#: ../lazygal/generators.py:875
+#: ../lazygal/generators.py:909
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr ""
@@ -362,12 +367,12 @@ msgstr ""
 msgid "Theme %s not found"
 msgstr ""
 
-#: ../lazygal/genfile.py:105
+#: ../lazygal/genfile.py:106
 #, python-format
 msgid "  ZIP %s"
 msgstr ""
 
-#: ../lazygal/genfile.py:127
+#: ../lazygal/genfile.py:128
 #, python-format
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr ""
@@ -390,27 +395,27 @@ msgstr ""
 msgid "VIDEOTHUMB"
 msgstr ""
 
-#: ../lazygal/genmedia.py:229
+#: ../lazygal/genmedia.py:228
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:262
+#: ../lazygal/genmedia.py:261
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr ""
 
-#: ../lazygal/genmedia.py:282
+#: ../lazygal/genmedia.py:281
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:306
+#: ../lazygal/genmedia.py:305
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:312
+#: ../lazygal/genmedia.py:311
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr ""
@@ -486,34 +491,38 @@ msgid "Author"
 msgstr ""
 
 #: ../themes/default/image.thtml:12
+msgid "Keywords"
+msgstr ""
+
+#: ../themes/default/image.thtml:13
 msgid "Original picture"
 msgstr ""
 
-#: ../themes/default/image.thtml:16
+#: ../themes/default/image.thtml:17
 msgid "Camera:"
 msgstr ""
 
-#: ../themes/default/image.thtml:17
+#: ../themes/default/image.thtml:18
 msgid "with"
 msgstr ""
 
-#: ../themes/default/image.thtml:19
+#: ../themes/default/image.thtml:20
 msgid "Exposure"
 msgstr ""
 
-#: ../themes/default/image.thtml:20
+#: ../themes/default/image.thtml:21
 msgid "Sensitivity ISO"
 msgstr ""
 
-#: ../themes/default/image.thtml:21
+#: ../themes/default/image.thtml:22
 msgid "Aperture"
 msgstr ""
 
-#: ../themes/default/image.thtml:22
+#: ../themes/default/image.thtml:23
 msgid "Flash"
 msgstr ""
 
-#: ../themes/default/image.thtml:23
+#: ../themes/default/image.thtml:24
 msgid "Focal length"
 msgstr ""
 
