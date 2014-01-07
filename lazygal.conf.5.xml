@@ -231,6 +231,17 @@ foo = bar
       </varlistentry>
 
       <varlistentry>
+        <term>video-size</term>
+        <listitem>
+          <para>Size of videos, eg. 0x0.
+          Refer to the IMAGE RESIZE DESCRIPTION section for more information
+          on the available syntax.</para>
+          <para>In addition, size can be the name of a previously declared
+          image-size.</para>
+        </listitem>
+      </varlistentry>
+ 
+      <varlistentry>
         <term>thumbs-per-page</term>
         <listitem>
           <para>Same as <option>--thumbs-per-page=<replaceable>THUMBS_PER_PAGE</replaceable></option>

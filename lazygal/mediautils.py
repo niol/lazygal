@@ -252,22 +252,25 @@ class GstVideoTranscoder(GstVideoReader):
         # Video
         self.decode_video()
 
-        self.videoscale = gst.element_factory_make('videoscale', 'videoscale')
-        self.videoscale.set_property('method', 'bilinear')
-        self.pipeline.add(self.videoscale)
-        self.ff.link(self.videoscale)
-        caps_str = "video/x-raw-yuv"
-        if width is not None and height is not None:
-            caps_str += ", width=%d, height=%d" % (width, height)
-        caps = gst.Caps(caps_str)
-        self.caps_filter = gst.element_factory_make("capsfilter", "filter")
-        self.caps_filter.set_property("caps", caps)
-        self.pipeline.add(self.caps_filter)
-        self.videoscale.link(self.caps_filter)
-
         self.videoenc = gst.element_factory_make(videocodec, 'videoenc')
         self.pipeline.add(self.videoenc)
-        self.caps_filter.link(self.videoenc)
+
+        if width is not None and height is not None:
+            self.videoscale = gst.element_factory_make('videoscale',
+                                                       'videoscale')
+            self.videoscale.set_property('method', 'bilinear')
+            self.pipeline.add(self.videoscale)
+            self.ff.link(self.videoscale)
+            caps_str = "video/x-raw-yuv"
+            caps_str += ", width=%d, height=%d" % (width, height)
+            caps = gst.Caps(caps_str)
+            self.caps_filter = gst.element_factory_make("capsfilter", "filter")
+            self.caps_filter.set_property("caps", caps)
+            self.pipeline.add(self.caps_filter)
+            self.videoscale.link(self.caps_filter)
+            self.caps_filter.link(self.videoenc)
+        else:
+            self.ff.link(self.videoenc)
 
         voqueue = gst.element_factory_make("queue")
         self.pipeline.add(voqueue)

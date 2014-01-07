@@ -32,6 +32,7 @@ from lazygal.pygexiv2 import GExiv2
 
 
 THUMB_SIZE_NAME = 'thumb'
+VIDEO_SIZE_NAME = 'video'
 
 
 class ResizedImage(genfile.WebalbumFile):
@@ -296,7 +297,11 @@ class WebVideo(genfile.WebalbumFile):
         path = os.path.join(self.webgal.path, self.filename)
         genfile.WebalbumFile.__init__(self, path, webgal)
 
-        self.newsizer = self.webgal.newsizers[size_name]
+        newsizer = self.webgal.newsizers[size_name]
+        if newsizer == 'original':
+            self.new_width, self.new_height = (None, None)
+        else:
+            self.new_width, self.new_height = newsizer.dest_size(self.source_video.get_size())
 
         self.add_dependency(self.source_video)
 
@@ -305,8 +310,8 @@ class WebVideo(genfile.WebalbumFile):
         logging.info(_("  TRANSCODE %s") % vid_rel_path)
 
         try:
-            width, height = self.newsizer.dest_size(self.source_video.get_size())
-            mediautils.WebMTranscoder(self.source_video.path, width, height).convert(self.path)
+            mediautils.WebMTranscoder(self.source_video.path,
+                self.new_width, self.new_height).convert(self.path)
         except mediautils.TranscodeError, e:
             logging.error(_("  transcoding %s failed, skipped")
                           % self.source_video.filename)

@@ -291,8 +291,14 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
     def get_resized(self, size_name):
         if not self.webvideo:
-            self.webvideo = genmedia.WebVideo(self.webgal, self.media,
-                                              self.webgal.default_size_name)
+            if self.webgal.newsizers[genmedia.VIDEO_SIZE_NAME] == 'original'\
+            and self.media.extension == '.webm':
+                # do not transcode webm videos
+                self.webvideo = self.get_original_or_symlink()
+            else:
+                self.webvideo = genmedia.WebVideo(self.webgal, self.media,
+                                                  genmedia.VIDEO_SIZE_NAME)
+
         return self.webvideo
 
 
@@ -407,6 +413,8 @@ class WebalbumDir(make.FileMakeObject):
     def __parse_size(self, size_name, size_string):
         if size_string == '0x0':
             self.newsizers[size_name] = 'original'
+        elif size_string in self.newsizers:
+            pass # size reference, do nothing
         else:
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
@@ -455,6 +463,8 @@ class WebalbumDir(make.FileMakeObject):
         self.__parse_browse_sizes(self.config.get('webgal', 'image-size'))
         self.__parse_size(genmedia.THUMB_SIZE_NAME,
                           self.config.get('webgal', 'thumbnail-size'))
+        self.__parse_size(genmedia.VIDEO_SIZE_NAME,
+                          self.config.get('webgal', 'video-size'))
         self.default_size_name = self.browse_sizes[0]
 
         self.tpl_vars = self.__load_tpl_vars()
