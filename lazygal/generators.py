@@ -297,7 +297,8 @@ class WebalbumVideoTask(WebalbumMediaTask):
                 self.webvideo = self.get_original_or_symlink()
             else:
                 self.webvideo = genmedia.WebVideo(self.webgal, self.media,
-                                                  genmedia.VIDEO_SIZE_NAME)
+                                                  genmedia.VIDEO_SIZE_NAME,
+                                                  self.webgal.progress)
 
         return self.webvideo
 
@@ -313,6 +314,8 @@ class WebalbumDir(make.FileMakeObject):
         if self.path.endswith(os.sep): self.path = os.path.dirname(self.path)
 
         super(WebalbumDir, self).__init__(self.path)
+
+        self.progress = progress
 
         self.add_dependency(self.source_dir)
         self.subgals = subgals
@@ -396,8 +399,6 @@ class WebalbumDir(make.FileMakeObject):
             self.add_dependency(self.webgal_pic)
         else:
             self.break_task = None
-
-        self.progress = progress
 
     def __parse_browse_sizes(self, sizes_string):
         for single_def in sizes_string.split(','):
@@ -720,6 +721,8 @@ class AlbumGenProgress(object):
         self._medias_total = medias_total
         self._medias_done = 0
 
+        self._task_percent = None
+
     def dir_done(self):
         self._dirs_done = self._dirs_done + 1
         self.updated()
@@ -728,13 +731,26 @@ class AlbumGenProgress(object):
         self._medias_done = self._medias_done + how_many
         self.updated()
 
+    def set_task_progress(self, percent):
+        self._task_percent = percent
+        self.updated()
+        
+    def set_task_done(self):
+        self._task_percent = None
+        self.updated()
+
     def __unicode__(self):
-        return _("Progress: dir %d/%d (%d%%), media %d/%d (%d%%)")\
-               % (self._dirs_done, self._dirs_total,
-                  100 * self._dirs_done // self._dirs_total,
-                  self._medias_done, self._medias_total,
-                  100 * self._medias_done // self._medias_total,
-                 )
+        msg = _("Progress: dir %d/%d (%d%%), media %d/%d (%d%%)")\
+              % (self._dirs_done, self._dirs_total,
+                 100 * self._dirs_done // self._dirs_total,
+                 self._medias_done, self._medias_total,
+                 100 * self._medias_done // self._medias_total,
+                )
+
+        if self._task_percent is not None:
+            msg = msg + _(", current task %d%%") % self._task_percent
+
+        return msg
 
     def updated(self):
         pass

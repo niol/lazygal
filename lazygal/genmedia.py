@@ -289,7 +289,8 @@ class WebalbumPicture(make.FileMakeObject):
 
 class WebVideo(genfile.WebalbumFile):
 
-    def __init__(self, webgal, source_video, size_name):
+    def __init__(self, webgal, source_video, size_name, progress=None):
+        self.progress = progress
         self.webgal = webgal
         self.source_video = source_video
         self.filename = self.webgal._add_size_qualifier(self.source_video.filename,
@@ -310,8 +311,11 @@ class WebVideo(genfile.WebalbumFile):
         logging.info(_("  TRANSCODE %s") % vid_rel_path)
 
         try:
-            mediautils.WebMTranscoder(self.source_video.path,
-                self.new_width, self.new_height).convert(self.path)
+            transcoder = mediautils.WebMTranscoder(self.source_video.path,
+                                                   self.new_width,
+                                                   self.new_height)
+            transcoder.set_progress(self.progress)
+            transcoder.convert(self.path)
         except mediautils.TranscodeError, e:
             logging.error(_("  transcoding %s failed, skipped")
                           % self.source_video.filename)

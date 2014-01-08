@@ -64,6 +64,8 @@ class GstVideoOpener(object):
     def __init__(self, input_file):
         self.input_file = input_file
 
+        self.progress = None
+
         self.pipeline = gst.Pipeline()
         self.running = False
 
@@ -104,6 +106,9 @@ class GstVideoOpener(object):
         msg = gst.message_new_application(self.pipeline, gst.Structure(msg_txt))
         self.pipeline.get_bus().post(msg)
 
+    def set_progress(self, progress):
+        self.progress = progress
+
     def monitor_progress(self):
         # check if CTRL+C'd
         if interrupted:
@@ -113,6 +118,10 @@ class GstVideoOpener(object):
         stalled = False
         try:
             current_position, fmt = self.pipeline.query_position(gst.FORMAT_TIME)
+            if self.media_duration is None:
+                self.media_duration, fmt = self.pipeline.query_duration(gst.FORMAT_TIME)
+            if self.progress is not None:
+                self.progress.set_task_progress(100 * current_position // self.media_duration)
         except gst.QueryError:
             pass
         else:
@@ -135,8 +144,9 @@ class GstVideoOpener(object):
         self.pipeline.set_state(gst.STATE_PLAYING)
         self.running = True
         self.last_position = None
+        self.media_duration = None
 
-        gobject.timeout_add(250, self.monitor_progress)
+        gobject.timeout_add(1000, self.monitor_progress)
 
         while self.running:
             message = self.pipeline.get_bus().poll(gst.MESSAGE_ANY, -1)
@@ -156,6 +166,9 @@ class GstVideoOpener(object):
                     elif struct_name == 'stalled':
                         self.__stop_pipeline()
                         raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
+
+        if self.progress is not None:
+            self.progress.set_task_done()
 
     def stop_pipeline(self):
         msg = gst.message_new_application(self.pipeline,
