@@ -64,7 +64,7 @@
     all the bells and whistles defined by the templates. Only missing
     parts or parts that are not up to date will be generated. There is
     a limitation to this mechanism though: although updates in the source
-    directory, in the metadata or in the themes is detected, changes in
+    directory, in the metadata or in the themes are detected, changes in
     command line options and configuration files since last generation are
     not and the user should manually delete files that need to be generated
     again.</para>
