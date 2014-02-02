@@ -233,52 +233,53 @@ class TestGenerators(LazygalTestGen):
         config.set('webgal', 'filter-by-tag', 'lazygal')
         self.setup_album(config)
 
-        # good pictures will be pushed on the destination, false pictures
+        # tagfound pictures will be pushed on the destination, tagnotfound pictures
         # should be filtered out.
-        # The sub-directory 'subfalse' should not be created on the destination
+        # The sub-directory 'sdir_tagnotfound' should not be created on the destination
         # side, because it should be empty.
-        good_path         = self.add_img(self.source_dir, 'good.jpg')
-        good_path2        = self.add_img(self.source_dir, 'good2.jpg')
-        false_path        = self.add_img(self.source_dir, 'false.jpg')
-        untagged_path     = self.add_img(self.source_dir, 'untagged.jpg')
-        subgood           = self.setup_subgal('subgood', ['subgood.jpg', 'subfalse.jpg'])
-        subfalse          = self.setup_subgal('subfalse', ['subgood.jpg', 'subfalse.jpg'])
-        subuntagged = self.setup_subgal('subuntagged', ['untagged.jpg'])
-        good_subdir_path  = os.path.join(self.source_dir, subgood.name, 'subgood.jpg')
-        false_subdir_path = os.path.join(self.source_dir, subfalse.name, 'subfalse.jpg')
-        good     = GExiv2.Metadata(good_path)
-        good2    = GExiv2.Metadata(good_path2)
-        false    = GExiv2.Metadata(false_path)
-        good_sd  = GExiv2.Metadata(good_subdir_path)
-        false_sd = GExiv2.Metadata(false_subdir_path)
-        good['Iptc.Application2.Keywords']     = 'lazygal'
-        good['Xmp.dc.subject']                 = 'lazygal2'
-        good.save_file()
-        good2['Iptc.Application2.Keywords']    = 'lazygalagain'
-        good2['Xmp.dc.subject']                = 'lazygal'
-        good2.save_file()
-        false['Iptc.Application2.Keywords']    = 'another_tag'
-        false.save_file()
-        good_sd['Iptc.Application2.Keywords']  = 'lazygal'
-        good_sd['Xmp.dc.subject']              = 'lazygal2'
-        good_sd.save_file()
-        false_sd['Iptc.Application2.Keywords'] = 'lazygal_lazygal'
-        false_sd['Xmp.dc.subject']             = 'lazygal2'
-        false_sd.save_file()
+        tagfound_path           = self.add_img(self.source_dir, 'tagfound.jpg')
+        tagfound2_path          = self.add_img(self.source_dir, 'tagfound2.jpg')
+        tagnotfound_path        = self.add_img(self.source_dir, 'tagnotfound.jpg')
+        untagged_path           = self.add_img(self.source_dir, 'untagged.jpg')
+        sdir_tagfound           = self.setup_subgal('sdir_tagfound', ['sdir_tagfound.jpg', 'sdir_tagnotfound.jpg'])
+        sdir_tagnotfound        = self.setup_subgal('sdir_tagnotfound', ['sdir_tagfound.jpg', 'sdir_tagnotfound.jpg'])
+        sdir_untagged           = self.setup_subgal('sdir_untagged', ['untagged.jpg'])
+        tagfound_subdir_path    = os.path.join(self.source_dir, sdir_tagfound.name, 'sdir_tagfound.jpg')
+        tagnotfound_subdir_path = os.path.join(self.source_dir, sdir_tagnotfound.name, 'sdir_tagnotfound.jpg')
+        tagfound       = GExiv2.Metadata(tagfound_path)
+        tagfound2      = GExiv2.Metadata(tagfound2_path)
+        tagnotfound    = GExiv2.Metadata(tagnotfound_path)
+        tagfound_sd    = GExiv2.Metadata(tagfound_subdir_path)
+        tagnotfound_sd = GExiv2.Metadata(tagnotfound_subdir_path)
+        tagfound['Iptc.Application2.Keywords']       = 'lazygal'
+        tagfound['Xmp.dc.subject']                   = 'lazygal2'
+        tagfound.save_file()
+        tagfound2['Iptc.Application2.Keywords']      = 'lazygalagain'
+        tagfound2['Xmp.dc.subject']                  = 'lazygal'
+        tagfound2.save_file()
+        tagnotfound['Iptc.Application2.Keywords']    = 'another_tag'
+        tagnotfound.save_file()
+        tagfound_sd['Iptc.Application2.Keywords']    = 'lazygal'
+        tagfound_sd['Xmp.dc.subject']                = 'lazygal2'
+        tagfound_sd.save_file()
+        tagnotfound_sd['Iptc.Application2.Keywords'] = 'lazygal_lazygal'
+        tagnotfound_sd['Xmp.dc.subject']             = 'lazygal2'
+        tagnotfound_sd.save_file()
 
         # generate album
         dest_dir = self.get_working_path()
         self.album.generate(dest_dir)
 
         try:
-            self.assertTrue(os.path.isdir(os.path.join(dest_dir, 'subgood')))
-            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
-            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
-            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
-            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'subgood', 'subgood_thumb.jpg')))
-            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'subfalse', 'subfalse_thumb.jpg')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'subfalse')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'subuntagged')))
+            self.assertTrue(os.path.isdir(os.path.join(dest_dir, 'sdir_tagfound')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound2_thumb.jpg')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'tagnotfound_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'sdir_tagfound', 'sdir_tagfound_thumb.jpg')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_tagnotfound')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_tagnotfound', 'sdir_tagnotfound_thumb.jpg')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
+            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_untagged', 'untagged.jpg')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)
@@ -292,20 +293,20 @@ class TestGenerators(LazygalTestGen):
 
         # We need at least two pictures to display, because lazygal generates a
         # zip archive only if there is more than one picture.
-        good_path = self.add_img(self.source_dir, 'good.jpg')
-        good_path2 = self.add_img(self.source_dir, 'good2.jpg')
-        false_path = self.add_img(self.source_dir, 'false.jpg')
-        good = GExiv2.Metadata(good_path)
-        good2 = GExiv2.Metadata(good_path2)
-        false = GExiv2.Metadata(false_path)
-        good['Iptc.Application2.Keywords'] = 'lazygal'
-        good['Xmp.dc.subject'] = 'lazygal2'
-        good.save_file()
-        good2['Iptc.Application2.Keywords'] = 'lazygalagain'
-        good2['Xmp.dc.subject'] = 'lazygal'
-        good2.save_file()
-        false['Iptc.Application2.Keywords'] = 'another_tag'
-        false.save_file()
+        tagfound_path    = self.add_img(self.source_dir, 'tagfound.jpg')
+        tagfound_path2   = self.add_img(self.source_dir, 'tagfound2.jpg')
+        tagnotfound_path = self.add_img(self.source_dir, 'tagnotfound.jpg')
+        tagfound    = GExiv2.Metadata(tagfound_path)
+        tagfound2   = GExiv2.Metadata(tagfound_path2)
+        tagnotfound = GExiv2.Metadata(tagnotfound_path)
+        tagfound['Iptc.Application2.Keywords']    = 'lazygal'
+        tagfound['Xmp.dc.subject']                = 'lazygal2'
+        tagfound.save_file()
+        tagfound2['Iptc.Application2.Keywords']   = 'lazygalagain'
+        tagfound2['Xmp.dc.subject']               = 'lazygal'
+        tagfound2.save_file()
+        tagnotfound['Iptc.Application2.Keywords'] = 'another_tag'
+        tagnotfound.save_file()
 
         # generate album
         dest_dir = self.get_working_path()
@@ -313,8 +314,8 @@ class TestGenerators(LazygalTestGen):
 
         try:
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'src.zip')))
-            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
-            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound_thumb.jpg')))
+            self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
         except AssertionError:
             print "\n contents of dest_dir : "
