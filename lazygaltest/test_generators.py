@@ -240,8 +240,10 @@ class TestGenerators(LazygalTestGen):
         good_path         = self.add_img(self.source_dir, 'good.jpg')
         good_path2        = self.add_img(self.source_dir, 'good2.jpg')
         false_path        = self.add_img(self.source_dir, 'false.jpg')
+        untagged_path     = self.add_img(self.source_dir, 'untagged.jpg')
         subgood           = self.setup_subgal('subgood', ['subgood.jpg', 'subfalse.jpg'])
         subfalse          = self.setup_subgal('subfalse', ['subgood.jpg', 'subfalse.jpg'])
+        subuntagged = self.setup_subgal('subuntagged', ['untagged.jpg'])
         good_subdir_path  = os.path.join(self.source_dir, subgood.name, 'subgood.jpg')
         false_subdir_path = os.path.join(self.source_dir, subfalse.name, 'subfalse.jpg')
         good     = GExiv2.Metadata(good_path)
@@ -269,12 +271,14 @@ class TestGenerators(LazygalTestGen):
         self.album.generate(dest_dir)
 
         try:
+            self.assertTrue(os.path.isdir(os.path.join(dest_dir, 'subgood')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good_thumb.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'good2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'subgood', 'subgood_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'subfalse', 'subfalse_thumb.jpg')))
-            self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'subfalse')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'subfalse')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'subuntagged')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)
