@@ -318,7 +318,7 @@ class WebalbumDir(make.FileMakeObject):
         self.progress = progress
 
         self.add_dependency(self.source_dir)
-        self.subgals = subgals
+        self.subgals = [s for s in subgals if s.get_all_media_count() > 0]
         self.album = album
         self.feed = None
 
