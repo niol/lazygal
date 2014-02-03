@@ -327,15 +327,6 @@ class WebalbumDir(make.FileMakeObject):
         self.config = LazygalWebgalConfig(self.album.config)
         self.__configure()
 
-        # Create the directory if it does not exist
-        if not os.path.isdir(self.path) and (self.source_dir.get_media_count() > 0):
-            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
-                         % self.source_dir.strip_root())
-            logging.debug("(%s)" % self.path)
-            os.makedirs(self.path, mode=0755)
-            # Directory did not exist, mark it as so
-            self.stamp_delete()
-
         tagfilters = self.config.getlist('webgal', 'filter-by-tag')
 
         self.medias = []
@@ -373,6 +364,14 @@ class WebalbumDir(make.FileMakeObject):
             self.medias.append(media_task)
             self.add_dependency(media_task)
 
+        # Create the directory if it does not exist
+        if not os.path.isdir(self.path) and (self.get_media_count() > 0):
+            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
+                         % self.source_dir.strip_root())
+            logging.debug("(%s)" % self.path)
+            os.makedirs(self.path, mode=0755)
+            self.stamp_delete() # Directory did not exist, mark it as so
+
         if self.config.getboolean('webgal', 'dirzip')\
                 and self.get_media_count() > 1:
             self.dirzip = genfile.WebalbumArchive(self)
@@ -382,7 +381,7 @@ class WebalbumDir(make.FileMakeObject):
 
         self.index_pages = []
 
-        if not self.should_be_flattened():
+        if (self.get_all_media_count() > 0) and not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
 
             if self.thumbs_per_page > 0:
@@ -574,6 +573,12 @@ class WebalbumDir(make.FileMakeObject):
                     typed_media_count += 1
             return typed_media_count
 
+    def get_all_media_count(self):
+        count = len(self.medias)
+        for subgal in self.subgals:
+            count += subgal.get_all_media_count()
+        return count
+
     def get_all_medias_tasks(self):
         all_medias = list(self.medias)  # We want a copy here.
         for subgal in self.subgals:
@@ -625,6 +630,9 @@ class WebalbumDir(make.FileMakeObject):
             return ''
 
     def list_foreign_files(self):
+        if not os.path.isdir(self.path):
+            return []
+
         foreign_files = []
 
         # Check dest for junk files
@@ -661,7 +669,8 @@ class WebalbumDir(make.FileMakeObject):
         # if we regenerated without adding/removing pictures (to take into
         # account a rotation for example). This is why we force directory mtime
         # update here if something has been built.
-        if needed_build: os.utime(self.path, None)
+        if needed_build and os.path.isdir(self.path):
+            os.utime(self.path, None)
 
     def media_done(self):
         if self.progress is not None:
