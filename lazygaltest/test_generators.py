@@ -101,12 +101,11 @@ class TestGenerators(LazygalTestGen):
                         ]
                        )
         self.assertEqual(sorted(dest_subgal.list_foreign_files()),
-                         sorted(expected))
-
+                        sorted(expected))
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         self.assertEqual(sorted(dest_gal.list_foreign_files()),
-                         [os.path.join(dest_path, 'extra_thumb.jpg')])
+                        [os.path.join(dest_path, 'extra_thumb.jpg')])
 
     @skip(not has_symlinks(), 'symlinks not supported on platform')
     def test_originals_symlinks(self):
@@ -276,10 +275,10 @@ class TestGenerators(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'tagnotfound_thumb.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'sdir_tagfound', 'sdir_tagfound_thumb.jpg')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_tagnotfound')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_tagnotfound', 'sdir_tagnotfound_thumb.jpg')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_tagnotfound')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_untagged', 'untagged.jpg')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)

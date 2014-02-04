@@ -901,8 +901,8 @@ class Album(object):
                 # Use root config tpl vars for shared files
                 tpl_vars = destgal.tpl_vars
 
-            if source_dir.get_all_medias_count() < 1:
-                logging.debug(_("(%s) and childs have no known medias, skipped")
+            if destgal.get_all_media_count() < 1:
+                logging.debug(_("(%s) and childs have no known media, skipped")
                               % source_dir.path)
                 continue
 
