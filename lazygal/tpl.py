@@ -219,10 +219,10 @@ class Theme(object):
         theme_manifest['shared'].append({'path': THEME_SHARED_FILE_PREFIX + '*'})
         self.shared_files = []
         for shared_file_entry in theme_manifest['shared']:
-            entry_path = shared_file_entry['path']
+            entry_path = os.path.join(self.tpl_dir, shared_file_entry['path'])
+            entry_path = os.path.normpath(entry_path)
             entry_dest = 'dest' in shared_file_entry and shared_file_entry['dest']
-            for sf in glob.glob(os.path.join(self.tpl_dir, entry_path)):
-                path = os.path.normpath(sf)
+            for sf in glob.glob(entry_path):
                 sf_name = os.path.basename(sf)
                 if sf_name.startswith(THEME_SHARED_FILE_PREFIX):
                     sf_name = sf_name[len(THEME_SHARED_FILE_PREFIX):]
@@ -234,13 +234,13 @@ class Theme(object):
                     else:
                         dest = entry_dest
                 else:
-                    if pathutils.is_subdir_of(self.tpl_dir, path):
-                        sf_dir = os.path.dirname(path)
+                    if pathutils.is_subdir_of(self.tpl_dir, sf):
+                        sf_dir = os.path.dirname(sf)
                         dest = os.path.join(sf_dir[len(self.tpl_dir)+1:], sf_name)
                     else:
                         dest = sf_name
 
-                self.shared_files.append((path, dest))
+                self.shared_files.append((sf, dest))
 
     def get_avail_styles(self, default_style=None):
         style_files_mask = os.path.join(self.tpl_dir,
