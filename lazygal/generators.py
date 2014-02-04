@@ -23,6 +23,7 @@ import gc
 import genshi
 import sys
 import re
+import shutil
 
 from config import LazygalConfig, LazygalWebgalConfig
 from config import USER_CONFIG_PATH, LazygalConfigDeprecated
@@ -743,7 +744,7 @@ class AlbumGenProgress(object):
     def set_task_progress(self, percent):
         self._task_percent = percent
         self.updated()
-        
+
     def set_task_done(self):
         self._task_percent = None
         self.updated()
@@ -812,13 +813,12 @@ class Album(object):
         return pathutils.is_subdir_of(self.source_dir, path)
 
     def cleanup(self, file_path):
-        text = ''
-        if self.clean_dest and not os.path.isdir(file_path):
-            os.unlink(file_path)
-            text = ''
-        else:
-            text = _('you should ')
-        logging.info(_('  %sRM %s') % (text, file_path))
+        if self.clean_dest:
+            if os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+            else:
+                os.unlink(file_path)
+            logging.info('RM %s' % (file_path))
 
     def generate_default_metadata(self):
         """
