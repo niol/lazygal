@@ -16,7 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import glob
 import locale
 import logging
 import gc
@@ -692,13 +691,8 @@ class SharedFiles(make.FileMakeObject):
         super(SharedFiles, self).__init__(self.path)
 
         self.expected_shared_files = []
-        for shared_file in glob.glob(
-                os.path.join(self.album.theme.tpl_dir,
-                             tpl.THEME_SHARED_FILE_PREFIX + '*')):
-            shared_file_name = os.path.basename(shared_file).\
-                replace(tpl.THEME_SHARED_FILE_PREFIX, '')
-            shared_file_dest = os.path.join(self.path,
-                                            shared_file_name)
+        for shared_file, shared_file_rel_dest in self.album.theme.shared_files:
+            shared_file_dest = os.path.join(self.path, shared_file_rel_dest)
 
             if self.album.theme.tpl_loader.is_known_template_type(shared_file):
                 sf = genpage.SharedFileTemplate(album, shared_file,

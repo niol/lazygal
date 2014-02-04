@@ -540,6 +540,26 @@
         </listitem>
     </itemizedlist>
 
+    <para>Using the theme manifest
+    <filename><replaceable>theme</replaceable>/manifest.json</filename> file,
+    it is possible to include files from other directories to be copied into
+    the web album shared files.</para>
+
+    <example>
+      <title>manifest.json</title>
+        <programlisting>
+{
+    "shared": [
+        # copy as shared/lib.js
+        { "path": "../lib-2.1.js", "dest": "lib.js" },
+
+        # copy as shared/js/lib-2.1.js
+        { "path": "../lib-2.1.js", "dest": "js/" }
+    ]
+}
+        </programlisting>
+    </example>
+
     <para>Please refer to the examples supplied in
     <filename>/usr/share/lazygal/themes</filename></para>
 

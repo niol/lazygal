@@ -20,6 +20,7 @@ import os
 import shutil
 import tempfile
 import unittest
+import codecs
 
 from lazygal.sourcetree import Directory
 from lazygal.generators import Album
@@ -94,6 +95,14 @@ class LazygalTest(unittest.TestCase):
         img_path = os.path.join(dest_dir, name)
         shutil.copy(SAMPLE_IMG, img_path)
         return img_path
+
+    def create_file(self, path, contents='', bom=True):
+        f = open(path, 'w')
+        enc = 'utf-8'
+        if bom:
+            f.write(codecs.BOM_UTF8)
+        f.write(contents.encode(enc))
+        f.close()
 
     def tearDown(self):
         for wd in self.__workdirs:

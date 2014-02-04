@@ -20,7 +20,6 @@
 import unittest
 import os
 import locale
-import codecs
 from __init__ import LazygalTest
 from lazygal import metadata
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
@@ -37,13 +36,6 @@ class TestFileMetadata(LazygalTest):
         self.source_dir = self.get_working_path()
         album = Album(self.source_dir)
         self.album_root = Directory(self.source_dir, [], [], album)
-
-    def create_file(self, path, contents):
-        f = open(path, 'w')
-        enc = 'utf-8'
-        f.write(codecs.BOM_UTF8)
-        f.write(contents.encode(enc))
-        f.close()
 
     def test_album_name(self):
         album_name = u'Album de <b>l\'école<b>'

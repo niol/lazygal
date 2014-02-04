@@ -17,6 +17,11 @@
 
 import os
 import glob
+import logging
+import json
+import codecs
+import locale
+
 from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 from genshi.template import TemplateNotFound
@@ -25,11 +30,13 @@ from genshi.input import XMLParser
 import __init__
 
 import timeutils
+import pathutils
 
 
 DEFAULT_THEME = 'default'
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
+THEME_MANIFEST = 'manifest.json'
 
 
 class LazygalTemplate(object):
@@ -168,6 +175,8 @@ class Theme(object):
             if not os.path.exists(self.tpl_dir):
                 raise ValueError(_('Theme %s not found') % self.name)
 
+        self.__load_manifest()
+
         self.tpl_loader = TplFactory(os.path.join(themes_dir, DEFAULT_THEME),
                                      self.tpl_dir)
 
@@ -187,6 +196,51 @@ class Theme(object):
             self.kind = 'static'
         else:
             self.kind = 'dynamic'
+
+    def __load_manifest(self):
+        theme_manifest_path = os.path.join(self.tpl_dir, THEME_MANIFEST)
+        logging.debug(_('Loading %s for theme %s')
+                      % (THEME_MANIFEST, self.name))
+        theme_manifest = {}
+        try:
+            with codecs.open(theme_manifest_path, 'r',
+                             locale.getpreferredencoding()) as f:
+                theme_manifest.update(json.load(f))
+        except IOError:
+            logging.debug(_('Theme %s does not have a %s')
+                          % (self.name, THEME_MANIFEST))
+        except ValueError:
+            logging.error(_('Theme %s : %s parsing error')
+                          % (self.name, THEME_MANIFEST))
+            raise
+
+        if 'shared' not in theme_manifest:
+            theme_manifest['shared'] = []
+        theme_manifest['shared'].append({'path': THEME_SHARED_FILE_PREFIX + '*'})
+        self.shared_files = []
+        for shared_file_entry in theme_manifest['shared']:
+            entry_path = shared_file_entry['path']
+            entry_dest = 'dest' in shared_file_entry and shared_file_entry['dest']
+            for sf in glob.glob(os.path.join(self.tpl_dir, entry_path)):
+                path = os.path.normpath(sf)
+                sf_name = os.path.basename(sf)
+                if sf_name.startswith(THEME_SHARED_FILE_PREFIX):
+                    sf_name = sf_name[len(THEME_SHARED_FILE_PREFIX):]
+
+                if entry_dest:
+                    # There is dest info in manifest for this file
+                    if entry_dest[-1] == os.sep: # dest is a dir
+                        dest = os.path.join(entry_dest, sf_name)
+                    else:
+                        dest = entry_dest
+                else:
+                    if pathutils.is_subdir_of(self.tpl_dir, path):
+                        sf_dir = os.path.dirname(path)
+                        dest = os.path.join(sf_dir[len(self.tpl_dir)+1:], sf_name)
+                    else:
+                        dest = sf_name
+
+                self.shared_files.append((path, dest))
 
     def get_avail_styles(self, default_style=None):
         style_files_mask = os.path.join(self.tpl_dir,
