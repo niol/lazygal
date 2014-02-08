@@ -68,7 +68,7 @@ class TestGenerators(LazygalTestGen):
                    'subgal_img_medium.jpg'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
-    def test_filecleanup(self):
+    def test_spot_foreign_files(self):
         """
         Files that are not part of what was generated or updated shall be
         spotted.
@@ -83,6 +83,7 @@ class TestGenerators(LazygalTestGen):
         # add a thumbs that should not be there
         self.add_img(dest_path, 'extra_thumb.jpg')
         self.add_img(os.path.join(dest_path, 'subgal'), 'extra_thumb2.jpg')
+        os.mkdir(os.path.join(dest_path, 'extra_dir'))
 
         # remove a pic in source_dir
         os.unlink(os.path.join(self.source_dir, 'subgal', 'img6.jpg'))
@@ -104,6 +105,10 @@ class TestGenerators(LazygalTestGen):
                         sorted(expected))
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
+        expected =  map(lambda fn:
+                        unicode(os.path.join(dest_path, fn)),
+                        ['extra_thumb.jpg', 'extra_dir']
+                       )
         self.assertEqual(sorted(dest_gal.list_foreign_files()),
                         [os.path.join(dest_path, 'extra_thumb.jpg')])
 
