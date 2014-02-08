@@ -901,11 +901,6 @@ class Album(object):
                 # Use root config tpl vars for shared files
                 tpl_vars = destgal.tpl_vars
 
-            if destgal.get_all_media_count() < 1:
-                logging.debug(_("(%s) and childs have no known media, skipped")
-                              % source_dir.path)
-                continue
-
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
                 if container_dirname not in dir_heap:
