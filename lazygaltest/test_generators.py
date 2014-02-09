@@ -136,30 +136,8 @@ class TestGenerators(LazygalTestGen):
         # remove a pic in source_dir
         os.unlink(os.path.join(self.source_dir, 'subgal', 'img06.jpg'))
 
-        # new objects to probe filesystem
-
-        # prepare for a new generation
-        print "== Start a new generation =="
-
-        self.album.config.set('runtime', 'check-all-dirs', "true")
-
-        # touch some dirs to force lazygal descending into subdirs?
-        os.utime(os.path.join(dest_path, 'subgal'), None)
-        os.utime(self.source_dir, None)
-        os.utime(os.path.join(self.source_dir, 'subgal'), None)
-        self.album.config.set('global', 'clean-destination', "true")
         self.album.generate(dest_path)
 
-        # fails here:
-        # img06.jpg is removed in subgal, but lazygal does not detect the
-        # change.
-        # Forcing check-all-dirs does not produce better results
-        print
-        print "== dest path: ", dest_path
-        print sorted(os.listdir(dest_path))
-        print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
-        print "== source path: ", self.source_dir
-        print sorted(os.listdir(os.path.join(self.source_dir, 'subgal')))
         try:
             for f in ['extra_thumb2.jpg',
                     'img06_thumb.jpg', 'img06_small.jpg', 'img06_medium.jpg',
