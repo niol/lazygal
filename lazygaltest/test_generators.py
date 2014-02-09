@@ -116,7 +116,10 @@ class TestGenerators(LazygalTestGen):
         """
         Check that the foreign files are deleted.
         """
-        print
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'clean-destination', "true")
+        self.setup_album(config)
+
         pics = ['img%02d.jpg' % i for i in range(4, 8)]
         source_subgal = self.setup_subgal('subgal', pics)
 
