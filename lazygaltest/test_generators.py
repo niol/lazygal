@@ -131,6 +131,7 @@ class TestGenerators(LazygalTestGen):
         self.add_img(dest_path, 'extra_thumb.jpg')
         self.add_img(os.path.join(dest_path, 'subgal'), 'extra_thumb2.jpg')
         os.mkdir(os.path.join(dest_path, 'extra_dir'))
+        self.add_img(os.path.join(dest_path, 'extra_dir'), 'extra_thumb3.jpg')
 
         # remove a pic in source_dir
         os.unlink(os.path.join(self.source_dir, 'subgal', 'img06.jpg'))
