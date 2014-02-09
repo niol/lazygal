@@ -68,7 +68,7 @@ class TestGenerators(LazygalTestGen):
                    'subgal_img_medium.jpg'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
-    def test_filecleanup(self):
+    def test_spot_foreign_files(self):
         """
         Files that are not part of what was generated or updated shall be
         spotted.
@@ -83,6 +83,7 @@ class TestGenerators(LazygalTestGen):
         # add a thumbs that should not be there
         self.add_img(dest_path, 'extra_thumb.jpg')
         self.add_img(os.path.join(dest_path, 'subgal'), 'extra_thumb2.jpg')
+        os.mkdir(os.path.join(dest_path, 'extra_dir'))
 
         # remove a pic in source_dir
         os.unlink(os.path.join(self.source_dir, 'subgal', 'img6.jpg'))
@@ -101,12 +102,77 @@ class TestGenerators(LazygalTestGen):
                         ]
                        )
         self.assertEqual(sorted(dest_subgal.list_foreign_files()),
-                         sorted(expected))
-
+                        sorted(expected))
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
+        expected =  map(lambda fn:
+                        unicode(os.path.join(dest_path, fn)),
+                        ['extra_thumb.jpg', 'extra_dir']
+                       )
         self.assertEqual(sorted(dest_gal.list_foreign_files()),
-                         [os.path.join(dest_path, 'extra_thumb.jpg')])
+                         sorted(expected))
+
+    def test_cleanup(self):
+        """
+        Check that the foreign files are deleted.
+        """
+        print
+        pics = ['img%02d.jpg' % i for i in range(4, 8)]
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        dest_path = self.get_working_path()
+
+        self.album.generate(dest_path)
+
+        # add thumbs and directories that should not be there
+        self.add_img(dest_path, 'extra_thumb.jpg')
+        self.add_img(os.path.join(dest_path, 'subgal'), 'extra_thumb2.jpg')
+        os.mkdir(os.path.join(dest_path, 'extra_dir'))
+
+        # remove a pic in source_dir
+        os.unlink(os.path.join(self.source_dir, 'subgal', 'img06.jpg'))
+
+        # new objects to probe filesystem
+
+        # prepare for a new generation
+        print "== Start a new generation =="
+
+        self.album.config.set('runtime', 'check-all-dirs', "true")
+
+        # touch some dirs to force lazygal descending into subdirs?
+        os.utime(os.path.join(dest_path, 'subgal'), None)
+        os.utime(self.source_dir, None)
+        os.utime(os.path.join(self.source_dir, 'subgal'), None)
+        self.album.config.set('global', 'clean-destination', "true")
+        self.album.generate(dest_path)
+
+        # fails here:
+        # img06.jpg is removed in subgal, but lazygal does not detect the
+        # change.
+        # Forcing check-all-dirs does not produce better results
+        print
+        print "== dest path: ", dest_path
+        print sorted(os.listdir(dest_path))
+        print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+        print "== source path: ", self.source_dir
+        print sorted(os.listdir(os.path.join(self.source_dir, 'subgal')))
+        try:
+            for f in ['extra_thumb2.jpg',
+                    'img06_thumb.jpg', 'img06_small.jpg', 'img06_medium.jpg',
+                    'img06.html', 'img06_medium.html',
+                    ]:
+                self.assertFalse(os.path.isfile(os.path.join(dest_path, 'subgal', f)))
+
+            for f in ['extra_thumb.jpg']:
+                self.assertFalse(os.path.isfile(os.path.join(dest_path, f)))
+            for f in ['extra_dir']:
+                self.assertFalse(os.path.isdir(os.path.join(dest_path, f)))
+        except AssertionError:
+            print "\n contents of dest_path : "
+            print sorted(os.listdir(dest_path))
+            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            raise
+
 
     @skip(not has_symlinks(), 'symlinks not supported on platform')
     def test_originals_symlinks(self):
@@ -276,10 +342,10 @@ class TestGenerators(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'tagnotfound_thumb.jpg')))
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'sdir_tagfound', 'sdir_tagfound_thumb.jpg')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_tagnotfound')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_tagnotfound', 'sdir_tagnotfound_thumb.jpg')))
-            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_tagnotfound')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_untagged', 'untagged.jpg')))
+            self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
         except AssertionError:
             print "\n contents of dest_dir : "
             print os.listdir(dest_dir)
