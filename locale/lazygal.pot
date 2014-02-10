@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-30 21:30+0100\n"
+"POT-Creation-Date: 2014-02-10 11:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,112 +224,103 @@ msgstr ""
 msgid "  BREAKING web gallery into multiple pages"
 msgstr ""
 
-#: ../lazygal/generators.py:323
+#: ../lazygal/generators.py:369
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr ""
 
-#: ../lazygal/generators.py:401
+#: ../lazygal/generators.py:407
 msgid ""
 "Sizes is a comma-separated list of size names and specs:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
 msgstr ""
 
-#: ../lazygal/generators.py:403
+#: ../lazygal/generators.py:409
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr ""
 
-#: ../lazygal/generators.py:414
+#: ../lazygal/generators.py:422
 #, python-format
 msgid "'%s' for size '%s' does not describe a known size syntax."
 msgstr ""
 
-#: ../lazygal/generators.py:448
+#: ../lazygal/generators.py:456
 #, python-format
 msgid "  Trying loading gallery configs: %s"
 msgstr ""
 
-#: ../lazygal/generators.py:489
+#: ../lazygal/generators.py:499
 msgid "Bad syntax for webalbumpic-size."
 msgstr ""
 
-#: ../lazygal/generators.py:668
+#: ../lazygal/generators.py:688
 msgid "MKDIR %SHAREDDIR%"
 msgstr ""
 
-#: ../lazygal/generators.py:722
+#: ../lazygal/generators.py:747
 #, python-format
 msgid "Progress: dir %d/%d (%d%%), media %d/%d (%d%%)"
 msgstr ""
 
-#: ../lazygal/generators.py:740
+#: ../lazygal/generators.py:755
+#, python-format
+msgid ", current task %d%%"
+msgstr ""
+
+#: ../lazygal/generators.py:770
 #, python-format
 msgid "Trying loading user config %s"
 msgstr ""
 
-#: ../lazygal/generators.py:745
+#: ../lazygal/generators.py:775
 #, python-format
 msgid "Loading root config %s"
 msgstr ""
 
-#: ../lazygal/generators.py:749
+#: ../lazygal/generators.py:779
 #, python-format
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
 msgstr ""
 
-#: ../lazygal/generators.py:785
-msgid "you should "
-msgstr ""
-
-#: ../lazygal/generators.py:786
-#, python-format
-msgid "  %sRM %s"
-msgstr ""
-
-#: ../lazygal/generators.py:792
+#: ../lazygal/generators.py:821
 #, python-format
 msgid "Generating metadata in %s"
 msgstr ""
 
-#: ../lazygal/generators.py:798 ../lazygal/generators.py:857
+#: ../lazygal/generators.py:827 ../lazygal/generators.py:886
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr ""
 
-#: ../lazygal/generators.py:828
+#: ../lazygal/generators.py:857
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 
-#: ../lazygal/generators.py:830
+#: ../lazygal/generators.py:859
 #, python-format
 msgid "Generating to %s"
 msgstr ""
 
-#: ../lazygal/generators.py:850
+#: ../lazygal/generators.py:879
 #, python-format
 msgid "(%s) has been skipped"
 msgstr ""
 
-#: ../lazygal/generators.py:854
+#: ../lazygal/generators.py:883
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
 "directory name"
 msgstr ""
 
-#: ../lazygal/generators.py:870
-#, python-format
-msgid "(%s) and childs have no known medias, skipped"
-msgstr ""
-
-#: ../lazygal/generators.py:900
+#: ../lazygal/generators.py:924
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 
-#: ../lazygal/generators.py:909
+#: ../lazygal/generators.py:933
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr ""
@@ -357,14 +348,29 @@ msgstr ""
 msgid "GEN %s"
 msgstr ""
 
-#: ../lazygal/tpl.py:155
+#: ../lazygal/tpl.py:162
 #, python-format
 msgid "Unknown template type for %s"
 msgstr ""
 
-#: ../lazygal/tpl.py:169
+#: ../lazygal/tpl.py:176
 #, python-format
 msgid "Theme %s not found"
+msgstr ""
+
+#: ../lazygal/tpl.py:202
+#, python-format
+msgid "Loading %s for theme %s"
+msgstr ""
+
+#: ../lazygal/tpl.py:210
+#, python-format
+msgid "Theme %s does not have a %s"
+msgstr ""
+
+#: ../lazygal/tpl.py:213
+#, python-format
+msgid "Theme %s : %s parsing error"
 msgstr ""
 
 #: ../lazygal/genfile.py:106
@@ -377,45 +383,45 @@ msgstr ""
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:80
+#: ../lazygal/genmedia.py:81
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:120
+#: ../lazygal/genmedia.py:121
 msgid "RESIZE"
 msgstr ""
 
-#: ../lazygal/genmedia.py:208
+#: ../lazygal/genmedia.py:209
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:221
+#: ../lazygal/genmedia.py:222
 msgid "VIDEOTHUMB"
 msgstr ""
 
-#: ../lazygal/genmedia.py:228
+#: ../lazygal/genmedia.py:229
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:261
+#: ../lazygal/genmedia.py:262
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr ""
 
-#: ../lazygal/genmedia.py:281
+#: ../lazygal/genmedia.py:282
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:305
+#: ../lazygal/genmedia.py:311
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:311
+#: ../lazygal/genmedia.py:320
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr ""
@@ -461,20 +467,20 @@ msgstr ""
 msgid "All full scale pictures as an archive, for"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:53
+#: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:52
 msgid "Generated by"
 msgstr ""
 
-#: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:53
+#: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:52
 #, python-format
 msgid "on %c"
 msgstr ""
 
-#: ../themes/default/browse.thtml:42
+#: ../themes/default/browse.thtml:39
 msgid "previous"
 msgstr ""
 
-#: ../themes/default/browse.thtml:47
+#: ../themes/default/browse.thtml:44
 msgid "next"
 msgstr ""
 
