@@ -657,7 +657,7 @@ class WebalbumDir(make.FileMakeObject):
 
     def build(self):
         for dest_file in self.list_foreign_files():
-            self.album.cleanup(dest_file)
+            self.album.cleanup(dest_file, self.path)
 
     def make(self, force=False):
         needed_build = self.needs_build()
@@ -713,7 +713,7 @@ class SharedFiles(make.FileMakeObject):
         for present_file in os.listdir(self.path):
             file_path = os.path.join(self.path, present_file)
             if file_path not in self.expected_shared_files:
-                self.album.cleanup(file_path)
+                self.album.cleanup(file_path, self.path)
 
 
 class AlbumGenProgress(object):
@@ -806,8 +806,10 @@ class Album(object):
     def is_in_sourcetree(self, path):
         return pathutils.is_subdir_of(self.source_dir, path)
 
-    def cleanup(self, file_path):
+    def cleanup(self, file_path, context_path):
         if self.clean_dest:
+            # Do not delete something out of dest-dir.
+            assert pathutils.is_subdir_of(context_path, file_path)
             if os.path.isdir(file_path):
                 shutil.rmtree(file_path)
             else:
