@@ -36,7 +36,7 @@
     <meta name="viewport" content="width=device-width" />
 
     <!--[if lt IE 9]>
-    <script src="shared/html5-3.4-respond-1.1.0.min.js"></script>
+    <script src="shared/respond.js"></script>
     <![endif]-->
 
     <!--! Google analytics tracking ID = '.lazygal': section: '[template-vars]', variable: 'google_analytics_tracking_id' -->
