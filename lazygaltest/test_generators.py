@@ -118,6 +118,7 @@ class TestGenerators(LazygalTestGen):
         """
         config = lazygal.config.LazygalConfig()
         config.set('global', 'clean-destination', "true")
+        #config.set('runtime', 'check-all-dirs', "true")
         self.setup_album(config)
 
         pics = ['img%02d.jpg' % i for i in range(4, 8)]
@@ -151,6 +152,62 @@ class TestGenerators(LazygalTestGen):
                 self.assertFalse(os.path.isdir(os.path.join(dest_path, f)))
         except AssertionError:
             print "\n contents of dest_path : "
+            print sorted(os.listdir(dest_path))
+            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            raise
+
+    def test_clean_empty_dirs(self):
+        """
+        Check that empty dirs at destination are removed
+        .
+        This case might happen when (1) the destination dir is created according
+        to the contents of source_dir.
+        (2) Then source_dir becomes empty, either because all the images have
+        been removed, or because tag filtering is applied with different
+        settings. The next lazygal generation should remove the destination dir.
+        """
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'clean-destination', "true")
+        self.setup_album(config)
+
+        pics = ['img.jpg']
+        source_subgal = self.setup_subgal('subgal', pics)
+        #self.add_img(os.path.join(source_path, 'subgal'), 'img.jpg')
+
+        dest_path = self.get_working_path()
+        self.album.generate(dest_path)
+
+        # all the files in subgal should be here after the first genration
+        try:
+            for f in ['img_thumb.jpg', 'img_small.jpg', 'img_medium.jpg',
+                     'img.html', 'img_medium.html',
+                     ]:
+                self.assertTrue(os.path.isfile(os.path.join(dest_path, 'subgal', f)))
+
+            for f in ['subgal']:
+                self.assertTrue(os.path.isdir(os.path.join(dest_path, f)))
+        except AssertionError:
+            print "\n contents of dest_path after first generation: "
+            print sorted(os.listdir(dest_path))
+            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            raise
+
+        # remove the pic in subgal, and force a new generation
+        os.unlink(os.path.join(self.source_dir, 'subgal', 'img.jpg'))
+        self.album.generate(dest_path)
+
+        # now the subdirectory subgal and its contents should no longer be there
+        try:
+            for f in ['img.jpg',
+                     'img_thumb.jpg', 'img_small.jpg', 'img_medium.jpg',
+                     'img.html', 'img_medium.html',
+                     ]:
+                self.assertFalse(os.path.isfile(os.path.join(dest_path, 'subgal', f)))
+
+            for f in ['subgal']:
+                self.assertFalse(os.path.isdir(os.path.join(dest_path, f)))
+        except AssertionError:
+            print "\n contents of dest_path after the second generation: "
             print sorted(os.listdir(dest_path))
             print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
             raise
