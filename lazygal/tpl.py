@@ -174,6 +174,7 @@ class Theme(object):
             self.tpl_dir = os.path.join(themes_dir, self.name)
             if not os.path.exists(self.tpl_dir):
                 raise ValueError(_('Theme %s not found') % self.name)
+        self.tpl_dir = os.path.abspath(self.tpl_dir)
 
         self.__load_manifest()
 
