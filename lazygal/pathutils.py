@@ -48,9 +48,13 @@ def is_subdir_of(dir_path, path):
     """
     Returns whether path is a subdirectory of dir_path.
     """
+    dir_path = os.path.abspath(dir_path)
+    path = os.path.abspath(path)
     test_path = path
     while test_path != dir_path and not is_root(test_path):
         test_path, tail = os.path.split(test_path)
+        if test_path == '':
+            raise RuntimeError('subdir test failure: please report a bug')
 
     if test_path == dir_path:
         return True
