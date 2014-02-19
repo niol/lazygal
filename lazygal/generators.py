@@ -319,6 +319,8 @@ class WebalbumDir(make.FileMakeObject):
 
         self.add_dependency(self.source_dir)
         self.subgals = [s for s in subgals if s.get_all_media_count() > 0]
+        for srcdir in self.source_dir.subdirs:
+            self.add_dependency(srcdir)
         self.album = album
         self.feed = None
 
@@ -641,7 +643,7 @@ class WebalbumDir(make.FileMakeObject):
             extra_files.append(os.path.join(self.path,
                                             DEST_SHARED_DIRECTORY_NAME))
 
-        dirnames = [d.name for d in self.source_dir.subdirs]
+        dirnames = [d.source_dir.name for d in self.subgals]
         expected_dirs = map(lambda dn: os.path.join(self.path, dn), dirnames)
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
@@ -896,11 +898,6 @@ class Album(object):
             if source_dir.is_album_root():
                 # Use root config tpl vars for shared files
                 tpl_vars = destgal.tpl_vars
-
-            if destgal.get_all_media_count() < 1:
-                logging.debug(_("(%s) and childs have no known media, skipped")
-                              % source_dir.path)
-                continue
 
             if not source_dir.is_album_root():
                 container_dirname = os.path.dirname(root)
