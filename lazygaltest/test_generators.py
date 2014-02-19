@@ -118,7 +118,6 @@ class TestGenerators(LazygalTestGen):
         """
         config = lazygal.config.LazygalConfig()
         config.set('global', 'clean-destination', "true")
-        #config.set('runtime', 'check-all-dirs', "true")
         self.setup_album(config)
 
         pics = ['img%02d.jpg' % i for i in range(4, 8)]
@@ -172,12 +171,11 @@ class TestGenerators(LazygalTestGen):
 
         pics = ['img.jpg']
         source_subgal = self.setup_subgal('subgal', pics)
-        #self.add_img(os.path.join(source_path, 'subgal'), 'img.jpg')
 
         dest_path = self.get_working_path()
         self.album.generate(dest_path)
 
-        # all the files in subgal should be here after the first genration
+        # all the files in subgal should be here after the first generation
         try:
             for f in ['img_thumb.jpg', 'img_small.jpg', 'img_medium.jpg',
                      'img.html', 'img_medium.html',
