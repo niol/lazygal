@@ -1,3 +1,14 @@
+Lazygal 0.8.2 (2014-02-19)
+  * make test_clean_empty_dirs pass (thanks damien_courouss!)
+  * Fix #12 remove minified js (Debian Closes: #736736)
+  * Update Czech locale
+  * if clean-destination, delete directories instead of advising
+  * introduce basic theme manifest in order to include shared files from other dirs
+  * do not link to non-existent subgals when using filter-by-tag
+  * Fix #11 do not generate empty dirs with filter-by-tag
+  * report transcoding progress
+  * new config option video-size + no video scaling or transcoding if not needed
+
 Lazygal 0.8.1 (2013-10-30)
   * make keywords available in image pages
   * hide exiv2 warnings in normal operation

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-10 11:12+0100\n"
+"POT-Creation-Date: 2014-02-19 10:10+0100\n"
 "PO-Revision-Date: 2014-02-10 11:26+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -250,12 +250,12 @@ msgstr "Neznámý typ řazení '%s'"
 msgid "  BREAKING web gallery into multiple pages"
 msgstr "  ROZDĚLUJI galerii do více stránek"
 
-#: ../lazygal/generators.py:369
+#: ../lazygal/generators.py:371
 #, python-format
 msgid "  MKDIR %%WEBALBUMROOT%%/%s"
 msgstr "  ADRESÁŘ %%WEBALBUMROOT%%/%s"
 
-#: ../lazygal/generators.py:407
+#: ../lazygal/generators.py:409
 msgid ""
 "Sizes is a comma-separated list of size names and specs:\n"
 "\t e.g. \"small=640x480,medium=1024x768\"."
@@ -263,50 +263,50 @@ msgstr ""
 "Velikosti jsou čárkou oddělený seznam názvů a jejich definic:\n"
 "\t např. \"small=640x480,medium=1024x768\"."
 
-#: ../lazygal/generators.py:409
+#: ../lazygal/generators.py:411
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr "Velikost pojmenovaná '%s' je rezervovaná pro vnitřní potřebu."
 
-#: ../lazygal/generators.py:422
+#: ../lazygal/generators.py:424
 #, python-format
 msgid "'%s' for size '%s' does not describe a known size syntax."
 msgstr "'%s' pro velikost '%s' není platnou syntaxí velikosti."
 
-#: ../lazygal/generators.py:456
+#: ../lazygal/generators.py:458
 #, python-format
 msgid "  Trying loading gallery configs: %s"
 msgstr "..Načítám nastavení galerie: %s"
 
-#: ../lazygal/generators.py:499
+#: ../lazygal/generators.py:501
 msgid "Bad syntax for webalbumpic-size."
 msgstr "Chybná syntaxe pro webalbumpic-size."
 
-#: ../lazygal/generators.py:688
+#: ../lazygal/generators.py:690
 msgid "MKDIR %SHAREDDIR%"
 msgstr "ADRESÁŘ %SHAREDDIR%"
 
-#: ../lazygal/generators.py:747
+#: ../lazygal/generators.py:749
 #, python-format
 msgid "Progress: dir %d/%d (%d%%), media %d/%d (%d%%)"
 msgstr "Průběh: adresář %d/%d (%d%%), média %d/%d (%d%%)"
 
-#: ../lazygal/generators.py:755
+#: ../lazygal/generators.py:757
 #, python-format
 msgid ", current task %d%%"
 msgstr ", současná úloha %d%%"
 
-#: ../lazygal/generators.py:770
+#: ../lazygal/generators.py:772
 #, python-format
 msgid "Trying loading user config %s"
 msgstr "Načítám uživatelské nastavení %s"
 
-#: ../lazygal/generators.py:775
+#: ../lazygal/generators.py:777
 #, python-format
 msgid "Loading root config %s"
 msgstr "Načítám hlavní nastavení %s"
 
-#: ../lazygal/generators.py:779
+#: ../lazygal/generators.py:781
 #, python-format
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
@@ -314,31 +314,31 @@ msgstr ""
 "'%s' používá zastaralou syntaxi: prosím přečtěte si manuálovou stránku "
 "lazygal.conf(5)."
 
-#: ../lazygal/generators.py:821
+#: ../lazygal/generators.py:825
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Vytvářím popisky v %s"
 
-#: ../lazygal/generators.py:827 ../lazygal/generators.py:886
+#: ../lazygal/generators.py:831 ../lazygal/generators.py:890
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Vstupuji do %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:857
+#: ../lazygal/generators.py:861
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr "Chyba, adresář pro uložení alba je ve zdrojovém adresáři."
 
-#: ../lazygal/generators.py:859
+#: ../lazygal/generators.py:863
 #, python-format
 msgid "Generating to %s"
 msgstr "Generuji do %s"
 
-#: ../lazygal/generators.py:879
+#: ../lazygal/generators.py:883
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) byl přeskočen"
 
-#: ../lazygal/generators.py:883
+#: ../lazygal/generators.py:887
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
@@ -346,14 +346,14 @@ msgid ""
 msgstr ""
 "(%s) byl přeskočen protože jeho jméno je totožné se jménem sdíleného adresáře"
 
-#: ../lazygal/generators.py:924
+#: ../lazygal/generators.py:928
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
 "  PŘESKOČENO kvůli mtime, pro zpracování použijte buď touch, nebo parametr --"
 "check-all-dirs."
 
-#: ../lazygal/generators.py:933
+#: ../lazygal/generators.py:937
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr "[Opouštím %%ALBUMROOT%%/%s]"
@@ -391,17 +391,17 @@ msgstr "Neznámý typ šablony pro %s"
 msgid "Theme %s not found"
 msgstr "Téma %s nebylo nalezeno"
 
-#: ../lazygal/tpl.py:202
+#: ../lazygal/tpl.py:203
 #, python-format
 msgid "Loading %s for theme %s"
 msgstr "Načítám %s pro téma %s"
 
-#: ../lazygal/tpl.py:210
+#: ../lazygal/tpl.py:211
 #, python-format
 msgid "Theme %s does not have a %s"
 msgstr "Téma %s pro neobsahuje %s"
 
-#: ../lazygal/tpl.py:213
+#: ../lazygal/tpl.py:214
 #, python-format
 msgid "Theme %s : %s parsing error"
 msgstr "Téma %s: chyba při zpracování %s"
