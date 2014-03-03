@@ -368,9 +368,9 @@ class WebalbumDir(make.FileMakeObject):
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path) and (self.get_media_count() > 0):
-            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s")
-                         % self.source_dir.strip_root())
-            logging.debug("(%s)" % self.path)
+            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s"),
+                         self.source_dir.strip_root())
+            logging.debug("(%s)", self.path)
             os.makedirs(self.path, mode=0755)
             self.stamp_delete() # Directory did not exist, mark it as so
 
@@ -455,9 +455,9 @@ class WebalbumDir(make.FileMakeObject):
         config_dirs.reverse()  # from root to deepest
         config_files = map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
                            config_dirs)
-        logging.debug(_("  Trying loading gallery configs: %s")
-                      % ', '.join(map(self.source_dir.strip_root,
-                                      config_files)))
+        logging.debug(_("  Trying loading gallery configs: %s"),
+                      ', '.join(map(self.source_dir.strip_root,
+                                    config_files)))
         self.config.read(config_files)
 
         self.browse_sizes = []
@@ -688,7 +688,7 @@ class SharedFiles(make.FileMakeObject):
         # Create the shared files directory if it does not exist
         if not os.path.isdir(self.path):
             logging.info(_("MKDIR %SHAREDDIR%"))
-            logging.debug("(%s)" % self.path)
+            logging.debug("(%s)", self.path)
             os.makedirs(self.path, mode=0755)
 
         super(SharedFiles, self).__init__(self.path)
@@ -769,16 +769,16 @@ class Album(object):
 
         self.config = LazygalConfig()
 
-        logging.info(_("Trying loading user config %s") % USER_CONFIG_PATH)
+        logging.info(_("Trying loading user config %s"), USER_CONFIG_PATH)
         self.config.read(USER_CONFIG_PATH)
 
         sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
         if os.path.isfile(sourcedir_configfile):
-            logging.info(_("Loading root config %s") % sourcedir_configfile)
+            logging.info(_("Loading root config %s"), sourcedir_configfile)
             try:
                 self.config.read(sourcedir_configfile)
             except LazygalConfigDeprecated:
-                logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page.") % sourcedir_configfile)
+                logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."), sourcedir_configfile)
                 sys.exit(1)
         if config is not None:  # Supplied config
             self.config.load(config)
@@ -816,20 +816,20 @@ class Album(object):
                 shutil.rmtree(file_path)
             else:
                 os.unlink(file_path)
-            logging.info('RM %s' % (file_path))
+            logging.info('  RM %s', file_path)
 
     def generate_default_metadata(self):
         """
         Generate default metadata files if no exists.
         """
-        logging.debug(_("Generating metadata in %s") % self.source_dir)
+        logging.debug(_("Generating metadata in %s"), self.source_dir)
 
         for root, dirnames, filenames in pathutils.walk(self.source_dir):
             filenames.sort()  # This is required for the ignored files
                               # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
-            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % source_dir.strip_root())
-            logging.debug("(%s)" % source_dir.path)
+            logging.info(_("[Entering %%ALBUMROOT%%/%s]"), source_dir.strip_root())
+            logging.debug("(%s)", source_dir.path)
 
             metadata.DefaultMetadata(source_dir, self).make()
 
@@ -860,7 +860,7 @@ class Album(object):
         if self.is_in_sourcetree(sane_dest_dir):
             raise ValueError(_("Fatal error, web gallery directory is within source tree."))
 
-        logging.debug(_("Generating to %s") % sane_dest_dir)
+        logging.debug(_("Generating to %s"), sane_dest_dir)
 
         if pub_url:
             feed = genpage.WebalbumFeed(self, sane_dest_dir, pub_url)
@@ -880,15 +880,15 @@ class Album(object):
             checked_dir = sourcetree.File(root, self)
 
             if checked_dir.should_be_skipped():
-                logging.debug(_("(%s) has been skipped") % checked_dir.path)
+                logging.debug(_("(%s) has been skipped"), checked_dir.path)
                 continue
             if checked_dir.path == os.path.join(sane_dest_dir,
                                                 DEST_SHARED_DIRECTORY_NAME):
-                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name") % checked_dir.path)
+                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name"), checked_dir.path)
                 continue
 
-            logging.info(_("[Entering %%ALBUMROOT%%/%s]") % checked_dir.strip_root())
-            logging.debug("(%s)" % checked_dir.path)
+            logging.info(_("[Entering %%ALBUMROOT%%/%s]"), checked_dir.strip_root())
+            logging.debug("(%s)", checked_dir.path)
 
             source_dir = sourcetree.Directory(root, subdirs, filenames, self)
 
@@ -934,7 +934,7 @@ class Album(object):
             if progress is not None:
                 progress.dir_done()
 
-            logging.info(_("[Leaving  %%ALBUMROOT%%/%s]") % source_dir.strip_root())
+            logging.info(_("[Leaving  %%ALBUMROOT%%/%s]"), source_dir.strip_root())
 
         if feed:
             feed.make()

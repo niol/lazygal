@@ -64,8 +64,8 @@ class ResizedImage(genfile.WebalbumFile):
 
     def build(self):
         media_rel_path = self.rel_path(self.webgal.flattening_dir)
-        logging.info("  %s %s" % (self.VERB, media_rel_path))
-        logging.debug("(%s)" % self.path)
+        logging.info("  %s %s", self.VERB, media_rel_path)
+        logging.debug("(%s)", self.path)
 
         im = self.resize(self.get_image())
         self.save(im)
@@ -78,8 +78,8 @@ class ResizedImage(genfile.WebalbumFile):
             self.build()
         except IOError:
             if not self.source_media.broken:
-                logging.error(_("  %s is BROKEN, skipped")
-                              % self.source_media.filename)
+                logging.error(_("  %s is BROKEN, skipped"),
+                              self.source_media.filename)
                 self.source_media.broken = True
 
             # Make the system believe the file was built a long time ago.
@@ -206,7 +206,7 @@ class ImageOtherSize(ResizedImage):
         try:
             dest_imgtags.save_file()
         except Exception, e:
-            logging.error(_("Could not copy metadata in reduced picture: %s") % e)
+            logging.error(_("Could not copy metadata in reduced picture: %s"), e)
 
     def save(self, im):
         super(ImageOtherSize, self).save(im)
@@ -226,8 +226,8 @@ class VideoThumb(ResizedImage):
         try:
             thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
         except mediautils.TranscodeError, e:
-            logging.error(_("  creating %s thumbnail failed, skipped")
-                          % self.source_media.filename)
+            logging.error(_("  creating %s thumbnail failed, skipped"),
+                          self.source_media.filename)
             logging.info(str(e))
             self.clean_output()
             raise IOError()
@@ -259,8 +259,8 @@ class WebalbumPicture(make.FileMakeObject):
             albumpic_path = os.path.join(webgal_dir.source_dir.path,
                                          webgal_dir.source_dir.album_picture)
             if not os.path.isfile(albumpic_path):
-                logging.error(_("Supplied album picture %s does not exist.")
-                              % webgal_dir.source_dir.album_picture)
+                logging.error(_("Supplied album picture %s does not exist."),
+                              webgal_dir.source_dir.album_picture)
 
             md_dirpic_thumb = webgal_dir._add_size_qualifier(
                 webgal_dir.source_dir.album_picture, THUMB_SIZE_NAME)
@@ -279,8 +279,8 @@ class WebalbumPicture(make.FileMakeObject):
                                     result_size=webgal_dir.webalbumpic_size)
 
     def build(self):
-        logging.info(_("  DIRPIC %s") % os.path.basename(self.path))
-        logging.debug("(%s)" % self.path)
+        logging.info(_("  DIRPIC %s"), os.path.basename(self.path))
+        logging.debug("(%s)", self.path)
         try:
             self.dirpic.write(self.path)
         except ValueError, ex:
@@ -308,7 +308,7 @@ class WebVideo(genfile.WebalbumFile):
 
     def build(self):
         vid_rel_path = self.rel_path(self.webgal.flattening_dir)
-        logging.info(_("  TRANSCODE %s") % vid_rel_path)
+        logging.info(_("  TRANSCODE %s"), vid_rel_path)
 
         try:
             transcoder = mediautils.WebMTranscoder(self.source_video.path,
@@ -317,8 +317,8 @@ class WebVideo(genfile.WebalbumFile):
             transcoder.set_progress(self.progress)
             transcoder.convert(self.path)
         except mediautils.TranscodeError, e:
-            logging.error(_("  transcoding %s failed, skipped")
-                          % self.source_video.filename)
+            logging.error(_("  transcoding %s failed, skipped"),
+                          self.source_video.filename)
             logging.info(str(e))
             self.source_video.broken = True
             self.clean_output()

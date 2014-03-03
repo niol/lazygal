@@ -71,8 +71,8 @@ class CopyMediaOriginal(MediaOriginal):
         self.add_dependency(make.FileCopy(self.source_media.path, self.path))
 
     def build(self):
-        logging.info("  CP %s" % self.filename)
-        logging.debug("(%s)" % self.path)
+        logging.info("  CP %s", self.filename)
+        logging.debug("(%s)", self.path)
 
 
 class SymlinkMediaOriginal(MediaOriginal):
@@ -82,8 +82,8 @@ class SymlinkMediaOriginal(MediaOriginal):
         self.add_dependency(make.FileSymlink(self.source_media.path, self.path))
 
     def build(self):
-        logging.info("  SYMLINK %s" % self.filename)
-        logging.debug("(%s)" % self.path)
+        logging.info("  SYMLINK %s", self.filename)
+        logging.debug("(%s)", self.path)
 
 
 class WebalbumArchive(WebalbumFile):
@@ -103,8 +103,8 @@ class WebalbumArchive(WebalbumFile):
 
     def build(self):
         zip_rel_path = self.rel_path(self.dir.flattening_dir)
-        logging.info(_("  ZIP %s") % zip_rel_path)
-        logging.debug("(%s)" % self.path)
+        logging.info(_("  ZIP %s"), zip_rel_path)
+        logging.debug("(%s)", self.path)
 
         archive = zipfile.ZipFile(self.path, mode='w')
         for pic in self.pics:
@@ -125,8 +125,8 @@ class SharedFileCopy(make.FileCopy):
         make.FileCopy.__init__(self, src, dst)
 
     def build(self):
-        logging.info(_("CP %%SHAREDDIR%%/%s") % os.path.basename(self.dst))
-        logging.debug("(%s)" % self.dst)
+        logging.info(_("CP %%SHAREDDIR%%/%s"), os.path.basename(self.dst))
+        logging.debug("(%s)", self.dst)
         make.FileCopy.build(self)
 
 

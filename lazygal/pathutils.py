@@ -103,7 +103,7 @@ def walk(top, walked=None, topdown=False):
                     for x in walk(d_path, walked):
                         yield x
                 else:
-                    logging.error("Not following symlink '%s' because directory has already been processed." % d_path)
+                    logging.error("Not following symlink '%s' because directory has already been processed.", d_path)
 
         yield root, dirs, files
 

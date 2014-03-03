@@ -200,19 +200,18 @@ class Theme(object):
 
     def __load_manifest(self):
         theme_manifest_path = os.path.join(self.tpl_dir, THEME_MANIFEST)
-        logging.debug(_('Loading %s for theme %s')
-                      % (THEME_MANIFEST, self.name))
+        logging.debug(_('Loading %s for theme %s'), THEME_MANIFEST, self.name)
         theme_manifest = {}
         try:
             with codecs.open(theme_manifest_path, 'r',
                              locale.getpreferredencoding()) as f:
                 theme_manifest.update(json.load(f))
         except IOError:
-            logging.debug(_('Theme %s does not have a %s')
-                          % (self.name, THEME_MANIFEST))
+            logging.debug(_('Theme %s does not have a %s'),
+                          self.name, THEME_MANIFEST)
         except ValueError:
-            logging.error(_('Theme %s : %s parsing error')
-                          % (self.name, THEME_MANIFEST))
+            logging.error(_('Theme %s : %s parsing error'),
+                          self.name, THEME_MANIFEST)
             raise
 
         if 'shared' not in theme_manifest:

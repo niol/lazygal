@@ -278,9 +278,9 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
 
             if not os.path.isfile(media_path):
-                logging.info(_("  Ignoring %s, cannot open file (broken symlink?).")
-                             % filename)
-                logging.debug("(%s)" % os.path.join(self.path, filename))
+                logging.info(_("  Ignoring %s, cannot open file (broken symlink?)."),
+                             filename)
+                logging.debug("(%s)", os.path.join(self.path, filename))
                 continue
 
             media = media_handler.get_media(media_path)
@@ -289,9 +289,9 @@ class Directory(File):
                 self.medias.append(media)
             elif not self.is_metadata(filename) and\
                     filename != SOURCEDIR_CONFIGFILE:
-                logging.info(_("  Ignoring %s, format not supported.")
-                             % filename)
-                logging.debug("(%s)" % os.path.join(self.path, filename))
+                logging.info(_("  Ignoring %s, format not supported."),
+                             filename)
+                logging.debug("(%s)", os.path.join(self.path, filename))
 
         self.metadata = metadata.DirectoryMetadata(self.path)
         md = self.metadata.get(None, self)

@@ -122,12 +122,12 @@ class LazygalConfig(BetterConfigParser):
 
     def new_section_cb(self, section):
         if section != 'template-vars':
-            logging.warning(_("  Ignoring unknown section '%s'.") % section)
+            logging.warning(_("  Ignoring unknown section '%s'."), section)
 
     def new_option_cb(self, section, option):
         if section != 'template-vars':
-            logging.warning(_("  Ignoring unknown option '%s' in section '%s'.")
-                            % (option, section, ))
+            logging.warning(_("  Ignoring unknown option '%s' in section '%s'."),
+                            option, section)
 
 
 class LazygalWebgalConfig(LazygalConfig):

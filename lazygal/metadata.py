@@ -561,7 +561,7 @@ class DefaultMetadata(make.FileMakeObject):
         Generates new metadata file with default values.
         """
 
-        logging.info(_("GEN %s") % self._path)
+        logging.info(_("GEN %s"), self._path)
 
         f = file(self._path, 'w')
         f.write(codecs.BOM_UTF8)

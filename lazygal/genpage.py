@@ -126,8 +126,8 @@ class WebalbumBrowsePage(WebalbumPage):
 
     def build(self):
         page_rel_path = self.rel_path(self.dir.flattening_dir)
-        logging.info(_("  XHTML %s") % page_rel_path)
-        logging.debug("(%s)" % self.page_path)
+        logging.info(_("  XHTML %s"), page_rel_path)
+        logging.debug("(%s)", self.page_path)
 
         tpl_values = self.init_tpl_values()
 
@@ -210,7 +210,7 @@ class WebalbumIndexPage(WebalbumPage):
                         # checks when dir is flattenend).
                         dir.add_dependency(media.browse_pages[size_name])
             else:
-                logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index.") % (size_name, dir.path))
+                logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index."), size_name, dir.path)
 
             if self.dir.dirzip is not None:
                 self.add_dependency(self.dir.dirzip)
@@ -263,8 +263,8 @@ class WebalbumIndexPage(WebalbumPage):
         return subgal_links
 
     def build(self):
-        logging.info(_("  XHTML %s") % os.path.basename(self.page_path))
-        logging.debug("(%s)" % self.page_path)
+        logging.info(_("  XHTML %s"), os.path.basename(self.page_path))
+        logging.debug("(%s)", self.page_path)
 
         values = self.init_tpl_values()
 
@@ -354,8 +354,8 @@ class WebalbumFeed(make.FileMakeObject):
                             webalbumdir.source_dir.get_mtime())
 
     def build(self):
-        logging.info(_("FEED %s") % os.path.basename(self.path))
-        logging.debug("(%s)" % self.path)
+        logging.info(_("FEED %s"), os.path.basename(self.path))
+        logging.debug("(%s)", self.path)
         self.feed.dump(self.path)
 
 
@@ -378,8 +378,8 @@ class SharedFileTemplate(make.FileMakeObject):
         self.add_file_dependency(shared_tpl_name)
 
     def build(self):
-        logging.info(_("TPL %%SHAREDDIR%%/%s") % os.path.basename(self.path))
-        logging.debug("(%s)" % self.path)
+        logging.info(_("TPL %%SHAREDDIR%%/%s"), os.path.basename(self.path))
+        logging.debug("(%s)", self.path)
         self.tpl.dump(self.tpl_vars, self.path)
 
 
