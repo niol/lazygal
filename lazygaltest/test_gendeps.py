@@ -49,8 +49,7 @@ class TestDeps(LazygalTestGen):
 
         self.assertFalse(
             dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'
-            % str(dest_subgal.needs_build(True)))
+            'Webalbum subgal has been built and still needs build.')
 
     def test_dirmetadata_update(self):
         """
@@ -75,8 +74,7 @@ class TestDeps(LazygalTestGen):
 
         self.assertFalse(
             dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'
-            % str(dest_subgal.needs_build(True)))
+            'Webalbum subgal has been built and still needs build.')
 
         # touch the description file
         time.sleep(1)  # ensure time diffrence for some systems
@@ -104,8 +102,7 @@ class TestDeps(LazygalTestGen):
 
         self.assertFalse(
             dest_subgal.needs_build(),
-            'Webalbum subgal has been built and does need build because of %s.'
-            % str(dest_subgal.needs_build(True)))
+            'Webalbum subgal has been built and still needs build.')
 
         self.add_img(source_subgal.path, 'subgal_img2.jpg')
         # New objects to ensure pic is taken into account

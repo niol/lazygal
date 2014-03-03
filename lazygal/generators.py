@@ -925,7 +925,7 @@ class Album(object):
             else:
                 if progress is not None:
                     progress.media_done(len(destgal.medias))
-                logging.debug(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
+                logging.info(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
             # Force some memory cleanups, this is usefull for big albums.
             del destgal

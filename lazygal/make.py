@@ -18,6 +18,7 @@
 import os
 import time
 import shutil
+import logging
 
 
 class CircularDependency(Exception):
@@ -80,28 +81,22 @@ class MakeTask(object):
         """
         pass
 
-    def needs_build(self, return_culprit=False):
+    def needs_build(self):
         if not self.built_once():
-            if return_culprit:
-                return 'never built'
-            else:
-                return True
+            logging.debug("%s build needed: never built", self)
+            return True
 
         for dependency in self.deps:
-            if dependency.get_mtime() > self.get_mtime()\
-                    or dependency.needs_build():
+            mtime_gap = dependency.get_mtime() - self.get_mtime()
+            if mtime_gap > 0 or dependency.needs_build():
                 if not dependency.is_dep_only():
-                    if return_culprit:
-                        mtime_gap = dependency.get_mtime() - self.get_mtime()
-                        if mtime_gap > 0:
-                            reason = 'dep newer by %s s' % mtime_gap
-                        elif dependency.needs_build():
-                            reason = dependency.needs_build(True)
-                        else:
-                            raise RuntimeError  # should never go here
-                        return dependency, reason
-                    else:
-                        return True
+                    mtime_gap = dependency.get_mtime() - self.get_mtime()
+                    logging.debug("%s build needed: dep %s newer by %ss",
+                                  self, dependency, mtime_gap)
+                    return True
+            else:
+                logging.debug("%s build: dep %s older by %ss",
+                              self, dependency, mtime_gap)
         return False
 
     def make(self, force=False):
