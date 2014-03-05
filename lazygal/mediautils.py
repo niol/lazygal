@@ -123,14 +123,16 @@ class GstVideoOpener(object):
             if self.progress is not None:
                 self.progress.set_task_progress(100 * current_position // self.media_duration)
         except gst.QueryError:
-            pass
-        else:
-            if self.last_position is not None\
-            and current_position <= self.last_position:
+            current_position = 0
+
+        if current_position <= self.last_position:
+            self.stalled_counter = self.stalled_counter + 1
+            if self.stalled_counter >= 5:
                 stalled = True
                 self.__post_msg('stalled')
-            else:
-                self.last_position = current_position
+        else:
+            self.last_position = current_position
+            self.stalled_counter = 0
 
         if interrupted or stalled or not self.running:
             return False  # Remove timeout handler
@@ -143,8 +145,9 @@ class GstVideoOpener(object):
     def run_pipeline(self):
         self.pipeline.set_state(gst.STATE_PLAYING)
         self.running = True
-        self.last_position = None
         self.media_duration = None
+        self.last_position = 0
+        self.stalled_counter = 0
 
         gobject.timeout_add(1000, self.monitor_progress)
 
