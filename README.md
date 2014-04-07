@@ -81,22 +81,22 @@ If you want to force `lazygal` into checking a directory's contents, simply `tou
 
     $ touch album_source/gallery_to_check
 
- [30]: http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal/lazygal.1.html
- [31]: http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal/lazygal.conf.5.html
+ [30]: http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.1.html
+ [31]: http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.conf.5.html
 
 ## Download & Changelog
 
 A [user friendly changelog for lazygal][32] exists.
 
- [32]: http://sousmonlit.dyndns.org/~niol/repositories/lazygal/raw-file/tip/ChangeLog
+ [32]: http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal/raw-file/tip/ChangeLog
 
 The latest version is [Lazygal 0.8][10].
 
- [10]: http://sousmonlit.dyndns.org/~niol/reposnapshots/lazygal-0.8.tar.gz
+ [10]: http://sousmonlit.zincube.net/~niol/reposnapshots/lazygal-0.8.tar.gz
 
 (full log of changes may be browsed in [Lazygal's repository browser][16])
 
- [16]: http://sousmonlit.dyndns.org/~niol/repositories/lazygal
+ [16]: http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal
 
 Lazygal is part of [Debian][17] (and thus [Ubuntu][18] universe), which should
 make it one `aptitude install` away if you use one of those.
@@ -110,7 +110,7 @@ make it one `aptitude install` away if you use one of those.
 
 Code may be downloaded using [Mercurial][19] :
 
-    $ hg clone http://sousmonlit.dyndns.org/~niol/repositories/lazygal/
+    $ hg clone http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal/
 
 It is browsable online in [Lazygal's repository browser][16], and this page
 also provides an up to date snapshot of the development source tree.

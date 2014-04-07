@@ -246,8 +246,8 @@ setup(
     maintainer_email = 'alexandre.rossi@gmail.com',
     platforms = ['Linux', 'Mac OSX', 'Windows XP/2000/NT', 'Windows 95/98/ME'],
     keywords = ['gallery', 'exif', 'photo', 'image'],
-    url = 'http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal',
-    download_url = 'http://sousmonlit.dyndns.org/~niol/playa/oss/projects/lazygal',
+    url = 'http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal',
+    download_url = 'http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal',
     license = 'GPL',
     classifiers = [
         'Development Status :: 5 - Production/Stable',
