@@ -1,4 +1,11 @@
+Lazygal 0.8.3 (2014-04-07)
+  * update project url
+  * take more time to assess if a pipeline is stalled
+  * do not format log messages if debugging is not enabled
+  * improve dep debugging
+
 Lazygal 0.8.2 (2014-02-19)
+  * set version to 0.8.2
   * inverted theme: fix plugins.tjs genshi text template syntax
   * make test_clean_empty_dirs pass (thanks damien_courouss!)
   * test debugging material cleanup
