@@ -90,9 +90,9 @@ A [user friendly changelog for lazygal][32] exists.
 
  [32]: http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal/raw-file/tip/ChangeLog
 
-The latest version is [Lazygal 0.8][10].
+The [latest `lazygal` version][10] is available as an archive.
 
- [10]: http://sousmonlit.zincube.net/~niol/reposnapshots/lazygal-0.8.tar.gz
+ [10]: http://sousmonlit.zincube.net/~niol/reposnapshots/
 
 (full log of changes may be browsed in [Lazygal's repository browser][16])
 
