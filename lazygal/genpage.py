@@ -86,7 +86,7 @@ class WebalbumPage(genfile.WebalbumFile):
         return genshi.core.Markup(value)
 
     def url_quote(self, url):
-        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe=':/#')
+        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe='/#')
 
     UNIT_PREFIXES = (('T', 2 ** 40), ('G', 2 ** 30), ('M', 2 ** 20), ('K', 2 ** 10),)
 
