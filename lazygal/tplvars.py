@@ -46,10 +46,10 @@ class Media(TemplateVariables):
                 link_vals['link'] = self.webalbum_media.browse_pages[self.page.size_name].rel_path(self.page.dir, url=True)
             elif self.page.dir.album.theme.kind == 'dynamic':
                 link_vals['link'] = self.webalbum_media.resized[self.page.size_name].rel_path(self.page.dir, url=True)
-            link_vals['link'] = self.page.url_quote(link_vals['link'])
+            link_vals['link'] = pathutils.url_quote(link_vals['link'])
 
             link_vals['thumb'] = self.webalbum_media.thumb.rel_path(self.page.dir, url=True)
-            link_vals['thumb'] = self.page.url_quote(link_vals['thumb'])
+            link_vals['thumb'] = pathutils.url_quote(link_vals['thumb'])
 
             if not self.media.broken:
                 link_vals['thumb_width'],\
@@ -67,7 +67,7 @@ class Image(Media):
     def full(self):
         tpl_values = self.link()
         tpl_values['img_src'] = self.webalbum_media.resized[self.page.size_name].filename
-        tpl_values['img_src'] = self.page.url_quote(tpl_values['img_src'])
+        tpl_values['img_src'] = pathutils.url_quote(tpl_values['img_src'])
 
         tpl_values['image_name'] = self.media.filename
 
@@ -105,7 +105,7 @@ class Video(Media):
     def full(self):
         tpl_values = self.link()
         tpl_values['video_src'] = self.webalbum_media.resized[self.page.size_name].filename
-        tpl_values['video_src'] = self.page.url_quote(tpl_values['video_src'])
+        tpl_values['video_src'] = pathutils.url_quote(tpl_values['video_src'])
         return tpl_values
 
 
@@ -139,9 +139,8 @@ class SrcPath(TemplateVariables):
     def link(self):
         link_target = self.page._add_size_qualifier('index.html')
 
-        if self.should_be_flattened():
-            # Add anchor target to get straight to gallery listing
-            link_target = link_target + '#' + self.id()
+        # Add anchor target to get straight to gallery listing
+        anchor = self.id() if self.should_be_flattened() else ''
 
         # Add relative path to link if needed
         index_path = None
@@ -154,7 +153,7 @@ class SrcPath(TemplateVariables):
             index_path = pathutils.url_path(index_path)
             link_target = posixpath.join(index_path, link_target)
 
-        return self.page.url_quote(link_target)
+        return pathutils.url_quote(link_target, anchor=anchor)
 
     def path(self):
         wg_path = []
@@ -190,7 +189,7 @@ class Webgal(SrcPath):
         if self.webgal.dirzip:
             archive_rel_path = self.webgal.dirzip.rel_path(self.page.dir,
                                                            url=True)
-            dir_info['dirzip'] = self.page.url_quote(archive_rel_path)
+            dir_info['dirzip'] = pathutils.url_quote(archive_rel_path)
             dir_info['dirzip_size'] = self.page.format_filesize(self.webgal.dirzip.size())
 
         dir_info['is_main'] = self.webgal is self.page.dir
@@ -198,7 +197,7 @@ class Webgal(SrcPath):
         dir_info['image_count'] = self.webgal.get_media_count('image')
         dir_info['subgal_count'] = len(self.webgal.source_dir.subdirs)
 
-        dir_info['id'] = self.page.url_quote(self.id())
+        dir_info['id'] = pathutils.url_quote(self.id())
 
         return dir_info
 
@@ -208,7 +207,7 @@ class Webgal(SrcPath):
         link_info['album_picture'] = \
                 posixpath.join(self.webgal.source_dir.name,
                                self.webgal.get_webalbumpic_filename())
-        link_info['album_picture'] = self.page.url_quote(link_info['album_picture'])
+        link_info['album_picture'] = pathutils.url_quote(link_info['album_picture'])
         return link_info
 
 

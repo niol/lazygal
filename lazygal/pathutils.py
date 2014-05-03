@@ -21,6 +21,8 @@ import os
 import sys
 import posixpath
 import logging
+import urllib
+import urlparse
 
 
 def is_root_posix(path):
@@ -80,6 +82,27 @@ def url_path(physical_path, input_pathmodule=os.path):
 
     path_list.reverse()
     return posixpath.join(*path_list)
+
+
+def url_quote(url, anchor=''):
+    tokens = []
+    if url.startswith('http://') or url.startswith('https://'):
+        parsed = urlparse.urlparse(url)
+        if parsed.scheme:
+            tokens.append(parsed.scheme)
+            tokens.append('://')
+            tokens.append(parsed.netloc)
+        toquote = parsed.path
+    else:
+        toquote = url
+
+    tokens.append(urllib.quote(toquote.encode(sys.getfilesystemencoding())))
+
+    if anchor:
+        tokens.append('#')
+        tokens.append(urllib.quote(anchor.encode(sys.getfilesystemencoding())))
+
+    return ''.join(tokens)
 
 
 def walk(top, walked=None, topdown=False):

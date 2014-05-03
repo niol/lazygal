@@ -20,7 +20,6 @@ import os
 import posixpath
 import sys
 import logging
-import urllib
 
 import genshi
 
@@ -71,7 +70,7 @@ class WebalbumPage(genfile.WebalbumFile):
                 osize_info['link'] = self._add_size_qualifier(filename
                                                               + '.html',
                                                               osize_name)
-                osize_info['link'] = self.url_quote(osize_info['link'])
+                osize_info['link'] = pathutils.url_quote(osize_info['link'])
             osize_index_links.append(osize_info)
 
         return osize_index_links
@@ -84,9 +83,6 @@ class WebalbumPage(genfile.WebalbumFile):
 
     def _do_not_escape(self, value):
         return genshi.core.Markup(value)
-
-    def url_quote(self, url):
-        return urllib.quote(url.encode(sys.getfilesystemencoding()), safe='/#')
 
     UNIT_PREFIXES = (('T', 2 ** 40), ('G', 2 ** 30), ('M', 2 ** 20), ('K', 2 ** 10),)
 
@@ -159,7 +155,7 @@ class WebalbumBrowsePage(WebalbumPage):
             tpl_values['feed_url'] = os.path.relpath(self.dir.feed.path,
                                                      self.dir.path)
             tpl_values['feed_url'] = pathutils.url_path(tpl_values['feed_url'])
-            tpl_values['feed_url'] = self.url_quote(tpl_values['feed_url'])
+            tpl_values['feed_url'] = pathutils.url_quote(tpl_values['feed_url'])
         else:
             tpl_values['feed_url'] = None
 
@@ -173,7 +169,7 @@ class WebalbumBrowsePage(WebalbumPage):
             else:
                 tpl_values['original_link'] = self.media.filename
             tpl_values['original_link'] =\
-                self.url_quote(tpl_values['original_link'])
+                pathutils.url_quote(tpl_values['original_link'])
 
         self.add_extra_vals(tpl_values)
 
@@ -250,7 +246,7 @@ class WebalbumIndexPage(WebalbumPage):
                 filename = self._get_paginated_name(onum)
                 onum_info['link'] = self._add_size_qualifier(filename + '.html',
                                                              self.size_name)
-                onum_info['link'] = self.url_quote(onum_info['link'])
+                onum_info['link'] = pathutils.url_quote(onum_info['link'])
             onum_index_links.append(onum_info)
 
         return onum_index_links
@@ -305,7 +301,7 @@ class WebalbumIndexPage(WebalbumPage):
             values['feed_url'] = os.path.relpath(self.dir.feed.path,
                                                  self.dir.path)
             values['feed_url'] = pathutils.url_path(values['feed_url'])
-            values['feed_url'] = self.url_quote(values['feed_url'])
+            values['feed_url'] = pathutils.url_quote(values['feed_url'])
         else:
             values['feed_url'] = None
 
