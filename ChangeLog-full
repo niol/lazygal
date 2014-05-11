@@ -1,4 +1,11 @@
+Lazygal 0.8.4 (2014-05-03)
+  * sort out url quoting
+  * update it translation
+  * fix semicolon not escaped in urls (Debian Closes: #745979)
+  * update lazygal download link
+
 Lazygal 0.8.3 (2014-04-07)
+  * set version to 0.8.3
   * update project url
   * take more time to assess if a pipeline is stalled
   * do not format log messages if debugging is not enabled
