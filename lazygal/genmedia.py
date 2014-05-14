@@ -103,7 +103,7 @@ class ResizedImage(genfile.WebalbumFile):
             try:
                 im.save(self.path, quality=self.webgal.quality,
                         **self.webgal.save_options)
-            except IOError, e:
+            except IOError as e:
                 if str(e).startswith('encoder error'):
                     PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
                     continue
@@ -205,7 +205,7 @@ class ImageOtherSize(ResizedImage):
                     pass
         try:
             dest_imgtags.save_file()
-        except Exception, e:
+        except Exception as e:
             logging.error(_("Could not copy metadata in reduced picture: %s"), e)
 
     def save(self, im):
@@ -225,7 +225,7 @@ class VideoThumb(ResizedImage):
     def get_image(self):
         try:
             thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
-        except mediautils.TranscodeError, e:
+        except mediautils.TranscodeError as e:
             logging.error(_("  creating %s thumbnail failed, skipped"),
                           self.source_media.filename)
             logging.info(str(e))
@@ -283,7 +283,7 @@ class WebalbumPicture(make.FileMakeObject):
         logging.debug("(%s)", self.path)
         try:
             self.dirpic.write(self.path)
-        except ValueError, ex:
+        except ValueError as ex:
             logging.error(str(ex))
 
 
@@ -316,7 +316,7 @@ class WebVideo(genfile.WebalbumFile):
                                                    self.new_height)
             transcoder.set_progress(self.progress)
             transcoder.convert(self.path)
-        except mediautils.TranscodeError, e:
+        except mediautils.TranscodeError as e:
             logging.error(_("  transcoding %s failed, skipped"),
                           self.source_video.filename)
             logging.info(str(e))

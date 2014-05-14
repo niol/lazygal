@@ -253,7 +253,7 @@ logger.addHandler(output_log)
 
 try:
     album = Album(source_dir, cmdline_config)
-except ValueError, e:
+except ValueError as e:
     print(unicode(e))
     sys.exit(1)
 else:
@@ -277,7 +277,7 @@ else:
     except KeyboardInterrupt:
         print(_("Interrupted."), file=sys.stderr)
         sys.exit(1)
-    except ValueError, e:
+    except ValueError as e:
         print(unicode(e))
         sys.exit(1)
 
