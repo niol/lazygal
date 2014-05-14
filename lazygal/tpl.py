@@ -49,7 +49,7 @@ class LazygalTemplate(object):
     def __complement_values(self, values):
         values['gen_datetime'] = timeutils.Datetime()
         values['gen_date'] = values['gen_datetime'].strftime('%c')
-        values['lazygal_version'] = __init__.__version__
+        values['lazygal_version'] = lazygal.__version__
         return values
 
     def __generate(self, values):
