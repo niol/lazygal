@@ -103,12 +103,6 @@ class File(make.FileSimpleDependency):
     def get_datetime(self):
         return timeutils.Datetime(self.get_mtime())
 
-    def compare_mtime(self, other_file):
-        return int(self.get_mtime() - other_file.get_mtime())
-
-    def compare_filename(self, other_file):
-        return locale.strcoll(self.filename, other_file.filename)
-
 
 class MediaFile(File):
 
