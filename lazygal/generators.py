@@ -67,31 +67,28 @@ class SubgalSort(make.MakeTask):
         logging.info(_("  SORTING pics and subdirs"))
 
         if self.webgal_dir.subgal_sort_by[0] == 'exif':
-            subgal_sorter = \
-                lambda x, y: x.source_dir.compare_latest_exif(y.source_dir)
+            subgal_sortkey = lambda x: x.source_dir.latest_media_stamp()
         elif self.webgal_dir.subgal_sort_by[0] == 'mtime':
-            subgal_sorter = \
-                lambda x, y: x.source_dir.compare_mtime(y.source_dir)
+            subgal_sortkey = lambda x: x.source_dir.get_mtime()
         elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
                 or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
-            subgal_sorter = \
-                lambda x, y: x.source_dir.compare_filename(y.source_dir)
+            subgal_sortkey = lambda x: x.source_dir.filename
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.subgal_sort_by[0])
-        self.webgal_dir.subgals.sort(subgal_sorter,
+        self.webgal_dir.subgals.sort(key=subgal_sortkey,
                                      reverse=self.webgal_dir.subgal_sort_by[1])
 
         if self.webgal_dir.pic_sort_by[0] == 'exif':
-            sorter = lambda x, y: x.media.compare_to_sort(y.media)
+            sortkey = lambda x: x.media.sortkey()
         elif self.webgal_dir.pic_sort_by[0] == 'mtime':
-            sorter = lambda x, y: x.media.compare_mtime(y.media)
+            sortkey = lambda x: x.media.get_mtime()
         elif self.webgal_dir.pic_sort_by[0] == 'filename':
-            sorter = lambda x, y: x.media.compare_filename(y.media)
+            sortkey = lambda x: x.media.filename
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.pic_sort_by[0])
-        self.webgal_dir.medias.sort(sorter,
+        self.webgal_dir.medias.sort(key=sortkey,
                                     reverse=self.webgal_dir.pic_sort_by[1])
 
         # chain medias

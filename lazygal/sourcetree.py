@@ -122,30 +122,13 @@ class MediaFile(File):
         else:
             self.comment_file_path = None
 
-    def compare_date_taken(self, other_img):
-        date1 = self.get_date_taken().timestamp
-        date2 = other_img.get_date_taken().timestamp
-        delta = date1 - date2
-        return int(delta)
-
-    def compare_no_reliable_date(self, other_img):
+    def sortkey(self):
         # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after
         # (reliable here means encoded by the camera).
         if self.has_reliable_date():
-            return 1
+            return (1, self.get_date_taken().timestamp)
         else:
-            return -1
-
-    def compare_to_sort(self, other_media):
-        if self.has_reliable_date() and other_media.has_reliable_date():
-            return self.compare_date_taken(other_media)
-        elif not self.has_reliable_date()\
-                and not other_media.has_reliable_date():
-            return self.compare_filename(other_media)
-        else:
-            # One of the picture has no EXIF date, so we arbitrary sort it
-            # before the one with EXIF.
-            return self.compare_no_reliable_date(other_media)
+            return (0, self.filename)
 
 
 class ImageFile(MediaFile):
@@ -378,13 +361,11 @@ class Directory(File):
             all_subdirs.extend(subdir.get_all_subdirs())
         return all_subdirs
 
-    def latest_media_stamp(self, hint=None):
+    def latest_media_stamp(self):
         """
         Returns the latest media date:
             - first considering all pics that have an EXIF date
             - if none have a reliable date, use file mtimes.
-        `hint` stops processing if one of the found values is higher. This is
-        to speed up compare_latest_exif().
         """
         all_medias = self.get_all_medias()
         media_stamp_max = None
@@ -393,8 +374,6 @@ class Directory(File):
                 media_stamp = m.get_date_taken().timestamp
                 if media_stamp_max is None or media_stamp > media_stamp_max:
                     media_stamp_max = media_stamp
-                    if hint is not None and media_stamp_max > hint:
-                        return media_stamp_max
 
         if media_stamp_max is None:
             # none of the media had a reliable date, use mtime instead
@@ -404,12 +383,6 @@ class Directory(File):
                     media_stamp_max = media_stamp
 
         return media_stamp_max
-
-    def compare_latest_exif(self, other_gallery):
-        date1 = self.latest_media_stamp()
-        date2 = other_gallery.latest_media_stamp(date1)
-
-        return int(date1 - date2)
 
 
 # vim: ts=4 sw=4 expandtab
