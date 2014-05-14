@@ -21,8 +21,12 @@ import os
 import sys
 import posixpath
 import logging
-import urllib
-import urlparse
+try:
+    import urllib.parse as urlparse
+except ImportError: # py2compat
+    import urlparse
+    import urllib
+    urlparse.quote = urllib.quote
 
 
 def is_root_posix(path):
@@ -96,11 +100,11 @@ def url_quote(url, anchor=''):
     else:
         toquote = url
 
-    tokens.append(urllib.quote(toquote.encode(sys.getfilesystemencoding())))
+    tokens.append(urlparse.quote(toquote.encode(sys.getfilesystemencoding())))
 
     if anchor:
         tokens.append('#')
-        tokens.append(urllib.quote(anchor.encode(sys.getfilesystemencoding())))
+        tokens.append(urlparse.quote(anchor.encode(sys.getfilesystemencoding())))
 
     return ''.join(tokens)
 
