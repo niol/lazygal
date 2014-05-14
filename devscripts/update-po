@@ -47,7 +47,8 @@ def update_po():
     pot_file = os.path.join(po_dir, po_package + ".pot")
     po_files = glob.glob(os.path.join(po_dir, "*.po"))
     infilename = os.path.join(po_dir, "POTFILES.in")
-    infiles = file(infilename).read().splitlines()
+    with open(infilename, 'r') as f:
+        infiles = f.read().splitlines()
 
     oldpath = os.getcwd()
 

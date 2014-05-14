@@ -84,8 +84,9 @@ def decode_exif_user_comment(raw, imgpath):
         try:
             text.decode('utf-8')
         except UnicodeDecodeError:
-            im = PILImage.open(imgpath)
-            endianess = im.app['APP1'][6:8]
+            with open(imgpath, 'rb') as im_fp:
+                im = PILImage.open(im_fp)
+                endianess = im.app['APP1'][6:8]
             if endianess == 'MM':
                 encoding = 'utf-16be'
             elif endianess == 'II':
@@ -446,7 +447,7 @@ class DirectoryMetadata(make.GroupTask):
         if path is None or not os.path.exists(path):
             raise NoMetadata(_('Could not open metadata file %s') % path)
 
-        f = file(path, 'r')
+        f = open(path, 'r')
         for line in f:
             for tag in MATEW_TAGS.keys():
                 tag_text = MATEW_TAGS[tag]
@@ -563,8 +564,7 @@ class DefaultMetadata(make.FileMakeObject):
 
         logging.info(_("GEN %s"), self._path)
 
-        f = file(self._path, 'w')
-        f.write(codecs.BOM_UTF8)
+        f = open(self._path, 'w')
         f.write('# Directory metadata for lazygal, Matew format\n')
         f.write('Album name "%s"\n'
                 % self.source_dir.human_name.encode('utf-8'))

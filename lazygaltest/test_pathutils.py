@@ -52,7 +52,7 @@ class TestPathutils(LazygalTest):
         dpath = self.d(os.path.dirname(fpath))
         fpath = os.path.join(dpath, os.path.basename(fpath))
         if not os.path.exists(fpath):
-            with file(fpath, 'a'):
+            with open(fpath, 'a'):
                 os.utime(fpath, None)
         assert os.path.isfile(fpath)
         return fpath
