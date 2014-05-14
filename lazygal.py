@@ -263,7 +263,7 @@ else:
             len(album.stats()['bydir'].keys()), album.stats()['total'])
 
         def update_progress():
-            output_log.update_progress(unicode(progress))
+            output_log.update_progress(py2compat._str(progress))
         progress.updated = update_progress
         progress.updated()
     else:

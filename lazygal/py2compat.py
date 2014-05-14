@@ -35,5 +35,11 @@ if not PY3RUNNING:
         gettext.install__stdlib(*args, **kwargs)
     gettext.install = gettext_install
 
+def _str(obj):
+    if PY3RUNNING:
+        return str(obj)
+    else:
+        return obj.__str__()
+
 
 # vim: ts=4 sw=4 expandtab
