@@ -149,18 +149,16 @@ class SubgalBreak(make.MakeTask):
         galleries = []
         how_many_medias = 0
         subgals_it = iter([self.webgal_dir] + self.webgal_dir.get_all_subgals())
-        try:
-            while True:
-                subgal = subgals_it.next()
-                how_many_medias += subgal.get_media_count()
-                galleries.append((subgal, subgal.medias))
-                if how_many_medias > self.webgal_dir.thumbs_per_page:
-                    self.webgal_dir.add_index_page(subgals, galleries)
-                    galleries = []
-                    how_many_medias = 0
-        except StopIteration:
-            if len(galleries) > 0:
+        for subgal in subgals_it:
+            how_many_medias += subgal.get_media_count()
+            galleries.append((subgal, subgal.medias))
+            if how_many_medias > self.webgal_dir.thumbs_per_page:
                 self.webgal_dir.add_index_page(subgals, galleries)
+                galleries = []
+                how_many_medias = 0
+
+        if len(galleries) > 0:
+            self.webgal_dir.add_index_page(subgals, galleries)
 
     def __fill_real_pagination(self):
         medias_amount = len(self.webgal_dir.medias)
