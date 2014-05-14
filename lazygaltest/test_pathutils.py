@@ -22,7 +22,7 @@ import unittest
 import os
 import posixpath
 import ntpath
-from __init__ import LazygalTest
+from . import LazygalTest
 from lazygal.pathutils import *
 from lazygal.sourcetree import Directory
 

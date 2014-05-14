@@ -23,7 +23,7 @@ import shutil
 
 from PIL import Image
 
-from __init__ import LazygalTestGen, skip, has_symlinks
+from . import LazygalTestGen, skip, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory

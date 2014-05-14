@@ -20,7 +20,7 @@ import os
 import re
 import posixpath
 
-import pathutils
+from . import pathutils
 
 
 class TemplateVariables(object):

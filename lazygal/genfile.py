@@ -21,8 +21,8 @@ import locale
 import logging
 import zipfile
 
-import make
-import pathutils
+from . import make
+from . import pathutils
 
 
 class WebalbumFile(make.FileMakeObject):

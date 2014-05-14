@@ -20,7 +20,7 @@
 import unittest
 import os
 import locale
-from __init__ import LazygalTest
+from . import LazygalTest
 from lazygal import metadata
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album

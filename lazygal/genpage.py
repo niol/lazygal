@@ -23,11 +23,11 @@ import logging
 
 import genshi
 
-import make
-import pathutils
-import genfile
-import feeds
-import tplvars
+from . import make
+from . import pathutils
+from . import genfile
+from . import feeds
+from . import tplvars
 
 
 class WebalbumPage(genfile.WebalbumFile):

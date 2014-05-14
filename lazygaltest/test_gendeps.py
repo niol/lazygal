@@ -20,7 +20,7 @@ import os
 import time
 import unittest
 
-from __init__ import LazygalTestGen
+from . import LazygalTestGen
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal.genpage import WebalbumIndexPage

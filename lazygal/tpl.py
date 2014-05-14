@@ -27,10 +27,10 @@ from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
 from genshi.template import TemplateNotFound
 from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
-import __init__
 
 import timeutils
-import pathutils
+import lazygal
+from . import pathutils
 
 
 DEFAULT_THEME = 'default'

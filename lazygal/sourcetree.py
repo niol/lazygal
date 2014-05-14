@@ -22,8 +22,8 @@ import locale
 import logging
 from PIL import Image
 
-from lazygal import pathutils, make, metadata
-from lazygal import mediautils, timeutils
+from . import pathutils, make, metadata
+from . import mediautils
 
 
 SOURCEDIR_CONFIGFILE = '.lazygal'

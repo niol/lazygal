@@ -18,7 +18,7 @@
 
 import unittest
 import os
-from __init__ import LazygalTest
+from . import LazygalTest
 import lazygal.tpl as tpl
 
 

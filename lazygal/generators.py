@@ -24,20 +24,20 @@ import sys
 import re
 import shutil
 
-from config import LazygalConfig, LazygalWebgalConfig
-from config import USER_CONFIG_PATH, LazygalConfigDeprecated
-from sourcetree import SOURCEDIR_CONFIGFILE
-from pygexiv2 import GExiv2
+from .config import LazygalConfig, LazygalWebgalConfig
+from .config import USER_CONFIG_PATH, LazygalConfigDeprecated
+from .sourcetree import SOURCEDIR_CONFIGFILE
+from .pygexiv2 import GExiv2
 
-import make
-import pathutils
-import sourcetree
-import tpl
-import newsize
-import metadata
-import genpage
-import genmedia
-import genfile
+from . import make
+from . import pathutils
+from . import sourcetree
+from . import tpl
+from . import newsize
+from . import metadata
+from . import genpage
+from . import genmedia
+from . import genfile
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX

@@ -24,10 +24,10 @@ from PIL import Image as PILImage
 from PIL import ImageFile as PILImageFile
 PILImageFile.MAXBLOCK = 1024 * 1024  # default is 64k, not enough for big pics
 
-import make
-import genfile
-import eyecandy
-import mediautils
+from . import make
+from . import genfile
+from . import eyecandy
+from . import mediautils
 from lazygal.pygexiv2 import GExiv2
 
 

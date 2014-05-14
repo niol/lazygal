@@ -23,7 +23,7 @@ try:
 except ImportError: # py2compat
     import ConfigParser as configparser
 
-from __init__ import LazygalTestGen
+from . import LazygalTestGen
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory

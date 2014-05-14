@@ -23,10 +23,10 @@ import logging
 import codecs
 import datetime
 
-from lazygal.pygexiv2 import GExiv2
+from .pygexiv2 import GExiv2
 from PIL import Image as PILImage
 
-from lazygal import make
+from . import make
 
 from fractions import Fraction
 

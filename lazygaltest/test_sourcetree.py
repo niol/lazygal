@@ -18,7 +18,8 @@
 
 import unittest
 import os
-from __init__ import LazygalTest
+
+from . import LazygalTest
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
 
