@@ -552,7 +552,7 @@ class WebalbumDir(make.FileMakeObject):
         if self.flatten_below():
             return 0
         else:
-            len(self.source_dir.subdirs)
+            return len(self.source_dir.subdirs)
 
     def get_all_subgals(self):
         all_subgals = list(self.subgals)  # We want a copy here.
