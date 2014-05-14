@@ -143,7 +143,7 @@ class MakeTask(object):
         for index in range(0, level):
             indent = indent + '\t'
 
-        print indent, self, self.get_mtime()
+        print(indent, self, self.get_mtime())
 
     def print_dep_tree(self, depth=1, parent_level=-1):
         level = parent_level + 1

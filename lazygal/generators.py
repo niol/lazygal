@@ -46,7 +46,7 @@ if INSTALL_MODE == 'source':
 elif INSTALL_MODE == 'installed':
     DATAPATH = os.path.join(INSTALL_PREFIX, 'share', 'lazygal')
     if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-        print _('Could not find themes dir, check your installation!')
+        print(_('Could not find themes dir, check your installation!'))
         sys.exit(1)
 
 

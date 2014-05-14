@@ -73,18 +73,8 @@ class LazygalTemplate(object):
         try:
             self.__generate(values).render(method=self.serialization_method,
                                            out=page, encoding='utf-8')
-        except UnicodeDecodeError:
-            problematic_vars = []
-            for key, value in values.items():
-                if type(value) is not unicode:
-                    try:
-                        str(value).decode('utf-8')
-                    except UnicodeDecodeError:
-                        problematic_vars.append(key)
-            print 'Problematic template vars : %s' % ', '.join(problematic_vars)
-            raise
-        except UndefinedError, e:
-            print 'W: %s' % e
+        except UndefinedError as e:
+            print('W: %s' % e)
             raise
         finally:
             page.close()

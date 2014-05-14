@@ -64,7 +64,7 @@ class qnd_skipIf(object):
     def __call__(self, f):
         def nf(*args, **kwargs):
             if self.cond:
-                print 'skipped: %s' % self.reason
+                print('skipped: %s' % self.reason)
                 return
             f(*args, **kwargs)
         return nf

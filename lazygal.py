@@ -17,6 +17,9 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+
+from __future__ import print_function
+
 import gettext
 import locale
 import logging
@@ -159,7 +162,7 @@ parser.add_option("", "--keep-gps-data",
 (options, args) = parser.parse_args()
 
 if options.show_version:
-    print _('lazygal version %s') % lazygal.__version__
+    print(_('lazygal version %s') % lazygal.__version__)
     sys.exit(0)
 
 if len(args) != 1:
@@ -168,7 +171,7 @@ if len(args) != 1:
 
 source_dir = args[0].decode(sys.getfilesystemencoding())
 if not os.path.isdir(source_dir):
-    print _("Directory %s does not exist.") % source_dir
+    print(_("Directory %s does not exist.") % source_dir)
     sys.exit(1)
 
 
@@ -223,7 +226,7 @@ if options.orig_symlink:
     try:
         os.symlink
     except AttributeError:
-        print _("Option --orig-symlink is not available on this platform.")
+        print(_("Option --orig-symlink is not available on this platform."))
         sys.exit(1)
     else:
         cmdline_config.set('webgal', 'original-symlink', 'Yes')
@@ -251,7 +254,7 @@ logger.addHandler(output_log)
 try:
     album = Album(source_dir, cmdline_config)
 except ValueError, e:
-    print unicode(e)
+    print(unicode(e))
     sys.exit(1)
 else:
     if sys.stdout.isatty():
@@ -272,10 +275,10 @@ else:
     try:
         album.generate(progress=progress)
     except KeyboardInterrupt:
-        print >> sys.stderr, _("Interrupted.")
+        print(_("Interrupted."), file=sys.stderr)
         sys.exit(1)
     except ValueError, e:
-        print unicode(e)
+        print(unicode(e))
         sys.exit(1)
 
 

@@ -150,9 +150,9 @@ class TestGenerators(LazygalTestGen):
             for f in ['extra_dir']:
                 self.assertFalse(os.path.isdir(os.path.join(dest_path, f)))
         except AssertionError:
-            print "\n contents of dest_path : "
-            print sorted(os.listdir(dest_path))
-            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            print("\n contents of dest_path : ")
+            print(sorted(os.listdir(dest_path)))
+            print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
             raise
 
     def test_clean_empty_dirs(self):
@@ -185,9 +185,9 @@ class TestGenerators(LazygalTestGen):
             for f in ['subgal']:
                 self.assertTrue(os.path.isdir(os.path.join(dest_path, f)))
         except AssertionError:
-            print "\n contents of dest_path after first generation: "
-            print sorted(os.listdir(dest_path))
-            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            print("\n contents of dest_path after first generation: ")
+            print(sorted(os.listdir(dest_path)))
+            print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
             raise
 
         # remove the pic in subgal, and force a new generation
@@ -205,9 +205,9 @@ class TestGenerators(LazygalTestGen):
             for f in ['subgal']:
                 self.assertFalse(os.path.isdir(os.path.join(dest_path, f)))
         except AssertionError:
-            print "\n contents of dest_path after the second generation: "
-            print sorted(os.listdir(dest_path))
-            print sorted(os.listdir(os.path.join(dest_path, 'subgal')))
+            print("\n contents of dest_path after the second generation: ")
+            print(sorted(os.listdir(dest_path)))
+            print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
             raise
 
 
@@ -384,8 +384,8 @@ class TestGenerators(LazygalTestGen):
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'sdir_untagged', 'untagged.jpg')))
             self.assertFalse(os.path.isdir(os.path.join(dest_dir, 'sdir_untagged')))
         except AssertionError:
-            print "\n contents of dest_dir : "
-            print os.listdir(dest_dir)
+            print("\n contents of dest_dir : ")
+            print(os.listdir(dest_dir))
             raise
 
     def test_filter_and_dirzip(self):
@@ -421,8 +421,8 @@ class TestGenerators(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_dir, 'tagfound2_thumb.jpg')))
             self.assertFalse(os.path.isfile(os.path.join(dest_dir, 'false_thumb.jpg')))
         except AssertionError:
-            print "\n contents of dest_dir : "
-            print os.listdir(dest_dir)
+            print("\n contents of dest_dir : ")
+            print(os.listdir(dest_dir))
             raise
 
 class TestSpecialGens(LazygalTestGen):

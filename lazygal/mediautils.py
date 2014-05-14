@@ -18,6 +18,7 @@
 
 import sys
 import signal
+import logging
 
 try:
     import gobject
@@ -92,7 +93,7 @@ class GstVideoOpener(object):
         elif pad_type == 'video':
             if self.vqueue is not None: pad.link(self.vqueue.get_pad("sink"))
         else:
-            print "E: Unknown PAD detected: %s" % pad_type
+            logging.warning("E: Unknown PAD detected: %s", pad_type)
 
     def open(self):
         # Init gobjects threads only if a conversion is initiated
@@ -524,6 +525,9 @@ class VideoThumbnailer(object):
 if __name__ == '__main__':
     import sys
     import os
+
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
 
     converter_types = sys.argv[1].split(',')
     converters = {}
