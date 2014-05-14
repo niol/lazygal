@@ -69,7 +69,7 @@ class LazygalTemplate(object):
     def dump(self, values, dest):
         self.__complement_values(values)
 
-        page = open(dest, 'w')
+        page = open(dest, 'wb')
         try:
             self.__generate(values).render(method=self.serialization_method,
                                            out=page, encoding='utf-8')
