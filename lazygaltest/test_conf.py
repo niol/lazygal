@@ -18,7 +18,10 @@
 
 import unittest
 import os
-import ConfigParser
+try:
+    import configparser
+except ImportError: # py2compat
+    import ConfigParser as configparser
 
 from __init__ import LazygalTestGen
 import lazygal.config
@@ -37,7 +40,7 @@ class TestConf(LazygalTestGen):
         os.makedirs(os.path.join(self.source_dir, 'gal', 'subgal'))
 
         # src_dir/.lazygal
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.add_section('template-vars')
         config.set('template-vars', 'foo', 'root')
         config.set('template-vars', 'root', 'root')
@@ -45,7 +48,7 @@ class TestConf(LazygalTestGen):
             config.write(f)
 
         # src_dir/gal/.lazygal
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.add_section('template-vars')
         config.set('template-vars', 'foo', 'gal')
         config.set('template-vars', 'gal', 'gal')
@@ -53,7 +56,7 @@ class TestConf(LazygalTestGen):
             config.write(f)
 
         # src_dir/gal/subgal/.lazygal
-        config = ConfigParser.RawConfigParser()
+        config = configparser.RawConfigParser()
         config.add_section('template-vars')
         config.set('template-vars', 'foo', 'subgal')
         config.set('template-vars', 'subgal', 'subgal')
@@ -88,7 +91,7 @@ class TestConf(LazygalTestGen):
                          'http://example.com/album/')
         self.assertEqual(dest_gal.config.get('template-vars', 'root'), 'root')
         self.assertEqual(dest_gal.config.get('template-vars', 'gal'), 'gal')
-        self.assertRaises(ConfigParser.NoOptionError,
+        self.assertRaises(configparser.NoOptionError,
                           dest_gal.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
 
@@ -96,9 +99,9 @@ class TestConf(LazygalTestGen):
         self.assertEqual(dest_root.config.get('global', 'puburl'),
                          'http://example.com/album/')
         self.assertEqual(dest_root.config.get('template-vars', 'root'), 'root')
-        self.assertRaises(ConfigParser.NoOptionError,
+        self.assertRaises(configparser.NoOptionError,
                           dest_root.config.get, 'template-vars', 'gal')
-        self.assertRaises(ConfigParser.NoOptionError,
+        self.assertRaises(configparser.NoOptionError,
                           dest_root.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
 

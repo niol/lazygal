@@ -18,7 +18,10 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import ConfigParser
+try:
+    import configparser
+except ImportError: # py2compat
+    import ConfigParser as configparser
 
 
 TRANSLATION_TABLE_07 = {
@@ -46,12 +49,12 @@ TRANSLATION_TABLE_07 = {
 }
 
 def config_to_0_7(file_path):
-    oldconfig = ConfigParser.RawConfigParser()
+    oldconfig = configparser.RawConfigParser()
     config_fp = open(file_path)
     oldconfig.readfp(config_fp)
     config_fp.close()
 
-    newconfig = ConfigParser.RawConfigParser()
+    newconfig = configparser.RawConfigParser()
     for oldkey, (new_section, new_key) in TRANSLATION_TABLE_07.items():
         if oldconfig.has_option('lazygal', oldkey):
             if not newconfig.has_section(new_section):

@@ -18,10 +18,13 @@
 
 import os
 import logging
-import ConfigParser
+try:
+    import configparser
+except ImportError: # py2compat
+    import ConfigParser as configparser
 
 
-class BetterConfigParser(ConfigParser.RawConfigParser):
+class BetterConfigParser(configparser.RawConfigParser):
 
     def getint(self, section, option):
         try:
@@ -30,7 +33,7 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
             else:
                 raise ValueError
         except (ValueError, AttributeError):
-            return ConfigParser.RawConfigParser.getint(self, section, option)
+            return configparser.RawConfigParser.getint(self, section, option)
 
     def getstr(self, section, option):
         try:
@@ -39,7 +42,7 @@ class BetterConfigParser(ConfigParser.RawConfigParser):
             else:
                 raise ValueError
         except (ValueError, AttributeError):
-            return ConfigParser.RawConfigParser.get(self, section, option)
+            return configparser.RawConfigParser.get(self, section, option)
 
     def getlist(self, section, option):
         str_vlist = self.get(section, option)
