@@ -66,7 +66,7 @@ class TestTheme(LazygalTest):
         }
     ]
 }
-""", bom=False)
+""")
 
         theme = tpl.Theme(self.themes_dir, self.theme_name)
 

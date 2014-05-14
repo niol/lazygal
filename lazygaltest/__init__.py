@@ -97,13 +97,9 @@ class LazygalTest(unittest.TestCase):
         shutil.copy(SAMPLE_IMG, img_path)
         return img_path
 
-    def create_file(self, path, contents='', bom=True):
-        f = open(path, 'w')
-        enc = 'utf-8'
-        if bom:
-            f.write(codecs.BOM_UTF8)
-        f.write(contents.encode(enc))
-        f.close()
+    def create_file(self, path, contents=''):
+        with codecs.open(path, 'w', 'utf-8') as f:
+            f.write(contents)
 
     def tearDown(self):
         for wd in self.__workdirs:

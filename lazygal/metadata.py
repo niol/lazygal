@@ -114,25 +114,20 @@ class FileMetadata(object):
     def __init__(self, path):
         self.path = path
 
-    def contents(self, splitter=None):
+    def contents(self, splitter=None, firstline=False):
         try:
             with codecs.open(self.path, 'r', FILE_METADATA_ENCODING) as f:
-                # Not sure why codecs.open() does not skip the UTF-8 BOM. Maybe
-                # this is because the BOM is not required and utf-8-sig handles
-                # this in a better way. Anyway, the following code skips the
-                # UTF-8 BOM if it is present.
-                if FILE_METADATA_ENCODING == 'utf-8':
-                    maybe_bom = f.read(1).encode(FILE_METADATA_ENCODING)
-                    if maybe_bom != codecs.BOM_UTF8: f.seek(0)
-
-                c = f.read()
+                if firstline:
+                    c = f.readline()
+                else:
+                    c = f.read()
         except IOError:
             return None
 
-        if splitter is not None:
-            return map(lambda s: s.strip(), c.split(splitter))
-        else:
+        if splitter is None or (firstline and splitter == '\n'):
             return c.strip()
+        else:
+            return map(lambda s: s.strip(), c.split(splitter))
 
 
 class ImageInfoTags(object):
@@ -490,9 +485,9 @@ class DirectoryMetadata(make.GroupTask):
                 metadata['album_description'] = fmd
 
         if 'album_picture' not in metadata.keys():
-            fmd = FileMetadata(os.path.join(subdir, 'album-picture')).contents(splitter='\n')
+            fmd = FileMetadata(os.path.join(subdir, 'album-picture')).contents(splitter='\n', firstline=True)
             if fmd is not None:
-                metadata['album_picture'] = os.path.join(subdir, fmd[0])
+                metadata['album_picture'] = os.path.join(subdir, fmd)
 
         return metadata
 
