@@ -29,13 +29,14 @@ from optparse import OptionParser
 
 
 # i18n
+from lazygal import py2compat
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
 if INSTALL_MODE == 'source':
     LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
                                                  'build', 'mo'))
 elif INSTALL_MODE == 'installed':
     LOCALES_PATH = os.path.join(INSTALL_PREFIX, 'share', 'locale')
-gettext.install('lazygal', LOCALES_PATH, unicode=1)
+gettext.install('lazygal', LOCALES_PATH)
 
 locale.setlocale(locale.LC_ALL, '')
 

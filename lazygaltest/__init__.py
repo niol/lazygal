@@ -22,6 +22,7 @@ import tempfile
 import unittest
 import codecs
 
+from lazygal import py2compat
 from lazygal.sourcetree import Directory
 from lazygal.generators import Album
 
@@ -34,7 +35,7 @@ SAMPLE_IMG = os.path.join(SAMPLES_DIR, 'sample.jpg')
 import gettext
 LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
                                              'build', 'mo'))
-gettext.install('lazygal', LOCALES_PATH, unicode=1)
+gettext.install('lazygal', LOCALES_PATH)
 
 
 # Init quiet logging
