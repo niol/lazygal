@@ -745,7 +745,7 @@ class AlbumGenProgress(object):
         self._task_percent = None
         self.updated()
 
-    def __unicode__(self):
+    def __str__(self):
         msg = _("Progress: dir %d/%d (%d%%), media %d/%d (%d%%)")\
               % (self._dirs_done, self._dirs_total,
                  100 * self._dirs_done // self._dirs_total,
