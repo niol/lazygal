@@ -21,7 +21,11 @@ import unittest
 import os
 import locale
 from . import LazygalTest
+import datetime
+
+
 from lazygal import metadata
+from lazygal import py2compat
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
@@ -121,6 +125,14 @@ class TestFileMetadata(LazygalTest):
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
 
         self.assertEqual(im_md.get_comment(), u'unicode test : éàê')
+
+    def test_exif_date(self):
+        sample = 'sample.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+
+        d = im_md.get_date()
+        self.assertEqual(d, datetime.datetime(2010, 2, 5, 23, 56, 24))
+        self.assertEqual(d.timestamp(), 1265414184.0)
 
     def test_model(self):
         sample = 'sample-model-nikon1.jpg'

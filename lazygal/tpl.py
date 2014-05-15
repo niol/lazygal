@@ -21,6 +21,7 @@ import logging
 import json
 import codecs
 import locale
+import time
 
 from genshi.core import START
 from genshi.template import TemplateLoader, MarkupTemplate, NewTextTemplate
@@ -28,8 +29,8 @@ from genshi.template import TemplateNotFound
 from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
 
-import timeutils
 import lazygal
+from . import py2compat
 from . import pathutils
 
 
@@ -47,9 +48,15 @@ class LazygalTemplate(object):
         self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
-        values['gen_datetime'] = timeutils.Datetime()
-        values['gen_date'] = values['gen_datetime'].strftime('%c')
+        values['gen_datetime'] = py2compat.datetime.now()
+
+        # using time.strftime() here instead of datetime.strftime() because
+        # the latter does not carry the current timezone info, and '%c' in some
+        # locales needs to display tzname.
+        values['gen_date'] = time.strftime('%c')
+
         values['lazygal_version'] = lazygal.__version__
+
         return values
 
     def __generate(self, values):

@@ -26,6 +26,7 @@ import datetime
 from .pygexiv2 import GExiv2
 from PIL import Image as PILImage
 
+from . import py2compat
 from . import make
 
 from fractions import Fraction
@@ -148,7 +149,7 @@ class ImageInfoTags(object):
                    ):
             try:
                 dt_str = self._metadata[tag]
-                dt = datetime.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
+                dt = py2compat.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
             except (KeyError, ValueError) as StrptimeError:
                 # ValueError: bypass errors such as "time data '0000:00:00
                 # 00:00:00' does not match format '%Y:%m:%d %H:%M:%S'"

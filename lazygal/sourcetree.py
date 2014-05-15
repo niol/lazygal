@@ -22,6 +22,7 @@ import locale
 import logging
 from PIL import Image
 
+from . import py2compat
 from . import pathutils, make, metadata
 from . import mediautils
 
@@ -101,7 +102,7 @@ class File(make.FileSimpleDependency):
         return False
 
     def get_datetime(self):
-        return timeutils.Datetime(self.get_mtime())
+        return py2compat.datetime.fromtimestamp(self.get_mtime())
 
 
 class MediaFile(File):
@@ -120,7 +121,7 @@ class MediaFile(File):
         # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after
         # (reliable here means encoded by the camera).
         if self.has_reliable_date():
-            return (1, self.get_date_taken().timestamp)
+            return (1, self.get_date_taken().timestamp())
         else:
             return (0, self.filename)
 
@@ -143,7 +144,7 @@ class ImageFile(MediaFile):
             exif = None
             self.broken = True
         else:
-            self.reliable_date = timeutils.Datetime(datetime=exif.get_date())
+            self.reliable_date = exif.get_date()
         self.__date_probed = True
         return exif
 

@@ -22,6 +22,8 @@ This is a transition module to provide python2/python3 support.
 
 
 import sys
+import datetime
+import locale
 
 
 PY3RUNNING = sys.version_info >= (3,)
@@ -34,6 +36,21 @@ if not PY3RUNNING:
         kwargs['unicode'] = True
         gettext.install__stdlib(*args, **kwargs)
     gettext.install = gettext_install
+
+
+if PY3RUNNING:
+    datetime = datetime.datetime
+else:
+    class datetime(datetime.datetime):
+
+        # strftime in python2 does not work with unicode...
+        def strftime(self, format):
+            enc = locale.getpreferredencoding()
+            return super(datetime, self).strftime(format.encode(enc)).decode(enc)
+
+        def timestamp(self):
+            return (self - datetime(1970, 1, 1)).total_seconds()
+
 
 def _str(obj):
     if PY3RUNNING:
