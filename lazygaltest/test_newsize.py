@@ -37,8 +37,8 @@ class TestSizeParser(unittest.TestCase):
         return random.randint(10, 200)
 
     def assert_ratio_matches(self, orig_size, new_size):
-        forig_size = map(float, orig_size)
-        fnew_size = map(float, new_size)
+        forig_size = list(map(float, orig_size))
+        fnew_size = list(map(float, new_size))
         orig_ratio = forig_size[1] // forig_size[0]
         new_ratio = fnew_size[1] // fnew_size[0]
         self.assertAlmostEqual(orig_ratio, new_ratio, 2)

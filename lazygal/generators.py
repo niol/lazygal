@@ -448,8 +448,8 @@ class WebalbumDir(make.FileMakeObject):
     def __configure(self):
         config_dirs = self.source_dir.parent_paths()[:-1]  # strip root dir
         config_dirs.reverse()  # from root to deepest
-        config_files = map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
-                           config_dirs)
+        config_files = list(map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
+                                config_dirs))
         logging.debug(_("  Trying loading gallery configs: %s"),
                       ', '.join(map(self.source_dir.strip_root,
                                     config_files)))
@@ -489,7 +489,7 @@ class WebalbumDir(make.FileMakeObject):
         self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
         self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')
         try:
-            self.webalbumpic_size = map(int, self.config.get('webgal', 'webalbumpic-size').split('x'))
+            self.webalbumpic_size = list(map(int, self.config.get('webgal', 'webalbumpic-size').split('x')))
             if len(self.webalbumpic_size) != 2:
                 raise ValueError
         except ValueError:

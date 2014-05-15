@@ -144,7 +144,7 @@ parser.add_option("", "--webalbum-pic-bg",
                   help=_("Webalbum picture background color. Default is transparent, and implies the PNG format. Any other value, e.g. red, white, blue, uses JPEG."))
 parser.add_option("", "--webalbum-pic-type",
                   action="store", type="choice",
-                  choices=lazygal.eyecandy.WEBALBUMPIC_TYPES.keys(),
+                  choices=list(lazygal.eyecandy.WEBALBUMPIC_TYPES.keys()),
                   dest="webalbumpic_type",
                   help=_("Webalbum picture type. Default is messy."))
 parser.add_option("", "--pic-sort-by",

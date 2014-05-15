@@ -59,7 +59,7 @@ class TestSourceTree(LazygalTest):
             os.path.join(self.source_dir, 'joe'),
             self.source_dir,
         ]
-        self.assertEqual(d.parent_paths(), map(unicode, expected))
+        self.assertEqual(d.parent_paths(), list(map(unicode, expected)))
 
 
 if __name__ == '__main__':

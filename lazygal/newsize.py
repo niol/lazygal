@@ -182,7 +182,7 @@ class Area(_Newsize):
 
 
 resize_patterns = []
-for name, obj in globals().items():
+for name, obj in list(globals().items()):
     if not name.startswith('_')\
     and isinstance(obj, type) and issubclass(obj, _Newsize):
         resize_patterns.append(obj)
