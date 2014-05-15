@@ -24,7 +24,7 @@ import shutil
 from PIL import Image
 
 from lazygal import py2compat
-from . import LazygalTestGen, skip, has_symlinks
+from . import LazygalTestGen, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
@@ -212,7 +212,7 @@ class TestGenerators(LazygalTestGen):
             raise
 
 
-    @skip(not has_symlinks(), 'symlinks not supported on platform')
+    @unittest.skipIf(not has_symlinks(), 'symlinks not supported on platform')
     def test_originals_symlinks(self):
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'original', 'Yes')
@@ -470,7 +470,7 @@ class TestSpecialGens(LazygalTestGen):
         # FIXME: Check dest dir contents, test only catches uncaught exceptions
         # for now...
 
-    @skip(not has_symlinks(), 'symlinks not supported on platform')
+    @unittest.skipIf(not has_symlinks(), 'symlinks not supported on platform')
     def test_dir_symlink(self):
         """
         The generator should follow symlinks on directories, but should not get

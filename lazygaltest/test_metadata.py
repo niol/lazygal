@@ -20,10 +20,10 @@
 import unittest
 import os
 import locale
-from . import LazygalTest
 import datetime
 
 
+from . import LazygalTest
 from lazygal import metadata
 from lazygal import py2compat
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
