@@ -271,7 +271,6 @@ class GstVideoTranscoder(GstVideoReader):
         self.decode_video()
 
         self.videoenc = gst.element_factory_make(videocodec, 'videoenc')
-        self.videoenc.set_property('threads', multiprocessing.cpu_count())
         self.pipeline.add(self.videoenc)
 
         if width is not None and height is not None:
@@ -349,6 +348,7 @@ class WebMTranscoder(GstVideoTranscoder):
                                              width, height)
 
         self.videoenc.set_property('quality', 7)
+        self.videoenc.set_property('threads', multiprocessing.cpu_count())
 
 
 class MP4Transcoder(GstVideoTranscoder):
