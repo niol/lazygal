@@ -20,6 +20,7 @@ import unittest
 import os
 
 from . import LazygalTest
+from lazygal import py2compat
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
 
@@ -59,7 +60,7 @@ class TestSourceTree(LazygalTest):
             os.path.join(self.source_dir, 'joe'),
             self.source_dir,
         ]
-        self.assertEqual(d.parent_paths(), list(map(unicode, expected)))
+        self.assertEqual(d.parent_paths(), list(map(py2compat.u, expected)))
 
 
 if __name__ == '__main__':

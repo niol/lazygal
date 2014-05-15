@@ -170,7 +170,7 @@ if len(args) != 1:
     parser.print_help()
     sys.exit(_("Bad command line."))
 
-source_dir = args[0].decode(sys.getfilesystemencoding())
+source_dir = py2compat.u(args[0], sys.getfilesystemencoding())
 if not os.path.isdir(source_dir):
     print(_("Directory %s does not exist.") % source_dir)
     sys.exit(1)
@@ -188,7 +188,8 @@ if options.check_all_dirs:
 
 if options.dest_dir is not None:
     cmdline_config.set('global', 'output-directory',
-                       options.dest_dir.decode(sys.getfilesystemencoding()))
+                       py2compat.u(options.dest_dir,
+                                   sys.getfilesystemencoding()))
 if options.force_gen_pages:
     cmdline_config.set('global', 'force-gen-pages', 'Yes')
 if options.clean_destination:
@@ -244,7 +245,7 @@ if options.tpl_vars is not None:
     for single_def in tpl_vars_defs:
         name, value = single_def.split('=')
         cmdline_config.set('template-vars',
-                           name, value.decode(sys.stdin.encoding))
+                           name, py2compat.u(value, sys.stdin.encoding))
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -255,7 +256,7 @@ logger.addHandler(output_log)
 try:
     album = Album(source_dir, cmdline_config)
 except ValueError as e:
-    print(unicode(e))
+    print(py2compat.u(e))
     sys.exit(1)
 else:
     if sys.stdout.isatty():
@@ -279,7 +280,7 @@ else:
         print(_("Interrupted."), file=sys.stderr)
         sys.exit(1)
     except ValueError as e:
-        print(unicode(e))
+        print(py2compat.u(e))
         sys.exit(1)
 
 

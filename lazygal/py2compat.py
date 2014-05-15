@@ -52,11 +52,27 @@ else:
             return (self - datetime(1970, 1, 1)).total_seconds()
 
 
+def u(s, encoding='utf-8', errors='strict'):
+    if PY3RUNNING:
+        return s
+    else:
+        if type(s) is unicode:
+            return s
+        else:
+            return str(s).decode(encoding, errors)
+
+
 def _str(obj):
     if PY3RUNNING:
         return str(obj)
     else:
         return obj.__str__()
+
+def isunicode(s):
+    if PY3RUNNING:
+        return True
+    else:
+        return type(s) is unicode
 
 
 # vim: ts=4 sw=4 expandtab

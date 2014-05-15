@@ -23,6 +23,7 @@ import shutil
 
 from PIL import Image
 
+from lazygal import py2compat
 from . import LazygalTestGen, skip, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
@@ -94,7 +95,7 @@ class TestGenerators(LazygalTestGen):
                                   [], pics, self.album)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
         expected = map(lambda fn:
-                       unicode(os.path.join(dest_path, 'subgal', fn)),
+                       py2compat.u(os.path.join(dest_path, 'subgal', fn)),
                        ['extra_thumb2.jpg',
                         'img6_thumb.jpg',
                         'img6_small.jpg', 'img6_medium.jpg',
@@ -106,7 +107,7 @@ class TestGenerators(LazygalTestGen):
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         expected =  map(lambda fn:
-                        unicode(os.path.join(dest_path, fn)),
+                        py2compat.u(os.path.join(dest_path, fn)),
                         ['extra_thumb.jpg', 'extra_dir']
                        )
         self.assertEqual(sorted(dest_gal.list_foreign_files()),

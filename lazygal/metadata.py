@@ -83,7 +83,7 @@ def decode_exif_user_comment(raw, imgpath):
     if cset == 'Unicode':
         encoding = None
         try:
-            text.decode('utf-8')
+            py2compat.u(text, 'utf-8')
         except UnicodeDecodeError:
             with open(imgpath, 'rb') as im_fp:
                 im = PILImage.open(im_fp)
@@ -105,9 +105,9 @@ def decode_exif_user_comment(raw, imgpath):
 
     # Return the decoded string according to the found encoding.
     try:
-        return text.decode(encoding)
+        return py2compat.u(text, encoding)
     except UnicodeDecodeError:
-        return text.decode(encoding, 'replace')
+        return py2compat.u(text, encoding, 'replace')
 
 
 class FileMetadata(object):
@@ -243,7 +243,7 @@ class ImageInfoTags(object):
 
     def _fallback_to_encoding(self, encoded_string, encoding=FALLBACK_ENCODING):
         if encoded_string is None: raise ValueError
-        if type(encoded_string) is unicode: return encoded_string
+        if py2compat.isunicode(encoded_string): return encoded_string
         try:
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:
@@ -251,8 +251,7 @@ class ImageInfoTags(object):
 
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00')
-        if type(ret) is not unicode: # the EXIF lib did not do the work for us
-            ret = decode_exif_user_comment(ret, self.image_path)
+        ret = decode_exif_user_comment(ret, self.image_path)
         if ret == 'User comments':
             return ''
         return ret
@@ -456,7 +455,7 @@ class DirectoryMetadata(make.GroupTask):
                         data = data[1:]
                     if data[-1] == '"':
                         data = data[:-1]
-                    data = data.decode(FILE_METADATA_ENCODING)
+                    data = py2compat.u(data, FILE_METADATA_ENCODING)
 
                     if tag == 'album_picture':
                         if subdir is not None:

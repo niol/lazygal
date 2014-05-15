@@ -29,6 +29,7 @@ from .config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from .sourcetree import SOURCEDIR_CONFIGFILE
 from .pygexiv2 import GExiv2
 
+from . import py2compat
 from . import make
 from . import pathutils
 from . import sourcetree
@@ -399,7 +400,7 @@ class WebalbumDir(make.FileMakeObject):
     def __parse_browse_sizes(self, sizes_string):
         for single_def in sizes_string.split(','):
             name, string_size = single_def.split('=')
-            name = name.decode(locale.getpreferredencoding())
+            name = py2compat.u(name, locale.getpreferredencoding())
             if name == '':
                 raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
             if name == genmedia.THUMB_SIZE_NAME:
@@ -416,7 +417,7 @@ class WebalbumDir(make.FileMakeObject):
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
             except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string.decode(locale.getpreferredencoding()), size_name, ))
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (py2compat.u(size_string, locale.getpreferredencoding()), size_name, ))
 
     def __parse_sort(self, sort_string):
         try:
@@ -440,7 +441,7 @@ class WebalbumDir(make.FileMakeObject):
                     tpl_vars[option] = value
                 except ValueError:
                     value = self.config.get('template-vars', option)
-                    value = value.decode(locale.getpreferredencoding())
+                    value = py2compat.u(value, locale.getpreferredencoding())
                     tpl_vars[option] = genshi.core.Markup(value)
 
         return tpl_vars
@@ -642,9 +643,8 @@ class WebalbumDir(make.FileMakeObject):
         expected_dirs = map(lambda dn: os.path.join(self.path, dn), dirnames)
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
-            if not isinstance(dest_file, unicode):
-                # FIXME: No clue why this happens, but it happens!
-                dest_file = dest_file.decode(sys.getfilesystemencoding())
+            # FIXME: No clue why this happens, but it happens!
+            dest_file = py2compat.u(dest_file, sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
                 dest_file not in expected_dirs and\
                     dest_file not in extra_files:
@@ -846,7 +846,7 @@ class Album(object):
         if dest_dir is None:
             dest_dir = self.config.getstr('global', 'output-directory')
         else:
-            dest_dir = dest_dir.decode(sys.getfilesystemencoding())
+            dest_dir = py2compat.u(dest_dir, sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
         pub_url = self.config.getstr('global', 'puburl')

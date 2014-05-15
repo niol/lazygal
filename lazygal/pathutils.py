@@ -29,6 +29,9 @@ except ImportError: # py2compat
     urlparse.quote = urllib.quote
 
 
+from . import py2compat
+
+
 def is_root_posix(path):
     return path == '/'
 
@@ -44,10 +47,7 @@ else:
 
 
 def path2unicode(path, errors='strict'):
-    if type(path) is unicode:
-        return path
-    else:
-        return path.decode(sys.getfilesystemencoding(), errors)
+    return py2compat.u(path, sys.getfilesystemencoding(), errors)
 
 
 def is_subdir_of(dir_path, path):
