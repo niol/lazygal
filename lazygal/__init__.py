@@ -27,7 +27,7 @@ if os.path.isfile(os.path.join(os.path.dirname(__file__), '..', 'setup.py')):
     INSTALL_PREFIX = ''
 else:
     # Lazygal is installed, assume we are in
-    # $prefix/lib/python2.X/dist-packages/lazygal
+    # $prefix/lib/pythonX/dist-packages/lazygal
     INSTALL_MODE = 'installed'
     INSTALL_PREFIX = os.path.join(os.path.dirname(__file__),
                                   '..', '..', '..', '..')

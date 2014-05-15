@@ -48,11 +48,16 @@ It can be summed up by the following features :
 
 `lazygal` requires :
 
-  *   [Python][1] >= 2.6.
-  *   [Python imaging library (PIL)][4] >= 1.1.6.
-  *   [GExiv2][5] >= 0.5 (to have GObject introspection) which provides Python binding to [exiv2][6], a library to access image metadata.
-  *   [Genshi][7] >= 0.5, a *Python toolkit for generation of output for the web*.
-  *   [Python GStreamer][23] and associated plugins for video transcoding.
+  * If using `python2`
+    * [Python][1] >= 2.7.
+    * [Python imaging library (PIL)][4] >= 1.1.6.
+    * [Genshi][7] >= 0.5
+  * If using `python3`
+    * [Python][1] >= 3.3.
+    * [Python imaging library (PIL) friendly fork Pillow][9] >= 2.
+    * [Genshi][7] >= 0.7, a *Python toolkit for generation of output for the web*.
+  * [GExiv2][5] >= 0.5 (to have GObject introspection) which provides Python binding to [exiv2][6], a library to access image metadata.
+  * [Python GStreamer][23] and associated plugins for video transcoding.
 
 Building a `lazygal` installation requires :
 
@@ -65,6 +70,7 @@ Building a `lazygal` installation requires :
  [7]: http://genshi.edgewall.org/
  [23]: http://gstreamer.freedesktop.org/modules/gst-python.html
  [8]: http://xmlsoft.org/XSLT/xsltproc2.html
+ [9]: https://pypi.python.org/pypi/Pillow/
 
 ## Usage
 
