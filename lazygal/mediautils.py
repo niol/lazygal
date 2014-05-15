@@ -19,6 +19,7 @@
 import sys
 import signal
 import logging
+import multiprocessing
 
 try:
     import gobject
@@ -270,6 +271,7 @@ class GstVideoTranscoder(GstVideoReader):
         self.decode_video()
 
         self.videoenc = gst.element_factory_make(videocodec, 'videoenc')
+        self.videoenc.set_property('threads', multiprocessing.cpu_count())
         self.pipeline.add(self.videoenc)
 
         if width is not None and height is not None:
