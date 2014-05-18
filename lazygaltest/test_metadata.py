@@ -129,10 +129,15 @@ class TestFileMetadata(LazygalTest):
     def test_exif_date(self):
         sample = 'sample.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
-
         d = im_md.get_date()
         self.assertEqual(d, datetime.datetime(2010, 2, 5, 23, 56, 24))
-        self.assertEqual(d.timestamp(), 1265414184.0)
+        self.assertEqual(d.timestamp(), 1265410584.0)
+
+        sample = 'sample-model-nikon1.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        d = im_md.get_date()
+        self.assertEqual(d, datetime.datetime(2011, 5, 21, 22, 19, 30))
+        self.assertEqual(d.timestamp(), 1306009170.0)
 
     def test_model(self):
         sample = 'sample-model-nikon1.jpg'

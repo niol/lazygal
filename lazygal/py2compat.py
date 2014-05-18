@@ -24,6 +24,7 @@ This is a transition module to provide python2/python3 support.
 import sys
 import datetime
 import locale
+import time
 
 
 PY3RUNNING = sys.version_info >= (3,)
@@ -49,7 +50,8 @@ else:
             return super(datetime, self).strftime(format.encode(enc)).decode(enc)
 
         def timestamp(self):
-            return (self - datetime(1970, 1, 1)).total_seconds()
+            # timestamp implementation for naive datetime objects
+            return time.mktime(self.timetuple())
 
 
 def u(s, encoding='utf-8', errors='strict'):
