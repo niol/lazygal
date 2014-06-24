@@ -53,7 +53,7 @@ class LazygalTemplate(object):
         # using time.strftime() here instead of datetime.strftime() because
         # the latter does not carry the current timezone info, and '%c' in some
         # locales needs to display tzname.
-        values['gen_date'] = time.strftime('%c')
+        values['gen_date'] = py2compat.u(time.strftime('%c'))
 
         values['lazygal_version'] = lazygal.__version__
 
