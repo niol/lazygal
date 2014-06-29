@@ -6,6 +6,7 @@
     <title py:content="name"></title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="Generator" content="lazygal $lazygal_version" />
+    <meta name="Viewport" content="width=device-width, initial-scale=1.0" />
     <link py:for="style in styles" type="text/css"
           rel="$style.rel" media="screen,projection" title="$style.name"
           href="${rel_root}shared/${style.filename}.css" />
@@ -34,6 +35,8 @@
     </ul>
 </div>
 
+<xi:include href="${mediatype}.thtml" />
+
 <div py:if="prev_link" class="prevnext" id="prev_link">
     <xi:include href="thumb.thtml" py:with="media=prev_link" />
     <a class="prevnext_text" href="$prev_link.link">${_('previous')}</a>
@@ -43,8 +46,6 @@
     <xi:include href="thumb.thtml" py:with="media=next_link" />
     <a class="prevnext_text" href="$next_link.link">${_('next')}</a>
 </div>
-
-<xi:include href="${mediatype}.thtml" />
 
 <div class="footer" py:if="footer" py:content="footer" />
 
