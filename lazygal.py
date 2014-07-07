@@ -168,7 +168,7 @@ if options.show_version:
 
 if len(args) != 1:
     parser.print_help()
-    sys.exit(_("Bad command line."))
+    sys.exit(_("Bad command line: wrong number of arguments."))
 
 source_dir = py2compat.u(args[0], sys.getfilesystemencoding())
 if not os.path.isdir(source_dir):
