@@ -23,6 +23,7 @@ import zipfile
 
 from . import make
 from . import pathutils
+from . import py2compat
 
 
 class WebalbumFile(make.FileMakeObject):
@@ -105,14 +106,16 @@ class WebalbumArchive(WebalbumFile):
         logging.info(_("  ZIP %s"), zip_rel_path)
         logging.debug("(%s)", self.path)
 
-        archive = zipfile.ZipFile(self.path, mode='w')
-        for pic in self.pics:
-            inzip_filename = os.path.join(self.dir.source_dir.name,
-                                          os.path.basename(pic))
-            # zipfile dislikes unicode
-            inzip_fn = inzip_filename.encode(locale.getpreferredencoding())
-            archive.write(pic, inzip_fn)
-        archive.close()
+        with zipfile.ZipFile(self.path, 'w') as archive:
+            for pic in self.pics:
+                inzip_fn = os.path.join(self.dir.source_dir.name,
+                                        os.path.basename(pic))
+
+                if not py2compat.PY3RUNNING:
+                    # py2 zipfile dislikes unicode
+                    inzip_fn = inzip_fn.encode(locale.getpreferredencoding())
+
+                archive.write(pic, inzip_fn)
 
     def size(self):
         return os.path.getsize(self.path)
