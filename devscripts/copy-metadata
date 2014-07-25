@@ -41,6 +41,10 @@ def copy_metadata(src, dst):
 
     for tag in source_image.get_exif_tags():
         dest_image[tag] = source_image[tag]
+    for tag in source_image.get_iptc_tags():
+        dest_image[tag] = source_image[tag]
+    for tag in source_image.get_xmp_tags():
+        dest_image[tag] = source_image[tag]
 
     if has_dims:
         # set EXIF image size info to resized size
