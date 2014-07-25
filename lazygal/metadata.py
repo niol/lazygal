@@ -250,7 +250,7 @@ class ImageInfoTags(object):
             return encoded_string.decode(encoding, 'replace')
 
     def get_exif_usercomment(self):
-        ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00')
+        ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00\n')
         ret = decode_exif_user_comment(ret, self.image_path)
         if ret == 'User comments':
             return ''

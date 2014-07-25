@@ -126,6 +126,21 @@ class TestFileMetadata(LazygalTest):
 
         self.assertEqual(im_md.get_comment(), u'unicode test : éàê')
 
+    def test_usercomment_empty_and_encoding(self):
+        """
+        Exif.Photo.UserComment: charset="Ascii"
+
+        Exif.Image.ImageDescription: unset
+        Iptc.Application2.ObjectName: Jasper the Bear
+
+        In this example, the IPTC tag should be chosen because the
+        EXIF photo user comment should be considered empty.
+        """
+        sample = 'sample-usercomment-empty-and-encoding.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+
+        self.assertEqual(im_md.get_comment(), u'Jasper the Bear')
+
     def test_exif_date(self):
         sample = 'sample.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
