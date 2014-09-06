@@ -26,11 +26,10 @@ try:
     import pygst
     pygst.require('0.10')
 
-    # http://29a.ch/tags/pygst
-    argv = sys.argv
-    sys.argv = []
+    # gst messes with sys.argv on import, so make a copy
+    import copy
+    argv = copy.copy(sys.argv)
     import gst
-    sys.argv = argv
 
     import gst.extend.discoverer
 except ImportError:
@@ -38,6 +37,9 @@ except ImportError:
 else:
     HAVE_GST = True
     gobjects_threads_init = False
+finally:
+    # Restore sys.argv copy
+    sys.argv = argv
 
 
 interrupted = False
