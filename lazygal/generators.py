@@ -39,6 +39,7 @@ from . import metadata
 from . import genpage
 from . import genmedia
 from . import genfile
+from . import mediautils
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
@@ -761,6 +762,9 @@ class Album(object):
 
     def __init__(self, source_dir, config=None):
         self.source_dir = os.path.abspath(source_dir)
+
+        if not mediautils.HAVE_GST:
+            logging.warning(_('Video support is disabled: could not load GStreamer'))
 
         self.config = LazygalConfig()
 
