@@ -1,3 +1,8 @@
+Lazygal 0.8.5 (2014-09-06)
+  * correctly workaround gst messing with sys.argv when import gst fails
+  * new style sidebnw for default theme
+  * python3 source compatibility (except video support)
+
 Lazygal 0.8.4 (2014-05-03)
   * update it translation
   * fix semicolon not escaped in urls (Debian Closes: #745979)

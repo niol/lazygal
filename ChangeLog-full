@@ -1,4 +1,44 @@
-Lazygal 0.8.4 (2014-05-03)
+Lazygal 0.8.5 (2014-09-06)
+  * warn if video support is disabled
+  * correctly workaround gst messing with sys.argv when import gst fails
+  * correctly ignore EXIF user comment when value is only '\n'
+  * copy-metadata tool: also copy XMP and IPTC tags
+  * improve usage of ZipFile stdlib interface
+  * py3: fix empty gallery archive when using python3
+  * improve bad command line user message
+  * new style sidebnw for default theme
+  * fix date output in templates when using non-ascii chars
+  * fix test_exif_date in python3 and add summer DST test case
+  * drop unittest.skipIf() wrapper as python < 2.7 is not supported anymore
+  * support python3
+  * py3: str is unicode in python3
+  * py3: map(), dist_keys and others are lazy
+  * py3: strftime now supports unicode, and rather use stdlib datetime
+  * make videoenc threads property equal to CPU count only for vp8enc
+  * Make video encoding multi-threaded (pull request #15)
+  * do not check for BOM in utf-8 files as it is not recommanded to use it
+  * py3: imports are really relative
+  * py3: writing utf-8 must be done in binary mode
+  * py3: remove useless sorter methods
+  * py3: types.ClassType is gone
+  * py3: sorter is really gone and really replaced by sort key
+  * py3: urllib.parse is now urlparse
+  * py3: octal notation must be explicit
+  * fix typo that prevented subgal count to be displayed in RSS feed
+  * py3: iter() is gone
+  * py3: sorter is gone and replaced by sort key
+  * py3: __unicode__() is really gone
+  * py3: relative imports
+  * py3: __unicode__() is gone
+  * py3: file() object is gone
+  * py3: configparser module name is lowercase
+  * py3: gettext.install dropped the unicode arg
+  * py3: 'as' keyword for exceptions
+  * py3: print is a function
+  * correctly close file pointer when probing image size
+
+Lazygal 0.8.4 (2014-05-11)
+  * set version to 0.8.4
   * sort out url quoting
   * update it translation
   * fix semicolon not escaped in urls (Debian Closes: #745979)
@@ -136,8 +176,8 @@ Lazygal 0.8 (2013-05-28)
   * document GEXiv2 dep
   * restore test cases forgotten in gexiv2 patch
   * merge GExviv2 porting patch
-  * improve SHARED_ files documentation
   * Port from pyexiv2 to GExiv2.
+  * improve SHARED_ files documentation
   * put README change in MANIFEST
   * update TODO
   * use markdown readme
