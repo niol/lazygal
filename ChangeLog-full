@@ -1,4 +1,8 @@
-Lazygal 0.8.5 (2014-09-06)
+Lazygal 0.8.6 (2014-09-15)
+  * fix error when running without GObject
+
+Lazygal 0.8.5 (2014-09-07)
+  * set version to 0.8.5
   * warn if video support is disabled
   * correctly workaround gst messing with sys.argv when import gst fails
   * correctly ignore EXIF user comment when value is only '\n'
