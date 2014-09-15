@@ -21,6 +21,8 @@ import signal
 import logging
 import multiprocessing
 
+
+argv = None
 try:
     import gobject
     import pygst
@@ -38,8 +40,9 @@ else:
     HAVE_GST = True
     gobjects_threads_init = False
 finally:
-    # Restore sys.argv copy
-    sys.argv = argv
+    if argv is not None:
+        # Restore sys.argv copy
+        sys.argv = argv
 
 
 interrupted = False
