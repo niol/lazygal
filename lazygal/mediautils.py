@@ -22,42 +22,37 @@ import logging
 import multiprocessing
 
 
-argv = None
+from . import py2compat
+
+
 try:
-    import gobject
-    import pygst
-    pygst.require('0.10')
-
-    # gst messes with sys.argv on import, so make a copy
-    import copy
-    argv = copy.copy(sys.argv)
-    import gst
-
-    import gst.extend.discoverer
+    import gi
+    try:
+        gi.require_version('Gst', '1.0')
+    except ValueError:
+        raise ImportError
+    from gi.repository import GObject, GLib, Gst, GstPbutils
 except ImportError:
     HAVE_GST = False
 else:
     HAVE_GST = True
     gobjects_threads_init = False
-finally:
-    if argv is not None:
-        # Restore sys.argv copy
-        sys.argv = argv
 
 
 interrupted = False
 
 
-def signal_handler(signum, frame):
+def sigint_handler(signum, frame):
     global interrupted
     interrupted = True
 
 
 def gobject_init():
     global gobjects_threads_init
-    gobject.threads_init()
+    GObject.threads_init()
+    Gst.init(None)
     gobjects_threads_init = True
-    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGINT, sigint_handler)
 
 
 from PIL import Image as PILImage
@@ -69,48 +64,50 @@ class TranscodeError(Exception): pass
 class GstVideoOpener(object):
 
     def __init__(self, input_file):
-        self.input_file = input_file
+        if not gobjects_threads_init:
+            gobject_init()
+
+        self.input_file = py2compat.u(input_file,
+                                      sys.getfilesystemencoding())
 
         self.progress = None
 
-        self.pipeline = gst.Pipeline()
+        self.pipeline = Gst.Pipeline()
         self.running = False
 
         self.pipeline.set_auto_flush_bus(True)
 
         # Input
-        self.filesrc = gst.element_factory_make("filesrc", "source")
+        self.filesrc = Gst.ElementFactory.make('filesrc', None)
         self.pipeline.add(self.filesrc)
 
         # Decoding
-        self.decode = gst.element_factory_make("decodebin", "decode")
-        self.decode.connect("new-decoded-pad", self.on_dynamic_pad)
+        self.decode = Gst.ElementFactory.make('decodebin', None)
+        self.decode.connect('pad-added', self.on_dynamic_pad)
         self.pipeline.add(self.decode)
         self.filesrc.link(self.decode)
 
         self.aqueue = None
         self.vqueue = None
 
-    def on_dynamic_pad(self, dbin, pad, islast):
-        pad_type = pad.get_caps().to_string()[0:5]
+    def on_dynamic_pad(self, dbin, pad):
+        pad_type = pad.query_caps(None).to_string()[0:5]
 
         if pad_type == 'audio':
-            if self.aqueue is not None: pad.link(self.aqueue.get_pad("sink"))
+            if self.aqueue is not None:
+                pad.link(self.aqueue.get_static_pad('sink'))
         elif pad_type == 'video':
-            if self.vqueue is not None: pad.link(self.vqueue.get_pad("sink"))
+            if self.vqueue is not None:
+                pad.link(self.vqueue.get_static_pad('sink'))
         else:
             logging.warning("E: Unknown PAD detected: %s", pad_type)
 
     def open(self):
-        # Init gobjects threads only if a conversion is initiated
-        if not gobjects_threads_init:
-            gobject_init()
-
-        self.filesrc.set_property(
-            "location", self.input_file.encode(sys.getfilesystemencoding()))
+        self.filesrc.set_property('location', self.input_file)
 
     def __post_msg(self, msg_txt):
-        msg = gst.message_new_application(self.pipeline, gst.Structure(msg_txt))
+        msg = Gst.Message.new_application(self.pipeline,
+                                          Gst.Structure.new_empty(msg_txt))
         self.pipeline.get_bus().post(msg)
 
     def set_progress(self, progress):
@@ -123,14 +120,14 @@ class GstVideoOpener(object):
 
         # check if stalled
         stalled = False
-        try:
-            current_position, fmt = self.pipeline.query_position(gst.FORMAT_TIME)
-            if self.media_duration is None:
-                self.media_duration, fmt = self.pipeline.query_duration(gst.FORMAT_TIME)
-            if self.progress is not None:
-                self.progress.set_task_progress(100 * current_position // self.media_duration)
-        except gst.QueryError:
-            current_position = 0
+        cp_success, current_position =\
+            self.pipeline.query_position(Gst.Format.TIME)
+        if self.media_duration is None:
+            md_success, self.media_duration =\
+                self.pipeline.query_duration(Gst.Format.TIME)
+        if self.progress is not None and self.media_duration > 0:
+            self.progress.set_task_progress(100 * current_position
+                                            // self.media_duration)
 
         if current_position <= self.last_position:
             self.stalled_counter = self.stalled_counter + 1
@@ -147,27 +144,28 @@ class GstVideoOpener(object):
 
     def __stop_pipeline(self):
         self.running = False
-        self.pipeline.set_state(gst.STATE_NULL)
+        self.pipeline.set_state(Gst.State.NULL)
 
     def run_pipeline(self):
-        self.pipeline.set_state(gst.STATE_PLAYING)
+        self.pipeline.set_state(Gst.State.PLAYING)
         self.running = True
         self.media_duration = None
         self.last_position = 0
         self.stalled_counter = 0
 
-        gobject.timeout_add(1000, self.monitor_progress)
+        GObject.timeout_add(1000, self.monitor_progress)
 
         while self.running:
-            message = self.pipeline.get_bus().poll(gst.MESSAGE_ANY, -1)
-            if message.type == gst.MESSAGE_EOS:
+            message = self.pipeline.get_bus().poll(Gst.MessageType.ANY,
+                                                   Gst.CLOCK_TIME_NONE)
+            if message.type == Gst.MessageType.EOS:
                 self.__stop_pipeline()
-            elif message.type == gst.MESSAGE_ERROR:
+            elif message.type == Gst.MessageType.ERROR:
                 self.__stop_pipeline()
                 raise TranscodeError(message.parse_error())
-            elif message.type == gst.MESSAGE_APPLICATION:
+            elif message.type == Gst.MessageType.APPLICATION:
                 if message.src == self.pipeline:
-                    struct_name = message.structure.get_name()
+                    struct_name = message.get_structure().get_name()
                     if struct_name == 'aborded_playback':
                         self.__stop_pipeline()
                     elif struct_name == 'interrupted':
@@ -181,47 +179,33 @@ class GstVideoOpener(object):
             self.progress.set_task_done()
 
     def stop_pipeline(self):
-        msg = gst.message_new_application(self.pipeline,
-                                          gst.Structure('aborded_playback'))
+        msg = Gst.Message.new_application(self.pipeline,
+            Gst.Structure.new_empty('aborded_playback'))
         self.pipeline.get_bus().post(msg)
 
 
 class GstVideoInfo(object):
 
     def __init__(self, path):
-        self.path = path
-        self.loop = gobject.MainLoop()
-        self.broken = False
-
-    def __stream_discovered(self, obj, success):
-        if success:
-            self.videowidth = obj.videowidth
-            self.videoheight = obj.videoheight
-            self.videorate = obj.videorate
-            self.audiorate = obj.audiorate
-            self.audiodepth = obj.audiodepth
-            self.audiowidth = obj.audiowidth
-            self.audiochannels = obj.audiochannels
-
-            self.audiolength = obj.audiolength
-            self.videolength = obj.videolength
-
-            self.is_video = obj.is_video
-            self.is_audio = obj.is_audio
-        else:
-            self.broken = True
-
-        self.loop.quit()
+        self.path = Gst.filename_to_uri(py2compat.u(path,
+            sys.getfilesystemencoding()))
 
     def inspect(self):
         # Init gobjects threads only if an inspection is initiated
         if not gobjects_threads_init:
             gobject_init()
 
-        discoverer = gst.extend.discoverer.Discoverer(self.path.encode('utf-8'))
-        discoverer.connect('discovered', self.__stream_discovered)
-        discoverer.discover()
-        self.loop.run()
+        discoverer = GstPbutils.Discoverer()
+        try:
+            info = discoverer.discover_uri(self.path)
+        except GObject.GError as e:
+            raise TranscodeError(e)
+
+        vinfo_caps = info.get_video_streams()[0].get_caps()[0]
+        self.videowidth = vinfo_caps['width']
+        self.videoheight = vinfo_caps['height']
+        return info
+
 
 class GstVideoReader(GstVideoOpener):
 
@@ -229,30 +213,30 @@ class GstVideoReader(GstVideoOpener):
         super(GstVideoReader, self).__init__(mediapath)
 
         # Output
-        self.oqueue = gst.element_factory_make("queue")
+        self.oqueue = Gst.ElementFactory.make('queue', 'Output')
         self.pipeline.add(self.oqueue)
 
     def decode_audio(self):
         # Audio
-        self.aqueue = gst.element_factory_make("queue")
+        self.aqueue = Gst.ElementFactory.make('queue', 'Audio input')
         self.pipeline.add(self.aqueue)
 
-        convert = gst.element_factory_make("audioconvert", "convert")
+        convert = Gst.ElementFactory.make('audioconvert', 'convert')
         self.pipeline.add(convert)
         self.aqueue.link(convert)
 
-        self.resample = gst.element_factory_make("audioresample", "resample")
+        self.resample = Gst.ElementFactory.make('audioresample', 'resample')
         self.pipeline.add(self.resample)
         convert.link(self.resample)
 
     def decode_video(self):
         # Video
-        self.vqueue = gst.element_factory_make("queue")
+        self.vqueue = Gst.ElementFactory.make('queue', 'Video input')
         self.pipeline.add(self.vqueue)
 
-        self.ff = gst.element_factory_make("ffmpegcolorspace")
-        self.pipeline.add(self.ff)
-        self.vqueue.link(self.ff)
+        self.colorspace = Gst.ElementFactory.make('videoconvert')
+        self.pipeline.add(self.colorspace)
+        self.vqueue.link(self.colorspace)
 
 
 class GstVideoTranscoder(GstVideoReader):
@@ -264,42 +248,42 @@ class GstVideoTranscoder(GstVideoReader):
         # Audio
         self.decode_audio()
 
-        self.audioenc = gst.element_factory_make(audiocodec, 'audioenc')
+        self.audioenc = Gst.ElementFactory.make(audiocodec, 'audioenc')
         self.pipeline.add(self.audioenc)
         self.resample.link(self.audioenc)
 
-        aoqueue = gst.element_factory_make("queue")
+        aoqueue = Gst.ElementFactory.make("queue", "Audio output")
         self.pipeline.add(aoqueue)
         self.audioenc.link(aoqueue)
 
         # Video
         self.decode_video()
 
-        self.videoenc = gst.element_factory_make(videocodec, 'videoenc')
+        self.videoenc = Gst.ElementFactory.make(videocodec, 'videoenc')
         self.pipeline.add(self.videoenc)
 
         if width is not None and height is not None:
-            self.videoscale = gst.element_factory_make('videoscale',
-                                                       'videoscale')
+            self.videoscale = Gst.ElementFactory.make('videoscale',
+                                                      'videoscale')
             self.videoscale.set_property('method', 'bilinear')
             self.pipeline.add(self.videoscale)
-            self.ff.link(self.videoscale)
-            caps_str = "video/x-raw-yuv"
+            self.colorspace.link(self.videoscale)
+            caps_str = 'video/x-raw,format=YUY2'
             caps_str += ", width=%d, height=%d" % (width, height)
             caps = gst.Caps(caps_str)
-            self.caps_filter = gst.element_factory_make("capsfilter", "filter")
+            self.caps_filter = Gst.ElementFactory.make('capsfilter', 'filter')
             self.caps_filter.set_property("caps", caps)
             self.pipeline.add(self.caps_filter)
             self.videoscale.link(self.caps_filter)
             self.caps_filter.link(self.videoenc)
         else:
-            self.ff.link(self.videoenc)
+            self.colorspace.link(self.videoenc)
 
-        voqueue = gst.element_factory_make("queue")
+        voqueue = Gst.ElementFactory.make('queue', 'Video output')
         self.pipeline.add(voqueue)
         self.videoenc.link(voqueue)
 
-        self.muxer = gst.element_factory_make(muxer, 'muxer')
+        self.muxer = Gst.ElementFactory.make(muxer, 'muxer')
         self.pipeline.add(self.muxer)
         aoqueue.link(self.muxer)
         voqueue.link(self.muxer)
@@ -308,7 +292,7 @@ class GstVideoTranscoder(GstVideoReader):
         self.muxer.link(self.oqueue)
 
         # Add output file
-        self.sink = gst.element_factory_make("filesink", "sink")
+        self.sink = Gst.ElementFactory.make('filesink', 'sink')
         self.sink.set_property("sync", False)
         self.pipeline.add(self.sink)
         self.oqueue.link(self.sink)
@@ -327,7 +311,7 @@ class OggTheoraTranscoder(GstVideoTranscoder):
     def __init__(self, mediapath):
         # Working pipeline
         # gst-launch-0.10 filesrc location=surf_luge.mov ! decodebin name=decode
-        # decode. ! queue ! ffmpegcolorspace ! theoraenc ! queue ! oggmux name=muxer
+        # decode. ! queue ! avcolorspace ! theoraenc ! queue ! oggmux name=muxer
         # decode. ! queue ! audioconvert ! vorbisenc ! queue ! muxer.
         # muxer. ! queue ! filesink location=surf_luge.ogg sync=false
 
@@ -341,7 +325,7 @@ class WebMTranscoder(GstVideoTranscoder):
     def __init__(self, mediapath, width=None, height=None):
         # Working pipeline
         # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
-        # queue ! ffmpegcolorspace ! vp8enc ! webmmux name=mux ! filesink
+        # queue ! avcolorspace ! vp8enc ! webmmux name=mux ! filesink
         # location=newfile.webm demux. ! queue ! progressreport ! audioconvert
         # ! audioresample ! vorbisenc ! mux.
         # (Thanks
@@ -352,7 +336,6 @@ class WebMTranscoder(GstVideoTranscoder):
                                              'vorbisenc', 'vp8enc', 'webmmux',
                                              width, height)
 
-        self.videoenc.set_property('quality', 7)
         self.videoenc.set_property('threads', multiprocessing.cpu_count())
 
 
@@ -362,13 +345,13 @@ class MP4Transcoder(GstVideoTranscoder):
         # Working pipeline
         # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
         # demux. ! queue ! audioconvert ! faac profile=2 ! queue !
-        # ffmux_mp4 name=muxer
-        # demux. ! queue ! ffmpegcolorspace ! x264enc pass=4 quantizer=30
+        # avmux_mp4 name=muxer
+        # demux. ! queue ! avcolorspace ! x264enc pass=4 quantizer=30
         # subme=4 threads=0 ! queue !
         # muxer. muxer. ! queue ! filesink location=newfile.mp4
 
         super(MP4Transcoder, self).__init__(mediapath,
-                                            'faac', 'x264enc', 'ffmux_mp4')
+                                            'faac', 'x264enc', 'avmux_mp4')
 
         self.audioenc.set_property('profile', 2)
 
@@ -389,41 +372,49 @@ class VideoFrameExtractor(GstVideoReader):
 
         # Grab video size when possible
         self.video_size = None
-        input_pad = self.ff.get_pad('sink')
+        input_pad = self.colorspace.get_static_pad('sink')
         input_pad.connect('notify::caps', self.cb_new_caps)
 
-        videorate = gst.element_factory_make('videorate')
+        videorate = Gst.ElementFactory.make('videorate')
         self.pipeline.add(videorate)
-        self.ff.link(videorate)
+        self.colorspace.link(videorate)
 
         # RGB is what is assumed in order to load the frame into a PIL Image.
-        self.capsfilter = gst.element_factory_make('capsfilter')
+        self.capsfilter = Gst.ElementFactory.make('capsfilter')
         self.capsfilter.set_property(
-            'caps', gst.Caps('video/x-raw-rgb,framerate=%s/1' % fps))
+            'caps',
+            Gst.Caps.from_string('video/x-raw,format=RGB,framerate=%s/1'
+                                 % fps))
         self.pipeline.add(self.capsfilter)
         videorate.link(self.capsfilter)
 
-        self.app_sink = gst.element_factory_make('appsink')
+        self.app_sink = Gst.ElementFactory.make('appsink')
         self.app_sink.set_property('emit-signals', True)
         self.app_sink.set_property('max-buffers', 10)
         self.app_sink.set_property('sync', False)
-        self.app_sink.connect('new-buffer', self.on_new_buffer)
+        self.app_sink.connect('new-sample', self.on_new_buffer)
         self.pipeline.add(self.app_sink)
         self.capsfilter.link(self.app_sink)
 
     def cb_new_caps(self, pad, args):
-        caps = pad.get_negotiated_caps()
+        caps = pad.get_current_caps()
         if not caps: return
         if 'video' in caps.to_string():
-            self.video_size = (caps[0]['width'], caps[0]['height'], )
+            (success, width) = caps.get_structure(0).get_int('width')
+            (success, height) = caps.get_structure(0).get_int('height')
+            self.video_size = (width, height)
 
     def open_frame(self, buf):
-        return PILImage.fromstring('RGB', self.video_size, buf)
+        im = PILImage.frombuffer('RGB', self.video_size, buf,
+                                 'raw', 'RGB', 0, 1)
+        return im
 
     def on_new_buffer(self, appsink):
-        buf = appsink.emit('pull-buffer')
-
+        sample = appsink.emit('pull-sample')
+        gstbuf = sample.get_buffer()
+        buf = gstbuf.extract_dup(0, gstbuf.get_size())
         self.cb_grabbed_frame_buf(buf)
+        return False
 
     def cb_grabbed_frame_buf(self, buf):
         raise NotImplementedError
@@ -441,7 +432,7 @@ class VideoFrameNthExtractor(VideoFrameExtractor):
         # We're searching for the self.frame_no'th frame.
         self.frame_index = self.frame_index + 1
         if self.frame_index == self.frame_no:
-            self.frame = self.open_frame(buf)
+            self.frame = self.open_frame(buf).copy()
             # Abord playback as frame has been found.
             self.stop_pipeline()
 
@@ -532,6 +523,7 @@ class VideoThumbnailer(object):
 if __name__ == '__main__':
     import sys
     import os
+    import py2compat
 
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -552,7 +544,12 @@ if __name__ == '__main__':
         converters[converter_type] = converter
 
     for file_path in sys.argv[2:]:
-        file_path = file_path.decode(sys.getfilesystemencoding())
+        file_path = py2compat.u(file_path, sys.getfilesystemencoding())
+
+        videoinfo = GstVideoInfo(file_path)
+        videoinfo.inspect()
+        print('Video is %dx%d' % (videoinfo.videowidth, videoinfo.videoheight))
+
         fn, ext = os.path.splitext(os.path.basename(file_path))
         for converter_type, converter in converters.items():
 
