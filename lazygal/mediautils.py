@@ -300,7 +300,7 @@ class GstVideoTranscoder(GstVideoReader):
     def convert(self, output_file):
         self.open()
 
-        output_file = output_file.encode(sys.getfilesystemencoding())
+        output_file = output_file
         self.sink.set_property("location", output_file)
 
         self.run_pipeline()
