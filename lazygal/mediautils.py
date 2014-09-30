@@ -39,12 +39,30 @@ else:
     gobjects_threads_init = False
 
 
-interrupted = False
+class InterruptHandler(object):
 
+    def __enter__(self):
+        self.interrupted = False
+        self.released = False
 
-def sigint_handler(signum, frame):
-    global interrupted
-    interrupted = True
+        self.original_handler = signal.getsignal(signal.SIGINT)
+
+        def handler(signum, frame):
+            self.release()
+            self.interrupted = True
+        signal.signal(signal.SIGINT, handler)
+
+        return self
+
+    def __exit__(self, type, value, tb):
+        self.release()
+
+    def release(self):
+        if self.released:
+            return False
+        signal.signal(signal.SIGINT, self.original_handler)
+        self.released = True
+        return True
 
 
 def gobject_init():
@@ -52,7 +70,6 @@ def gobject_init():
     GObject.threads_init()
     Gst.init(None)
     gobjects_threads_init = True
-    signal.signal(signal.SIGINT, sigint_handler)
 
 
 from PIL import Image as PILImage
@@ -114,21 +131,19 @@ class GstVideoOpener(object):
         self.progress = progress
 
     def monitor_progress(self):
-        # check if CTRL+C'd
-        if interrupted:
-            self.__post_msg('interrupted')
-
-        # check if stalled
-        stalled = False
         cp_success, current_position =\
             self.pipeline.query_position(Gst.Format.TIME)
         if self.media_duration is None:
-            md_success, self.media_duration =\
+            md_success, media_duration =\
                 self.pipeline.query_duration(Gst.Format.TIME)
+            if md_success:
+                self.media_duration = media_duration
         if self.progress is not None and self.media_duration > 0:
             self.progress.set_task_progress(100 * current_position
                                             // self.media_duration)
 
+        # check if stalled
+        stalled = False
         if current_position <= self.last_position:
             self.stalled_counter = self.stalled_counter + 1
             if self.stalled_counter >= 5:
@@ -137,10 +152,6 @@ class GstVideoOpener(object):
         else:
             self.last_position = current_position
             self.stalled_counter = 0
-
-        if interrupted or stalled or not self.running:
-            return False  # Remove timeout handler
-        return True
 
     def __stop_pipeline(self):
         self.running = False
@@ -153,27 +164,35 @@ class GstVideoOpener(object):
         self.last_position = 0
         self.stalled_counter = 0
 
-        GObject.timeout_add(1000, self.monitor_progress)
+        with InterruptHandler() as ih:
+            bus = self.pipeline.get_bus()
+            while self.running:
+                if ih.interrupted:
+                    self.__stop_pipeline()
+                    raise KeyboardInterrupt
 
-        while self.running:
-            message = self.pipeline.get_bus().poll(Gst.MessageType.ANY,
-                                                   Gst.CLOCK_TIME_NONE)
-            if message.type == Gst.MessageType.EOS:
-                self.__stop_pipeline()
-            elif message.type == Gst.MessageType.ERROR:
-                self.__stop_pipeline()
-                raise TranscodeError(message.parse_error())
-            elif message.type == Gst.MessageType.APPLICATION:
-                if message.src == self.pipeline:
-                    struct_name = message.get_structure().get_name()
-                    if struct_name == 'aborded_playback':
-                        self.__stop_pipeline()
-                    elif struct_name == 'interrupted':
-                        self.__stop_pipeline()
-                        raise KeyboardInterrupt
-                    elif struct_name == 'stalled':
-                        self.__stop_pipeline()
-                        raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
+                self.monitor_progress()
+
+                message = bus.timed_pop_filtered(1000000000,
+                                                 Gst.MessageType.EOS
+                                               | Gst.MessageType.ERROR
+                                               | Gst.MessageType.APPLICATION)
+                if message is None:
+                    continue
+
+                if message.type == Gst.MessageType.EOS:
+                    self.__stop_pipeline()
+                elif message.type == Gst.MessageType.ERROR:
+                    self.__stop_pipeline()
+                    raise TranscodeError(message.parse_error())
+                elif message.type == Gst.MessageType.APPLICATION:
+                    if message.src == self.pipeline:
+                        struct_name = message.get_structure().get_name()
+                        if struct_name == 'aborded_playback':
+                            self.__stop_pipeline()
+                        elif struct_name == 'stalled':
+                            self.__stop_pipeline()
+                            raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
         if self.progress is not None:
             self.progress.set_task_done()
