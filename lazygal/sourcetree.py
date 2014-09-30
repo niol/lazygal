@@ -187,8 +187,9 @@ class VideoFile(MediaFile):
 
     def get_size(self):
         inspector = mediautils.GstVideoInfo(self.path)
-        inspector.inspect()
-        if inspector.broken is True:
+        try:
+            inspector.inspect()
+        except mediautils.VideoError:
             self.broken = True
             return (None, None)
         return inspector.videowidth, inspector.videoheight
