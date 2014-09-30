@@ -1,3 +1,6 @@
+Lazygal 0.8.7 (2014-09-30)
+  * port to gst1 which makes lazygal fully python3 compatible
+
 Lazygal 0.8.6 (2014-09-15)
   * fix error when running without GObject
 

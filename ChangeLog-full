@@ -1,4 +1,12 @@
+Lazygal 0.8.7 (2014-09-30)
+  * fix double decode in python3
+  * remove useless test import
+  * document Gst deps
+  * correctly use video inspector
+  * port to gst1
+
 Lazygal 0.8.6 (2014-09-15)
+  * set version to 0.8.6
   * fix error when running without GObject
 
 Lazygal 0.8.5 (2014-09-07)
