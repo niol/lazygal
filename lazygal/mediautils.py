@@ -289,7 +289,7 @@ class GstVideoTranscoder(GstVideoReader):
             self.colorspace.link(self.videoscale)
             caps_str = 'video/x-raw,format=YUY2'
             caps_str += ", width=%d, height=%d" % (width, height)
-            caps = gst.Caps(caps_str)
+            caps = Gst.Caps.from_string(caps_str)
             self.caps_filter = Gst.ElementFactory.make('capsfilter', 'filter')
             self.caps_filter.set_property("caps", caps)
             self.pipeline.add(self.caps_filter)
