@@ -329,8 +329,8 @@ class OggTheoraTranscoder(GstVideoTranscoder):
 
     def __init__(self, mediapath):
         # Working pipeline
-        # gst-launch-0.10 filesrc location=surf_luge.mov ! decodebin name=decode
-        # decode. ! queue ! avcolorspace ! theoraenc ! queue ! oggmux name=muxer
+        # gst-launch-1.0 filesrc location=surf_luge.mov ! decodebin name=decode
+        # decode. ! queue ! videoconvert ! theoraenc ! queue ! oggmux name=muxer
         # decode. ! queue ! audioconvert ! vorbisenc ! queue ! muxer.
         # muxer. ! queue ! filesink location=surf_luge.ogg sync=false
 
@@ -343,8 +343,8 @@ class WebMTranscoder(GstVideoTranscoder):
 
     def __init__(self, mediapath, width=None, height=None):
         # Working pipeline
-        # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
-        # queue ! avcolorspace ! vp8enc ! webmmux name=mux ! filesink
+        # gst-launch-1.0 filesrc location=oldfile.ext ! decodebin name=demux !
+        # queue ! videoconvert ! vp8enc ! webmmux name=mux ! filesink
         # location=newfile.webm demux. ! queue ! progressreport ! audioconvert
         # ! audioresample ! vorbisenc ! mux.
         # (Thanks
