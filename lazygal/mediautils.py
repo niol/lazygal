@@ -31,12 +31,13 @@ try:
         gi.require_version('Gst', '1.0')
     except ValueError:
         raise ImportError
-    from gi.repository import GObject, GLib, Gst, GstPbutils
+    from gi.repository import GObject, GLib, Gst
 except ImportError:
     HAVE_GST = False
 else:
     HAVE_GST = True
     gobjects_threads_init = False
+    GstPbutils = False
 
 
 class InterruptHandler(object):
@@ -69,6 +70,10 @@ def gobject_init():
     global gobjects_threads_init
     GObject.threads_init()
     Gst.init(None)
+
+    global GstPbutils
+    from gi.repository import GstPbutils
+
     gobjects_threads_init = True
 
 
