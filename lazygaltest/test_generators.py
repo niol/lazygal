@@ -211,6 +211,81 @@ class TestGenerators(LazygalTestGen):
             print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
             raise
 
+    @unittest.skipIf(not has_symlinks(), 'symlinks not supported on platform')
+    def test_clean_dirsymlinks(self):
+        """
+        Check that symlinks in directory source, that should make albums
+        in dest, are not cleaned up in dest.
+        """
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'clean-destination', "true")
+        self.setup_album(config)
+
+        pics = ['img.jpg']
+        source_subgal = self.setup_subgal('subgal', pics)
+
+        # add a symlink on source that should be duplicated in dest
+        out_of_tree_subgal = os.path.join(self.get_working_path(),
+                                          'oot_subgal')
+        os.mkdir(out_of_tree_subgal)
+        self.add_img(out_of_tree_subgal, 'oot_img.jpg')
+        os.symlink(out_of_tree_subgal,
+                   os.path.join(self.source_dir, 'oot_subgal_symlink'))
+
+        dest_path = self.get_working_path()
+
+        self.album.generate(dest_path)
+
+        # all the files in subgal should be here after the first generation
+        try:
+            self.assertTrue(os.path.isdir(os.path.join(dest_path,
+                                                        'subgal')))
+            for f in ['img_thumb.jpg', 'img_small.jpg',
+                        'img_medium.jpg', 'img.html', 'img_medium.html',
+                        ]:
+                self.assertTrue(os.path.isfile(os.path.join(dest_path,
+                                                            'subgal', f)))
+            self.assertTrue(os.path.isdir(os.path.join(dest_path,
+                                                    'oot_subgal_symlink')))
+            for f in ['oot_img_thumb.jpg', 'oot_img_small.jpg',
+                        'oot_img_medium.jpg', 'oot_img.html',
+                        'oot_img_medium.html',
+                        ]:
+                self.assertTrue(os.path.isfile(os.path.join(dest_path,
+                                                    'oot_subgal_symlink', f)))
+        except AssertionError:
+            print("\n contents of dest_path after first generation: ")
+            print(sorted(os.listdir(dest_path)))
+            print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
+            raise
+
+        # remove the pic in subgal, and force a new generation
+        os.unlink(os.path.join(self.source_dir, 'subgal', 'img.jpg'))
+        os.rmdir(os.path.join(self.source_dir, 'subgal'))
+        self.album.generate(dest_path)
+
+        # only file in symlinkd gal should be there
+        try:
+            self.assertFalse(os.path.exists(os.path.join(dest_path,
+                                                         'subgal')))
+            for f in ['img_thumb.jpg', 'img_small.jpg',
+                        'img_medium.jpg', 'img.html', 'img_medium.html',
+                        ]:
+                self.assertFalse(os.path.exists(os.path.join(dest_path,
+                                                             'subgal', f)))
+            self.assertTrue(os.path.isdir(os.path.join(dest_path,
+                                                    'oot_subgal_symlink')))
+            for f in ['oot_img_thumb.jpg', 'oot_img_small.jpg',
+                        'oot_img_medium.jpg', 'oot_img.html',
+                        'oot_img_medium.html',
+                        ]:
+                self.assertTrue(os.path.isfile(os.path.join(dest_path,
+                                                    'oot_subgal_symlink', f)))
+        except AssertionError:
+            print("\n contents of dest_path after first generation: ")
+            print(sorted(os.listdir(dest_path)))
+            print(sorted(os.listdir(os.path.join(dest_path, 'subgal'))))
+            raise
 
     @unittest.skipIf(not has_symlinks(), 'symlinks not supported on platform')
     def test_originals_symlinks(self):
