@@ -641,7 +641,8 @@ class WebalbumDir(make.FileMakeObject):
                                             DEST_SHARED_DIRECTORY_NAME))
 
         dirnames = [d.source_dir.name for d in self.subgals]
-        expected_dirs = map(lambda dn: os.path.join(self.path, dn), dirnames)
+        expected_dirs = list(map(lambda dn: os.path.join(self.path, dn),
+                             dirnames))
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
             # FIXME: No clue why this happens, but it happens!
