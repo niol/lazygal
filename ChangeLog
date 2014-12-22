@@ -1,3 +1,7 @@
+Lazygal 0.8.8 (2014-10-22)
+  * silence gobject assertions errors at startup
+  * fix CTRL+C not working after a video has been transcoded
+
 Lazygal 0.8.7 (2014-09-30)
   * port to gst1 which makes lazygal fully python3 compatible
 

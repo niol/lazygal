@@ -1,4 +1,11 @@
+Lazygal 0.8.8 (2014-10-22)
+  * silence gobject assertions errors at startup
+  * fix pipelines in comments and use gst1
+  * port to gst1 (additional correction)
+  * fix CTRL+C not working after a video has been transcoded
+
 Lazygal 0.8.7 (2014-09-30)
+  * set version to 0.8.7
   * fix double decode in python3
   * remove useless test import
   * document Gst deps
