@@ -103,7 +103,7 @@ class TestGenerators(LazygalTestGen):
                         ]
                        )
         self.assertEqual(sorted(dest_subgal.list_foreign_files()),
-                        sorted(expected))
+                         sorted(expected))
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         expected =  map(lambda fn:
