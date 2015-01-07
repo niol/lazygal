@@ -1,14 +1,14 @@
 # Italian translation of lazygal.
 # Copyright (C) 2011 lazygal'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the lazygal package.
-# Federico Bruni <fedelogy@gmail.com>, 2011, 2014.
+# Federico Bruni <fedelogy@gmail.com>, 2011, 2014, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-09-07 21:34+0200\n"
-"PO-Revision-Date: 2014-05-01 20:16+0200\n"
+"PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
 "Language: it\n"
@@ -214,7 +214,7 @@ msgstr "lazygal versione %s"
 
 #: ../lazygal.py:171
 msgid "Bad command line: wrong number of arguments."
-msgstr ""
+msgstr "Errore nella linea di comando: numero di argomenti sbagliato."
 
 #: ../lazygal.py:175
 #, python-format
@@ -316,7 +316,7 @@ msgstr ", compito attuale %d%%"
 
 #: ../lazygal/generators.py:767
 msgid "Video support is disabled: could not load GStreamer"
-msgstr ""
+msgstr "Il supporto video è disabilitato: impossibile caricare GStreamer"
 
 #: ../lazygal/generators.py:771
 #, python-format
@@ -534,7 +534,7 @@ msgstr "Generato da"
 
 #: ../themes/default/dirindex.thtml:77 ../themes/default/browse.thtml:53
 msgid "on"
-msgstr ""
+msgstr "il"
 
 #: ../themes/default/browse.thtml:42
 msgid "previous"
