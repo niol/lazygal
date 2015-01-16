@@ -328,9 +328,11 @@
         </term>
         <listitem>
           <para>Sort order for images in a subgallery, among 'mtime',
-          'filename', numeric, or 'exif'. (default is 'exif' which is by EXIF date if
-          EXIF data is available, filename otherwise, sorting EXIF-less
-          images before). 'numeric' does a numeric sort on the numeric part of the filename.  Add ':reverse' to reverse the sort order
+          'filename', 'numeric', or 'exif'. (default is 'exif' which is by
+          EXIF date if EXIF data is available, filename otherwise,
+          sorting EXIF-less images before). 'numeric' does a numeric sort on
+          the numeric part of the filename.  Add ':reverse' to reverse the
+          sort order
           (e.g. <option>--pic-sort-by=mtime:reverse</option>).</para>
         </listitem>
       </varlistentry>
@@ -341,8 +343,9 @@
         </term>
         <listitem>
           <para>Sort order for subgalleries, among 'exif' (EXIF date of the
-          latest picture in sub-gallery), 'mtime', 'dirname', or numeric (default is
-          'dirname'). 'numeric' does a numeric sort on the numeric part of the dirname. Add ':reverse' to reverse the sort order
+          latest picture in sub-gallery), 'mtime', 'dirname', or 'numeric'
+          (default is 'dirname'). 'numeric' does a numeric sort on the
+          numeric part of the dirname. Add ':reverse' to reverse the sort order
           (e.g. <option>--subgal-sort-by=dirname:reverse</option>).
           </para>
         </listitem>
