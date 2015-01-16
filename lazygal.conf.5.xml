@@ -145,6 +145,14 @@ foo = bar
       </varlistentry>
 
       <varlistentry>
+        <term>exclude</term>
+        <listitem>
+          <para>Same as <option>--exclude=<replaceable>PATTERN</replaceable></option>
+          in &lazygal;.  Multiple values may be separated by commas.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>dir-flattening-depth</term>
         <listitem>
           <para>Same as <option>--dir-flattening-depth=<replaceable>LEVEL</replaceable></option>

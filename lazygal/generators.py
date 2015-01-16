@@ -797,6 +797,8 @@ class Album(object):
         self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
 
         self.set_theme(self.config.get('global', 'theme'))
+        self.excludes = self.config.getlist('global', 'exclude') +
+                        self.config.getlist('global', 'exclude_args')
 
         self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
 
@@ -845,7 +847,7 @@ class Album(object):
             }
             for root, dirnames, filenames in pathutils.walk(self.source_dir):
                 dir_medias = len([f for f in filenames\
-                                  if sourcetree.MediaHandler.is_known_media(f)])
+                                  if sourcetree.MediaHandler.is_known_media(f, self)])
                 self.__statistics['total'] = self.__statistics['total']\
                                              + dir_medias
                 self.__statistics['bydir'][root] = dir_medias
@@ -883,7 +885,7 @@ class Album(object):
 
             checked_dir = sourcetree.File(root, self)
 
-            if checked_dir.should_be_skipped():
+            if checked_dir.should_be_skipped(self.excludes):
                 logging.debug(_("(%s) has been skipped"), checked_dir.path)
                 continue
             if checked_dir.path == os.path.join(sane_dest_dir,

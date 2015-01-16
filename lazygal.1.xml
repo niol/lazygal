@@ -187,6 +187,19 @@
 
       <varlistentry>
         <term>
+          <option>--excludes=<replaceable>PATTERN</replaceable></option>
+        </term>
+        <listitem>
+          <para>Specify a file pattern (or name) which should be
+          ignored during processing.  May be specified more than once.
+          Values given here will be in addition to those specified in
+          configuration files.
+          </para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
           <option>--check-all-dirs</option>
         </term>
         <listitem>

@@ -156,6 +156,9 @@ parser.add_option("", "--subgal-sort-by",
 parser.add_option("", "--filter-by-tag", type="string",
                   action="append", metavar=_('TAG'),
                   dest="filter_by_tag", help=_("Only include in the gallery pics whose IPTC keywords match the supplied filter(s)."))
+parser.add_option("", "--exclude", type="string",
+                  action="append", metavar=_('PATTERN'),
+                  dest="exclude", help=_("Regular expression pattern(s) describing directories or filenames to exclude from consideration."))
 parser.add_option("", "--keep-gps-data",
                   action="store_true",
                   dest="keep_gps",
@@ -201,6 +204,8 @@ if options.puburl is not None:
     cmdline_config.set('global', 'puburl', options.puburl)
 if options.theme is not None:
     cmdline_config.set('global', 'theme', options.theme)
+if options.exclude is not None:
+    cmdline_config.set('global', 'exclude_args', options.exclude)
 
 if options.default_style is not None:
     cmdline_config.set('webgal', 'default-style', options.default_style)

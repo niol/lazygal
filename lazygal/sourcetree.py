@@ -21,6 +21,7 @@ import time
 import re
 import locale
 import logging
+import fnmatch
 from PIL import Image
 
 from . import py2compat
@@ -92,14 +93,13 @@ class File(make.FileSimpleDependency):
                 raise RuntimeError(_('Root not found'))
         return album_level
 
-    SKIPPED_DIRS = ('.svn', '_darcs', '.bzr', '.git', '.hg', 'CVS', )
-
-    def should_be_skipped(self):
+    def should_be_skipped(self, excludes):
         head = self.strip_root()
         while head != '':
             head, tail = os.path.split(head)
-            if tail in File.SKIPPED_DIRS:
-                return True
+            for pattern in excludes:
+                if fnmatch.fnmatch(tail, pattern):
+                    return True
         return False
 
     def get_datetime(self):
@@ -225,12 +225,20 @@ class MediaHandler(object):
         self.album = album
 
     @staticmethod
-    def is_known_media(path):
+    def is_known_media(path, album):
+        tail = os.path.basename(path)
+        for pattern in album.excludes:
+            if fnmatch.fnmatch(tail, pattern):
+                return False
         filename, extension = os.path.splitext(path)
         extension = extension.lower()
         return extension in MediaHandler.FORMATS.keys()
 
     def get_media(self, path):
+        tail = os.path.basename(path)
+        for pattern in self.album.excludes:
+            if fnmatch.fnmatch(tail, pattern):
+                return None
         filename, extension = os.path.splitext(path)
         extension = extension.lower()
         if extension in MediaHandler.FORMATS.keys():
