@@ -18,6 +18,7 @@
 
 import os
 import time
+import re
 import locale
 import logging
 from PIL import Image
@@ -124,6 +125,14 @@ class MediaFile(File):
             return (1, self.get_date_taken().timestamp())
         else:
             return (0, self.filename)
+
+    def name_numeric(self):
+        numeric_part = re.sub("\D", "", self.filename)
+        if numeric_part:
+            return int(re.sub("\D", "", self.filename))
+        else:
+            return 0
+
 
 
 class ImageFile(MediaFile):
@@ -379,6 +388,13 @@ class Directory(File):
                     media_stamp_max = media_stamp
 
         return media_stamp_max
+
+    def name_numeric(self):
+        numeric_part = re.sub("\D", "", self.name)
+        if numeric_part:
+            return int(re.sub("\D", "", self.name))
+        else:
+            return 0
 
 
 # vim: ts=4 sw=4 expandtab

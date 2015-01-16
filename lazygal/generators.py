@@ -72,6 +72,8 @@ class SubgalSort(make.MakeTask):
             subgal_sortkey = lambda x: x.source_dir.latest_media_stamp()
         elif self.webgal_dir.subgal_sort_by[0] == 'mtime':
             subgal_sortkey = lambda x: x.source_dir.get_mtime()
+        elif self.webgal_dir.subgal_sort_by[0] == 'numeric':
+            subgal_sortkey = lambda x: x.source_dir.name_numeric()
         elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
                 or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
             subgal_sortkey = lambda x: x.source_dir.filename
@@ -85,6 +87,8 @@ class SubgalSort(make.MakeTask):
             sortkey = lambda x: x.media.sortkey()
         elif self.webgal_dir.pic_sort_by[0] == 'mtime':
             sortkey = lambda x: x.media.get_mtime()
+        elif self.webgal_dir.pic_sort_by[0] == 'numeric':
+            sortkey = lambda x: x.media.name_numeric()
         elif self.webgal_dir.pic_sort_by[0] == 'filename':
             sortkey = lambda x: x.media.filename
         else:

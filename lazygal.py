@@ -149,10 +149,10 @@ parser.add_option("", "--webalbum-pic-type",
                   help=_("Webalbum picture type. Default is messy."))
 parser.add_option("", "--pic-sort-by",
                   action="store", metavar=_('ORDER'),
-                  dest="pic_sort_by", help=_("Sort order for images in a folder: filename, mtime, or exif. Add ':reverse' to reverse the chosen order."))
+                  dest="pic_sort_by", help=_("Sort order for images in a folder: filename, numeric, mtime, or exif. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--subgal-sort-by",
                   action="store", metavar=_('ORDER'),
-                  dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname, exif or mtime. Add ':reverse' to reverse the chosen order."))
+                  dest="subgal_sort_by", help=_("Sort order for sub galleries in a folder: dirname, numeric, exif or mtime. Add ':reverse' to reverse the chosen order."))
 parser.add_option("", "--filter-by-tag", type="string",
                   action="append", metavar=_('TAG'),
                   dest="filter_by_tag", help=_("Only include in the gallery pics whose IPTC keywords match the supplied filter(s)."))
