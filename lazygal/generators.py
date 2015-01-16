@@ -795,13 +795,13 @@ class Album(object):
             GExiv2.log_set_level(GExiv2.LogLevel.INFO)
 
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
-        self.preserves = self.config.getlist('global', 'preserve') +
-                         self.config.getlist('global', 'preserve_args')
+        self.preserves = (self.config.getlist('global', 'preserve') +
+			 self.config.getlist('global', 'preserve_args'))
         self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
 
         self.set_theme(self.config.get('global', 'theme'))
-        self.excludes = self.config.getlist('global', 'exclude') +
-                        self.config.getlist('global', 'exclude_args')
+        self.excludes = (self.config.getlist('global', 'exclude') +
+                        self.config.getlist('global', 'exclude_args'))
 
         self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
 
