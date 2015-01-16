@@ -93,11 +93,11 @@ class File(make.FileSimpleDependency):
                 raise RuntimeError(_('Root not found'))
         return album_level
 
-    def should_be_skipped(self, excludes):
+    def should_be_skipped(self):
         head = self.strip_root()
         while head != '':
             head, tail = os.path.split(head)
-            for pattern in excludes:
+            for pattern in self.album.excludes:
                 if fnmatch.fnmatch(tail, pattern):
                     return True
         return False

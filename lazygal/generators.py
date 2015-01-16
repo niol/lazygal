@@ -894,7 +894,7 @@ class Album(object):
 
             checked_dir = sourcetree.File(root, self)
 
-            if checked_dir.should_be_skipped(self.excludes):
+            if checked_dir.should_be_skipped():
                 logging.debug(_("(%s) has been skipped"), checked_dir.path)
                 continue
             if checked_dir.path == os.path.join(sane_dest_dir,
