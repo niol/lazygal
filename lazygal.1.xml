@@ -181,7 +181,21 @@
         </term>
         <listitem>
           <para>Clean destination directory of files that should not
-          be there (default is to print a warning but not to delete).</para>
+          be there.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>
+          <option>--preserve=<replaceable>PATTERN</replaceable></option>
+        </term>
+        <listitem>
+          <para>Specify a file pattern (or name) which should be
+          ignored during cleanup of the destination.  May be specified
+          more than once.
+          Values given here will be in addition to those specified in
+          configuration files.
+          </para>
         </listitem>
       </varlistentry>
 

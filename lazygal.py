@@ -86,6 +86,9 @@ parser.add_option("", "--clean-destination",
                   action="store_true",
                   dest="clean_destination",
                   help=_("Clean destination directory of files that should not be there."))
+parser.add_option("", "--preserve", type="string",
+                  action="append", metavar=_('PATTERN'),
+                  dest="preserve", help=_("Specifies pathname(s) which will be ignored during final cleanup"))
 parser.add_option("-v", "--version",
                   action="store_true",
                   dest="show_version",
@@ -197,6 +200,8 @@ if options.force_gen_pages:
     cmdline_config.set('global', 'force-gen-pages', 'Yes')
 if options.clean_destination:
     cmdline_config.set('global', 'clean-destination', 'Yes')
+if options.preserve is not None:
+    cmdline_config.set('global', 'preserve_args', options.preserve)
 if options.dir_flattening_depth is not None:
     cmdline_config.set('global', 'dir-flattening-depth',
                        options.dir_flattening_depth)

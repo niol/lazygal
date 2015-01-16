@@ -22,6 +22,7 @@ import gc
 import genshi
 import sys
 import re
+import fnmatch
 import shutil
 
 from .config import LazygalConfig, LazygalWebgalConfig
@@ -794,6 +795,8 @@ class Album(object):
             GExiv2.log_set_level(GExiv2.LogLevel.INFO)
 
         self.clean_dest = self.config.getboolean('global', 'clean-destination')
+        self.preserves = self.config.getlist('global', 'preserve') +
+                         self.config.getlist('global', 'preserve_args')
         self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
 
         self.set_theme(self.config.get('global', 'theme'))
@@ -818,6 +821,12 @@ class Album(object):
         if self.clean_dest:
             # Do not delete something out of dest-dir.
             assert pathutils.is_subdir_of(context_path, file_path)
+            tail = os.path.basename(file_path)
+            for pattern in self.preserves:
+                # Do not delete something the user wants to keep.
+                if fnmatch.fnmatch(tail, pattern):
+                    logging.info('  PRESERVE %s', file_path)
+                    return
             if os.path.isdir(file_path):
                 shutil.rmtree(file_path)
             else:

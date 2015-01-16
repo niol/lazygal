@@ -145,6 +145,14 @@ foo = bar
       </varlistentry>
 
       <varlistentry>
+        <term>preserve</term>
+        <listitem>
+          <para>Same as <option>--preserve=<replaceable>PATTERN</replaceable></option>
+          in &lazygal;.  Multiple values may be separated by commas.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>exclude</term>
         <listitem>
           <para>Same as <option>--exclude=<replaceable>PATTERN</replaceable></option>
