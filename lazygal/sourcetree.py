@@ -105,6 +105,10 @@ class File(make.FileSimpleDependency):
     def get_datetime(self):
         return py2compat.datetime.fromtimestamp(self.get_mtime())
 
+    def name_numeric(self):
+        numeric_part = re.sub("\D", "", self.filename)
+        return numeric_part and int(numeric_part) or 0
+
 
 class MediaFile(File):
 
@@ -125,14 +129,6 @@ class MediaFile(File):
             return (1, self.get_date_taken().timestamp())
         else:
             return (0, self.filename)
-
-    def name_numeric(self):
-        numeric_part = re.sub("\D", "", self.filename)
-        if numeric_part:
-            return int(re.sub("\D", "", self.filename))
-        else:
-            return 0
-
 
 
 class ImageFile(MediaFile):
@@ -388,13 +384,6 @@ class Directory(File):
                     media_stamp_max = media_stamp
 
         return media_stamp_max
-
-    def name_numeric(self):
-        numeric_part = re.sub("\D", "", self.name)
-        if numeric_part:
-            return int(re.sub("\D", "", self.name))
-        else:
-            return 0
 
 
 # vim: ts=4 sw=4 expandtab
