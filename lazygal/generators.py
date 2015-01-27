@@ -748,7 +748,7 @@ class AlbumGenProgress(object):
         self.updated()
 
     def __str__(self):
-        msg = [_("Progress: ")]
+        msg = []
 
         if self._dirs_total > 0:
             msg.append("dir %d/%d (%d%%)" \
@@ -765,7 +765,7 @@ class AlbumGenProgress(object):
         if self._task_percent is not None:
             msg.append(_("current task %d%%") % self._task_percent)
 
-        return ', '.join(msg)
+        return _("Progress: %s") % ', '.join(msg)
 
     def updated(self):
         pass
