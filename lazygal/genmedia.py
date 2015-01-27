@@ -77,9 +77,9 @@ class ResizedImage(genfile.WebalbumFile):
         try:
             self.build()
         except IOError:
+            logging.error(_("  %s is BROKEN, skipped"),
+                          self.source_media.filename)
             if not self.source_media.broken:
-                logging.error(_("  %s is BROKEN, skipped"),
-                              self.source_media.filename)
                 self.source_media.broken = True
 
             # Make the system believe the file was built a long time ago.
@@ -90,7 +90,7 @@ class ResizedImage(genfile.WebalbumFile):
     def resize(self, im):
         self.source_media.get_size()  # Probe brokenness
         if self.source_media.broken:
-            raise IOError()
+            raise IOError('Failed to get media size')
 
         new_size = self.get_size()
 
