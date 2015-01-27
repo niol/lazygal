@@ -205,10 +205,7 @@ class WebalbumMediaTask(make.GroupTask):
         self.browse_pages = {}
 
         for size_name in self.webgal.browse_sizes:
-            if self.webgal.newsizers[size_name] == 'original':
-                self.resized[size_name] = self.get_original()
-            else:
-                self.resized[size_name] = self.get_resized(size_name)
+            self.resized[size_name] = self.get_resized(size_name)
             self.add_dependency(self.resized[size_name])
 
             if self.webgal.original and not self.webgal.orig_base:
