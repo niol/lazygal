@@ -637,7 +637,8 @@ Album image identifier relative/path/to/image.jpg
       <varlistentry>
         <term><filename><parameter>SOURCE_DIR</parameter>/album-picture</filename></term>
         <listitem>
-            <para>The image to use at the top of the album picture stack.</para>
+            <para>The relative path to the image to use at the top of the
+            album picture stack.</para>
         </listitem>
       </varlistentry>
 

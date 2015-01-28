@@ -460,7 +460,6 @@ class DirectoryMetadata(make.GroupTask):
                         if tag == 'album_picture':
                             if subdir is not None:
                                 data = os.path.join(subdir, data)
-                            data = os.path.join(self.dir_path, data)
 
                         metadata[tag] = data
                         break
@@ -516,7 +515,7 @@ class DirectoryMetadata(make.GroupTask):
             except IndexError:
                 picture = None
             if picture is not None:
-                result['album_picture'] = picture
+                result['album_picture'] = os.path.relpath(picture, dir.path)
 
         return result
 

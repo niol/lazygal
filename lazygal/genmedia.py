@@ -264,7 +264,7 @@ class WebalbumPicture(make.FileMakeObject):
                                          webgal_dir.source_dir.album_picture)
             if not os.path.isfile(albumpic_path):
                 logging.error(_("Supplied album picture %s does not exist."),
-                              webgal_dir.source_dir.album_picture)
+                              albumpic_path)
 
             md_dirpic_thumb = webgal_dir._add_size_qualifier(
                 webgal_dir.source_dir.album_picture, THUMB_SIZE_NAME)

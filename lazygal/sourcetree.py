@@ -298,7 +298,7 @@ class Directory(File):
             self.desc = None
 
         if 'album_picture' in md.keys():
-            self.album_picture = self.rel_path(self, md['album_picture'])
+            self.album_picture = md['album_picture']
         else:
             self.album_picture = None
 
