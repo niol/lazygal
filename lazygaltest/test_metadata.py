@@ -84,7 +84,8 @@ class TestFileMetadata(LazygalTest):
         self.album_root = Directory(self.source_dir, [], [],
                                     self.album_root.album)
 
-        self.assertEqual(img_names[0], self.album_root.album_picture)
+        self.assertEqual(os.path.join(self.source_dir, img_names[0]),
+                         self.album_root.album_picture)
 
     def test_comment_none(self):
         im_md = metadata.ImageInfoTags(self.get_sample_path('sample.jpg'))
