@@ -24,7 +24,7 @@ from xml.etree import cElementTree as ET
 from . import pathutils
 
 
-class RSS20:
+class RSS20(object):
 
     def __init__(self, link, maxitems=10):
         self.items = []
