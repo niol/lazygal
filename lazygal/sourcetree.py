@@ -115,6 +115,7 @@ class MediaFile(File):
     def __init__(self, path, album):
         File.__init__(self, path, album)
         self.broken = False
+        self._size = None
 
         comment_file_path = self.path + metadata.FILE_METADATA_MEDIA_SUFFIX
         if os.path.isfile(comment_file_path):
@@ -154,8 +155,12 @@ class ImageFile(MediaFile):
         return exif
 
     def get_size(self, img_path=None):
+        myself = False
         if not img_path:
             img_path = self.path
+            if self._size is not None:
+                return self._size
+            myself = True
 
         with open(img_path, 'rb') as im_fp:
             try:
@@ -164,6 +169,8 @@ class ImageFile(MediaFile):
                 self.broken = True
                 return (None, None)
             else:
+                if myself:
+                    self._size = im.size
                 return im.size
 
     def has_reliable_date(self):
@@ -191,13 +198,18 @@ class VideoFile(MediaFile):
     type = 'video'
 
     def get_size(self):
-        inspector = mediautils.GstVideoInfo(self.path)
-        try:
-            inspector.inspect()
-        except mediautils.VideoError:
-            self.broken = True
-            return (None, None)
-        return inspector.videowidth, inspector.videoheight
+        if self._size is None:
+            inspector = mediautils.GstVideoInfo(self.path)
+            try:
+                inspector.inspect()
+            except Exception:
+                import sys, traceback
+                traceback.print_exc(file=sys.stdout)
+                raise
+                self.broken = True
+                return (None, None)
+            self._size = inspector.videowidth, inspector.videoheight
+        return self._size
 
     def has_reliable_date(self):
         return False
