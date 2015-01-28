@@ -380,9 +380,14 @@ class TestGenerators(LazygalTestGen):
         self.album.generate(dest_dir)
 
         dest_norotate_path = os.path.join(dest_dir, 'norotate_std.jpg')
-        self.assertEqual(Image.open(dest_norotate_path).size, (800, 533, ))
+        im = Image.open(dest_norotate_path)
+        self.assertEqual(im.size, (800, 533, ))
+        im.close()
+
         dest_torotate_path = os.path.join(dest_dir, 'torotate_std.jpg')
-        self.assertEqual(Image.open(dest_torotate_path).size, (400, 600, ))
+        im = Image.open(dest_torotate_path)
+        self.assertEqual(im.size, (400, 600, ))
+        im.close()
 
     def test_feed(self):
         config = lazygal.config.LazygalConfig()

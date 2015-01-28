@@ -94,8 +94,9 @@ USER_CONFIG_PATH = os.path.expanduser('~/.lazygal/config')
 
 
 DEFAULT_CONFIG = BetterConfigParser()
-DEFAULT_CONFIG.readfp(open(os.path.join(os.path.dirname(__file__),
-                                        'defaults.conf')))
+with open(os.path.join(os.path.dirname(__file__), 'defaults.conf'))\
+as default_config_fp:
+    DEFAULT_CONFIG.readfp(default_config_fp)
 
 
 class LazygalConfigDeprecated(BaseException): pass

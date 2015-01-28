@@ -100,15 +100,16 @@ class ResizedImage(genfile.WebalbumFile):
     def save(self, im):
         calibrated = False
         while not calibrated:
-            try:
-                im.save(self.path, quality=self.webgal.quality,
-                        **self.webgal.save_options)
-            except IOError as e:
-                if str(e).startswith('encoder error'):
-                    PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
-                    continue
-                else:
-                    raise
+            with open(self.path, 'w+') as im_fp:
+                try:
+                    im.save(im_fp, 'jpeg', quality=self.webgal.quality,
+                            **self.webgal.save_options)
+                except IOError as e:
+                    if str(e).startswith('encoder error'):
+                        PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
+                        continue
+                    else:
+                        raise
             calibrated = True
 
 
@@ -147,7 +148,10 @@ class ImageOtherSize(ResizedImage):
         return self.size
 
     def get_image(self):
-        return PILImage.open(self.source_media.path)
+        with open(self.source_media.path, 'rb') as im_fp:
+            im = PILImage.open(im_fp)
+            im.load()
+            return im
 
     TRANSPOSE_METHODS = {
         90 : PILImage.ROTATE_90,

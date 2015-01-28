@@ -442,28 +442,28 @@ class DirectoryMetadata(make.GroupTask):
         if path is None or not os.path.exists(path):
             raise NoMetadata(_('Could not open metadata file %s') % path)
 
-        f = open(path, 'r')
-        for line in f:
-            for tag in MATEW_TAGS.keys():
-                tag_text = MATEW_TAGS[tag]
-                tag_len = len(tag_text)
-                if line[:tag_len] == tag_text:
-                    data = line[tag_len:]
-                    data = data.strip()
-                    # Strip quotes
-                    if data[0] == '"':
-                        data = data[1:]
-                    if data[-1] == '"':
-                        data = data[:-1]
-                    data = py2compat.u(data, FILE_METADATA_ENCODING)
+        with open(path, 'r') as f:
+            for line in f:
+                for tag in MATEW_TAGS.keys():
+                    tag_text = MATEW_TAGS[tag]
+                    tag_len = len(tag_text)
+                    if line[:tag_len] == tag_text:
+                        data = line[tag_len:]
+                        data = data.strip()
+                        # Strip quotes
+                        if data[0] == '"':
+                            data = data[1:]
+                        if data[-1] == '"':
+                            data = data[:-1]
+                        data = py2compat.u(data, FILE_METADATA_ENCODING)
 
-                    if tag == 'album_picture':
-                        if subdir is not None:
-                            data = os.path.join(subdir, data)
-                        data = os.path.join(self.dir_path, data)
+                        if tag == 'album_picture':
+                            if subdir is not None:
+                                data = os.path.join(subdir, data)
+                            data = os.path.join(self.dir_path, data)
 
-                    metadata[tag] = data
-                    break
+                        metadata[tag] = data
+                        break
 
         return metadata
 
