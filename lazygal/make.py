@@ -238,7 +238,7 @@ class FileCopy(FileMakeObject):
         self.add_file_dependency(self.src)
 
     def build(self):
-        shutil.copy(self.src, self.dst)
+        shutil.copyfile(self.src, self.dst)
 
 
 class FileSymlink(FileMakeObject):

@@ -69,6 +69,38 @@ class TestGenerators(LazygalTestGen):
                    'subgal_img_medium.jpg'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
 
+    def test_genfile_umask(self):
+        """
+        The software should honor the umask setting.
+        """
+        oldmask = os.umask(0o027)
+
+        source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
+
+        dest_path = self.get_working_path()
+
+        self.album.generate(dest_path)
+
+        target_dperms = oct(0o040750)
+        target_fperms = oct(0o0100640)
+
+        error = 'wrong perms %s instead of %s for %s'
+
+        for root, dir, files in os.walk(dest_path):
+            for f in files:
+                fpath = os.path.join(root, f)
+                fperms = oct(os.stat(fpath).st_mode)
+                self.assertEqual(fperms, target_fperms,
+                                 error % (fperms, target_fperms, fpath))
+
+        for d in ('subgal', 'shared'):
+            dpath = os.path.join(dest_path, d)
+            dperms = oct(os.stat(dpath).st_mode)
+            self.assertEqual(dperms, target_dperms,
+                             error % (dperms, target_dperms, dpath))
+
+        os.umask(oldmask)
+
     def test_spot_foreign_files(self):
         """
         Files that are not part of what was generated or updated shall be
