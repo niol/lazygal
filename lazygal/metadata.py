@@ -442,7 +442,7 @@ class DirectoryMetadata(make.GroupTask):
         if path is None or not os.path.exists(path):
             raise NoMetadata(_('Could not open metadata file %s') % path)
 
-        with open(path, 'r') as f:
+        with open(path, 'rb') as f:
             for line in f:
                 for tag in MATEW_TAGS.keys():
                     tag_text = MATEW_TAGS[tag]
@@ -455,7 +455,7 @@ class DirectoryMetadata(make.GroupTask):
                             data = data[1:]
                         if data[-1] == '"':
                             data = data[:-1]
-                        data = py2compat.u(data, FILE_METADATA_ENCODING)
+                        data = data.decode(FILE_METADATA_ENCODING)
 
                         if tag == 'album_picture':
                             if subdir is not None:
