@@ -333,8 +333,6 @@ class WebalbumDir(make.FileMakeObject):
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
         for media in self.source_dir.medias:
-            self.sort_task.add_dependency(media)
-
             if self.tagfilters and media.info() is not None:
                 # tag-filtering is requested
                 res = True
@@ -353,6 +351,8 @@ class WebalbumDir(make.FileMakeObject):
                         break
                 if res is False:
                     continue
+
+            self.sort_task.add_dependency(media)
 
             if media.type == 'image':
                 media_task = WebalbumImageTask(self, media)
