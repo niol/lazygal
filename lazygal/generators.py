@@ -328,7 +328,6 @@ class WebalbumDir(make.FileMakeObject):
         self.config = LazygalWebgalConfig(self.album.config)
         self.__configure()
 
-        tagfilters = self.config.getlist('webgal', 'filter-by-tag')
 
         self.medias = []
         self.sort_task = SubgalSort(self)
@@ -336,10 +335,10 @@ class WebalbumDir(make.FileMakeObject):
         for media in self.source_dir.medias:
             self.sort_task.add_dependency(media)
 
-            if len(tagfilters) > 0 and media.info() is not None:
+            if self.tagfilters and media.info() is not None:
                 # tag-filtering is requested
                 res = True
-                for tagf in tagfilters:
+                for tagf in self.tagfilters:
                     # concatenate the list of tags as a string of words,
                     # space-separated.  to ensure that we match the full
                     # keyword and not only a subpart of it, we also surround
@@ -488,7 +487,7 @@ class WebalbumDir(make.FileMakeObject):
 
         self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
         self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
-        self.filter_by_tag = self.config.get('webgal', 'filter-by-tag')
+        self.tagfilters = self.config.getlist('webgal', 'filter-by-tag')
 
         self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
         self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')
