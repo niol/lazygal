@@ -55,10 +55,13 @@ class TestGenerators(LazygalTestGen):
 
         self.album.generate(dest_path)
 
+        error = '%s has not been generate though it should have'
+
         # Check root dir contents
         self.assertTrue(os.path.isdir(dest_path))
         for fn in ('index.html', 'index_medium.html'):
-            self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)))
+            self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)),
+                            error % fn)
 
         # Check subgal dir contents
         dest_subgal_path = os.path.join(dest_path, 'subgal')
@@ -67,7 +70,8 @@ class TestGenerators(LazygalTestGen):
                    'subgal_img.html', 'subgal_img_medium.html',
                    'subgal_img_thumb.jpg', 'subgal_img_small.jpg',
                    'subgal_img_medium.jpg'):
-            self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)))
+            self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)),
+                            error % fn)
 
     def test_genfile_umask(self):
         """
