@@ -91,7 +91,7 @@ class TestConf(LazygalTestGen):
                          'http://example.com/album/')
         self.assertEqual(dest_gal.config.get('template-vars', 'root'), 'root')
         self.assertEqual(dest_gal.config.get('template-vars', 'gal'), 'gal')
-        self.assertRaises(configparser.NoOptionError,
+        self.assertRaises(lazygal.config.NoOptionError,
                           dest_gal.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
 
@@ -99,11 +99,70 @@ class TestConf(LazygalTestGen):
         self.assertEqual(dest_root.config.get('global', 'puburl'),
                          'http://example.com/album/')
         self.assertEqual(dest_root.config.get('template-vars', 'root'), 'root')
-        self.assertRaises(configparser.NoOptionError,
+        self.assertRaises(lazygal.config.NoOptionError,
                           dest_root.config.get, 'template-vars', 'gal')
-        self.assertRaises(configparser.NoOptionError,
+        self.assertRaises(lazygal.config.NoOptionError,
                           dest_root.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
+
+    def test_types(self):
+        config = lazygal.config.LazygalConfig()
+
+        # bool
+        for true in ('1', 'yes', 'true', 'on'):
+            config.set('runtime', 'quiet', true)
+            self.assertTrue(config.get('runtime', 'quiet') is True, true)
+        for false in ('0', 'no', 'false', 'off'):
+            config.set('runtime', 'quiet', false)
+            self.assertTrue(config.get('runtime', 'quiet') is False, false)
+
+        # int
+        config.set('webgal', 'thumbs-per-page', '2')
+        self.assertEqual(config.get('webgal', 'thumbs-per-page'), 2)
+
+        # int or false
+        config.set('global', 'dir-flattening-depth', 'False')
+        self.assertTrue(config.get('global', 'dir-flattening-depth') is False)
+        config.set('global', 'dir-flattening-depth', '2')
+        self.assertEqual(config.get('global', 'dir-flattening-depth'), 2)
+
+        # list
+        config.set('webgal', 'filter-by-tag', 'foo, bar')
+        self.assertEqual(config.get('webgal', 'filter-by-tag'), ['foo', 'bar'])
+
+        # dict
+        config.set('webgal', 'image-size', 'medium=foo, normal=bar')
+        self.assertEqual(config.get('webgal', 'image-size'),
+                         {'medium': 'foo', 'normal': 'bar'})
+
+        # order
+        config.set('webgal', 'sort-medias', 'dirname:reverse')
+        self.assertEqual(config.get('webgal', 'sort-medias'),
+                         {'order': 'dirname', 'reverse': True})
+
+        # false or string
+        config.set('webgal', 'original-baseurl', 'False')
+        self.assertTrue(config.get('webgal', 'original-baseurl') is False)
+        config.set('webgal', 'original-baseurl', './foo')
+        self.assertEqual(config.get('webgal', 'original-baseurl'), './foo')
+
+    def test_syntax(self):
+        config = lazygal.config.LazygalConfig()
+        configw = lazygal.config.LazygalWebgalConfig()
+
+        # not a valid section
+        self.assertRaises(ValueError, config.set, 'foo', 'bar', 'baz')
+        self.assertRaises(ValueError, configw.set, 'runtime', 'quiet', 'false')
+
+        # not a valid option
+        self.assertRaises(ValueError, config.set, 'webgal', 'foo', 'bar')
+
+        # basic option content parsing error
+        self.assertRaises(ValueError, config.set,
+                                      'webgal', 'dir-flattening-depth', 'foo')
+        self.assertRaises(ValueError, config.set,
+                                      'webgal', 'image-size', 'crappy')
+        self.assertRaises(ValueError, config.set, 'runtime', 'quiet', 'foo')
 
 
 if __name__ == '__main__':

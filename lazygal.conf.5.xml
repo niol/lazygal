@@ -38,22 +38,51 @@
   </refnamediv>
 
   <refsect1>
-    <title>DESCRIPTION</title>
+    <title>FORMAT DESCRIPTION</title>
 
-    <para>The configuration file is an INI like file
-    which configures <literal>lazygal</literal>. The format looks like this:
-    </para>
+    <para>&lazygal; is configured using JSON files. The format looks like
+    this:</para>
+
+<informalexample><programlisting>
+{
+    "sectionname": {
+        "variable"     : "string value ",
+        "boolean"      : false,
+        "list"         : ["foo", "bar"],
+        "dictionnary"  : {
+            "key1": "value1",
+            "key2": "value2"
+        }
+    }
+    "othersection": {
+        "foo"          : "bar"
+    }
+}
+</programlisting></informalexample>
+
+    <para>This format is the preferred way to configure &lazygal;.</para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>LEGACY FORMAT DESCRIPTION (INI)</title>
+
+    <para>The configuration file can also be an INI like file. The format
+    looks like this:</para>
 
 <informalexample><programlisting>
 [sectionname]
-variable = value
-othervariable = othervalue
+variable = string value
+boolean = Yes
+list = foo, bar
+dictionnary = key1=value1, key2=value2
 
 [othersection]
 foo = bar
 </programlisting></informalexample>
 
-    <para>Boolean values can be conveniently set in the following ways:</para>
+    <para>In this INI format, boolean values can be conveniently set in the
+    following ways:</para>
     <itemizedlist>
         <listitem>
             <para>For <literal>True</literal>:
@@ -375,8 +404,11 @@ foo = bar
       with this configuration file:</para>
 
 <programlisting>
-[template-vars]
-footer = &lt;p&gt;All pics are copyright 2011 me&lt;/p&gt;
+{
+    "template-vars": {
+        "footer": "&lt;p&gt;All pics are copyright 2011 me&lt;/p&gt;"
+    }
+}
 </programlisting>
     </example>
 

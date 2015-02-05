@@ -25,7 +25,7 @@ import re
 import fnmatch
 import shutil
 
-from .config import LazygalConfig, LazygalWebgalConfig
+from .config import LazygalConfig
 from .config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from .sourcetree import SOURCEDIR_CONFIGFILE
 from .pygexiv2 import GExiv2
@@ -69,34 +69,35 @@ class SubgalSort(make.MakeTask):
     def build(self):
         logging.info(_("  SORTING pics and subdirs"))
 
-        if self.webgal_dir.subgal_sort_by[0] == 'exif':
+        order = self.webgal_dir.subgal_sort_by['order']
+        if order == 'exif':
             subgal_sortkey = lambda x: x.source_dir.latest_media_stamp()
-        elif self.webgal_dir.subgal_sort_by[0] == 'mtime':
+        elif order == 'mtime':
             subgal_sortkey = lambda x: x.source_dir.get_mtime()
-        elif self.webgal_dir.subgal_sort_by[0] == 'numeric':
+        elif order == 'numeric':
             subgal_sortkey = lambda x: x.source_dir.name_numeric()
-        elif self.webgal_dir.subgal_sort_by[0] == 'dirname'\
-                or self.webgal_dir.subgal_sort_by[0] == 'filename':  # Backward compatibility
+        elif order == 'dirname' or order == 'filename':  # Backward compat
             subgal_sortkey = lambda x: x.source_dir.filename
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.subgal_sort_by[0])
         self.webgal_dir.subgals.sort(key=subgal_sortkey,
-                                     reverse=self.webgal_dir.subgal_sort_by[1])
+            reverse=self.webgal_dir.subgal_sort_by['reverse'])
 
-        if self.webgal_dir.pic_sort_by[0] == 'exif':
+        order = self.webgal_dir.pic_sort_by['order']
+        if order == 'exif':
             sortkey = lambda x: x.media.sortkey()
-        elif self.webgal_dir.pic_sort_by[0] == 'mtime':
+        elif order == 'mtime':
             sortkey = lambda x: x.media.get_mtime()
-        elif self.webgal_dir.pic_sort_by[0] == 'numeric':
+        elif order == 'numeric':
             sortkey = lambda x: x.media.name_numeric()
-        elif self.webgal_dir.pic_sort_by[0] == 'filename':
+        elif order == 'filename':
             sortkey = lambda x: x.media.filename
         else:
             raise ValueError(_("Unknown sorting criterion '%s'")
                              % self.webgal_dir.pic_sort_by[0])
         self.webgal_dir.medias.sort(key=sortkey,
-                                    reverse=self.webgal_dir.pic_sort_by[1])
+            reverse=self.webgal_dir.pic_sort_by['reverse'])
 
         # chain medias
         previous = None
@@ -325,7 +326,8 @@ class WebalbumDir(make.FileMakeObject):
 
         self.flattening_dir = None
 
-        self.config = LazygalWebgalConfig(self.album.config)
+        self.config = LazygalConfig()
+        self.config.load(self.album.config)
         self.__configure()
 
 
@@ -372,8 +374,7 @@ class WebalbumDir(make.FileMakeObject):
             os.makedirs(self.path)
             self.stamp_delete() # Directory did not exist, mark it as so
 
-        if self.config.getboolean('webgal', 'dirzip')\
-                and self.get_media_count() > 1:
+        if self.config.get('webgal', 'dirzip') and self.get_media_count() > 1:
             self.dirzip = genfile.WebalbumArchive(self)
             self.add_dependency(self.dirzip)
         else:
@@ -399,9 +400,8 @@ class WebalbumDir(make.FileMakeObject):
         else:
             self.break_task = None
 
-    def __parse_browse_sizes(self, sizes_string):
-        for single_def in sizes_string.split(','):
-            name, string_size = single_def.split('=')
+    def __parse_browse_sizes(self, sizes_defs):
+        for name, string_size in sizes_defs.items():
             name = py2compat.u(name, locale.getpreferredencoding())
             if name == '':
                 raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
@@ -421,17 +421,6 @@ class WebalbumDir(make.FileMakeObject):
             except newsize.NewsizeStringParseError:
                 raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (py2compat.u(size_string, locale.getpreferredencoding()), size_name, ))
 
-    def __parse_sort(self, sort_string):
-        try:
-            sort_method, reverse = sort_string.split(':')
-        except ValueError:
-            sort_method = sort_string
-            reverse = False
-        if reverse == 'reverse':
-            return sort_method, True
-        else:
-            return sort_method, False
-
     def __load_tpl_vars(self):
         # Load tpl vars from config
         tpl_vars = {}
@@ -439,7 +428,7 @@ class WebalbumDir(make.FileMakeObject):
             tpl_vars = {}
             for option in self.config.options('template-vars'):
                 try:
-                    value = self.config.getboolean('template-vars', option)
+                    value = self.config.get('template-vars', option)
                     tpl_vars[option] = value
                 except ValueError:
                     value = self.config.get('template-vars', option)
@@ -456,7 +445,8 @@ class WebalbumDir(make.FileMakeObject):
         logging.debug(_("  Trying loading gallery configs: %s"),
                       ', '.join(map(self.source_dir.strip_root,
                                     config_files)))
-        self.config.read(config_files)
+        for c in config_files:
+            self.config.load_any(c)
 
         self.browse_sizes = []
         self.newsizers = {}
@@ -472,22 +462,22 @@ class WebalbumDir(make.FileMakeObject):
             self.config.get('webgal', 'default-style'))
         self.tpl_vars.update({'styles': styles})
 
-        self.set_original(self.config.getboolean('webgal', 'original'),
-                          self.config.getstr('webgal', 'original-baseurl'),
-                          self.config.getboolean('webgal', 'original-symlink'))
+        self.set_original(self.config.get('webgal', 'original'),
+                          self.config.get('webgal', 'original-baseurl'),
+                          self.config.get('webgal', 'original-symlink'))
 
-        self.thumbs_per_page = self.config.getint('webgal', 'thumbs-per-page')
+        self.thumbs_per_page = self.config.get('webgal', 'thumbs-per-page')
 
-        self.quality = self.config.getint('webgal', 'jpeg-quality')
+        self.quality = self.config.get('webgal', 'jpeg-quality')
         self.save_options = {}
-        if self.config.getboolean('webgal', 'jpeg-optimize'):
+        if self.config.get('webgal', 'jpeg-optimize'):
             self.save_options['optimize'] = True
-        if self.config.getboolean('webgal', 'jpeg-progressive'):
+        if self.config.get('webgal', 'jpeg-progressive'):
             self.save_options['progressive'] = True
 
-        self.pic_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-medias'))
-        self.subgal_sort_by = self.__parse_sort(self.config.get('webgal', 'sort-subgals'))
-        self.tagfilters = self.config.getlist('webgal', 'filter-by-tag')
+        self.pic_sort_by = self.config.get('webgal', 'sort-medias')
+        self.subgal_sort_by = self.config.get('webgal', 'sort-subgals')
+        self.tagfilters = self.config.get('webgal', 'filter-by-tag')
 
         self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
         self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')
@@ -498,7 +488,7 @@ class WebalbumDir(make.FileMakeObject):
         except ValueError:
             logging.error(_('Bad syntax for webalbumpic-size.'))
             sys.exit(1)
-        self.keep_gps = self.config.getboolean('webgal', 'keep-gps')
+        self.keep_gps = self.config.get('webgal', 'keep-gps')
 
     def set_original(self, original=False, orig_base=None, orig_symlink=False):
         self.original = original or orig_symlink
@@ -778,35 +768,35 @@ class Album(object):
         self.config = LazygalConfig()
 
         logging.info(_("Trying loading user config %s"), USER_CONFIG_PATH)
-        self.config.read(USER_CONFIG_PATH)
+        self.config.load_any(USER_CONFIG_PATH)
 
         sourcedir_configfile = os.path.join(source_dir, SOURCEDIR_CONFIGFILE)
         if os.path.isfile(sourcedir_configfile):
             logging.info(_("Loading root config %s"), sourcedir_configfile)
             try:
-                self.config.read(sourcedir_configfile)
+                self.config.load_any(sourcedir_configfile)
             except LazygalConfigDeprecated:
                 logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."), sourcedir_configfile)
                 sys.exit(1)
         if config is not None:  # Supplied config
             self.config.load(config)
 
-        if self.config.getboolean('runtime', 'quiet'):
+        if self.config.get('runtime', 'quiet'):
             logging.getLogger().setLevel(logging.ERROR)
-        if self.config.getboolean('runtime', 'debug'):
+        if self.config.get('runtime', 'debug'):
             logging.getLogger().setLevel(logging.DEBUG)
             GExiv2.log_set_level(GExiv2.LogLevel.INFO)
 
-        self.clean_dest = self.config.getboolean('global', 'clean-destination')
-        self.preserves = (self.config.getlist('global', 'preserve') +
-			 self.config.getlist('global', 'preserve_args'))
-        self.force_gen_pages = self.config.getboolean('global', 'force-gen-pages')
+        self.clean_dest = self.config.get('global', 'clean-destination')
+        self.preserves = (self.config.get('global', 'preserve') +
+			 self.config.get('global', 'preserve_args'))
+        self.force_gen_pages = self.config.get('global', 'force-gen-pages')
 
         self.set_theme(self.config.get('global', 'theme'))
-        self.excludes = (self.config.getlist('global', 'exclude') +
-                        self.config.getlist('global', 'exclude_args'))
+        self.excludes = (self.config.get('global', 'exclude') +
+                        self.config.get('global', 'exclude_args'))
 
-        self.dir_flattening_depth = self.config.getint('global', 'dir-flattening-depth')
+        self.dir_flattening_depth = self.config.get('global', 'dir-flattening-depth')
 
         self.__statistics = None
 
@@ -867,13 +857,13 @@ class Album(object):
 
     def generate(self, dest_dir=None, progress=None):
         if dest_dir is None:
-            dest_dir = self.config.getstr('global', 'output-directory')
+            dest_dir = self.config.get('global', 'output-directory')
         else:
             dest_dir = py2compat.u(dest_dir, sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
-        pub_url = self.config.getstr('global', 'puburl')
-        check_all_dirs = self.config.getboolean('runtime', 'check-all-dirs')
+        pub_url = self.config.get('global', 'puburl')
+        check_all_dirs = self.config.get('runtime', 'check-all-dirs')
 
         if self.is_in_sourcetree(sane_dest_dir):
             raise ValueError(_("Fatal error, web gallery directory is within source tree."))

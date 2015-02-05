@@ -182,24 +182,24 @@ if not os.path.isdir(source_dir):
     sys.exit(1)
 
 
-cmdline_config = lazygal.config.BetterConfigParser()
-for section in lazygal.config.DEFAULT_CONFIG.sections():
+cmdline_config = lazygal.config.LazygalConfig()
+for section in cmdline_config.valid_sections:
     cmdline_config.add_section(section)
 
 
-if options.quiet: cmdline_config.set('runtime', 'quiet', 'Yes')
-if options.debug: cmdline_config.set('runtime', 'debug', 'Yes')
+if options.quiet: cmdline_config.set('runtime', 'quiet', True)
+if options.debug: cmdline_config.set('runtime', 'debug', True)
 if options.check_all_dirs:
-    cmdline_config.set('runtime', 'check-all-dirs', 'Yes')
+    cmdline_config.set('runtime', 'check-all-dirs', True)
 
 if options.dest_dir is not None:
     cmdline_config.set('global', 'output-directory',
                        py2compat.u(options.dest_dir,
                                    sys.getfilesystemencoding()))
 if options.force_gen_pages:
-    cmdline_config.set('global', 'force-gen-pages', 'Yes')
+    cmdline_config.set('global', 'force-gen-pages', True)
 if options.clean_destination:
-    cmdline_config.set('global', 'clean-destination', 'Yes')
+    cmdline_config.set('global', 'clean-destination', True)
 if options.preserve is not None:
     cmdline_config.set('global', 'preserve_args', options.preserve)
 if options.dir_flattening_depth is not None:
@@ -241,13 +241,13 @@ if options.orig_symlink:
         print(_("Option --orig-symlink is not available on this platform."))
         sys.exit(1)
     else:
-        cmdline_config.set('webgal', 'original-symlink', 'Yes')
+        cmdline_config.set('webgal', 'original-symlink', True)
 if options.dirzip:
-    cmdline_config.set('webgal', 'dirzip', 'Yes')
+    cmdline_config.set('webgal', 'dirzip', True)
 if options.quality is not None:
     cmdline_config.set('webgal', 'jpeg-quality', options.quality)
 if options.keep_gps:
-    cmdline_config.set('webgal', 'keep-gps', 'Yes')
+    cmdline_config.set('webgal', 'keep-gps', True)
 
 if options.tpl_vars is not None:
     cmdline_config.add_section('template-vars')

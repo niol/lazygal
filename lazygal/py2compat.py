@@ -77,4 +77,17 @@ def isunicode(s):
         return type(s) is unicode
 
 
+def isstr(s):
+    if PY3RUNNING:
+        return type(s) is str
+    else:
+        return type(s) is str or type(s) is unicode
+    return
+
+if PY3RUNNING:
+    FileNotFoundError = FileNotFoundError
+else:
+    FileNotFoundError = IOError
+
+
 # vim: ts=4 sw=4 expandtab

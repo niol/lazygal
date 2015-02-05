@@ -1,0 +1,57 @@
+{
+    "runtime": {
+        "quiet": false, 
+        "debug": false, 
+        "check-all-dirs": false
+    }, 
+    "global": {
+        "output-directory": ".", 
+        "force-gen-pages": false, 
+        "clean-destination": false, 
+        "preserve": [], 
+        "dir-flattening-depth": false, 
+        "puburl": false, 
+        "theme": "default", 
+        "exclude": [
+            ".svn", 
+            "_darcs", 
+            ".bzr", 
+            ".git", 
+            ".hg", 
+            "CVS"
+        ], 
+        "preserve_args": [], 
+        "exclude_args": []
+    }, 
+    "webgal": {
+        "default-style": "default", 
+        "webalbumpic-bg": "transparent", 
+        "webalbumpic-type": "messy", 
+        "webalbumpic-size": "200x150", 
+        "image-size": {
+            "small": "800x600", 
+            "medium": "1024x768"
+        }, 
+        "thumbnail-size": "150x113", 
+        "video-size": "0x0", 
+        "thumbs-per-page": 0, 
+        "filter-by-tag": [], 
+        "sort-medias": {
+            "order": "exif", 
+            "reverse": false
+        }, 
+        "sort-subgals": {
+            "order": "dirname", 
+            "reverse": false
+        }, 
+        "original": false, 
+        "original-baseurl": false, 
+        "original-symlink": false, 
+        "dirzip": false, 
+        "jpeg-quality": 85, 
+        "jpeg-optimize": true, 
+        "jpeg-progressive": true, 
+        "publish-metadata": true, 
+        "keep-gps": false
+    }
+}

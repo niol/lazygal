@@ -215,7 +215,7 @@ class ImageOtherSize(ResizedImage):
     def save(self, im):
         super(ImageOtherSize, self).save(im)
 
-        if self.webgal.config.getboolean('webgal', 'publish-metadata'):
+        if self.webgal.config.get('webgal', 'publish-metadata'):
             self.copy_metadata()
 
 
