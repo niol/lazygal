@@ -36,7 +36,7 @@ except ImportError:
     HAVE_GST = False
 else:
     HAVE_GST = True
-    gobjects_threads_init = False
+    gst_init = False
     GstPbutils = False
 
 
@@ -66,15 +66,14 @@ class InterruptHandler(object):
         return True
 
 
-def gobject_init():
-    global gobjects_threads_init
-    GObject.threads_init()
+def GST_init():
+    global gst_init
     Gst.init(None)
 
     global GstPbutils
     from gi.repository import GstPbutils
 
-    gobjects_threads_init = True
+    gst_init = True
 
 
 from PIL import Image as PILImage
@@ -86,8 +85,8 @@ class TranscodeError(Exception): pass
 class GstVideoOpener(object):
 
     def __init__(self, input_file):
-        if not gobjects_threads_init:
-            gobject_init()
+        if not gst_init:
+            GST_init()
 
         self.input_file = py2compat.u(input_file,
                                       sys.getfilesystemencoding())
@@ -216,8 +215,8 @@ class GstVideoInfo(object):
 
     def inspect(self):
         # Init gobjects threads only if an inspection is initiated
-        if not gobjects_threads_init:
-            gobject_init()
+        if not gst_init:
+            GST_init()
 
         discoverer = GstPbutils.Discoverer()
         try:
