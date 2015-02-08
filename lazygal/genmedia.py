@@ -229,7 +229,7 @@ class VideoThumb(ResizedImage):
     def get_image(self):
         try:
             thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
-        except mediautils.TranscodeError as e:
+        except mediautils.VideoError as e:
             logging.error(_("  creating %s thumbnail failed, skipped"),
                           self.source_media.filename)
             logging.info(str(e))
@@ -320,7 +320,7 @@ class WebVideo(genfile.WebalbumFile):
                                                    self.new_height)
             transcoder.set_progress(self.progress)
             transcoder.convert(self.path)
-        except mediautils.TranscodeError as e:
+        except mediautils.VideoError as e:
             logging.error(_("  transcoding %s failed, skipped"),
                           self.source_video.filename)
             logging.info(str(e))

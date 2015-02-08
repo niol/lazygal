@@ -202,10 +202,7 @@ class VideoFile(MediaFile):
             inspector = mediautils.GstVideoInfo(self.path)
             try:
                 inspector.inspect()
-            except Exception:
-                import sys, traceback
-                traceback.print_exc(file=sys.stdout)
-                raise
+            except mediautils.VideoError:
                 self.broken = True
                 return (None, None)
             self._size = inspector.videowidth, inspector.videoheight
