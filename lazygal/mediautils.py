@@ -80,7 +80,7 @@ def gobject_init():
 from PIL import Image as PILImage
 
 
-class TranscodeError(Exception): pass
+class VideoError(Exception): pass
 
 
 class GstVideoOpener(object):
@@ -189,7 +189,7 @@ class GstVideoOpener(object):
                     self.__stop_pipeline()
                 elif message.type == Gst.MessageType.ERROR:
                     self.__stop_pipeline()
-                    raise TranscodeError(message.parse_error())
+                    raise VideoError(message.parse_error())
                 elif message.type == Gst.MessageType.APPLICATION:
                     if message.src == self.pipeline:
                         struct_name = message.get_structure().get_name()
@@ -197,7 +197,7 @@ class GstVideoOpener(object):
                             self.__stop_pipeline()
                         elif struct_name == 'stalled':
                             self.__stop_pipeline()
-                            raise TranscodeError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
+                            raise VideoError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
         if self.progress is not None:
             self.progress.set_task_done()
@@ -223,7 +223,7 @@ class GstVideoInfo(object):
         try:
             info = discoverer.discover_uri(self.path)
         except GObject.GError as e:
-            raise TranscodeError(e)
+            raise VideoError(e)
 
         vinfo_caps = info.get_video_streams()[0].get_caps()[0]
         self.videowidth = vinfo_caps['width']
