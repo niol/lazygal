@@ -29,6 +29,7 @@ from lazygal.generators import Album
 
 SAMPLES_DIR = os.path.dirname(__file__)
 SAMPLE_IMG = os.path.join(SAMPLES_DIR, 'sample.jpg')
+SAMPLE_VIDEO_MOV = os.path.join(SAMPLES_DIR, 'vid.mov')
 
 
 # Init i18n
@@ -70,6 +71,11 @@ class LazygalTest(unittest.TestCase):
         shutil.copy(SAMPLE_IMG, img_path)
         return img_path
 
+    def add_video(self, dest_dir, name):
+        vid_path = os.path.join(dest_dir, name)
+        shutil.copy(SAMPLE_VIDEO_MOV, vid_path)
+        return vid_path
+
     def create_file(self, path, contents=''):
         with codecs.open(path, 'w', 'utf-8') as f:
             f.write(contents)
@@ -94,12 +100,15 @@ class LazygalTestGen(LazygalTest):
     def setup_album(self, config=None):
         self.album = Album(self.source_dir, config)
 
-    def setup_subgal(self, name, pic_names):
+    def setup_subgal(self, name, pic_names, vid_names=None):
         subgal_path = os.path.join(self.source_dir, name)
         if not os.path.isdir(subgal_path):
             os.mkdir(subgal_path)
         for pic_name in pic_names:
             self.add_img(subgal_path, pic_name)
+        if vid_names:
+            for vid_name in vid_names:
+                self.add_video(subgal_path, vid_name)
 
         return Directory(subgal_path, [], pic_names, self.album)
 

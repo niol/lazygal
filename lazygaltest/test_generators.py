@@ -542,6 +542,34 @@ class TestGenerators(LazygalTestGen):
             print(os.listdir(dest_dir))
             raise
 
+    def test_withvideo(self):
+        source_subgal = self.setup_subgal('subgal', [], ['vid.mov'])
+
+        # create empty video file to ensure nothing crashes
+        self.create_file(os.path.join(source_subgal.path, 'vid_broken.mov'))
+
+        dest_path = self.get_working_path()
+
+        self.album.generate(dest_path)
+
+        error = '%s has not been generate though it should have'
+
+        # Check root dir contents
+        self.assertTrue(os.path.isdir(dest_path))
+        for fn in ('index.html', 'index_medium.html'):
+            self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)),
+                            error % fn)
+
+        # Check subgal dir contents
+        dest_subgal_path = os.path.join(dest_path, 'subgal')
+        self.assertTrue(os.path.isdir(dest_subgal_path))
+        for fn in ('index.html', 'index_medium.html',
+                   'vid.html', 'vid_medium.html', 'vid_thumb.jpg',
+                   'vid_video.webm'):
+            self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)),
+                            error % fn)
+
+
 class TestSpecialGens(LazygalTestGen):
 
     def setUp(self):
