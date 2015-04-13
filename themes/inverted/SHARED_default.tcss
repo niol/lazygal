@@ -315,10 +315,6 @@ Pagination
 List of sub-galleries
 =============== */
 .sub_gallery_link {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
     background-color: #FFFFFF;
     border-color: #DCDCDC #DCDCDC #E1E1E1;
     border-radius: 0 0 0 0;
@@ -332,10 +328,6 @@ List of sub-galleries
 }
 
 .sub_gallery_image img {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
     background-color: #FFFFFF;
     border: 0 solid #666666;
     border-radius: 0 0 0 0;
@@ -396,10 +388,6 @@ Thumbs
 }
 
 .thumb_image {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    -ms-box-sizing: border-box;
-    box-sizing: border-box;
     background-color: #F1F1F1;
     border: 1px solid #DCDCDC;
     border-radius: 6px 6px 6px 6px;
