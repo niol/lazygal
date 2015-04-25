@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 # Lazygal, a lazy static web gallery generator.
 # Copyright (C) 2007-2012 Michal Čihař, Mickaël Royer, Alexandre Rossi
