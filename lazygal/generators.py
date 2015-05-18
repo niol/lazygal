@@ -765,7 +765,7 @@ class Album(object):
         if not mediautils.HAVE_GST:
             logging.warning(_('Video support is disabled: could not load GStreamer'))
 
-        self.config = LazygalConfig()
+        self.config = LazygalConfig(load_defaults=True)
 
         logging.info(_("Trying loading user config %s"), USER_CONFIG_PATH)
         self.config.load_any(USER_CONFIG_PATH)

@@ -44,6 +44,8 @@ class TestConf(LazygalTestGen):
         config.add_section('template-vars')
         config.set('template-vars', 'foo', 'root')
         config.set('template-vars', 'root', 'root')
+        config.add_section('webgal')
+        config.set('webgal', 'image-size', 'normal=800x600')
         with open(os.path.join(self.source_dir, '.lazygal'), 'a') as f:
             config.write(f)
 
@@ -85,6 +87,8 @@ class TestConf(LazygalTestGen):
                          'subgal')
         self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
                          'subgal')
+        self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
 
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         self.assertEqual(dest_gal.config.get('global', 'puburl'),
@@ -94,6 +98,8 @@ class TestConf(LazygalTestGen):
         self.assertRaises(lazygal.config.NoOptionError,
                           dest_gal.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
+        self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
 
         dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
         self.assertEqual(dest_root.config.get('global', 'puburl'),
@@ -104,6 +110,8 @@ class TestConf(LazygalTestGen):
         self.assertRaises(lazygal.config.NoOptionError,
                           dest_root.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
+        self.assertEqual(dest_root.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
 
     def test_types(self):
         config = lazygal.config.LazygalConfig()

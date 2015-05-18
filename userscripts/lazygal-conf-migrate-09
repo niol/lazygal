@@ -22,7 +22,7 @@ import lazygal.config
 
 
 def config_to_0_9(file_path):
-    newconfig = lazygal.config.LazygalConfig(defaults=False)
+    newconfig = lazygal.config.LazygalConfig()
     newconfig.load_ini(file_path)
     return newconfig.c
 

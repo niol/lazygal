@@ -217,13 +217,12 @@ STRING_TO_JSON = collections.OrderedDict({
 class LazygalConfig(object):
     valid_sections = ('runtime', 'global', 'webgal', 'template-vars', )
 
-    def __init__(self, defaults=True):
+    def __init__(self, load_defaults=False):
         self.c = collections.OrderedDict()
+        self.valid_options = {s:[] for s in self.valid_sections}
 
-        self.__defaults_in = False
-        if defaults:
-            self.load_file(DEFAULT_CONFIG_PATH)
-            self.__defaults_in = True
+        self.load(self.load_file(DEFAULT_CONFIG_PATH),
+                  defaults=True, setvalue=load_defaults)
 
     def has_section(self, section):
         return section in self.c
@@ -250,8 +249,7 @@ class LazygalConfig(object):
     def set(self, section, option, value):
         self.add_section(section)
 
-        if not self.__defaults_in or option in self.c[section]\
-        or section == 'template-vars':
+        if option in self.valid_options[section] or section == 'template-vars':
             if py2compat.isstr(value)\
             and section in STRING_TO_JSON\
             and option in STRING_TO_JSON[section]:
@@ -261,13 +259,19 @@ class LazygalConfig(object):
             raise ValueError(_("option '%s' is not valid in section '%s'")
                                 % (option, section))
 
-    def load(self, newconf):
+    def load(self, newconf, setvalue=True, defaults=False):
         for section, s in newconf.items():
+            if defaults and section not in self.valid_sections:
+                continue # ignore default section loading
+
             for k, v in s.items():
-                try:
-                    self.set(section, k, v)
-                except ValueError as e:
-                    logging.warning(_('Ignoring option: %s') % e.args[0])
+                if defaults:
+                    self.valid_options[section].append(k)
+                if not defaults or (defaults and setvalue):
+                    try:
+                        self.set(section, k, v)
+                    except ValueError as e:
+                        logging.warning(_('Ignoring option: %s') % e.args[0])
 
     def load_file(self, path):
         newconf = None
@@ -276,7 +280,7 @@ class LazygalConfig(object):
                 newconf = json.load(json_fp)
         except py2compat.FileNotFoundError:
             return
-        self.load(newconf)
+        return newconf
 
     def load_inifile(self, path):
         iniconf = LazygalIniConfig(defaults=False)
