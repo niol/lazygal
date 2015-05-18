@@ -238,6 +238,8 @@ class FileCopy(FileMakeObject):
         self.add_file_dependency(self.src)
 
     def build(self):
+        if os.path.islink(self.dst):
+            os.remove(self.dst)
         shutil.copyfile(self.src, self.dst)
 
 
