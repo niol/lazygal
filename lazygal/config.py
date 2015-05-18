@@ -22,6 +22,7 @@ try:
     import configparser
 except ImportError: # py2compat
     import ConfigParser as configparser
+    configparser.read_file = configparser.readfp
 import collections
 import functools
 import json
@@ -281,7 +282,7 @@ class LazygalConfig(object):
         iniconf = LazygalIniConfig(defaults=False)
         try:
             with open(path) as fp:
-                iniconf.readfp(fp)
+                iniconf.read_file(fp)
         except py2compat.FileNotFoundError:
             return
 
