@@ -15,6 +15,8 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+
+import sys
 import os
 
 
@@ -35,26 +37,33 @@ else:
 
 
 def get_hg_rev():
-    try:
-        lazygal_dir = os.path.join(os.path.dirname(__file__), '..')
-        if not os.path.isdir(os.path.join(lazygal_dir, '.hg')):
-            raise IOError
-
-        import mercurial.hg
-        import mercurial.node
-        import mercurial.ui
-        repo = mercurial.hg.repository(mercurial.ui.ui(), lazygal_dir)
-
-        last_revs = repo.changelog.parents(repo.dirstate.parents()[0])
-        known_tags = repo.tags().items()
-        for tag, rev in known_tags:
-            if tag != 'tip':
-                for last_rev in last_revs:
-                    if rev == last_rev:
-                        # This is a tagged revision, assume this is a release.
-                        return ''
-        return mercurial.node.short(last_revs[0])
-    except (IOError, OSError, ImportError):
+    hgdir = os.path.join(os.path.dirname(__file__), '..', '.hg')
+    if os.path.isdir(hgdir):
+        import subprocess
+        last_revision_cache = os.path.join(hgdir, 'cache', 'last_revision')
+        if os.path.isfile(last_revision_cache)\
+        and (os.path.getmtime(last_revision_cache) >\
+             os.path.getmtime(os.path.join(hgdir, 'store', '00changelog.i'))):
+            with open(last_revision_cache, 'r') as fp:
+                return fp.read()
+        else:
+            try:
+                o = subprocess.check_output(('hg', 'head',
+                        '--repository', os.path.join(hgdir, '..'),
+                        '-T', '{node|short},{tag}'))
+            except subprocess.CalledProcessError:
+                os.unlink(last_revision_cache)
+                return ''
+            else:
+                rev, tag = o.decode(sys.getdefaultencoding()).split(',')
+                if tag:
+                    # This is a tagged revision, thus a release
+                    return ''
+                else:
+                    with open(last_revision_cache, 'w') as fp:
+                        fp.write(rev)
+                    return rev
+    else:
         return ''
 
 
