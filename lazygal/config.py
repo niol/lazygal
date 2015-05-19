@@ -22,7 +22,7 @@ try:
     import configparser
 except ImportError: # py2compat
     import ConfigParser as configparser
-    configparser.read_file = configparser.readfp
+    configparser.RawConfigParser.read_file = configparser.RawConfigParser.readfp
 import collections
 import functools
 import json
