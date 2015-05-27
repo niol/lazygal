@@ -145,7 +145,9 @@ class GstVideoOpener(object):
                 self.pipeline.query_duration(Gst.Format.TIME)
             if md_success:
                 self.media_duration = media_duration
-        if self.progress is not None and self.media_duration > 0:
+
+        if self.progress is not None and self.media_duration is not None\
+        and self.media_duration > 0:
             self.progress.set_task_progress(100 * current_position
                                             // self.media_duration)
 
