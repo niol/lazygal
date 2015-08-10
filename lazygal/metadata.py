@@ -144,8 +144,7 @@ class ImageInfoTags(object):
         software when editing photos later.
         """
         for tag in ('Exif.Photo.DateTimeOriginal',
-                    'Exif.Image.DateTimeDigitized',
-                    'Exif.Image.DateTime',
+                    'Exif.Photo.DateTimeDigitized',
                    ):
             try:
                 dt_str = self._metadata[tag]
