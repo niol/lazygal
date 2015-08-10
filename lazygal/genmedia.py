@@ -187,7 +187,10 @@ class ImageOtherSize(ResizedImage):
         imgtags = GExiv2.Metadata(self.source_media.path)
         dest_imgtags = GExiv2.Metadata(self.path)
         for tag in imgtags.get_exif_tags():
-            dest_imgtags[tag] = imgtags[tag]
+            try:
+                dest_imgtags[tag] = imgtags[tag]
+            except UnicodeDecodeError:
+                logging.warning(_("Could not copy metadata tag '%s'"), tag)
 
         new_size = self.get_size()
         dest_imgtags['Exif.Photo.PixelXDimension'] = str(new_size[0])
