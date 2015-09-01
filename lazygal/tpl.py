@@ -243,6 +243,7 @@ class Theme(object):
         style_files_mask = os.path.join(self.tpl_dir,
                                         THEME_SHARED_FILE_PREFIX + '*' + 'css')
         styles = []
+        found_default = default_style is None
         for style_tpl_file in glob.glob(style_files_mask):
             style = {}
             tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
@@ -251,9 +252,14 @@ class Theme(object):
             if default_style is not None:
                 if style['filename'] == default_style:
                     style['rel'] = 'stylesheet'
+                    found_default = True
                 else:
                     style['rel'] = 'alternate stylesheet'
             styles.append(style)
+
+        if not found_default:
+            raise ValueError(_('Unknown default style \'%s\'') % default_style)
+
         return styles
 
 
