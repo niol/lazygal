@@ -248,6 +248,17 @@ class ImageInfoTags(object):
         except UnicodeDecodeError:
             return encoded_string.decode(encoding, 'replace')
 
+    def _tag_fallback_to_encoding(self, tag, encoding=FALLBACK_ENCODING):
+        try:
+            v = self._metadata[tag]
+        except UnicodeDecodeError:
+            try:
+                v = self._metadata.get_raw(tag)
+            except AttributeError: # GExiv2 < 0.10.3
+                logging.warning(_("Encoding for '%s' is bad, ignoring"), tag)
+                v = ''
+        return self._fallback_to_encoding(v, encoding)
+
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00\n')
         ret = decode_exif_user_comment(ret, self.image_path)
@@ -364,8 +375,7 @@ class ImageInfoTags(object):
 
     def get_authorship(self):
         try:
-            author = self._metadata['Exif.Image.Artist']
-            return self._fallback_to_encoding(author)
+            return self._tag_fallback_to_encoding('Exif.Image.Artist')
         except KeyError:
             return ''
 
