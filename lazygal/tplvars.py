@@ -179,9 +179,11 @@ class Webgal(SrcPath):
         dir_info = {}
         if self.webgal.source_dir.metadata:
             dir_info.update(self.webgal.source_dir.metadata.get())
-            if 'album_description' in dir_info.keys():
-                dir_info['album_description'] =\
-                    self.page._do_not_escape(dir_info['album_description'])
+
+        for html_key in ('album_name', 'album_description'):
+            if html_key in dir_info:
+                dir_info[html_key] =\
+                    self.page._do_not_escape(dir_info[html_key])
 
         if 'album_name' not in dir_info:
             dir_info['album_name'] = self.webgal.source_dir.human_name
