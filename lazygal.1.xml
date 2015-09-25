@@ -698,7 +698,7 @@ Album image identifier relative/path/to/image.jpg
     <para>Multiple configuration files are processed by &dhpackage;.
     The configuration is initially set up with the defaults. The defaults
     can be found in the &dhpackage; source distribution in
-    <filename>lazygal/defaults.conf</filename>.</para>
+    <filename>lazygal/defaults.json</filename>.</para>
 
     <para>Then, the configuration files are processed in the following order,
     each newly defined value overloading formerly defined values.</para>
