@@ -22,6 +22,8 @@ try:
     import configparser
 except ImportError: # py2compat
     import ConfigParser as configparser
+import json
+
 
 from . import LazygalTestGen
 import lazygal.config
@@ -31,10 +33,11 @@ from lazygal.sourcetree import Directory
 
 class TestConf(LazygalTestGen):
 
-    def test_perdir_conf(self):
+    def test_perdir_conf_old(self):
         """
-        Lazygal shall read configuration files in every source directory,
-        the parent directory configuration shall apply to child directories.
+        Lazygal shall read old-style configuration files in every source
+        directory, the parent directory configuration shall apply to child
+        directories.
         """
 
         os.makedirs(os.path.join(self.source_dir, 'gal', 'subgal'))
@@ -64,6 +67,94 @@ class TestConf(LazygalTestGen):
         config.set('template-vars', 'subgal', 'subgal')
         with open(os.path.join(self.source_dir, 'gal', 'subgal', '.lazygal'), 'a') as f:
             config.write(f)
+
+        config = lazygal.config.LazygalConfig()
+        config.set('global', 'puburl', 'http://example.com/album/')
+        self.setup_album(config)
+
+        source_gal = self.setup_subgal('gal', ['gal_img.jpg'])
+        source_subgal = self.setup_subgal(os.path.join('gal', 'subgal'),
+                                          ['subgal_img.jpg'])
+        source_root = Directory(self.source_dir, [source_gal], [], self.album)
+
+        dest_path = self.get_working_path()
+
+        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
+        self.assertEqual(dest_subgal.config.get('global', 'puburl'),
+                         'http://example.com/album/')
+        self.assertEqual(dest_subgal.config.get('template-vars', 'root'),
+                         'root')
+        self.assertEqual(dest_subgal.config.get('template-vars', 'gal'),
+                         'gal')
+        self.assertEqual(dest_subgal.config.get('template-vars', 'subgal'),
+                         'subgal')
+        self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
+                         'subgal')
+        self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
+
+        dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
+        self.assertEqual(dest_gal.config.get('global', 'puburl'),
+                         'http://example.com/album/')
+        self.assertEqual(dest_gal.config.get('template-vars', 'root'), 'root')
+        self.assertEqual(dest_gal.config.get('template-vars', 'gal'), 'gal')
+        self.assertRaises(lazygal.config.NoOptionError,
+                          dest_gal.config.get, 'template-vars', 'subgal')
+        self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
+        self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
+
+        dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
+        self.assertEqual(dest_root.config.get('global', 'puburl'),
+                         'http://example.com/album/')
+        self.assertEqual(dest_root.config.get('template-vars', 'root'), 'root')
+        self.assertRaises(lazygal.config.NoOptionError,
+                          dest_root.config.get, 'template-vars', 'gal')
+        self.assertRaises(lazygal.config.NoOptionError,
+                          dest_root.config.get, 'template-vars', 'subgal')
+        self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
+        self.assertEqual(dest_root.config.get('webgal', 'image-size'),
+                         {'normal': '800x600'})
+
+    def test_perdir_conf(self):
+        """
+        Lazygal shall read configuration files in every source directory,
+        the parent directory configuration shall apply to child directories.
+        """
+
+        os.makedirs(os.path.join(self.source_dir, 'gal', 'subgal'))
+
+        # src_dir/.lazygal
+        with open(os.path.join(self.source_dir, '.lazygal'), 'a') as f:
+            json.dump({
+                'template-vars': {
+                    'foo':  'root',
+                    'root': 'root',
+                },
+                'webgal': {
+                    'image-size': {
+                        'normal': '800x600',
+                    },
+                },
+            }, f)
+
+        # src_dir/gal/.lazygal
+        with open(os.path.join(self.source_dir, 'gal', '.lazygal'), 'a') as f:
+            json.dump({
+                'template-vars': {
+                    'foo': 'gal',
+                    'gal': 'gal',
+                },
+            }, f)
+
+        # src_dir/gal/subgal/.lazygal
+        with open(os.path.join(self.source_dir, 'gal', 'subgal', '.lazygal'), 'a') as f:
+            json.dump({
+                'template-vars': {
+                    'foo':    'subgal',
+                    'subgal': 'subgal',
+                },
+            }, f)
 
         config = lazygal.config.LazygalConfig()
         config.set('global', 'puburl', 'http://example.com/album/')

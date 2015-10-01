@@ -275,20 +275,14 @@ class LazygalConfig(object):
 
     def load_file(self, path):
         newconf = None
-        try:
-            with open(path, 'r') as json_fp:
-                newconf = json.load(json_fp)
-        except py2compat.FileNotFoundError:
-            return
+        with open(path, 'r') as json_fp:
+            newconf = json.load(json_fp)
         return newconf
 
     def load_inifile(self, path):
         iniconf = LazygalIniConfig(defaults=False)
-        try:
-            with open(path) as fp:
-                iniconf.read_file(fp)
-        except py2compat.FileNotFoundError:
-            return
+        with open(path) as fp:
+            iniconf.read_file(fp)
 
         for s in iniconf.sections():
             for key, value in iniconf.items(s):
@@ -298,8 +292,12 @@ class LazygalConfig(object):
                     logging.warning(_('Ignoring option: %s') % e.args[0])
 
     def load_any(self, path):
+        if not os.path.isfile(path):
+            logging.debug(_('Cannot load non-existent config %s.') % path)
+            return
+
         try:
-            self.load_file(path)
+            self.load(self.load_file(path))
         except ValueError:
             try:
                 self.load_inifile(path)
