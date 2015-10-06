@@ -216,8 +216,7 @@ class GstVideoOpener(object):
 class GstVideoInfo(object):
 
     def __init__(self, path):
-        self.path = Gst.filename_to_uri(py2compat.u(path,
-            sys.getfilesystemencoding()))
+        self.path = py2compat.u(path, sys.getfilesystemencoding())
 
     def inspect(self):
         # Init gobjects threads only if an inspection is initiated
@@ -226,7 +225,7 @@ class GstVideoInfo(object):
 
         discoverer = GstPbutils.Discoverer()
         try:
-            info = discoverer.discover_uri(self.path)
+            info = discoverer.discover_uri(Gst.filename_to_uri(self.path))
         except GObject.GError as e:
             raise VideoError(e)
 
