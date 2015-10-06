@@ -41,6 +41,7 @@ else:
     HAVE_GST = True
     gst_init = False
     GstPbutils = False
+    gi.require_version('GstPbutils', '1.0')
 
 
 class InterruptHandler(object):

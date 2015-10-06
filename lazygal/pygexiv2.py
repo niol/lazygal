@@ -101,6 +101,8 @@ class GExiv2_withPyExiv2(object):
 
 
 try:
+    import gi
+    gi.require_version('GExiv2', '0.10')
     from gi.repository import GExiv2
 except ImportError:
     import warnings
