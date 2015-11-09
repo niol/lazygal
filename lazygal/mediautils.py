@@ -212,6 +212,9 @@ class GstVideoOpener(object):
             Gst.Structure.new_empty('aborded_playback'))
         self.pipeline.get_bus().post(msg)
 
+        if self.progress is not None:
+            self.progress.set_task_done()
+
 
 class GstVideoInfo(object):
 
