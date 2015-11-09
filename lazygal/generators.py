@@ -363,6 +363,7 @@ class WebalbumDir(make.GroupTask):
                         res = False
                         break
                 if res is False:
+                    self.media_done()
                     continue
 
             self.sort_task.add_dependency(media)
