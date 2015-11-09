@@ -253,14 +253,11 @@ class WebalbumPicture(make.FileMakeObject):
 
         self.add_dependency(webgal_dir.source_dir)
 
-        # Use already generated thumbs for better performance (lighter to
-        # rotate, etc.).
-        thumbs = [image.thumb
-                  for image in webgal_dir.get_all_medias_tasks()
-                  if image.thumb and not image.media.broken]
+        pics = [p for p in webgal_dir.source_dir.get_all_medias()
+                if not p.broken]
 
-        for thumb in thumbs:
-            self.add_dependency(thumb)
+        for p in pics:
+            self.add_dependency(p)
 
         if webgal_dir.source_dir.album_picture:
             albumpic_path = os.path.join(webgal_dir.source_dir.path,
@@ -275,13 +272,13 @@ class WebalbumPicture(make.FileMakeObject):
         else:
             md_dirpic_thumb = None
 
-        pics = [thumb.path for thumb in thumbs]
+        pic_paths = [p.path for p in pics]
 
         multipic_repr = eyecandy.WEBALBUMPIC_TYPES[webgal_dir.webalbumpic_type]
 
         # Use 800x600 as a random value to obtain a 4:3 aspect ratio (if
         # thumb size preserves aspect ratio)
-        self.dirpic = multipic_repr(pics, md_dirpic_thumb,
+        self.dirpic = multipic_repr(pic_paths, md_dirpic_thumb,
                                     bg=webgal_dir.webalbumpic_bg,
                                     result_size=webgal_dir.webalbumpic_size)
 

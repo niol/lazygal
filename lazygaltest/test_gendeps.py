@@ -38,17 +38,17 @@ class TestDeps(LazygalTestGen):
         source_subgal = self.setup_subgal('subgal', ['subgal_img.jpg'])
 
         dest_path = os.path.join(self.tmpdir, 'dst')
-        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertTrue(
-            dest_subgal.needs_build(),
+            WebalbumDir(source_subgal, [], self.album, dest_path).needs_build(),
             'Webalbum subgal has not been built and does not need build.')
 
         self.album.generate(dest_path)
-        dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
+
+        WebalbumDir(source_subgal, [], self.album, dest_path)
 
         self.assertFalse(
-            dest_subgal.needs_build(),
+            WebalbumDir(source_subgal, [], self.album, dest_path).needs_build(),
             'Webalbum subgal has been built and still needs build.')
 
     def test_dirmetadata_update(self):

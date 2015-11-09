@@ -23,6 +23,22 @@ import posixpath
 from . import pathutils
 
 
+FILESIZE_UNIT_PREFIXES = (
+    ('T', 2 ** 40),
+    ('G', 2 ** 30),
+    ('M', 2 ** 20),
+    ('K', 2 ** 10),
+)
+
+
+def format_filesize(size_bytes):
+    for unit_prefix, limit in FILESIZE_UNIT_PREFIXES:
+        if size_bytes >= limit:
+            return '%.1f %siB'\
+                    % (round(float(size_bytes) / limit, 1), unit_prefix)
+    return '%.1f B' % size_bytes
+
+
 class TemplateVariables(object):
 
     def __init__(self, page):
@@ -188,15 +204,16 @@ class Webgal(SrcPath):
         if 'album_name' not in dir_info:
             dir_info['album_name'] = self.webgal.source_dir.human_name
 
-        if self.webgal.dirzip:
+        dirzip = self.webgal.pindex.dirzip()
+        if dirzip:
             archive_rel_path = self.webgal.dirzip.rel_path(self.page.dir,
                                                            url=True)
             dir_info['dirzip'] = pathutils.url_quote(archive_rel_path)
-            dir_info['dirzip_size'] = self.page.format_filesize(self.webgal.dirzip.size())
+            dir_info['dirzip_size'] = dirzip['sizestr']
 
         dir_info['is_main'] = self.webgal is self.page.dir
 
-        dir_info['image_count'] = self.webgal.get_media_count('image')
+        dir_info['image_count'] = self.webgal.pindex.get_media_count('image')
         dir_info['subgal_count'] = len(self.webgal.source_dir.subdirs)
 
         dir_info['id'] = pathutils.url_quote(self.id())

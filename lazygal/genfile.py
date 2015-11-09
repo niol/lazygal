@@ -90,8 +90,8 @@ class SymlinkMediaOriginal(MediaOriginal):
 class WebalbumArchive(WebalbumFile):
 
     def __init__(self, webgal_dir):
-        self.path = os.path.join(webgal_dir.path,
-                                 webgal_dir.source_dir.name + '.zip')
+        self.filename = webgal_dir.source_dir.name + '.zip'
+        self.path = os.path.join(webgal_dir.path, self.filename)
         WebalbumFile.__init__(self, self.path, webgal_dir)
 
         self.add_dependency(self.dir.source_dir)

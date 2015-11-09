@@ -84,15 +84,6 @@ class WebalbumPage(genfile.WebalbumFile):
     def _do_not_escape(self, value):
         return genshi.core.Markup(value)
 
-    UNIT_PREFIXES = (('T', 2 ** 40), ('G', 2 ** 30), ('M', 2 ** 20), ('K', 2 ** 10),)
-
-    def format_filesize(self, size_bytes):
-        for unit_prefix, limit in self.UNIT_PREFIXES:
-            if size_bytes >= limit:
-                return '%.1f %siB'\
-                       % (round(float(size_bytes) / limit, 1), unit_prefix)
-        return '%.1f B' % size_bytes
-
 
 class WebalbumBrowsePage(WebalbumPage):
 
@@ -208,7 +199,7 @@ class WebalbumIndexPage(WebalbumPage):
             else:
                 logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index."), size_name, dir.path)
 
-            if self.dir.dirzip is not None:
+            if self.dir.pindex.dirzip():
                 self.add_dependency(self.dir.dirzip)
 
         for subgal in self.subgals:
@@ -324,6 +315,8 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed = feeds.RSS20(self.pub_url)
         self.item_template = self.album.theme.tpl_loader.load('feeditem.thtml')
 
+        self.webgals = []
+
     def set_title(self, title):
         self.feed.title = title
 
@@ -331,9 +324,7 @@ class WebalbumFeed(make.FileMakeObject):
         self.feed.description = description
 
     def push_dir(self, webalbumdir):
-        if webalbumdir.get_media_count() > 0:
-            self.add_dependency(webalbumdir)
-            self.__add_item(webalbumdir)
+        self.webgals.append(webalbumdir)
 
     def __add_item(self, webalbumdir):
         url = os.path.join(self.pub_url, webalbumdir.source_dir.strip_root())
@@ -342,12 +333,20 @@ class WebalbumFeed(make.FileMakeObject):
         desc_values['album_pic_path'] = \
             os.path.join(url, webalbumdir.get_webalbumpic_filename())
         desc_values['subgal_count'] = webalbumdir.get_subgal_count()
-        desc_values['picture_count'] = webalbumdir.get_media_count('image')
+        desc_values['picture_count'] = webalbumdir.pindex.get_media_count('image')
         desc_values['desc'] = webalbumdir.source_dir.desc
         desc = self.item_template.instanciate(desc_values)
 
         self.feed.push_item(webalbumdir.source_dir.title, url, desc,
                             webalbumdir.source_dir.get_mtime())
+
+    def populate_deps(self):
+        wouldbe_deps = sorted(self.webgals, key=lambda s: s.get_mtime())[-10:]
+
+        for webalbumdir in wouldbe_deps:
+            if webalbumdir.has_media():
+                self.add_dependency(webalbumdir.source_dir)
+                self.__add_item(webalbumdir)
 
     def build(self):
         logging.info(_("FEED %s"), os.path.basename(self.path))

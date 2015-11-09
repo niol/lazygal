@@ -34,6 +34,7 @@ from . import py2compat
 from . import make
 from . import pathutils
 from . import sourcetree
+from . import pindex
 from . import tpl
 from . import newsize
 from . import metadata
@@ -158,14 +159,14 @@ class SubgalBreak(make.MakeTask):
         how_many_medias = 0
         subgals_it = iter([self.webgal_dir] + self.webgal_dir.get_all_subgals())
         for subgal in subgals_it:
-            how_many_medias += subgal.get_media_count()
+            how_many_medias += subgal.pindex.get_media_count()
             galleries.append((subgal, subgal.medias))
             if how_many_medias > self.webgal_dir.thumbs_per_page:
                 self.webgal_dir.add_index_page(subgals, galleries)
                 galleries = []
                 how_many_medias = 0
 
-        if len(galleries) > 0:
+        if galleries:
             self.webgal_dir.add_index_page(subgals, galleries)
 
     def __fill_real_pagination(self):
@@ -303,7 +304,7 @@ class WebalbumVideoTask(WebalbumMediaTask):
         return self.webvideo
 
 
-class WebalbumDir(make.FileMakeObject):
+class WebalbumDir(make.GroupTask):
     """
     This is a built web gallery with its files, thumbs and reduced pics.
     """
@@ -313,12 +314,12 @@ class WebalbumDir(make.FileMakeObject):
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         if self.path.endswith(os.sep): self.path = os.path.dirname(self.path)
 
-        super(WebalbumDir, self).__init__(self.path)
+        super(WebalbumDir, self).__init__()
 
         self.progress = progress
 
         self.add_dependency(self.source_dir)
-        self.subgals = [s for s in subgals if s.get_all_media_count() > 0]
+        self._init_subgals = subgals
         for srcdir in self.source_dir.subdirs:
             self.add_dependency(srcdir)
         self.album = album
@@ -330,6 +331,16 @@ class WebalbumDir(make.FileMakeObject):
         self.config.load(self.album.config)
         self.__configure()
 
+        self.pindex = pindex.PersistentIndex(self)
+        self.add_dependency(self.pindex)
+
+    def populate_deps(self):
+        super(WebalbumDir, self).populate_deps()
+
+        self.subgals = []
+        for s in self._init_subgals:
+            if s.has_media_below():
+                self.subgals.append(s)
 
         self.medias = []
         self.sort_task = SubgalSort(self)
@@ -367,28 +378,23 @@ class WebalbumDir(make.FileMakeObject):
             self.add_dependency(media_task)
 
         # Create the directory if it does not exist
-        if not os.path.isdir(self.path) and (self.get_media_count() > 0):
+        if not os.path.isdir(self.path) and self.has_media_below():
             logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s"),
                          self.source_dir.strip_root())
             logging.debug("(%s)", self.path)
             os.makedirs(self.path)
-            self.stamp_delete() # Directory did not exist, mark it as so
 
-        if self.config.get('webgal', 'dirzip') and self.get_media_count() > 1:
+        if self.pindex.dirzip():
             self.dirzip = genfile.WebalbumArchive(self)
             self.add_dependency(self.dirzip)
-        else:
-            self.dirzip = None
+            self.pindex.add_dependency(self.dirzip)
 
         self.index_pages = []
 
-        if (self.get_all_media_count() > 0) and not self.should_be_flattened():
+        if self.has_media_below() and not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
 
             if self.thumbs_per_page > 0:
-                # FIXME: If pagination is 'on', galleries need to be sorted
-                # before being broken on multiple pages, and thus this slows
-                # down a lot the checking of a directory's need to be built.
                 self.break_task.add_dependency(self.sort_task)
 
             # This task is special because it populates dependencies. This is
@@ -549,27 +555,19 @@ class WebalbumDir(make.FileMakeObject):
             all_subgals.extend(subgal.get_all_subgals())
         return all_subgals
 
-    def get_media_count(self, media_type=None):
-        if media_type is None:
-            return len(self.medias)
+    def has_media(self):
+        if self.tagfilters:
+            return True if self.medias else False
         else:
-            typed_media_count = 0
-            for mediatask in self.medias:
-                if mediatask.media.type == media_type:
-                    typed_media_count += 1
-            return typed_media_count
+            return True if self.source_dir.medias else False
 
-    def get_all_media_count(self):
-        count = len(self.medias)
-        for subgal in self.subgals:
-            count += subgal.get_all_media_count()
-        return count
-
-    def get_all_medias_tasks(self):
-        all_medias = list(self.medias)  # We want a copy here.
-        for subgal in self.subgals:
-            all_medias.extend(subgal.get_all_medias_tasks())
-        return all_medias
+    def has_media_below(self):
+        if self.has_media():
+            return True
+        for subgal in self._init_subgals:
+            if subgal.has_media_below():
+                return True
+        return False
 
     def should_be_flattened(self, path=None):
         if path is None: path = self.source_dir.path
@@ -579,7 +577,7 @@ class WebalbumDir(make.FileMakeObject):
     def flatten_below(self):
         if self.album.dir_flattening_depth is False:
             return False
-        elif len(self.source_dir.subdirs) > 0:
+        elif self.source_dir.subdirs:
             # As all subdirs are at the same level, if one should be flattened,
             # all should.
             return self.subgals[0].should_be_flattened()
@@ -616,6 +614,8 @@ class WebalbumDir(make.FileMakeObject):
             return ''
 
     def list_foreign_files(self):
+        self.call_populate_deps()
+
         if not os.path.isdir(self.path):
             return []
 
@@ -641,22 +641,27 @@ class WebalbumDir(make.FileMakeObject):
 
         return foreign_files
 
+    def skip_media(self, src_media):
+        return False
+
+    def needs_build_quick(self):
+        """
+        Faster check if needs to be built.
+        """
+        if self._deps_populated or self.tagfilters:
+            return self.needs_build()
+
+        return self.pindex.needs_build()
+
     def build(self):
         for dest_file in self.list_foreign_files():
             self.album.cleanup(dest_file, self.path)
 
     def make(self, force=False):
-        needed_build = self.needs_build()
-
-        super(WebalbumDir, self).make(force or needed_build)
-
-        # Although we should have modified the directory contents and thus its
-        # mtime, it is possible that the directory mtime has not been updated
-        # if we regenerated without adding/removing pictures (to take into
-        # account a rotation for example). This is why we force directory mtime
-        # update here if something has been built.
-        if needed_build and os.path.isdir(self.path):
-            os.utime(self.path, None)
+        super(WebalbumDir, self).make(force)
+        if self.has_media_below(): # otherwise the dir is not created
+            os.utime(self.pindex._path, None) # update stamp mtime
+        self.update_build_status()
 
     def media_done(self):
         if self.progress is not None:
@@ -922,13 +927,11 @@ class Album(object):
                 feed.push_dir(destgal)
                 destgal.register_feed(feed)
 
-            if check_all_dirs:
+            if check_all_dirs or destgal.needs_build_quick():
                 destgal.make()
-            elif destgal.needs_build():
-                destgal.make(force=True)  # avoid another needs_build() call in make()
             else:
                 if progress is not None:
-                    progress.media_done(len(destgal.medias))
+                    progress.media_done(self.stats()['bydir'][destgal.source_dir.path])
                 logging.info(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
             # Force some memory cleanups, this is usefull for big albums.

@@ -35,7 +35,20 @@ class MakeTask(object):
         self.output_items = []
         self.stamp_delete()
         self.__dep_only = False
+        self._deps_populated = False
         self.update_build_status()
+
+    def call_populate_deps(self):
+        if not self._deps_populated:
+            self.populate_deps()
+            self._deps_populated = True
+
+    def populate_deps(self):
+        """
+        Sometimes, deps should not be populated at init time, but later.
+        This function is used to do this.
+        """
+        assert not self._deps_populated
 
     def add_dependency(self, dependency):
         if self in dependency.deps:
@@ -82,6 +95,8 @@ class MakeTask(object):
         pass
 
     def needs_build(self):
+        self.call_populate_deps()
+
         if not self.built_once():
             logging.debug("%s build needed: never built", self)
             return True
@@ -100,6 +115,7 @@ class MakeTask(object):
         return False
 
     def make(self, force=False):
+        self.call_populate_deps()
         if force or self.needs_build():
             for d in self.deps:
                 d.make()  # dependency building not forced
@@ -151,6 +167,7 @@ class MakeTask(object):
 
         self.print_dep_entry(level)
 
+        self.call_populate_deps()
         for d in self.deps:
             d.print_dep_tree(depth, level)
 
@@ -217,7 +234,7 @@ class FileSimpleDependency(FileMakeObject):
 
     def __init__(self, path):
         super(FileSimpleDependency, self).__init__(path)
-        assert self.built_once()
+        assert self.built_once(), path
 
     def build(self):
         pass

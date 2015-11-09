@@ -20,6 +20,7 @@ import unittest
 import os
 import datetime
 import shutil
+import json
 
 from PIL import Image
 
@@ -59,19 +60,50 @@ class TestGenerators(LazygalTestGen):
 
         # Check root dir contents
         self.assertTrue(os.path.isdir(dest_path))
-        for fn in ('index.html', 'index_medium.html'):
+        for fn in ('index.json', 'index.html', 'index_medium.html'):
             self.assertTrue(os.path.isfile(os.path.join(dest_path, fn)),
                             error % fn)
 
         # Check subgal dir contents
         dest_subgal_path = os.path.join(dest_path, 'subgal')
         self.assertTrue(os.path.isdir(dest_subgal_path))
-        for fn in ('index.html', 'index_medium.html',
+        for fn in ('index.json', 'index.html', 'index_medium.html',
                    'subgal_img.html', 'subgal_img_medium.html',
                    'subgal_img_thumb.jpg', 'subgal_img_small.jpg',
                    'subgal_img_medium.jpg'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)),
                             error % fn)
+
+        # Check JSON root index
+        with open(os.path.join(dest_path, 'index.json')) as json_fp:
+            pindex = json.load(json_fp)
+            self.assertEqual(pindex['medias'], {})
+            self.assertEqual(pindex['count'],
+                             {'media': 0, 'video': 0, 'image': 0, 'subgal': 1})
+            self.assertEqual(pindex['all_count'],
+                             {'media': 1, 'video': 0, 'image': 1})
+            self.assertEqual(pindex['subgals'], ['subgal'])
+
+        # Check JSON sugal index
+        with open(os.path.join(dest_path, 'subgal', 'index.json')) as json_fp:
+            pindex = json.load(json_fp)
+            self.assertEqual(pindex['medias'], {'subgal_img.jpg': {
+                'comment': '',
+                'date': '2010-02-05T23:56:24',
+                'width': 640,
+                'height': 427,
+                'metadata': {
+                    'Exif.Photo.DateTimeDigitized': '2010:02:05 23:56:24',
+                    'Exif.Photo.DateTimeOriginal': '2010:02:05 23:56:24'
+                },
+                'type': 'image',
+            }})
+            self.assertEqual(pindex['count'],
+                             {'media': 1, 'video': 0, 'image': 1, 'subgal': 0})
+            self.assertEqual(pindex['all_count'],
+                             {'media': 1, 'video': 0, 'image': 1})
+            self.assertEqual(pindex['subgals'], [])
+
 
     def test_genfile_umask(self):
         """
@@ -707,6 +739,7 @@ class TestSorting(LazygalTestGen):
         src_dir = Directory(subgal_path, [], pics, self.album)
         dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
 
+        dest_subgal.call_populate_deps()
         dest_subgal.sort_task.make()
 
         self.assertEqual([media.media.filename for media in dest_subgal.medias],
@@ -726,6 +759,7 @@ class TestSorting(LazygalTestGen):
         src_dir = Directory(subgal_path, [], pics, self.album)
         dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
 
+        dest_subgal.call_populate_deps()
         dest_subgal.sort_task.make()
 
         self.assertEqual([media.media.filename for media in dest_subgal.medias],
@@ -752,6 +786,7 @@ class TestSorting(LazygalTestGen):
         src_dir = Directory(subgal_path, [], pics, self.album)
         dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
 
+        dest_subgal.call_populate_deps()
         dest_subgal.sort_task.make()
 
         self.assertEqual([media.media.filename for media in dest_subgal.medias],
@@ -771,6 +806,7 @@ class TestSorting(LazygalTestGen):
         src_dir = Directory(subgal_path, [], pics, self.album)
         dest_subgal = WebalbumDir(src_dir, [], self.album, self.dest_path)
 
+        dest_subgal.call_populate_deps()
         dest_subgal.sort_task.make()
 
         self.assertEqual([media.media.filename for media in dest_subgal.medias],
@@ -808,6 +844,7 @@ class TestSorting(LazygalTestGen):
         src_dir = Directory(self.source_dir, subgals_src, [], self.album)
         dest_subgal = WebalbumDir(src_dir, subgals_dst, self.album, self.dest_path)
 
+        dest_subgal.call_populate_deps()
         dest_subgal.sort_task.make()
 
         self.assertEqual(
