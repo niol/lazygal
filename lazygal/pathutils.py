@@ -145,7 +145,8 @@ def walk_and_do(top=None, walked=None, dcb=None, fcb=None, topdown=False):
         if dcb is not None:
             dcb(root, dirs, files)
         if fcb is not None:
-            map(lambda f: fcb(os.path.join(root, f)), files)
+            for f in files:
+                fcb(os.path.join(root, f))
 
 
 # vim: ts=4 sw=4 expandtab
