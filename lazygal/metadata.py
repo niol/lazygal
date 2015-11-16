@@ -65,6 +65,13 @@ GEXIV2_DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
 GExiv2.log_set_level(GExiv2.LogLevel.MUTE) # hide exiv2 errors
 
 
+TAGS_OF_INTEREST = (
+    'Exif.Photo.DateTimeOriginal',
+    'Exif.Photo.DateTimeDigitized',
+    'Exif.Image.DateTime',
+)
+
+
 def decode_exif_user_comment(raw, imgpath):
     """
     GExiv2 does not decode EXIF user comment.
@@ -409,6 +416,10 @@ class ImageInfoTags(object):
         kw = set(kw)
 
         return kw
+
+    def of_interest(self):
+        return { tag: self._metadata[tag]
+                 for tag in TAGS_OF_INTEREST if tag in self._metadata }
 
 
 class NoMetadata(Exception):
