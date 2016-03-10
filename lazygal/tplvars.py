@@ -206,8 +206,9 @@ class Webgal(SrcPath):
 
         dirzip = self.webgal.pindex.dirzip()
         if dirzip:
-            archive_rel_path = self.webgal.dirzip.rel_path(self.page.dir,
-                                                           url=True)
+            archive_rel_dir = self.webgal.rel_path(self.page.dir.path)
+            archive_rel_path = posixpath.join(archive_rel_dir,
+                                              dirzip['filename'])
             dir_info['dirzip'] = pathutils.url_quote(archive_rel_path)
             dir_info['dirzip_size'] = dirzip['sizestr']
 
