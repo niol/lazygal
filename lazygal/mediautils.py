@@ -25,6 +25,9 @@ import multiprocessing
 from . import py2compat
 
 
+class VideoError(Exception): pass
+
+
 try:
     import gi
     try:
@@ -81,9 +84,6 @@ def GST_init():
 
 
 from PIL import Image as PILImage
-
-
-class VideoError(Exception): pass
 
 
 class GstVideoOpener(object):
