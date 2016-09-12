@@ -764,9 +764,6 @@ class Album(object):
     def __init__(self, source_dir, config=None):
         self.source_dir = os.path.abspath(source_dir)
 
-        if not mediautils.HAVE_GST:
-            logging.debug(_('Video support is disabled: could not load GStreamer'))
-
         self.config = LazygalConfig(load_defaults=True)
 
         logging.debug(_("Trying loading user config %s"), USER_CONFIG_PATH)

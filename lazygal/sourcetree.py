@@ -243,6 +243,13 @@ class MediaHandler(object):
         extension = extension.lower()
         return extension in MediaHandler.FORMATS.keys()
 
+    NO_VIDEO_SUPPORT_WARNING_ISSUED = False
+
+    @staticmethod
+    def warn_no_video_support():
+        if not MediaHandler.NO_VIDEO_SUPPORT_WARNING_ISSUED:
+            logging.warning(_('Video support is disabled: could not load GStreamer'))
+
     def get_media(self, path):
         tail = os.path.basename(path)
         for pattern in self.album.excludes:
@@ -253,6 +260,7 @@ class MediaHandler(object):
         if extension in MediaHandler.FORMATS.keys():
             media_class = MediaHandler.FORMATS[extension]
             if media_class == VideoFile and not mediautils.HAVE_GST:
+                MediaHandler.warn_no_video_support()
                 return None
             return media_class(path, self.album)
         else:
