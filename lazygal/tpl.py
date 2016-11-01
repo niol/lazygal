@@ -34,7 +34,7 @@ from . import py2compat
 from . import pathutils
 
 
-DEFAULT_THEME = 'default'
+DEFAULT_THEME = 'nojs'
 USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
 THEME_SHARED_FILE_PREFIX = 'SHARED_'
 THEME_MANIFEST = 'manifest.json'
