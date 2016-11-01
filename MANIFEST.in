@@ -22,3 +22,4 @@ include devscripts/*
 include userscripts/*
 include lazygaltest/*py
 include lazygaltest/sample*.jpg
+include lazygaltest/vid.mov
