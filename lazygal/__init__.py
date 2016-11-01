@@ -48,9 +48,10 @@ def get_hg_rev():
                 return fp.read()
         else:
             try:
-                o = subprocess.check_output(('hg', 'head',
+                o = subprocess.check_output(('hg', 'log',
                         '--repository', os.path.join(hgdir, '..'),
-                        '-T', '{node|short},{tag}'))
+                        '-T', '{node|short},{tags}',
+                        '--rev', '-2'))
             except subprocess.CalledProcessError:
                 os.unlink(last_revision_cache)
                 return ''
