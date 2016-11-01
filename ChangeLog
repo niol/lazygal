@@ -1,3 +1,30 @@
+Lazygal 0.9 (2016-11-01)
+  * rename default theme as nojs
+  * warn of no video support only if videos are found
+  * silence some debug messages (Debian Closes: #836697)
+  * Fix crash if video deps are not installed (#21)
+  * fix crash when using -z
+  * build a JSON index for each webgal
+  * gst: avoid failure when Gst.init has not been called yet
+  * gi bindings: require version as advised by gi lib
+  * Fix #19 JSON config file in album source not loaded
+  * fix failure to generate exif sorted gallery (Debian Closes: #794899)
+  * spawn hg instead of using mercurial python api for guessing dev revision
+ * remove existing symlinks when switching from --orig-symlink to -O
+  * Fix #18 warn if python-gst-1.0 overrides are not installed
+  * Fix #17 and make setup.py install the new default conf file
+  * make python3 the default
+  * inverted theme: do not distort images (Debian #782376)
+  * merge fix for #16
+  * rename TranscodeError to VideoError (end Fix #16)
+  * support a new JSON configuration file format
+  * ensure obeying to umask setting (Debian Closes: #776195)
+  * fix exception when run on empty dir (Debian Closes: #776198)
+  * add '--preserve PATTERN', to prevent removal of files/directories
+  * add '--exclude PATTERN', to allow ignoring some files/directories
+  * add 'numeric' sort criteria for media and galleries
+  * update italian translation
+
 Lazygal 0.8.8 (2014-10-22)
   * silence gobject assertions errors at startup
   * fix CTRL+C not working after a video has been transcoded
