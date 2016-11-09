@@ -11,7 +11,7 @@
         "preserve": [], 
         "dir-flattening-depth": false, 
         "puburl": false, 
-        "theme": "default", 
+        "theme": "nojs",
         "exclude": [
             ".svn", 
             "_darcs", 
