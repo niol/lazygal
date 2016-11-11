@@ -229,7 +229,7 @@ class GstVideoInfo(object):
         discoverer = GstPbutils.Discoverer()
         try:
             info = discoverer.discover_uri(Gst.filename_to_uri(self.path))
-        except GObject.GError as e:
+        except GLib.GError as e:
             raise VideoError(e)
 
         vinfo_caps = info.get_video_streams()[0].get_caps()[0]
