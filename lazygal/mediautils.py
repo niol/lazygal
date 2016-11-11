@@ -147,7 +147,7 @@ class GstVideoOpener(object):
             if md_success:
                 self.media_duration = media_duration
 
-        if self.progress is not None and self.media_duration is not None\
+        if self.progress and self.media_duration is not None\
         and self.media_duration > 0:
             self.progress.set_task_progress(100 * current_position
                                             // self.media_duration)
@@ -204,7 +204,7 @@ class GstVideoOpener(object):
                             self.__stop_pipeline()
                             raise VideoError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
-        if self.progress is not None:
+        if self.progress:
             self.progress.set_task_done()
 
     def stop_pipeline(self):

@@ -293,7 +293,7 @@ class WebalbumPicture(make.FileMakeObject):
 
 class WebVideo(genfile.WebalbumFile):
 
-    def __init__(self, webgal, source_video, size_name, progress=None):
+    def __init__(self, webgal, source_video, size_name, progress):
         self.progress = progress
         self.webgal = webgal
         self.source_video = source_video

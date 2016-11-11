@@ -708,6 +708,15 @@ class SharedFiles(make.FileMakeObject):
                 self.album.cleanup(file_path, self.path)
 
 
+class DummyProgress(object):
+
+    def dir_done(self):                   pass
+    def media_done(self, how_many=1):     pass
+    def set_task_progress(self, percent): pass
+    def set_task_done(self):              pass
+    def updated(self):                    pass
+
+
 class AlbumGenProgress(object):
 
     def __init__(self, dirs_total, medias_total):
@@ -861,6 +870,9 @@ class Album(object):
             dest_dir = py2compat.u(dest_dir, sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
+        if not progress:
+            progress = DummyProgress()
+
         pub_url = self.config.get('global', 'puburl')
         check_all_dirs = self.config.get('runtime', 'check-all-dirs')
 
@@ -928,16 +940,14 @@ class Album(object):
             if check_all_dirs or destgal.needs_build_quick():
                 destgal.make()
             else:
-                if progress is not None:
-                    progress.media_done(self.stats()['bydir'][destgal.source_dir.path])
+                progress.media_done(self.stats()['bydir'][destgal.source_dir.path])
                 logging.info(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
 
             # Force some memory cleanups, this is usefull for big albums.
             del destgal
             gc.collect()
 
-            if progress is not None:
-                progress.dir_done()
+            progress.dir_done()
 
             logging.info(_("[Leaving  %%ALBUMROOT%%/%s]"), source_dir.strip_root())
 
