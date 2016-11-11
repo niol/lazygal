@@ -94,7 +94,7 @@ class TestConf(LazygalTestGen):
         self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
                          'subgal')
         self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+            [{'name': 'normal', 'defs': '800x600', 'default': True}])
 
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         self.assertEqual(dest_gal.config.get('global', 'puburl'),
@@ -105,7 +105,7 @@ class TestConf(LazygalTestGen):
                           dest_gal.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
         self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+            [{'name': 'normal', 'defs': '800x600', 'default': True}])
 
         dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
         self.assertEqual(dest_root.config.get('global', 'puburl'),
@@ -117,7 +117,7 @@ class TestConf(LazygalTestGen):
                           dest_root.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
         self.assertEqual(dest_root.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+            [{'name': 'normal', 'defs': '800x600', 'default': True}])
 
     def test_perdir_conf(self):
         """
@@ -135,9 +135,9 @@ class TestConf(LazygalTestGen):
                     'root': 'root',
                 },
                 'webgal': {
-                    'image-size': {
-                        'normal': '800x600',
-                    },
+                    'image-size': [
+                        {'name': 'normal', 'defs': '800x600'},
+                    ],
                 },
             }, f)
 
@@ -182,7 +182,7 @@ class TestConf(LazygalTestGen):
         self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
                          'subgal')
         self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+                         [{'name': 'normal', 'defs': '800x600'}])
 
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
         self.assertEqual(dest_gal.config.get('global', 'puburl'),
@@ -193,7 +193,7 @@ class TestConf(LazygalTestGen):
                           dest_gal.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
         self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+                         [{'name': 'normal', 'defs': '800x600'}])
 
         dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
         self.assertEqual(dest_root.config.get('global', 'puburl'),
@@ -205,7 +205,7 @@ class TestConf(LazygalTestGen):
                           dest_root.config.get, 'template-vars', 'subgal')
         self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
         self.assertEqual(dest_root.config.get('webgal', 'image-size'),
-                         {'normal': '800x600'})
+                         [{'name': 'normal', 'defs': '800x600'}])
 
     def test_types(self):
         config = lazygal.config.LazygalConfig()
@@ -235,7 +235,9 @@ class TestConf(LazygalTestGen):
         # dict
         config.set('webgal', 'image-size', 'medium=foo, normal=bar')
         self.assertEqual(config.get('webgal', 'image-size'),
-                         {'medium': 'foo', 'normal': 'bar'})
+                         [{'name': 'medium', 'defs': 'foo', 'default': True},
+                          {'name': 'normal', 'defs': 'bar', 'default': False},
+                         ])
 
         # order
         config.set('webgal', 'sort-medias', 'dirname:reverse')
