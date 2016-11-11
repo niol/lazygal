@@ -156,7 +156,7 @@ class GstVideoOpener(object):
         stalled = False
         if current_position <= self.last_position:
             self.stalled_counter = self.stalled_counter + 1
-            if self.stalled_counter >= 5:
+            if self.stalled_counter >= 20:
                 stalled = True
                 self.__post_msg('stalled')
         else:
