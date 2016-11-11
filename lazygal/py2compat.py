@@ -72,7 +72,7 @@ def _str(obj):
 
 def isunicode(s):
     if PY3RUNNING:
-        return True
+        return type(s) is str
     else:
         return type(s) is unicode
 

@@ -183,6 +183,10 @@ class TestFileMetadata(LazygalTest):
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_focal_length(), '18 mm (35 mm equivalent: 27 mm)')
 
+    @unittest.skipIf(py2compat.PY3RUNNING
+                     and (GExiv2.MAJOR_VERSION, GExiv2.MINOR_VERSION,
+                          GExiv2.MICRO_VERSION) < (0, 10, 3),
+                     'not supported by GExiv2<0.10.3 in python3')
     def test_authorship(self):
         sample = 'sample-author-badencoding.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))

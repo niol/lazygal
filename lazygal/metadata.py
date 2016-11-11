@@ -260,7 +260,7 @@ class ImageInfoTags(object):
             v = self._metadata[tag]
         except UnicodeDecodeError:
             try:
-                v = self._metadata.get_raw(tag)
+                v = self._metadata.get_raw(tag)[:-1] # remove null byte
             except AttributeError: # GExiv2 < 0.10.3
                 logging.warning(_("Encoding for '%s' is bad, ignoring"), tag)
                 v = ''
