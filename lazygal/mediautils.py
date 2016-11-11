@@ -294,19 +294,23 @@ class GstVideoTranscoder(GstVideoReader):
         self.pipeline.add(self.videoenc)
 
         if width is not None and height is not None:
-            self.videoscale = Gst.ElementFactory.make('videoscale',
-                                                      'videoscale')
-            self.videoscale.set_property('method', 'bilinear')
-            self.pipeline.add(self.videoscale)
-            self.colorspace.link(self.videoscale)
+            videoscale = Gst.ElementFactory.make('videoscale', 'videoscale')
+            videoscale.set_property('method', 'bilinear')
+            self.pipeline.add(videoscale)
+            self.colorspace.link(videoscale)
             caps_str = 'video/x-raw,format=YUY2'
             caps_str += ", width=%d, height=%d" % (width, height)
             caps = Gst.Caps.from_string(caps_str)
-            self.caps_filter = Gst.ElementFactory.make('capsfilter', 'filter')
-            self.caps_filter.set_property("caps", caps)
-            self.pipeline.add(self.caps_filter)
-            self.videoscale.link(self.caps_filter)
-            self.caps_filter.link(self.videoenc)
+            caps_filter = Gst.ElementFactory.make('capsfilter', 'filter')
+            caps_filter.set_property("caps", caps)
+            self.pipeline.add(caps_filter)
+            videoscale.link(caps_filter)
+
+            scalequeue = Gst.ElementFactory.make('queue', 'Video scaling queue')
+            self.pipeline.add(scalequeue)
+            caps_filter.link(scalequeue)
+
+            scalequeue.link(self.videoenc)
         else:
             self.colorspace.link(self.videoenc)
 
