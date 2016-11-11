@@ -204,16 +204,10 @@ class GstVideoOpener(object):
                             self.__stop_pipeline()
                             raise VideoError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
 
-        if self.progress:
-            self.progress.set_task_done()
-
     def stop_pipeline(self):
         msg = Gst.Message.new_application(self.pipeline,
             Gst.Structure.new_empty('aborded_playback'))
         self.pipeline.get_bus().post(msg)
-
-        if self.progress is not None:
-            self.progress.set_task_done()
 
 
 class GstVideoInfo(object):

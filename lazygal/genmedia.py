@@ -326,6 +326,8 @@ class WebVideo(genfile.WebalbumFile):
             logging.info(str(e))
             self.source_video.broken = True
             self.clean_output()
+        finally:
+            self.progress.set_task_done()
 
 
 # vim: ts=4 sw=4 expandtab
