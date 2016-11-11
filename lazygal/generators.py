@@ -408,14 +408,14 @@ class WebalbumDir(make.GroupTask):
             self.break_task = None
 
     def __parse_browse_sizes(self, sizes_defs):
-        for name, string_size in sizes_defs.items():
-            name = py2compat.u(name, locale.getpreferredencoding())
-            if name == '':
-                raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
+        for size_defs in sizes_defs:
+            name = py2compat.u(size_defs['name'], locale.getpreferredencoding())
             if name == genmedia.THUMB_SIZE_NAME:
                 raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
-            self.__parse_size(name, string_size)
+            self.__parse_size(name, size_defs['defs'])
             self.browse_sizes.append(name)
+            if 'default' in size_defs and size_defs['default']:
+                self.default_size_name = name
 
     def __parse_size(self, size_name, size_string):
         if size_string == '0x0':
@@ -458,7 +458,6 @@ class WebalbumDir(make.GroupTask):
                           self.config.get('webgal', 'thumbnail-size'))
         self.__parse_size(genmedia.VIDEO_SIZE_NAME,
                           self.config.get('webgal', 'video-size'))
-        self.default_size_name = self.browse_sizes[0]
 
         self.tpl_vars = self.__load_tpl_vars()
         styles = self.album.theme.get_avail_styles(

@@ -28,10 +28,10 @@
         "webalbumpic-bg": "transparent", 
         "webalbumpic-type": "messy", 
         "webalbumpic-size": "200x150", 
-        "image-size": {
-            "small": "800x600", 
-            "medium": "1024x768"
-        }, 
+        "image-size": [
+            {"name": "small", "defs": "800x600", "default": true},
+            {"name": "medium", "defs": "1024x768"}
+        ],
         "thumbnail-size": "150x113", 
         "video-size": "0x0", 
         "thumbs-per-page": 0, 

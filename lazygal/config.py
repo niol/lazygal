@@ -178,6 +178,20 @@ def get_order(s):
         order, reverse = s, False
     return {'order': order, 'reverse': reverse == 'reverse'}
 
+def get_image_size(s):
+    sizes_defs_str = get_list(s)
+    sizes_defs = []
+    first = True
+    for size_defs in sizes_defs_str:
+        try:
+            name, defs = size_defs.split('=')
+        except ValueError:
+            raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
+
+        sizes_defs.append({'name': name, 'defs': defs, 'default': first})
+        first = False
+    return sizes_defs
+
 
 STRING_TO_JSON = collections.OrderedDict({
     'runtime': {
@@ -196,7 +210,7 @@ STRING_TO_JSON = collections.OrderedDict({
         'exclude_args'        : get_list,
     },
     'webgal': {
-        'image-size'          : get_dict,
+        'image-size'          : get_image_size,
         'thumbs-per-page'     : get_int,
         'filter-by-tag'       : get_list,
         'sort-medias'         : get_order,
