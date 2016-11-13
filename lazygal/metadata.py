@@ -578,14 +578,11 @@ class DefaultMetadata(make.FileMakeObject):
 
         logging.info(_("GEN %s"), self._path)
 
-        f = open(self._path, 'w')
-        f.write('# Directory metadata for lazygal, Matew format\n')
-        f.write('Album name "%s"\n'
-                % self.source_dir.human_name.encode('utf-8'))
-        f.write('Album description ""\n')
-        f.write('Album image identifier "%s"\n'
-                % md['album_picture'].encode('utf-8'))
-        f.close()
+        with codecs.open(self._path, 'w', FILE_METADATA_ENCODING) as f:
+            f.write('# Directory metadata for lazygal, Matew format\n')
+            f.write('Album name "%s"\n' % self.source_dir.human_name)
+            f.write('Album description ""\n')
+            f.write('Album image identifier "%s"\n' % md['album_picture'])
 
 
 # vim: ts=4 sw=4 expandtab
