@@ -464,6 +464,7 @@ class DirectoryMetadata(make.GroupTask):
 
         with open(path, 'rb') as f:
             for line in f:
+                line = line.decode(FILE_METADATA_ENCODING)
                 for tag in MATEW_TAGS.keys():
                     tag_text = MATEW_TAGS[tag]
                     tag_len = len(tag_text)
@@ -475,7 +476,6 @@ class DirectoryMetadata(make.GroupTask):
                             data = data[1:]
                         if data[-1] == '"':
                             data = data[:-1]
-                        data = data.decode(FILE_METADATA_ENCODING)
 
                         if tag == 'album_picture':
                             if subdir is not None:
