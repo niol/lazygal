@@ -21,6 +21,7 @@ import unittest
 import os
 import locale
 import datetime
+import codecs
 
 
 from . import LazygalTest
@@ -110,6 +111,23 @@ Album image identifier "realtitle.jpg"
                                     self.album_root.album)
 
         self.assertEqual(img_names[0], self.album_root.album_picture)
+
+    def test_gen_metadata(self):
+        img_names = (u'first\xe3.jpg', 'second.jpg', )
+        for img_name in img_names:
+            self.add_img(self.source_dir, img_name)
+
+        self.album_root.album.generate_default_metadata()
+
+        with codecs.open(os.path.join(self.source_dir, 'album_description'),
+                         'r', 'utf-8') as f:
+            fmd = f.read()
+
+        self.assertEqual(fmd, u'''# Directory metadata for lazygal, Matew format
+Album name "%s"
+Album description ""
+Album image identifier "first\xe3.jpg"
+''' % os.path.basename(self.source_dir))
 
     def test_comment_none(self):
         im_md = metadata.ImageInfoTags(self.get_sample_path('sample.jpg'))
