@@ -43,11 +43,9 @@ def query_hg_for_rev(hgdir, revnum):
                                  '-T', '{node|short},{tags}\\n',
                                  '--rev', revnum))
     revs = []
-    print(o)
     for line in o.decode(sys.getdefaultencoding()).split('\n'):
         if line:
             revs.append(line.split(','))
-    print(revs)
     return revs
 
 
