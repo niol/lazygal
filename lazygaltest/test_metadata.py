@@ -84,8 +84,32 @@ class TestFileMetadata(LazygalTest):
         self.album_root = Directory(self.source_dir, [], [],
                                     self.album_root.album)
 
-        self.assertEqual(os.path.join(self.source_dir, img_names[0]),
-                         self.album_root.album_picture)
+        self.assertEqual(img_names[0], self.album_root.album_picture)
+
+    def test_matew_metadata_album_picture(self):
+        img_names = ('ontop.jpg', 'second.jpg', 'realtitle.jpg')
+        for img_name in img_names:
+            self.add_img(self.source_dir, img_name)
+
+        self.create_file(os.path.join(self.source_dir, 'album_description'),'''
+Album image identifier "realtitle.jpg"
+''')
+
+        # Reload the directory now that the metadata file is created
+        self.album_root = Directory(self.source_dir, [], [],
+                                    self.album_root.album)
+
+        self.assertEqual(img_names[2], self.album_root.album_picture)
+
+    def test_auto_metadata_album_picture(self):
+        img_names = ('ontop.jpg', 'second.jpg', )
+        for img_name in img_names:
+            self.add_img(self.source_dir, img_name)
+
+        self.album_root = Directory(self.source_dir, [], img_names,
+                                    self.album_root.album)
+
+        self.assertEqual(img_names[0], self.album_root.album_picture)
 
     def test_comment_none(self):
         im_md = metadata.ImageInfoTags(self.get_sample_path('sample.jpg'))
