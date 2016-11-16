@@ -1,3 +1,10 @@
+Lazygal 0.9.1 (2016-11-16)
+  * update fr translation
+  * better testing of file metadata
+  * fix unpredictible default size name in config
+  * fix bad author tag decoding test (closes #24)
+  * fix tests failing because default theme has been renamed (closes #25)
+
 Lazygal 0.9 (2016-11-01)
   * rename default theme as nojs
   * warn of no video support only if videos are found
