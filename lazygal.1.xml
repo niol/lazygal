@@ -51,7 +51,7 @@
     Python.</para>
 
     <para><command>&dhpackage;</command> works so: you should have
-    an original store of files - possibly containg subdirectories
+    an original store of files - possibly containing subdirectories
     (their names serving as headings if not using the album metadata
     feature). This is the source file hierarchy. It will never be modified
     by <command>&dhpackage;</command>. Then, when launching:</para>

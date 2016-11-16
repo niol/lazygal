@@ -49,7 +49,7 @@
         "variable"     : "string value ",
         "boolean"      : false,
         "list"         : ["foo", "bar"],
-        "dictionnary"  : {
+        "dictionary"  : {
             "key1": "value1",
             "key2": "value2"
         }
@@ -75,7 +75,7 @@
 variable = string value
 boolean = Yes
 list = foo, bar
-dictionnary = key1=value1, key2=value2
+dictionary = key1=value1, key2=value2
 
 [othersection]
 foo = bar
