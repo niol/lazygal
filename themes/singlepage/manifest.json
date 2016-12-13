@@ -1,1 +1,1 @@
-{ "shared": [ { "path": "../default/SHARED_jquery.js" } ] }
+{ "shared": [ { "path": "../nojs/SHARED_jquery.js" } ] }
