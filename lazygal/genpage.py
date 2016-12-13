@@ -150,18 +150,6 @@ class WebalbumBrowsePage(WebalbumPage):
         else:
             tpl_values['feed_url'] = None
 
-        if self.dir.original:
-            if self.dir.orig_base:
-                tpl_values['original_link'] = posixpath.join(
-                    pathutils.url_path(self.dir.source_dir.rel_root()),
-                    self.dir.orig_base,
-                    pathutils.url_path(self.dir.source_dir.strip_root()),
-                    self.media.filename)
-            else:
-                tpl_values['original_link'] = self.media.filename
-            tpl_values['original_link'] =\
-                pathutils.url_quote(tpl_values['original_link'])
-
         self.add_extra_vals(tpl_values)
 
         self.page_template.dump(tpl_values, self.page_path)

@@ -73,6 +73,18 @@ class Media(TemplateVariables):
 
             link_vals['thumb_name'] = self.page.dir.album._str_humanize(self.media.name)
 
+            if self.page.dir.original:
+                if self.page.dir.orig_base:
+                    link_vals['original_link'] = posixpath.join(
+                        pathutils.url_path(self.page.dir.source_dir.rel_root()),
+                        self.page.dir.orig_base,
+                        pathutils.url_path(self.page.dir.source_dir.strip_root()),
+                        self.media.filename)
+                else:
+                    link_vals['original_link'] = self.media.filename
+                link_vals['original_link'] =\
+                    pathutils.url_quote(link_vals['original_link'])
+
             return link_vals
         else:
             return None
