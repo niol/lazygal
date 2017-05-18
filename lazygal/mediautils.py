@@ -36,7 +36,7 @@ try:
         raise ImportError
     from gi.repository import GObject, GLib, Gst
     if '__getitem__' not in dir(Gst.Caps):
-        logging.warning('Missing `python-gst-1.0` overrides')
+        logging.warning('Missing `python-gst-1.0` overrides, you should install the appropriate package (e.g. `python3-gst-1.0`).')
         raise ImportError
 except ImportError:
     HAVE_GST = False
