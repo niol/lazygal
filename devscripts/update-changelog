@@ -1,21 +1,20 @@
 #!/bin/bash
-# Small script to easily generate a ChangeLog from hg log.
+# Small script to easily generate a ChangeLog from git log.
 
-project=Lazygal
-
-HG=$(which hg)
+SCM=$(which git)
 AWK=$(which awk)
 
 repo=$(dirname $0)/..
 
-$HG log --template '{tags}|{date|shortdate}|{desc|firstline}\n' -R $repo |\
+$SCM log --format="%d|%cd|%s" --date=short -C $repo |\
     $AWK -F'|'\
-        '/^\|.*\|Added tag [0-9\_]+ for changeset /    { next }\
-         /^\|/    { print "  * " $3 }\
-         /^tip\|/ { print "\nLazygal ##DEVELOPMENT VERSION## (" $2 ")";\
+        '/^\|/    { print "  * " $3 }\
+         /^\ \(HEAD/ { print "\nLazygal ##DEVELOPMENT VERSION## (" $2 ")";\
                     print "  * " $3\
                   }
-         /^[0-9]/ { gsub(/\_/,".",$1);\
+         /^\ \(tag\:\ / { \
+                    gsub(/\ \(tag\:\ /,"",$1);\
+                    gsub(/\)/,"",$1);\
                     print "\nLazygal " $1 " (" $2 ")";\
                     print "  * " $3\
                   }'\

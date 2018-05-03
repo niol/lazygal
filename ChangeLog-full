@@ -1,4 +1,5 @@
 Lazygal 0.9.1 (2016-11-16)
+  * set version to 0.9.1
   * update fr translation
   * refresh translations
   * update pot files list
@@ -66,10 +67,10 @@ Lazygal 0.9 (2016-11-01)
   * sort webgal only after filtered medias have been filtered out
   * load tagfilters only once
   * fix unit test regarding album_picture being relative
-  * ensure obeying to umask setting (Debian Closes: #776195)
+  * ensure obeying to umask setting (Debian Closes: #776195) This patch fixes a bug only when files are copied (original, shared)
   * cache media size probing
   * py3: correctly decode metadata tags
-  * ensure album_picture parameter is always relative
+  * ensure album_picture parameter is always relative That's what the doc says.
   * migrate RSS20 class to new style classes
   * correctly close open file descriptors
   * make it easier to understand why a video thumbnail is not generated
@@ -78,11 +79,11 @@ Lazygal 0.9 (2016-11-01)
   * fix exception when run on empty dir (Debian Closes: #776198)
   * simplify excludes implementation (and unbreak test suite)
   * fix broken line continuations
-  * add '--preserve PATTERN', to prevent removal of files/directories
-  * add '--exclude PATTERN', to allow ignoring some files/directories
-  * numeric sort option: optimizations
+  * add '--preserve PATTERN', to prevent removal of files/directories a previously released change to --clean-destination caused lazygal to start removing unknown directories, as well as files, in the destination directory.  thus there is no longer a way to protect files which should be kept.
+  * add '--exclude PATTERN', to allow ignoring some files/directories this lets one build a list of paths (via filename pattern matching) which will be ignored during gallery processing.  this replaces the former internal SKIPPED_DIRS mechanism, and makes it user-extensible.
+  * numeric sort option: optimizations - avoid code duplication - do not match re twice
   * manpage reformating regarding new numeric sort option
-  * add 'numeric' sort criteria for media and galleries
+  * add 'numeric' sort criteria for media and galleries this option lets filenames like "img_3.jpg", "img_10.jpg" sort correctly.  it can also be used for gallery names, like "9-Ninth_Gallery" and "10-Tenth_Gallery", which would sort incorrectly by name alone.
   * update italian translation
   * merge version
   * py3: fix symlink directory cleanup after generation
@@ -178,9 +179,7 @@ Lazygal 0.8.2 (2014-02-19)
   * test_cleanup: remove debugging and useless statements
   * test_cleanup: put a file in dir to be removed
   * fix test_cleanup: configure album in constructor
-  * Close branch delete_subdirs
   * Merged in damien_courouss/lazygal/delete_subdirs (pull request #12)
-  * Created new branch delete_subdirs
   * add test_cleanup (is NOK)
   * test_cleanup is now test_foreign_files
   * do not skip generation of empty directories to allow deletion
@@ -191,9 +190,6 @@ Lazygal 0.8.2 (2014-02-19)
   * introduce basic theme manifest in order to include shared files from other dirs
   * do not link to non-existent subgals when using filter-by-tag
   * Fix #11 do not generate empty dirs with filter-by-tag
-  * Close branch test_filter_by_tag
-  * Merged in damien_courouss/lazygal/test_filter_by_tag (pull request #11)
-  * Created new branch test_filter_by_tag
   * minor fix in the man page
   * improve readability of test_filter_by_tag and test_filter_and_dirzip
   * fix test test_filter_by_tag and add a test case
@@ -236,7 +232,6 @@ Lazygal 0.8 (2013-05-28)
   * minor improvements in tests filter_by_tag and filter_and_zipdir
   * Fix bad merge from upstream
   * Merge from upstream
-  * merge from the upstream repo
   * handle KeyError for metadata keywords
   * improve None JPEG comment case handling
   * do not try to decode unicode usercomment
@@ -249,6 +244,7 @@ Lazygal 0.8 (2013-05-28)
   * only check tagfilters on pics (not on videos)
   * remove trailing whitespace
   * Merged in damien_courouss/lazygal (pull request #8)
+  * merge from the upstream repo
   * tests for filter-by-tag
   * Extend keyword support for filter-by-tag
   * inverted theme: remove all `div` from css
@@ -273,9 +269,9 @@ Lazygal 0.8 (2013-05-28)
   * describe --filter-by-tag in manpages
   * merge from niol
   * fixing the previous commit that was incomplete
+  * more GExiv2 API cleanup fallout
   * add an option 'filter-by-tag'
   * minor fix: missing semicolons in the default theme
-  * more GExiv2 API cleanup fallout
   * handle gexiv2 API cleanup
   * do not overwrite generated media in mediautils test code
   * make the console output give some basic progress info
@@ -286,9 +282,8 @@ Lazygal 0.8 (2013-05-28)
   * fix last PIL import
   * document GEXiv2 dep
   * restore test cases forgotten in gexiv2 patch
-  * merge GExviv2 porting patch
-  * Port from pyexiv2 to GExiv2.
   * improve SHARED_ files documentation
+  * merge GExviv2 porting patch
   * put README change in MANIFEST
   * update TODO
   * use markdown readme
@@ -299,6 +294,7 @@ Lazygal 0.8 (2013-05-28)
   * do not crash on bad encoding of EXIF flash info
   * do not crash on bad encoding of EXIF Artist
   * rename config option global/destdir to global/output-directory for consistency
+  * Port from pyexiv2 to GExiv2.
   * fix typo in man page
   * fix broken --subgal-sort-by=exif
   * add help hint of exif option for --subgal-sort-by
@@ -346,7 +342,7 @@ Lazygal 0.8 (2013-05-28)
   * inverted theme: add social share buttons [template-vars]: display_social_buttons
   * fix allow boolean value in 'template-vars' options
   * inverted theme: clean template-vars, always add lazygal info
-  * inverted theme: remove reference to jQuery on google CDN, use only local version
+  * inverted theme: remove reference to jQuery on google CDN, use only local version (privacy leak)
   * inverted theme: fix css for '#site_title'
   * inverted theme: update jQuery to v1.8.0 and fix jQuery googleapis.com link
   * inverted theme capitalize first letter in the image page title
@@ -381,7 +377,7 @@ Lazygal 0.7.3 (2012-06-29)
   * fix broken generation on win32
   * fix media links on win32 when --dir-flattening-depth is changed
   * remove unnecessary newline in comment
-  * fix spelling, copyright years, remove unnecessary semicolons and some PEP 8 and
+  * fix spelling, copyright years, remove unnecessary semicolons and some PEP 8 and PEP 257 fixes
   * fix a wrong clean_output method and do some cleanups found with pyflakes
   * explain limitations of lazy mechanism
   * do not fail when using --dir-flattening-depth and a config file with other size defs
@@ -629,7 +625,7 @@ Lazygal 0.6 (2011-03-09)
   * avoid useless is_known_template() call
   * rebuild dir objects in tests to ensure up to date filesystem vision
   * avoid some calls to need_build()
-  * fix multiple builds of same index page
+  * fix multiple builds of same index page This was because the break_task setups index pages and was called multiple times.
   * fix path debug output in make.py
   * improve make.py debugging output with arbitrary depth dep tree
   * fix breadcrumb relative path computation
@@ -639,23 +635,23 @@ Lazygal 0.6 (2011-03-09)
   * fix pyexiv2 mispelling in pyexiv2api module
   * fix dir metadata which should trigger webgal rebuild when changed
   * fix parent dir which should need build when subgal has changed (subgal link)
-  * fix second build which should not need build
+  * fix second build which should not need build Involved some refactoring...
   * add unit test for simple file layout of dest dir
   * add dep build check unit tests
-  * move EXIF user comment decoding in pyexiv2api.py
+  * move EXIF user comment decoding in pyexiv2api.py This is better to get rid of it some day as it is now included in pyexiv2 0.3.
   * add debugging helpers to make.py
   * make WebalbumDir easier to instanciate (for tests)
   * fix test which required dir to exist
   * fix typo in exception msg for unknown media
   * migrate some classes into python new style classes
-  * do not consider broken thumbs for picture mess
-  * remove assertion of file existence in picture mess creation
+  * do not consider broken thumbs for picture mess However, this is early when image have not been red, so nobody knows if they are broken yet.
+  * remove assertion of file existence in picture mess creation This broke when used with broken images whose thumbs were not created.
   * avoid unit test error because of rounding erratic behaviour
   * handle more pyexiv2 0.2.x copyMetadata() errros
-  * ensure all supplied pics for pic mess exist as files (and fail if not)
+  * ensure all supplied pics for pic mess exist as files (and fail if not) This is to distinguish the 'file not found' error, which should be fatal, from the 'broken image' error, which should be ignored.
   * fix picture mess generation for dirs with few pics
   * fix get_all_media_paths wich was wrong for paths of medias in subdirs
-  * work around pyexiv2 0.1.x copyMetadata() failures
+  * work around pyexiv2 0.1.x copyMetadata() failures (by simply ignoring the offending tag)
   * fix typo in generate_default_metadata method name
   * update some man pages and source file copyright header dates
   * add basic test for feed creation
@@ -663,17 +659,17 @@ Lazygal 0.6 (2011-03-09)
   * use new pyexiv2 api wrapper in set comment script
   * fix obvious error in null comment test, condition was inversed
   * unit tests for copied metadata in resized image
-  * copy image metadata in resized pics
+  * copy image metadata in resized pics except GPS coordinates.
   * add unit tests for the different sources of comment
-  * make the pyexiv2 api changes wrapper a separate module
+  * make the pyexiv2 api changes wrapper a separate module Lazygal now uses the latest pyexiv2 API but is compatible with older versions.
   * add missing hunk of 'exiv2 0.20 gives us utf-8' change
   * do not put comment line in tpl if comment could not be found
   * exiv2 from version 0.20 fives us utf-8 for exif user comment, handle this
   * pyexiv2 0.3 decodes for us, so directly return exif user comment
   * fix typo in cmd line help text
-  * [patch 3/3] Modify the way the picture mess thumbnail is created
-  * [patch 2/3] Change the way thumbnails are pasted
-  * [patch 1/3] Make the invokation of eyecandy.py reusable
+  * [patch 3/3] Modify the way the picture mess thumbnail is created I prefer this version over the previous one. IMO it makes the thumbnail smoother and cleaner.
+  * [patch 2/3] Change the way thumbnails are pasted It seems that the way PIL is pasting RGBA image is a bit weird. Some people fall on the same issue: http://www.mail-archive.com/image-sig@python.org/msg03381.html But a solution exists: http://www.mail-archive.com/image-sig@python.org/msg03387.html
+  * [patch 1/3] Make the invokation of eyecandy.py reusable It means that with this patch multiple invocations of eyecandy.py with same options and arguments will always produce same image (test.png). It makes eyecandy usable for test purpose. Futher patch for example...
   * fix orig-symlink option description
   * remove useless import
   * fix error reporting in tpl loading
@@ -708,9 +704,9 @@ Lazygal 0.5.1 (2010-08-26)
   * fix root path decoding
   * fix metadata generation error logging
   * fix failure with videos when a size for original pics is set
-  * work around pygst bug that steals help command line swith
+  * work around pygst bug that steals help command line swith as described in http://29a.ch/tags/pygst bug reported in Debian at http://bugs.debian.org/585926
   * improve debug output for tpl decoding errors
-  * fix decoding of Exif.Image.ImageDescription and Iptc.Application2.ObjectName
+  * fix decoding of Exif.Image.ImageDescription and Iptc.Application2.ObjectName Thanks to Michal Čihař for the fix.
   * drop python < 2.5 support (as a consequence of Debian bug #588262)
   * the t template var trick has disapeared
   * fix camera model name retrieval with pyexiv2 0.2+
@@ -744,7 +740,6 @@ Lazygal 0.5 (2010-06-15)
   * fix some function names due to video preparation patch
   * always store file paths in unicode
   * bring dates in 2010
-  * update tags
   * Read IPTC metadata
   * multi media support (preparation for video support)
   * improve broken img handling

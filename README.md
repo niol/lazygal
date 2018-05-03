@@ -91,48 +91,44 @@ If you want to force `lazygal` into checking a directory's contents, simply `tou
 
     $ touch album_source/gallery_to_check
 
- [30]: http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.1.html
- [31]: http://sousmonlit.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.conf.5.html
+ [30]: http://sml.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.1.html
+ [31]: http://sml.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.conf.5.html
 
 ## Download & Changelog
 
 A [user friendly changelog for lazygal][32] exists.
 
- [32]: http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal/raw-file/tip/ChangeLog
+ [32]: https://sml.zincube.net/~niol/repositories.git/lazygal/tree/ChangeLog
 
 The [latest `lazygal` version][10] is available as an archive.
 
- [10]: http://sousmonlit.zincube.net/~niol/reposnapshots/
+(full log of changes may be browsed in [Lazygal's repository browser][10])
 
-(full log of changes may be browsed in [Lazygal's repository browser][16])
-
- [16]: http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal
+ [10]: https://sml.zincube.net/~niol/repositories.git/lazygal/
 
 Lazygal is part of [Debian][17] (and thus [Ubuntu][18] universe), which should
-make it one `aptitude install` away if you use one of those.
+make it one `apt install` away if you use one of those.
 
- [17]: http://debian.org
+ [17]: http://packages.debian.org/lazygal
  [18]: http://ubuntu.com
 
 ## Contributing
 
 ### Code
 
-Code may be downloaded using [Mercurial][19] :
+Code may be downloaded using Git :
 
-    $ hg clone http://sousmonlit.zincube.net/~niol/repositories.hg/lazygal/
+    $ git clone http://sml.zincube.net/~niol/repositories.git/lazygal
 
-It is browsable online in [Lazygal's repository browser][16], and this page
+It is browsable online in [Lazygal's repository browser][10], and this page
 also provides an up to date snapshot of the development source tree.
 
 `lazygal` may be used directly in the source repository, by calling the
 `lazygal.py` script. Building simply prepares the translations and the `man`
 pages. Updating a source checkout of the `lazygal` repository is done using
-`hg pull -u` in the source directory.
+`git pull` in the source directory.
 
 Patches are very welcome.
-
- [19]: http://www.selenic.com/mercurial/
 
 ### Translations
 
@@ -154,7 +150,8 @@ becomes
 
 ## Bugs & feature requests
 
-This project has too few users/contributors to justify the use of a dedicated bug tracking application.
+This project has too few users/contributors to justify the use of a dedicated
+bug tracking application.
 
 For now, bug reports and feature requests may go in :
 

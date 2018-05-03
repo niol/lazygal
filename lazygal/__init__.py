@@ -36,52 +36,57 @@ else:
     INSTALL_PREFIX = os.path.normpath(INSTALL_PREFIX)
 
 
-def query_hg_for_rev(hgdir, revnum):
+def query_git_for_tag(gitdir):
     import subprocess
-    o = subprocess.check_output(('hg', 'log',
-                                 '--repository', os.path.join(hgdir, '..'),
-                                 '-T', '{node|short},{tags}\\n',
-                                 '--rev', revnum))
-    revs = []
-    for line in o.decode(sys.getdefaultencoding()).split('\n'):
-        if line:
-            revs.append(line.split(','))
-    return revs
+    o = subprocess.check_output(('git', 'describe', '--tags')) \
+        .decode(sys.stdout.encoding).strip()
+    tokens = o.split('-')
+    h = tokens[-1]
+    if len(h) != 8:
+        # this is not a hash
+        h = None
+    return '+'.join(tokens), h
 
 
-def get_hg_rev():
-    hgdir = os.path.join(os.path.dirname(__file__), '..', '.hg')
-    if os.path.isdir(hgdir):
-        last_revision_cache = os.path.join(hgdir, 'cache', 'last_revision')
+def git_repo_mtime(gitdir):
+    return max([
+        os.path.getmtime(os.path.join(gitdir, 'index')),
+        os.path.getmtime(os.path.join(gitdir, 'HEAD')),
+        os.path.getmtime(os.path.join(gitdir, 'refs', 'tags')),
+    ])
+
+
+def get_git_rev():
+    gitdir = os.path.join(os.path.dirname(__file__), '..', '.git')
+    if os.path.isdir(gitdir):
+        last_revision_cache = os.path.join(gitdir, 'last_revision')
+
         if os.path.isfile(last_revision_cache)\
-        and (os.path.getmtime(last_revision_cache) >\
-             os.path.getmtime(os.path.join(hgdir, 'store', '00changelog.i'))):
+        and os.path.getmtime(last_revision_cache) > git_repo_mtime(gitdir):
             with open(last_revision_cache, 'r') as fp:
                 return fp.read()
         else:
             import subprocess
             try:
-                lastrevs = query_hg_for_rev(hgdir, '-1:-2')
+                lastrev = query_git_for_tag(gitdir)
             except subprocess.CalledProcessError:
                 os.unlink(last_revision_cache)
                 return ''
             else:
-                tag = lastrevs[1][1] # tagged revision is in second last rev
-                if tag:
-                    # This is a tagged revision, thus a release
-                    return ''
-                else:
-                    lastrev = lastrevs[0][0]
+                v, h = lastrev
+                if h:
                     with open(last_revision_cache, 'w') as fp:
-                        fp.write(lastrev)
-                    return lastrev
+                        fp.write(v)
+                    return v
+                else:
+                    return ''
     else:
         return ''
 
 
 __version__ = '0.9.1'
 
-hg_rev = get_hg_rev()
-if hg_rev: __version__ += '+hg' + hg_rev
+rev = get_git_rev()
+if rev: __version__ = rev
 
 # vim: ts=4 sw=4 expandtab
