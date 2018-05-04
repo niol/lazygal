@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-16 06:47+0100\n"
+"POT-Creation-Date: 2018-05-04 10:21+0200\n"
 "PO-Revision-Date: 2014-02-10 11:26+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -430,7 +430,7 @@ msgstr "Téma %s: chyba při zpracování %s"
 msgid "Unknown default style '%s'"
 msgstr "Neznámý typ šablony pro %s"
 
-#: ../lazygal/tplvars.py:95 ../themes/nojs/image.thtml:9
+#: ../lazygal/tplvars.py:107 ../themes/nojs/image.thtml:9
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "dne %d/%m/%Y v %H:%M"
 
@@ -492,12 +492,12 @@ msgstr "  PŘEVÉST %s"
 msgid "  transcoding %s failed, skipped"
 msgstr "  převedení %s selhalo, přeskakuji"
 
-#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:253
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:241
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#: ../lazygal/genpage.py:200
+#: ../lazygal/genpage.py:188
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
@@ -506,17 +506,17 @@ msgstr ""
 "  Velikost '%s' není v '%s' dostupná kvůli nastavení: média nebudou "
 "zobrazena v seznamu."
 
-#: ../lazygal/genpage.py:352
+#: ../lazygal/genpage.py:340
 #, python-format
 msgid "FEED %s"
 msgstr "ZDROJ %s"
 
-#: ../lazygal/genpage.py:370
+#: ../lazygal/genpage.py:358
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr "Nalezena šablona s příponou, která nezačíná na t. Končím."
 
-#: ../lazygal/genpage.py:376
+#: ../lazygal/genpage.py:364
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "ŠAB %%SHAREDDIR%%/%s"

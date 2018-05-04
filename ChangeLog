@@ -1,3 +1,9 @@
+Lazygal 0.9.2 (2018-05-04)
+  * switch to git and update homepage
+  * Danish translation - da_DK to da
+  * fix original_link empty in singlepage theme
+  * add missing jquery in singlepage theme
+
 Lazygal 0.9.1 (2016-11-16)
   * update fr translation
   * better testing of file metadata

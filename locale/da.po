@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-16 06:47+0100\n"
+"POT-Creation-Date: 2018-05-04 10:21+0200\n"
 "PO-Revision-Date: 2008-12-03 16:45+0100\n"
 "Last-Translator: Thomas Damgaard <me@thomasdamgaard.dk>\n"
 "Language-Team: Danish\n"
@@ -398,7 +398,7 @@ msgstr ""
 msgid "Unknown default style '%s'"
 msgstr "Ukendt skabelontype for %s"
 
-#: ../lazygal/tplvars.py:95 ../themes/nojs/image.thtml:9
+#: ../lazygal/tplvars.py:107 ../themes/nojs/image.thtml:9
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "%d/%m/%Y kl %H:%M"
 
@@ -461,30 +461,30 @@ msgstr "  TRANSCODE %s"
 msgid "  transcoding %s failed, skipped"
 msgstr ""
 
-#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:253
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:241
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#: ../lazygal/genpage.py:200
+#: ../lazygal/genpage.py:188
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
 "shown on index."
 msgstr ""
 
-#: ../lazygal/genpage.py:352
+#: ../lazygal/genpage.py:340
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:370
+#: ../lazygal/genpage.py:358
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 "We have a template with an extension that does not start with a t. Abording."
 
-#: ../lazygal/genpage.py:376
+#: ../lazygal/genpage.py:364
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-16 06:47+0100\n"
+"POT-Creation-Date: 2018-05-04 10:21+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -451,7 +451,7 @@ msgstr ""
 msgid "Unknown default style '%s'"
 msgstr "Style par défaut inconnu %s"
 
-#: ../lazygal/tplvars.py:95 ../themes/nojs/image.thtml:9
+#: ../lazygal/tplvars.py:107 ../themes/nojs/image.thtml:9
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "le %d/%m/%Y à %H:%M"
 
@@ -513,12 +513,12 @@ msgstr "  TRANSCODAGE %s"
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
 
-#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:253
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:241
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#: ../lazygal/genpage.py:200
+#: ../lazygal/genpage.py:188
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
@@ -527,18 +527,18 @@ msgstr ""
 "  La taille '%s' n'est pas disponible dans '%s' à cause de la "
 "configuration : les médias correspondants ne seront par présents sur l'index."
 
-#: ../lazygal/genpage.py:352
+#: ../lazygal/genpage.py:340
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:370
+#: ../lazygal/genpage.py:358
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 "Il y a un modèle avec une extension qui ne commence par par t. Abandon."
 
-#: ../lazygal/genpage.py:376
+#: ../lazygal/genpage.py:364
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
@@ -576,8 +576,7 @@ msgstr ""
 #: ../lazygal/config.py:273
 #, python-format
 msgid "option '%s' is not valid in section '%s'"
-msgstr ""
-"option de configuration '%s' invalide dans la section '%s'."
+msgstr "option de configuration '%s' invalide dans la section '%s'."
 
 #: ../lazygal/config.py:288 ../lazygal/config.py:306
 #, python-format

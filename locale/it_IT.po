@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-16 06:47+0100\n"
+"POT-Creation-Date: 2018-05-04 10:21+0200\n"
 "PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -451,7 +451,7 @@ msgstr "Tema %s : errore di analisi %s"
 msgid "Unknown default style '%s'"
 msgstr "Tipo di modello sconosciuto per %s"
 
-#: ../lazygal/tplvars.py:95 ../themes/nojs/image.thtml:9
+#: ../lazygal/tplvars.py:107 ../themes/nojs/image.thtml:9
 msgid "on %d/%m/%Y at %H:%M"
 msgstr "il %d/%m/%Y alle %H:%M"
 
@@ -513,12 +513,12 @@ msgstr "  TRANSCODIFICA %s"
 msgid "  transcoding %s failed, skipped"
 msgstr "  errore nella transcodifica di %s, si ignora"
 
-#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:253
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:241
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#: ../lazygal/genpage.py:200
+#: ../lazygal/genpage.py:188
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
@@ -527,17 +527,17 @@ msgstr ""
 ".. La dimensione \"%s\" non è disponibile in \"%s\" a causa della "
 "configurazione usata. I media non appariranno nell'indice."
 
-#: ../lazygal/genpage.py:352
+#: ../lazygal/genpage.py:340
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:370
+#: ../lazygal/genpage.py:358
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr "C'è un modello con un estensione che non inizia con una t. Interrotto."
 
-#: ../lazygal/genpage.py:376
+#: ../lazygal/genpage.py:364
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
