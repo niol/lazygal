@@ -146,7 +146,10 @@
           </option>
         </term>
         <listitem>
-          <para>Default style to apply to the theme.</para>
+          <para>Default style to apply to the theme. This is actually
+          the filename (no extension) of the CSS stylesheet of the theme
+          that is not marked as <option>alternate</option>, thus should
+          get used as default or prefered by the web browser.</para>
         </listitem>
       </varlistentry>
 
