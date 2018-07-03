@@ -580,7 +580,7 @@ class WebalbumDir(make.GroupTask):
         elif self.source_dir.subdirs:
             # As all subdirs are at the same level, if one should be flattened,
             # all should.
-            return self.subgals[0].should_be_flattened()
+            return self._init_subgals[0].should_be_flattened()
         else:
             return False
 
