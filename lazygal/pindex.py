@@ -101,7 +101,7 @@ class PersistentIndex(make.FileMakeObject):
             'video'  : self.data['count']['video'],
         }
 
-        for subgal in self.webgal._init_subgals:
+        for subgal in self.webgal.subgals:
             for count_type in self.data['all_count']:
                 self.data['all_count'][count_type] =\
                     self.data['all_count'][count_type] +\

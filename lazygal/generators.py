@@ -144,6 +144,7 @@ class SubgalBreak(make.MakeTask):
         if self.webgal_dir.flatten_below():
             subgals = []
             for dir in self.webgal_dir.get_all_subgals():
+                dir.call_populate_deps()
                 galleries.append((dir, dir.medias))
         else:
             subgals = self.webgal_dir.subgals
@@ -319,7 +320,7 @@ class WebalbumDir(make.GroupTask):
         self.progress = progress
 
         self.add_dependency(self.source_dir)
-        self._init_subgals = subgals
+        self.subgals = subgals
         for srcdir in self.source_dir.subdirs:
             self.add_dependency(srcdir)
         self.album = album
@@ -337,10 +338,9 @@ class WebalbumDir(make.GroupTask):
     def populate_deps(self):
         super(WebalbumDir, self).populate_deps()
 
-        self.subgals = []
-        for s in self._init_subgals:
-            if s.has_media_below():
-                self.subgals.append(s)
+        for s in self.subgals:
+            if not s.has_media_below():
+                self.subgals.remove(s)
 
         self.medias = []
         self.sort_task = SubgalSort(self)
@@ -564,7 +564,7 @@ class WebalbumDir(make.GroupTask):
     def has_media_below(self):
         if self.has_media():
             return True
-        for subgal in self._init_subgals:
+        for subgal in self.subgals:
             if subgal.has_media_below():
                 return True
         return False
@@ -580,7 +580,7 @@ class WebalbumDir(make.GroupTask):
         elif self.source_dir.subdirs:
             # As all subdirs are at the same level, if one should be flattened,
             # all should.
-            return self._init_subgals[0].should_be_flattened()
+            return self.subgals[0].should_be_flattened()
         else:
             return False
 
