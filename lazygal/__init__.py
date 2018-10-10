@@ -84,7 +84,7 @@ def get_git_rev():
         return ''
 
 
-__version__ = '0.9.2'
+__version__ = '0.9.3'
 
 rev = get_git_rev()
 if rev: __version__ = rev
