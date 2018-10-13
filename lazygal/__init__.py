@@ -38,7 +38,8 @@ else:
 
 def query_git_for_tag(gitdir):
     import subprocess
-    o = subprocess.check_output(('git', 'describe', '--tags')) \
+    o = subprocess.check_output(('git','-C', os.path.dirname(__file__),
+                                 'describe', '--tags', )) \
         .decode(sys.stdout.encoding).strip()
     tokens = o.split('-')
     h = tokens[-1]
@@ -70,7 +71,8 @@ def get_git_rev():
             try:
                 lastrev = query_git_for_tag(gitdir)
             except subprocess.CalledProcessError:
-                os.unlink(last_revision_cache)
+                if os.path.isfile(last_revision_cache):
+                    os.unlink(last_revision_cache)
                 return ''
             else:
                 v, h = lastrev
