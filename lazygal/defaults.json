@@ -8,7 +8,7 @@
         "output-directory": ".", 
         "force-gen-pages": false, 
         "clean-destination": false, 
-        "preserve": [], 
+        "preserve": [".htaccess"],
         "dir-flattening-depth": false, 
         "puburl": false, 
         "theme": "nojs",
