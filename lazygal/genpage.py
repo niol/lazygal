@@ -216,12 +216,10 @@ class WebalbumIndexPage(WebalbumPage):
     def _get_onum_links(self):
         onum_index_links = []
         for onum in range(0, self.dir.break_task.how_many_pages()):
-            onum_info = {}
-            if onum == self.page_number:
-                # No link if we're on the current page
-                onum_info['name'] = onum
-            else:
-                onum_info['name'] = onum
+            onum_info = {
+                'name': onum + 1,
+            }
+            if onum != self.page_number: # No link if we're on the current page
                 filename = self._get_paginated_name(onum)
                 onum_info['link'] = self._add_size_qualifier(filename + '.html',
                                                              self.size_name)
