@@ -259,7 +259,11 @@ if options.tpl_vars is not None:
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-output_log = lazygal.log.ProgressConsoleHandler()
+if sys.stdout.isatty():
+    logging_handler = lazygal.log.ProgressConsoleHandler
+else:
+    logging_handler = logging.StreamHandler
+output_log = logging_handler(sys.stdout)
 output_log.setFormatter(logging.Formatter('%(message)s'))
 logger.addHandler(output_log)
 
