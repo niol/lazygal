@@ -825,7 +825,7 @@ class Album(object):
             for pattern in self.preserves:
                 # Do not delete something the user wants to keep.
                 if fnmatch.fnmatch(tail, pattern):
-                    logging.info('  PRESERVE %s', file_path)
+                    logging.info('  PRESERVE %s', tail)
                     return
             if os.path.isdir(file_path):
                 shutil.rmtree(file_path)
