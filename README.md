@@ -157,7 +157,7 @@ For now, bug reports and feature requests may go in :
 
 *   by e-mail, directly to <alexandre.rossi@gmail.com> (please put `lazygal` somewhere in the subject),
 *   through the [Debian Bug Tracking System][22] to which I think I subscribed,
-*   through the [Lazygal's Bitbucket bug tracker][24].
+*   through the [Lazygal's Github bug tracker][24].
 
  [22]: http://bugs.debian.org/lazygal
- [24]: https://bitbucket.org/niol/lazygal/issues?status=new&status=open
+ [24]: https://github.com/niol/lazygal/issues
