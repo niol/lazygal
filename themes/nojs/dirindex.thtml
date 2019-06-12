@@ -23,8 +23,12 @@
 
 <div class="inline_enum" id="breadcrumbs">
     <ul>
-        <li py:for="webgal in webgal_path">
+        <li py:for="webgal in webgal_path[:-1]">
             <a href="${webgal.link}" py:content="webgal.name" />
+        </li>
+        <li py:if="webgal_path[-1:]" id="index_link">
+            <a href="${webgal_path[-1].link}"
+               py:content="webgal_path[-1].name" />
         </li>
         <li class="bc_current" py:content="album_name" />
     </ul>
