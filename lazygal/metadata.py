@@ -337,7 +337,8 @@ class ImageInfoTags(object):
         except KeyError:
             pass
         else:
-            flen += _(' (35 mm equivalent: %s mm)') % flen35
+            if flen35 != flen:
+                flen += _(' (35 mm equivalent: %s mm)') % flen35
             return flen
 
         try:
@@ -365,7 +366,8 @@ class ImageInfoTags(object):
             except ZeroDivisionError:
                 raise ValueError
 
-            flen += _(' (35 mm equivalent: %s mm)') % lenstr
+            if lenstr != flen:
+                flen += _(' (35 mm equivalent: %s mm)') % lenstr
         except (IndexError, KeyError, ValueError):
             return flen
 
