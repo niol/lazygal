@@ -127,7 +127,7 @@ Album image identifier "realtitle.jpg"
 Album name "%s"
 Album description ""
 Album image identifier "first\xe3.jpg"
-''' % os.path.basename(self.source_dir))
+''' % os.path.basename(self.source_dir).replace('_', ' '))
 
     def test_comment_none(self):
         im_md = metadata.ImageInfoTags(self.get_sample_path('sample.jpg'))
