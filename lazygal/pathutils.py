@@ -100,7 +100,8 @@ def url_quote(url, anchor=''):
     else:
         toquote = url
 
-    tokens.append(urlparse.quote(toquote.encode(sys.getfilesystemencoding())))
+    tokens.append(urlparse.quote(toquote.encode(sys.getfilesystemencoding()),
+                                 '/~'))
 
     if anchor:
         tokens.append('#')

@@ -85,9 +85,9 @@ class TestPathutils(LazygalTest):
 
     def test_url_quote(self):
         self.assertEqual(url_quote('http://host:8080/~user/album/'),
-                         'http://host:8080/%7Euser/album/')
+                         'http://host:8080/~user/album/')
         self.assertEqual(url_quote('https://host/~user/album/'),
-                         'https://host/%7Euser/album/')
+                         'https://host/~user/album/')
         self.assertEqual(url_quote(u'/albumé/'), '/album%C3%A9/')
         self.assertEqual(url_quote('filter: user/'), 'filter%3A%20user/')
         self.assertEqual(url_quote('index.html', 'id'), 'index.html#id')
