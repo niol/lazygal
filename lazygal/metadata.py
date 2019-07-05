@@ -419,6 +419,20 @@ class ImageInfoTags(object):
 
         return kw
 
+    def get_location(self):
+        loc = self._metadata.get_gps_info()
+        if loc == (0, 0, 0):
+            return None
+        else:
+            return {
+                # https://xkcd.com/2170/
+                'latitude': round(loc.latitude, 4),
+                'latitudeRef': self._metadata['Exif.GPSInfo.GPSLatitudeRef'],
+                'longitude': round(loc.longitude, 4),
+                'longitudeRef': self._metadata['Exif.GPSInfo.GPSLongitudeRef'],
+                'altitude': round(loc.altitude),
+            }
+
     def of_interest(self):
         return { tag: self._metadata[tag]
                  for tag in TAGS_OF_INTEREST if tag in self._metadata }

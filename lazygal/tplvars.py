@@ -125,6 +125,9 @@ class Image(Media):
                 tpl_values['authorship'] = image_info.get_authorship()
                 tpl_values['keywords'] = ', '.join(image_info.get_keywords())
 
+                if self.page.dir.config.get('webgal', 'keep-gps'):
+                    tpl_values['location'] = image_info.get_location()
+
         return tpl_values
 
 

@@ -247,6 +247,21 @@ Album image identifier "first\xe3.jpg"
                     ])
                 )
 
+    def test_location(self):
+        sample = 'sample.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_location(), None)
+
+        sample = 'sample-with-gps.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_location(), {
+            'latitude': 47.0636,
+            'latitudeRef': 'N',
+            'longitude': 8.6893,
+            'longitudeRef': 'E',
+            'altitude': 1527
+        })
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -22,6 +22,7 @@
                 <li py:if="fnumber">${_('Aperture')} $fnumber</li>
                 <li py:if="flash">${_('Flash')} $flash</li>
                 <li py:if="focal_length">${_('Focal length')} $focal_length</li>
+                <li py:if="location">${_('Location')} <a href="https://www.openstreetmap.org/?mlat=${location.latitude}&amp;mlon=${location.longitude}">$location.latitude $location.latitudeRef, $location.longitude $location.longitudeRef</a>, ${_('Altitude')} $location.altitude m</li>
             </ul>
         </div>
     </div>
