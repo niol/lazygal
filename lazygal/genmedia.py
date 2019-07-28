@@ -253,11 +253,16 @@ class WebalbumPicture(make.FileMakeObject):
 
         self.add_dependency(webgal_dir.source_dir)
 
-        pics = [p for p in webgal_dir.source_dir.get_all_medias()
-                if not p.broken]
+        medias = [m for m in webgal_dir.source_dir.get_all_medias()
+                  if m.type == 'image' and not m.broken]
 
-        for p in pics:
-            self.add_dependency(p)
+        # Add video thumbs
+        for m in webgal_dir.medias:
+            if m.media.type == 'video':
+                medias.append(m.thumb)
+
+        for m in medias:
+            self.add_dependency(m)
 
         if webgal_dir.source_dir.album_picture:
             albumpic_path = os.path.join(webgal_dir.source_dir.path,
@@ -272,7 +277,7 @@ class WebalbumPicture(make.FileMakeObject):
         else:
             md_dirpic_thumb = None
 
-        pic_paths = [p.path for p in pics]
+        pic_paths = [p.path for p in medias]
 
         multipic_repr = eyecandy.WEBALBUMPIC_TYPES[webgal_dir.webalbumpic_type]
 
