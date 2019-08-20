@@ -250,14 +250,14 @@ class FileCopy(FileMakeObject):
 
     def __init__(self, src, dst):
         self.src = src
-        self.dst = dst
+        self.path = dst
         FileMakeObject.__init__(self, dst)
         self.add_file_dependency(self.src)
 
     def build(self):
-        if os.path.islink(self.dst):
-            os.remove(self.dst)
-        shutil.copyfile(self.src, self.dst)
+        if os.path.islink(self.path):
+            os.remove(self.path)
+        shutil.copyfile(self.src, self.path)
 
 
 class FileSymlink(FileMakeObject):

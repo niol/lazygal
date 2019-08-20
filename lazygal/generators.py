@@ -42,6 +42,7 @@ from . import genpage
 from . import genmedia
 from . import genfile
 from . import mediautils
+from . import theme
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
@@ -683,19 +684,18 @@ class SharedFiles(make.FileMakeObject):
         super(SharedFiles, self).__init__(self.path)
 
         self.expected_shared_files = []
-        for shared_file, shared_file_rel_dest in self.album.theme.shared_files:
-            shared_file_dest = os.path.join(self.path, shared_file_rel_dest)
+        for shared in self.album.theme.shared_files:
+            shared_file_dest = os.path.join(self.path, shared['dest'])
 
-            if self.album.theme.tpl_loader.is_known_template_type(shared_file):
-                sf = genpage.SharedFileTemplate(album, shared_file,
+            if self.album.theme.tpl_loader.is_known_template_type(shared['source']):
+                sf = genpage.SharedFileTemplate(album, shared['source'],
                                                 shared_file_dest,
                                                 tpl_vars)
                 if self.album.force_gen_pages:
                     sf.stamp_delete()
-                self.expected_shared_files.append(sf.path)
             else:
-                sf = genfile.SharedFileCopy(shared_file, shared_file_dest)
-                self.expected_shared_files.append(shared_file_dest)
+                sf = genfile.SharedFileCopy(shared['source'], shared_file_dest)
+            self.expected_shared_files.append(sf.path)
 
             self.add_dependency(sf)
 
@@ -807,8 +807,10 @@ class Album(object):
 
         self.__statistics = None
 
-    def set_theme(self, theme=tpl.DEFAULT_THEME):
-        self.theme = tpl.Theme(os.path.join(DATAPATH, 'themes'), theme)
+    def set_theme(self, theme_name=theme.DEFAULT_THEME):
+        self.theme = theme.Theme(os.path.join(DATAPATH, 'themes'), theme_name)
+        self.theme.prepare_tpl_loader(tpl.TplFactory)
+        self.theme.check_shared_files()
 
     def _str_humanize(self, text):
         dash_replaced = text.replace('_', ' ')

@@ -588,6 +588,16 @@
 
         # copy as shared/js/lib-2.1.js
         { "path": "../lib-2.1.js", "dest": "js/" }
+
+        # copy first found as shared/lib.js
+        # instruct ./setup.py dl_assets to download it from url otherwise
+        { "path": [ "/usr/share/javascript/lib-2.1.js", "lib.js"],
+          "dest": "lib.js",
+          "url": "https://lib.com/lib-latest.js"
+        },
+
+        # copy prefixed files in shared/
+        { "path": "SHARED_*" },
     ]
 }
         </programlisting>

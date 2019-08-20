@@ -127,8 +127,8 @@ class SharedFileCopy(make.FileCopy):
         make.FileCopy.__init__(self, src, dst)
 
     def build(self):
-        logging.info(_("CP %%SHAREDDIR%%/%s"), os.path.basename(self.dst))
-        logging.debug("(%s)", self.dst)
+        logging.info(_("CP %%SHAREDDIR%%/%s"), os.path.basename(self.path))
+        logging.debug("(%s)", self.path)
         make.FileCopy.build(self)
 
 

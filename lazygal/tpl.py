@@ -16,11 +16,6 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 import os
-import glob
-import logging
-import json
-import codecs
-import locale
 import time
 
 from genshi.core import START
@@ -31,13 +26,6 @@ from genshi.input import XMLParser
 
 import lazygal
 from . import py2compat
-from . import pathutils
-
-
-DEFAULT_THEME = 'nojs'
-USER_THEME_DIR = os.path.expanduser(os.path.join('~', '.lazygal', 'themes'))
-THEME_SHARED_FILE_PREFIX = 'SHARED_'
-THEME_MANIFEST = 'manifest.json'
 
 
 class LazygalTemplate(object):
@@ -157,110 +145,6 @@ class TplFactory(object):
             return tpl_class(self, tpl)
         else:
             raise ValueError(_('Unknown template type for %s' % tpl_ident))
-
-
-class Theme(object):
-
-    def __init__(self, themes_dir, name):
-        self.name = name
-
-        # First try user directory
-        self.tpl_dir = os.path.join(USER_THEME_DIR, self.name)
-        if not os.path.exists(self.tpl_dir):
-            # Fallback to system themes
-            self.tpl_dir = os.path.join(themes_dir, self.name)
-            if not os.path.exists(self.tpl_dir):
-                raise ValueError(_('Theme %s not found') % self.name)
-        self.tpl_dir = os.path.abspath(self.tpl_dir)
-
-        self.__load_manifest()
-
-        self.tpl_loader = TplFactory(os.path.join(themes_dir, DEFAULT_THEME),
-                                     self.tpl_dir)
-
-        # Load styles templates
-        for style in self.get_avail_styles():
-            style_filename = style['filename']
-            try:
-                self.tpl_loader.load(style_filename)
-            except ValueError:
-                # Not a known emplate ext, ignore
-                pass
-
-        # find out theme kind
-        try:
-            self.tpl_loader.load('dynindex.thtml')
-        except TemplateNotFound:
-            self.kind = 'static'
-        else:
-            self.kind = 'dynamic'
-
-    def __load_manifest(self):
-        theme_manifest_path = os.path.join(self.tpl_dir, THEME_MANIFEST)
-        logging.debug(_('Loading %s for theme %s'), THEME_MANIFEST, self.name)
-        theme_manifest = {}
-        try:
-            with codecs.open(theme_manifest_path, 'r',
-                             locale.getpreferredencoding()) as f:
-                theme_manifest.update(json.load(f))
-        except IOError:
-            logging.debug(_('Theme %s does not have a %s'),
-                          self.name, THEME_MANIFEST)
-        except ValueError:
-            logging.error(_('Theme %s : %s parsing error'),
-                          self.name, THEME_MANIFEST)
-            raise
-
-        if 'shared' not in theme_manifest:
-            theme_manifest['shared'] = []
-        theme_manifest['shared'].append({'path': THEME_SHARED_FILE_PREFIX + '*'})
-        self.shared_files = []
-        for shared_file_entry in theme_manifest['shared']:
-            entry_path = os.path.join(self.tpl_dir, shared_file_entry['path'])
-            entry_path = os.path.normpath(entry_path)
-            entry_dest = 'dest' in shared_file_entry and shared_file_entry['dest']
-            for sf in glob.glob(entry_path):
-                sf_name = os.path.basename(sf)
-                if sf_name.startswith(THEME_SHARED_FILE_PREFIX):
-                    sf_name = sf_name[len(THEME_SHARED_FILE_PREFIX):]
-
-                if entry_dest:
-                    # There is dest info in manifest for this file
-                    if entry_dest[-1] == os.sep: # dest is a dir
-                        dest = os.path.join(entry_dest, sf_name)
-                    else:
-                        dest = entry_dest
-                else:
-                    if pathutils.is_subdir_of(self.tpl_dir, sf):
-                        sf_dir = os.path.dirname(sf)
-                        dest = os.path.join(sf_dir[len(self.tpl_dir)+1:], sf_name)
-                    else:
-                        dest = sf_name
-
-                self.shared_files.append((sf, dest))
-
-    def get_avail_styles(self, default_style=None):
-        style_files_mask = os.path.join(self.tpl_dir,
-                                        THEME_SHARED_FILE_PREFIX + '*' + 'css')
-        styles = []
-        found_default = default_style is None
-        for style_tpl_file in glob.glob(style_files_mask):
-            style = {}
-            tpl_filename = os.path.basename(style_tpl_file).split('.')[0]
-            style['filename'] = tpl_filename[len(THEME_SHARED_FILE_PREFIX):]
-            style['name'] = style['filename'].replace('_', ' ')
-            if default_style is not None:
-                if style['filename'] == default_style:
-                    style['rel'] = 'stylesheet'
-                    found_default = True
-                else:
-                    style['rel'] = 'alternate stylesheet'
-            styles.append(style)
-
-        if not found_default:
-            raise ValueError(_('Unknown default style \'%s\'') % default_style)
-
-        return styles
 
 
 # vim: ts=4 sw=4 expandtab

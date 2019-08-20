@@ -1,1 +1,12 @@
-{ "shared": [ { "path": "../nojs/SHARED_jquery.js" } ] }
+{
+    "shared": [
+        {
+            "dest": "jquery.js",
+            "path": [
+                "jquery.js",
+                "/usr/share/javascript/jquery/jquery.js"
+            ],
+            "url": "https://code.jquery.com/jquery-3.4.1.js"
+        }
+    ]
+}

@@ -27,8 +27,17 @@ import re
 import os
 import sys
 import glob
-import lazygal
+import gettext
+import json
+import locale
+import urllib.request
 from stat import ST_MODE
+
+
+import lazygal
+
+
+gettext.install('lazygal')
 
 
 class test_lazygal(Command):
@@ -44,6 +53,26 @@ class test_lazygal(Command):
     def run(self):
         import lazygaltest
         lazygaltest.run()
+
+
+class dl_assets(Command):
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import lazygal.theme
+        for t in lazygal.theme.get_themes():
+            for a in t.get_missing_external_assets():
+                asset_file = urllib.request.urlopen(a['url'])
+                distutils.log.info('downloading %s into %s' \
+                                   % (a['url'], a['abs_dest']))
+                with open(a['abs_dest'], 'wb') as output:
+                    output.write(asset_file.read())
 
 
 class build_manpages(Command):
@@ -272,6 +301,7 @@ setup(
         'build_scripts' : build_scripts_lazygal,
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
+        'dl_assets'     : dl_assets,
         'test'          : test_lazygal,
     },
     data_files = theme_data

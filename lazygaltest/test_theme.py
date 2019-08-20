@@ -19,7 +19,7 @@
 import unittest
 import os
 from . import LazygalTest
-import lazygal.tpl as tpl
+import lazygal.theme as t
 
 
 class TestTheme(LazygalTest):
@@ -40,9 +40,11 @@ class TestTheme(LazygalTest):
         """
         prefixed = os.path.join(self.theme_dir, 'SHARED_prefixed.txt')
         self.create_file(prefixed)
-        theme = tpl.Theme(self.themes_dir, self.theme_name)
+        theme = t.Theme(self.themes_dir, self.theme_name)
 
-        self.assertEqual(theme.shared_files, [(prefixed, 'prefixed.txt')])
+        self.assertEqual(len(theme.shared_files), 1)
+        self.assertEqual(theme.shared_files[0]['source'], prefixed)
+        self.assertEqual(theme.shared_files[0]['dest'], 'prefixed.txt')
 
     def test_shared_file_manifest(self):
         """
@@ -68,12 +70,12 @@ class TestTheme(LazygalTest):
 }
 """)
 
-        theme = tpl.Theme(self.themes_dir, self.theme_name)
+        theme = t.Theme(self.themes_dir, self.theme_name)
 
-        self.assertEqual(theme.shared_files,
-                         [(jslib, 'lib.js'),
-                          (jslib, 'js/lib-2.1.js'),
-                          (prefixed, 'prefixed.txt')])
+        shared_files = [(s['source'], s['dest']) for s in theme.shared_files]
+        self.assertEqual(shared_files, [(jslib, 'lib.js'),
+                                        (jslib, 'js/lib-2.1.js'),
+                                        (prefixed, 'prefixed.txt')])
 
 
 if __name__ == '__main__':
