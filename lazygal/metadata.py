@@ -327,6 +327,8 @@ class ImageInfoTags(object):
     def get_focal_length(self):
         try:
             flen = self._metadata.get_exif_tag_rational('Exif.Photo.FocalLength')
+            if not flen:
+                raise KeyError
         except KeyError:
             return ''
         else:
