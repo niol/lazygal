@@ -38,8 +38,9 @@ class WebalbumPage(genfile.WebalbumFile):
 
         page_filename = self._add_size_qualifier(base_name + '.html',
                                                  self.size_name)
-        self.page_path = os.path.join(dir.path, page_filename)
-        genfile.WebalbumFile.__init__(self, self.page_path, dir)
+        genfile.WebalbumFile.__init__(self,
+                                      os.path.join(dir.path, page_filename),
+                                      dir)
 
         self.page_template = None
 
@@ -114,7 +115,7 @@ class WebalbumBrowsePage(WebalbumPage):
     def build(self):
         page_rel_path = self.rel_path(self.dir.flattening_dir)
         logging.info(_("  XHTML %s"), page_rel_path)
-        logging.debug("(%s)", self.page_path)
+        logging.debug("(%s)", self._path)
 
         tpl_values = self.init_tpl_values()
 
@@ -152,7 +153,7 @@ class WebalbumBrowsePage(WebalbumPage):
 
         self.add_extra_vals(tpl_values)
 
-        self.page_template.dump(tpl_values, self.page_path)
+        self.page_template.dump(tpl_values, self._path)
 
 
 class WebalbumIndexPage(WebalbumPage):
@@ -236,8 +237,8 @@ class WebalbumIndexPage(WebalbumPage):
         return subgal_links
 
     def build(self):
-        logging.info(_("  XHTML %s"), os.path.basename(self.page_path))
-        logging.debug("(%s)", self.page_path)
+        logging.info(_("  XHTML %s"), os.path.basename(self._path))
+        logging.debug("(%s)", self._path)
 
         values = self.init_tpl_values()
 
@@ -282,7 +283,7 @@ class WebalbumIndexPage(WebalbumPage):
         else:
             values['feed_url'] = None
 
-        self.page_template.dump(values, self.page_path)
+        self.page_template.dump(values, self._path)
 
 
 class WebalbumFeed(make.FileMakeObject):
