@@ -47,6 +47,7 @@
         "original": false, 
         "original-baseurl": false, 
         "original-symlink": false, 
+        "novideo": false,
         "dirzip": false, 
         "jpeg-quality": 85, 
         "jpeg-optimize": true, 

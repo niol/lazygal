@@ -491,6 +491,15 @@
         </listitem>
       </varlistentry>
 
+      <varlistentry>
+        <term>
+          <option>--no-video</option>
+        </term>
+        <listitem>
+          <para>Do not process videos nor include them in indexes.</para>
+        </listitem>
+      </varlistentry>
+
   </variablelist>
   </refsect1>
 

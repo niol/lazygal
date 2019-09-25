@@ -369,15 +369,22 @@ class WebalbumDir(make.GroupTask):
 
             self.sort_task.add_dependency(media)
 
+            media_task = None
             if media.type == 'image':
                 media_task = WebalbumImageTask(self, media)
             elif media.type == 'video':
-                media_task = WebalbumVideoTask(self, media)
+                if not self.config.get('webgal', 'novideo'):
+                    media_task = WebalbumVideoTask(self, media)
+                else:
+                    logging.warning(_('Video support disabled: ignoring %s.')
+                                    % media.filename)
             else:
                 raise NotImplementedError("Unknown media type '%s'"
                                           % media.type)
-            self.medias.append(media_task)
-            self.add_dependency(media_task)
+
+            if media_task:
+                self.medias.append(media_task)
+                self.add_dependency(media_task)
 
         # Create the directory if it does not exist
         if not os.path.isdir(self.path) and self.has_media_below():

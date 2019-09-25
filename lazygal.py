@@ -166,6 +166,10 @@ parser.add_option("", "--keep-gps-data",
                   action="store_true",
                   dest="keep_gps",
                   help=_("Do not remove GPS location tags from EXIF metadata. Mostly useful with holiday photos."))
+parser.add_option("", "--no-video",
+                  action="store_true",
+                  dest="novideo",
+                  help=_("Do not process videos nor include them in indexes."))
 (options, args) = parser.parse_args()
 
 if options.show_version:
@@ -248,6 +252,8 @@ if options.quality is not None:
     cmdline_config.set('webgal', 'jpeg-quality', options.quality)
 if options.keep_gps:
     cmdline_config.set('webgal', 'keep-gps', True)
+if options.novideo:
+    cmdline_config.set('webgal', 'novideo', True)
 
 if options.tpl_vars is not None:
     cmdline_config.add_section('template-vars')
