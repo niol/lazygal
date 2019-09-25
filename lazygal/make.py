@@ -102,16 +102,15 @@ class MakeTask(object):
             return True
 
         for dependency in self.deps:
-            mtime_gap = dependency.get_mtime() - self.get_mtime()
-            if mtime_gap > 0 or dependency.needs_build():
-                if not dependency.is_dep_only():
-                    mtime_gap = dependency.get_mtime() - self.get_mtime()
+            if not dependency.is_dep_only():
+                mtime_gap = dependency.get_mtime() - self.get_mtime()
+                if mtime_gap > 0 or dependency.needs_build():
                     logging.debug("%s build needed: dep %s newer by %ss",
                                   self, dependency, mtime_gap)
                     return True
-            else:
-                logging.debug("%s build: dep %s older by %ss",
-                              self, dependency, mtime_gap)
+                else:
+                    logging.debug("%s build: dep %s older by %ss",
+                                  self, dependency, mtime_gap)
         return False
 
     def make(self, force=False):

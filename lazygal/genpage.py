@@ -173,7 +173,7 @@ class WebalbumIndexPage(WebalbumPage):
             if dir is not self.dir:
                 dir.flattening_dir = self.dir
 
-            self.add_dependency(dir.source_dir)
+            self.add_dependency(dir.pindex)
             self.add_dependency(dir.sort_task)
 
             if size_name in dir.browse_sizes:
@@ -192,7 +192,7 @@ class WebalbumIndexPage(WebalbumPage):
                 self.add_dependency(self.dir.dirzip)
 
         for subgal in self.subgals:
-            self.add_dependency(subgal.source_dir)
+            self.add_dependency(subgal.pindex)
 
         if self.dir.album.theme.kind == 'static':
             self.set_template('dirindex.thtml')

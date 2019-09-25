@@ -667,8 +667,6 @@ class WebalbumDir(make.GroupTask):
 
     def make(self, force=False):
         super(WebalbumDir, self).make(force)
-        if self.has_media_below(): # otherwise the dir is not created
-            os.utime(self.pindex._path, None) # update stamp mtime
         self.update_build_status()
 
     def media_done(self):
