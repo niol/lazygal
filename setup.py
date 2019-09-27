@@ -79,39 +79,29 @@ class build_manpages(Command):
     user_options = []
 
     manpages = None
-    db2mans = [
-        # debian
-        "/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl",
-        # gentoo
-        "/usr/share/sgml/docbook/xsl-stylesheets/manpages/docbook.xsl",
-    ]
-    mandir = "./"
-    executable = find_executable('xsltproc')
+    mandir = os.path.join(os.path.dirname(__file__), 'man')
+    executable = find_executable('pandoc')
 
     def initialize_options(self):
         pass
 
     def finalize_options(self):
-        self.manpages = glob.glob(os.path.join(self.mandir, "*.xml"))
+        self.manpages = glob.glob(os.path.join(self.mandir, '*.md'))
 
     def __get_man_section(self, filename):
-        # filename should be file.mansection.xml
+        # filename should be file.mansection.md
         return filename.split('.')[-2]
 
     def run(self):
         data_files = self.distribution.data_files
-        db2man = None
-        for path in self.__class__.db2mans:
-            if os.path.exists(path):
-                db2man = path
-                continue
 
-        for xmlmanpage in self.manpages:
-            manpage = xmlmanpage[:-4]  # remove '.xml' at the end
+        for manpagesrc in self.manpages:
+            manpage = os.path.splitext(manpagesrc)[0] # remove '.md' at the end
             section = manpage[-1:]
-            if newer(xmlmanpage, manpage):
-                cmd = (self.executable, "--nonet", "-o", self.mandir, db2man,
-                       xmlmanpage)
+            if newer(manpagesrc, manpage):
+                cmd = (self.executable, '-s', '-t', 'man',
+                       '-o', manpage,
+                       manpagesrc)
                 self.spawn(cmd)
 
             targetpath = os.path.join("share", "man", 'man%s' % section)
@@ -152,11 +142,8 @@ class build_i18n_lazygal(Command):
 class build_lazygal(distutils.command.build.build):
 
     def __has_manpages(self, command):
-        has_db2man = False
-        for path in build_manpages.db2mans:
-            if os.path.exists(path): has_db2man = True
         return 'build_manpages' in self.distribution.cmdclass\
-            and has_db2man and build_manpages.executable is not None
+            and build_manpages.executable is not None
 
     def __has_i18n(self, command):
         return 'build_i18n' in self.distribution.cmdclass

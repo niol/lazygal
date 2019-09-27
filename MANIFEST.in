@@ -4,9 +4,7 @@ include MANIFEST.in
 include COPYING
 include README.md
 include TODO
-include lazygal.ent
-include lazygal.1.xml
-include lazygal.conf.5.xml
+include man/*.md
 recursive-include themes *.thtml
 recursive-include themes *.css
 recursive-include themes *.tcss

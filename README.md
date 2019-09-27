@@ -66,14 +66,14 @@ It can be summed up by the following features :
 Building a `lazygal` installation requires :
 
   *   `msgfmt` for translations. `intltool-update` and `xgettext` are also needed to update translation files. All are included in the GNU `gettext` package.
-  *   `xsltproc` to build manpages from docbook sources. It is included in the [libxslt package][8].
+  *   [pandoc][8] to build manpages from markdown sources.
 
  [4]: http://www.pythonware.com/products/pil/
  [5]: http://redmine.yorba.org/projects/gexiv2/wiki
  [6]: http://exiv2.org/
  [7]: http://genshi.edgewall.org/
  [23]: http://gstreamer.freedesktop.org/modules/gst-python.html
- [8]: http://xmlsoft.org/XSLT/xsltproc2.html
+ [8]: https://pandoc.org/
  [9]: https://pypi.python.org/pypi/Pillow/
 
 ## Usage
@@ -91,8 +91,8 @@ If you want to force `lazygal` into checking a directory's contents, simply `tou
 
     $ touch album_source/gallery_to_check
 
- [30]: http://sml.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.1.html
- [31]: http://sml.zincube.net/~niol/playa/oss/projects/lazygal/lazygal.conf.5.html
+ [30]: man/lazygal.1.md
+ [31]: man/lazygal.conf.5.md
 
 ## Download & Changelog
 

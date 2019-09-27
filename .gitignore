@@ -1,6 +1,6 @@
 **.pyc
 **/__pycache__
 build
-lazygal.1
-lazygal.conf.5
+man/lazygal.1
+man/lazygal.conf.5
 MANIFEST
