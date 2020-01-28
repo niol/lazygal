@@ -586,7 +586,7 @@ msgstr "Option ignorée: %s"
 #: ../lazygal/config.py:310
 #, python-format
 msgid "Cannot load non-existent config %s."
-msgstr "Impossible de chargée la configuraion %s car elle n'existe pas."
+msgstr "Impossible de charger la configuraion %s car elle n'existe pas."
 
 #: ../lazygal/config.py:321
 msgid "INI-style config file format is deprecated."
