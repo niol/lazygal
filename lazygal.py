@@ -300,6 +300,7 @@ else:
         print(_("Interrupted."), file=sys.stderr)
         sys.exit(1)
     except ValueError as e:
+        sys.stdout.write("\r")
         print(py2compat.u(e))
         sys.exit(1)
 
