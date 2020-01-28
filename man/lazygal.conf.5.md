@@ -135,7 +135,20 @@ webalbumpic-size
 
 image-size
 
-:   Same as `--image-size=IMAGE_SIZE` in LAZYGAL.
+:   Same as `--image-size=IMAGE_SIZE` in LAZYGAL. Syntax in the config
+    file can be either of the following equivalent forms:
+
+        "image-size": [
+            {"name": "small", "defs": "800x600", "default": true},
+            {"name": "medium", "defs": "1024x768"}
+        ]
+
+    or with implicit default as first entry:
+
+        "image-size": {
+            "small" : "800x600",
+            "medium": "1024x768"
+        }
 
 thumbnail-size
 

@@ -416,7 +416,20 @@ class WebalbumDir(make.GroupTask):
             self.break_task = None
 
     def __parse_browse_sizes(self, sizes_defs):
-        for size_defs in sizes_defs:
+        fixed_sizes_defs = sizes_defs
+        if isinstance(sizes_defs, dict):
+            # simpler defs
+            fixed_sizes_defs = []
+            first = True
+            for name, defs in sizes_defs.items():
+                fixed_sizes_defs.append({
+                    "name" : name,
+                    "defs" : defs,
+                    "default" : first,
+                })
+                first = False
+
+        for size_defs in fixed_sizes_defs:
             name = py2compat.u(size_defs['name'], locale.getpreferredencoding())
             if name == genmedia.THUMB_SIZE_NAME:
                 raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
