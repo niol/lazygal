@@ -4,7 +4,8 @@
             "dest": "jquery.js",
             "path": [
                 "jquery.js",
-                "/usr/share/javascript/jquery/jquery.js"
+                "/usr/share/javascript/jquery/jquery.js",
+                "/usr/share/javascript/jquery/latest/jquery.js"
             ],
             "url": "https://code.jquery.com/jquery-3.4.1.js"
         }
