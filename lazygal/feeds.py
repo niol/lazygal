@@ -18,7 +18,7 @@
 import email.utils
 import os
 import sys
-from xml.etree import cElementTree as ET
+from xml.etree import ElementTree as ET
 
 
 from . import pathutils
