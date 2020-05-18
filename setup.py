@@ -42,6 +42,7 @@ gettext.install('lazygal')
 
 class test_lazygal(Command):
 
+    description = 'Run the test suite'
     user_options = []
 
     def initialize_options(self):
@@ -56,6 +57,8 @@ class test_lazygal(Command):
 
 
 class dl_assets(Command):
+
+    description = 'Download extra assets if not provided by the system'
     user_options = []
 
     def initialize_options(self):
@@ -76,6 +79,8 @@ class dl_assets(Command):
 
 
 class build_manpages(Command):
+
+    description = 'Build manpages'
     user_options = []
 
     manpages = None
@@ -109,6 +114,8 @@ class build_manpages(Command):
 
 
 class build_i18n_lazygal(Command):
+
+    description = 'Build i18n files'
     user_options = []
     po_package = None
     po_directory = None
