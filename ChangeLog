@@ -1,3 +1,17 @@
+Lazygal 0.9.4 (2020-05-18)
+  * do not transcode mp4
+  * accept simpler size defs in json config and improve documentation
+  * build manpages using pandoc
+  * new --no-video option
+  * center and properly size videos in default theme
+  * themes: enable external assets and downloading theme with setup.py
+  * also include video thumbs in album picture
+  * show GPS data from EXIF
+  * fix test_gen_metadata when source dir contrains _ (thanks Dominik Mierzejewski)
+  * url_quote according to RFC 3986 (thanks Dominik Mierzejewski)
+  * fix left/right/up keys not working
+  * make --clean-destination preserve .htaccess files as default
+
 Lazygal 0.9.3 (2018-10-10)
   * fix crash on rebuild with --dir-flattening-depth (Debian Closes: #902764)
 

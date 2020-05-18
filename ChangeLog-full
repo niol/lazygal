@@ -1,4 +1,35 @@
+Lazygal 0.9.4 (2020-05-18)
+  * add command to generate sample album
+  * do not transcode mp4
+  * add distutils commands description
+  * add Fedora jquery path to themes
+  * accept simpler size defs in json config and improve documentation
+  * remove progress when printing error message
+  * [fr] fix spelling
+  * build manpages using pandoc
+  * fix lazygaltest.test_gendeps tests
+  * remove useless var
+  * new --no-video option
+  * spelling in manpage
+  * center and properly size videos in default theme
+  * themes: enable external assets and downloading theme with setup.py
+  * remove timestamp comparison in test_metadata
+  * focal length: fix failure when one md field is not there
+  * also include video thumbs in album picture
+  * show GPS data from EXIF
+  * focal length: do not add 35mm equivalent if it's the same
+  * fix test_gen_metadata when source dir contrains _ (thanks Dominik Mierzejewski)
+  * url_quote according to RFC 3986 (thanks Dominik Mierzejewski)
+  * fix left/right/up keys not working
+  * migrate to github bug tracker
+  * output to stout and not stderr
+  * print only filename for PRESERVE logging output
+  * number paginated indexes from 1
+  * fix launching lazygal from another dir when in source
+  * make --clean-destination preserve .htaccess files as default
+
 Lazygal 0.9.3 (2018-10-10)
+  * set version to 0.9.3
   * better wording for the directory 'shared' in docs
   * fix crash on rebuild with --dir-flattening-depth (Debian Closes: #902764)
   * improve --default-style doc
