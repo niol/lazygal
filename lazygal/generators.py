@@ -295,7 +295,7 @@ class WebalbumVideoTask(WebalbumMediaTask):
     def get_resized(self, size_name):
         if not self.webvideo:
             if self.webgal.newsizers[genmedia.VIDEO_SIZE_NAME] == 'original'\
-            and self.media.extension == '.webm':
+            and self.media.extension in ('.webm', '.mp4'):
                 # do not transcode webm videos
                 self.webvideo = self.get_original_or_symlink()
             else:
