@@ -123,6 +123,24 @@ def my_import(name):
     return mod
 
 
+def sample_album(outdir):
+    d = os.path.normpath(outdir)
+    os.makedirs(d)
+    sample = LazygalTest()
+    sample.add_img(d, 'root.jpg')
+
+    flowers = os.path.join(d, 'flower')
+    os.makedirs(flowers)
+    sample.add_img(flowers, 'coquelicot.jpg')
+    sample.add_img(flowers, 'rose.jpg')
+    sample.add_video(flowers, 'nature.mov')
+
+    beers = os.path.join(d, 'beers')
+    os.makedirs(beers)
+    sample.add_img(beers, 'guinness.jpg')
+    sample.add_img(beers, 'kilkenny.jpg')
+
+
 def run():
     import glob
     suitelist = []

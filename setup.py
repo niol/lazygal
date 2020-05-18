@@ -78,6 +78,24 @@ class dl_assets(Command):
                     output.write(asset_file.read())
 
 
+class sample_album(Command):
+
+    description = 'Generate a sample album for testing purposes'
+    user_options = [
+        ('outdir=', None, 'Output directory')
+    ]
+
+    def initialize_options(self):
+        self.outdir = None
+
+    def finalize_options(self):
+        assert self.outdir is not None, 'Output directory is mandatory'
+
+    def run(self):
+        import lazygaltest
+        lazygaltest.sample_album(self.outdir)
+
+
 class build_manpages(Command):
 
     description = 'Build manpages'
@@ -297,6 +315,7 @@ setup(
         'build_manpages': build_manpages,
         'dl_assets'     : dl_assets,
         'test'          : test_lazygal,
+        'sample_album'  : sample_album,
     },
     data_files = theme_data
 )
