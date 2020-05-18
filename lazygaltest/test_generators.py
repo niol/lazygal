@@ -24,7 +24,6 @@ import json
 
 from PIL import Image
 
-from lazygal import py2compat
 from . import LazygalTestGen, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
@@ -162,8 +161,7 @@ class TestGenerators(LazygalTestGen):
         source_subgal = Directory(os.path.join(self.source_dir, 'subgal'),
                                   [], pics, self.album)
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
-        expected = map(lambda fn:
-                       py2compat.u(os.path.join(dest_path, 'subgal', fn)),
+        expected = map(lambda fn: os.path.join(dest_path, 'subgal', fn),
                        ['extra_thumb2.jpg',
                         'img6_thumb.jpg',
                         'img6_small.jpg', 'img6_medium.jpg',
@@ -174,8 +172,7 @@ class TestGenerators(LazygalTestGen):
                          sorted(expected))
         source_gal = Directory(self.source_dir, [source_subgal], [], self.album)
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
-        expected =  map(lambda fn:
-                        py2compat.u(os.path.join(dest_path, fn)),
+        expected =  map(lambda fn: os.path.join(dest_path, fn),
                         ['extra_thumb.jpg', 'extra_dir']
                        )
         self.assertEqual(sorted(dest_gal.list_foreign_files()),

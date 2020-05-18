@@ -22,9 +22,6 @@ import logging
 import multiprocessing
 
 
-from . import py2compat
-
-
 class VideoError(Exception): pass
 
 
@@ -92,8 +89,7 @@ class GstVideoOpener(object):
         if not gst_init:
             GST_init()
 
-        self.input_file = py2compat.u(input_file,
-                                      sys.getfilesystemencoding())
+        self.input_file = input_file
 
         self.progress = None
 
@@ -213,7 +209,7 @@ class GstVideoOpener(object):
 class GstVideoInfo(object):
 
     def __init__(self, path):
-        self.path = py2compat.u(path, sys.getfilesystemencoding())
+        self.path = path
 
     def inspect(self):
         # Init gobjects threads only if an inspection is initiated
@@ -572,8 +568,6 @@ if __name__ == '__main__':
         converters[converter_type] = converter
 
     for file_path in sys.argv[2:]:
-        file_path = py2compat.u(file_path, sys.getfilesystemencoding())
-
         videoinfo = GstVideoInfo(file_path)
         videoinfo.inspect()
         print('Video is %dx%d' % (videoinfo.videowidth, videoinfo.videoheight))

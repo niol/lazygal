@@ -18,10 +18,7 @@
 
 import unittest
 import os
-try:
-    import configparser
-except ImportError: # py2compat
-    import ConfigParser as configparser
+import configparser
 import json
 
 

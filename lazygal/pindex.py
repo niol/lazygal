@@ -22,7 +22,6 @@ import json
 import collections
 import datetime
 
-from . import py2compat
 from . import make
 from . import tplvars
 
@@ -53,7 +52,7 @@ class PersistentIndex(make.FileMakeObject):
         try:
             with open(self._path, 'r') as json_fp:
                 self.data = json.load(json_fp)
-        except py2compat.FileNotFoundError:
+        except FileNotFoundError:
             self.data = collections.OrderedDict()
         except ValueError:
             os.unlink(self._path)

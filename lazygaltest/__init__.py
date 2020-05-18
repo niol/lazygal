@@ -22,7 +22,6 @@ import tempfile
 import unittest
 import codecs
 
-from lazygal import py2compat
 from lazygal.sourcetree import Directory
 from lazygal.generators import Album
 
@@ -61,7 +60,7 @@ class LazygalTest(unittest.TestCase):
     def get_working_path(self):
         new_wd = tempfile.mkdtemp()
         self.__workdirs.append(new_wd)
-        return py2compat.u(new_wd)
+        return new_wd
 
     def get_sample_path(self, sample):
         return os.path.join(SAMPLES_DIR, sample)

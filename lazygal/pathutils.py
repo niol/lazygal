@@ -21,15 +21,7 @@ import os
 import sys
 import posixpath
 import logging
-try:
-    import urllib.parse as urlparse
-except ImportError: # py2compat
-    import urlparse
-    import urllib
-    urlparse.quote = urllib.quote
-
-
-from . import py2compat
+import urllib.parse as urlparse
 
 
 def is_root_posix(path):
@@ -44,10 +36,6 @@ if sys.platform == 'win32':
     is_root = is_root_win32
 else:
     is_root = is_root_posix
-
-
-def path2unicode(path, errors='strict'):
-    return py2compat.u(path, sys.getfilesystemencoding(), errors)
 
 
 def is_subdir_of(dir_path, path):

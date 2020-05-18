@@ -29,7 +29,6 @@ from optparse import OptionParser
 
 
 # i18n
-from lazygal import py2compat
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
 if INSTALL_MODE == 'source':
     LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
@@ -180,7 +179,7 @@ if len(args) != 1:
     parser.print_help()
     sys.exit(_("Bad command line: wrong number of arguments."))
 
-source_dir = py2compat.u(args[0], sys.getfilesystemencoding())
+source_dir = args[0]
 if not os.path.isdir(source_dir):
     print(_("Directory %s does not exist.") % source_dir)
     sys.exit(1)
@@ -197,9 +196,7 @@ if options.check_all_dirs:
     cmdline_config.set('runtime', 'check-all-dirs', True)
 
 if options.dest_dir is not None:
-    cmdline_config.set('global', 'output-directory',
-                       py2compat.u(options.dest_dir,
-                                   sys.getfilesystemencoding()))
+    cmdline_config.set('global', 'output-directory', options.dest_dir)
 if options.force_gen_pages:
     cmdline_config.set('global', 'force-gen-pages', True)
 if options.clean_destination:
@@ -260,8 +257,7 @@ if options.tpl_vars is not None:
     tpl_vars_defs = options.tpl_vars.split(',')
     for single_def in tpl_vars_defs:
         name, value = single_def.split('=')
-        cmdline_config.set('template-vars',
-                           name, py2compat.u(value, sys.stdin.encoding))
+        cmdline_config.set('template-vars', name, value)
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -276,7 +272,7 @@ logger.addHandler(output_log)
 try:
     album = Album(source_dir, cmdline_config)
 except ValueError as e:
-    print(py2compat.u(e))
+    print(e)
     sys.exit(1)
 else:
     if sys.stdout.isatty():
@@ -284,7 +280,7 @@ else:
             len(album.stats()['bydir'].keys()), album.stats()['total'])
 
         def update_progress():
-            output_log.update_progress(py2compat._str(progress))
+            output_log.update_progress(str(progress))
         progress.updated = update_progress
         progress.updated()
     else:
@@ -301,7 +297,7 @@ else:
         sys.exit(1)
     except ValueError as e:
         sys.stdout.write("\r")
-        print(py2compat.u(e))
+        print(e)
         sys.exit(1)
 
 

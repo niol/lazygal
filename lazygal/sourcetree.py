@@ -16,15 +16,15 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import os
-import time
-import re
+import fnmatch
 import locale
 import logging
-import fnmatch
+import datetime
+import os
+import re
+import time
 from PIL import Image
 
-from . import py2compat
 from . import pathutils, make, metadata
 from . import mediautils
 
@@ -37,7 +37,7 @@ class File(make.FileSimpleDependency):
     def __init__(self, path, album):
         make.FileSimpleDependency.__init__(self, path)
 
-        self.path = pathutils.path2unicode(path)
+        self.path = path
         self.album = album
         self.filename = os.path.basename(self.path)
         self.name, self.extension = os.path.splitext(self.filename)
@@ -103,7 +103,7 @@ class File(make.FileSimpleDependency):
         return False
 
     def get_datetime(self):
-        return py2compat.datetime.fromtimestamp(self.get_mtime())
+        return datetime.datetime.fromtimestamp(self.get_mtime())
 
     def name_numeric(self):
         numeric_part = re.sub("\D", "", self.filename)
@@ -277,7 +277,7 @@ class Directory(File):
         self.extension = None
 
         self.subdirs = subdirs
-        self.filenames = map(pathutils.path2unicode, filenames)
+        self.filenames = filenames
 
         self.human_name = self.album._str_humanize(self.name)
 
@@ -320,7 +320,7 @@ class Directory(File):
             self.album_picture = None
 
     def is_album_root(self):
-        return self.path == pathutils.path2unicode(self.album.source_dir)
+        return self.path == self.album.source_dir
 
     def parent_paths(self):
         parent_paths = [self.path]

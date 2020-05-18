@@ -18,18 +18,11 @@
 
 import os
 import logging
-try:
-    import configparser
-except ImportError: # py2compat
-    import ConfigParser as configparser
-    configparser.RawConfigParser.read_file = configparser.RawConfigParser.readfp
+import configparser
 import collections
 import functools
 import json
 import copy
-
-
-from . import py2compat
 
 
 USER_CONFIG_PATH = os.path.expanduser('~/.lazygal/config')
@@ -264,7 +257,7 @@ class LazygalConfig(object):
         self.add_section(section)
 
         if option in self.valid_options[section] or section == 'template-vars':
-            if py2compat.isstr(value)\
+            if type(value) is str\
             and section in STRING_TO_JSON\
             and option in STRING_TO_JSON[section]:
                 value = STRING_TO_JSON[section][option](value)

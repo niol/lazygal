@@ -15,6 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+import datetime
 import os
 import time
 
@@ -25,7 +26,6 @@ from genshi.template.eval import UndefinedError
 from genshi.input import XMLParser
 
 import lazygal
-from . import py2compat
 
 
 class LazygalTemplate(object):
@@ -36,12 +36,12 @@ class LazygalTemplate(object):
         self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
-        values['gen_datetime'] = py2compat.datetime.now()
+        values['gen_datetime'] = datetime.datetime.now()
 
         # using time.strftime() here instead of datetime.strftime() because
         # the latter does not carry the current timezone info, and '%c' in some
         # locales needs to display tzname.
-        values['gen_date'] = py2compat.u(time.strftime('%c'))
+        values['gen_date'] = time.strftime('%c')
 
         values['lazygal_version'] = lazygal.__version__
 

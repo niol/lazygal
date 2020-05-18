@@ -26,7 +26,6 @@ import datetime
 from .pygexiv2 import GExiv2
 from PIL import Image as PILImage
 
-from . import py2compat
 from . import make
 
 from fractions import Fraction
@@ -87,34 +86,7 @@ def decode_exif_user_comment(raw, imgpath):
         cset = None
         text = raw
 
-    if cset == 'Unicode':
-        encoding = None
-        try:
-            py2compat.u(text, 'utf-8')
-        except UnicodeDecodeError:
-            with open(imgpath, 'rb') as im_fp:
-                im = PILImage.open(im_fp)
-                endianess = im.app['APP1'][6:8]
-            if endianess == 'MM':
-                encoding = 'utf-16be'
-            elif endianess == 'II':
-                encoding = 'utf-16le'
-            else:
-                raise ValueError
-        else:
-            encoding = 'utf-8'
-    elif cset == 'Ascii':
-        encoding = 'ascii'
-    elif cset == 'Jis':
-        encoding = 'shift_jis'
-    else:
-        encoding = FALLBACK_ENCODING
-
-    # Return the decoded string according to the found encoding.
-    try:
-        return py2compat.u(text, encoding)
-    except UnicodeDecodeError:
-        return py2compat.u(text, encoding, 'replace')
+    return text
 
 
 class FileMetadata(object):
@@ -155,7 +127,7 @@ class ImageInfoTags(object):
                    ):
             try:
                 dt_str = self._metadata[tag]
-                dt = py2compat.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
+                dt = datetime.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
             except (KeyError, ValueError) as StrptimeError:
                 # ValueError: bypass errors such as "time data '0000:00:00
                 # 00:00:00' does not match format '%Y:%m:%d %H:%M:%S'"
@@ -249,7 +221,7 @@ class ImageInfoTags(object):
 
     def _fallback_to_encoding(self, encoded_string, encoding=FALLBACK_ENCODING):
         if encoded_string is None: raise ValueError
-        if py2compat.isunicode(encoded_string): return encoded_string
+        if type(encoded_string) is str: return encoded_string
         try:
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:

@@ -23,7 +23,6 @@ import zipfile
 
 from . import make
 from . import pathutils
-from . import py2compat
 
 
 class WebalbumFile(make.FileMakeObject):
@@ -110,11 +109,6 @@ class WebalbumArchive(WebalbumFile):
             for pic in self.pics:
                 inzip_fn = os.path.join(self.dir.source_dir.name,
                                         os.path.basename(pic))
-
-                if not py2compat.PY3RUNNING:
-                    # py2 zipfile dislikes unicode
-                    inzip_fn = inzip_fn.encode(locale.getpreferredencoding())
-
                 archive.write(pic, inzip_fn)
 
     def size(self):

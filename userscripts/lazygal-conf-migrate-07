@@ -18,10 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-try:
-    import configparser
-except ImportError: # py2compat
-    import ConfigParser as configparser
+import configparser
 
 
 TRANSLATION_TABLE_07 = {

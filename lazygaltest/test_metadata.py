@@ -27,7 +27,6 @@ import codecs
 
 from . import LazygalTest
 from lazygal import metadata
-from lazygal import py2compat
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
@@ -224,10 +223,6 @@ Album image identifier "first\xe3.jpg"
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_focal_length(), '18 mm (35 mm equivalent: 27 mm)')
 
-    @unittest.skipIf(py2compat.PY3RUNNING
-                     and (GExiv2.MAJOR_VERSION, GExiv2.MINOR_VERSION,
-                          GExiv2.MICRO_VERSION) < (0, 10, 3),
-                     'not supported by GExiv2<0.10.3 in python3')
     def test_authorship(self):
         sample = 'sample-author-badencoding.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))

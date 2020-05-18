@@ -18,14 +18,13 @@
 
 import unittest
 import os
-import datetime
+from datetime import datetime
 
 
 from gi.repository import GExiv2
 
 
 from . import LazygalTest
-from lazygal import py2compat
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
 
@@ -65,7 +64,7 @@ class TestSourceTree(LazygalTest):
             os.path.join(self.source_dir, 'joe'),
             self.source_dir,
         ]
-        self.assertEqual(d.parent_paths(), list(map(py2compat.u, expected)))
+        self.assertEqual(d.parent_paths(), expected)
 
     def test_latest_media_stamp(self):
         dpath = os.path.join(self.source_dir, 'srcdir')
@@ -82,47 +81,47 @@ class TestSourceTree(LazygalTest):
         del img['Exif.Photo.DateTimeDigitized']
         del img['Exif.Photo.DateTimeOriginal']
         img.save_file()
-        os.utime(imgpath, (0, py2compat.datetime(2011, 7, 3).timestamp()))
+        os.utime(imgpath, (0, datetime(2011, 7, 3).timestamp()))
         imgpath = os.path.join(dpath, 'pic2.jpg')
         img = GExiv2.Metadata(imgpath)
         del img['Exif.Photo.DateTimeDigitized']
         del img['Exif.Photo.DateTimeOriginal']
         img.save_file()
-        os.utime(imgpath, (0, py2compat.datetime(2011, 7, 4).timestamp()))
+        os.utime(imgpath, (0, datetime(2011, 7, 4).timestamp()))
         imgpath = os.path.join(dpath, 'pic3.jpg')
         img = GExiv2.Metadata(imgpath)
         del img['Exif.Photo.DateTimeDigitized']
         del img['Exif.Photo.DateTimeOriginal']
         img.save_file()
-        os.utime(imgpath, (0, py2compat.datetime(2011, 7, 2).timestamp()))
+        os.utime(imgpath, (0, datetime(2011, 7, 2).timestamp()))
         d = Directory(dpath, [], pics, self.album)
         self.assertEqual(d.latest_media_stamp(),
-                         py2compat.datetime(2011, 7, 4).timestamp())
+                         datetime(2011, 7, 4).timestamp())
 
         # mixed exif and no exif test
         imgpath = os.path.join(dpath, 'pic2.jpg')
         img = GExiv2.Metadata(imgpath)
         img['Exif.Photo.DateTimeOriginal'] =\
-            py2compat.datetime(2015, 7, 4).strftime('%Y:%m:%d %H:%M:%S')
+            datetime(2015, 7, 4).strftime('%Y:%m:%d %H:%M:%S')
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
         self.assertEqual(d.latest_media_stamp(),
-                         py2compat.datetime(2015, 7, 4).timestamp())
+                         datetime(2015, 7, 4).timestamp())
 
         # full exif
         imgpath = os.path.join(dpath, 'pic1.jpg')
         img = GExiv2.Metadata(imgpath)
         img['Exif.Photo.DateTimeOriginal'] =\
-            py2compat.datetime(2015, 8, 1).strftime('%Y:%m:%d %H:%M:%S')
+            datetime(2015, 8, 1).strftime('%Y:%m:%d %H:%M:%S')
         img.save_file()
         imgpath = os.path.join(dpath, 'pic3.jpg')
         img = GExiv2.Metadata(imgpath)
         img['Exif.Photo.DateTimeOriginal'] =\
-            py2compat.datetime(2015, 8, 20).strftime('%Y:%m:%d %H:%M:%S')
+            datetime(2015, 8, 20).strftime('%Y:%m:%d %H:%M:%S')
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
         self.assertEqual(d.latest_media_stamp(),
-                         py2compat.datetime(2015, 8, 20).timestamp())
+                         datetime(2015, 8, 20).timestamp())
 
 
 if __name__ == '__main__':

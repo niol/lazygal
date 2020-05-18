@@ -30,7 +30,6 @@ from .config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from .sourcetree import SOURCEDIR_CONFIGFILE
 from .pygexiv2 import GExiv2
 
-from . import py2compat
 from . import make
 from . import pathutils
 from . import sourcetree
@@ -430,7 +429,7 @@ class WebalbumDir(make.GroupTask):
                 first = False
 
         for size_defs in fixed_sizes_defs:
-            name = py2compat.u(size_defs['name'], locale.getpreferredencoding())
+            name = size_defs['name']
             if name == genmedia.THUMB_SIZE_NAME:
                 raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
             self.__parse_size(name, size_defs['defs'])
@@ -447,7 +446,7 @@ class WebalbumDir(make.GroupTask):
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
             except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (py2compat.u(size_string, locale.getpreferredencoding()), size_name, ))
+                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
 
     def __load_tpl_vars(self):
         # Load tpl vars from config
@@ -456,7 +455,6 @@ class WebalbumDir(make.GroupTask):
             tpl_vars = {}
             for option in self.config.options('template-vars'):
                 value = self.config.get('template-vars', option)
-                value = py2compat.u(value, locale.getpreferredencoding())
                 tpl_vars[option] = genshi.core.Markup(value)
 
         return tpl_vars
@@ -653,8 +651,6 @@ class WebalbumDir(make.GroupTask):
                              dirnames))
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
-            # FIXME: No clue why this happens, but it happens!
-            dest_file = py2compat.u(dest_file, sys.getfilesystemencoding())
             if dest_file not in self.output_items and\
                 dest_file not in expected_dirs and\
                     dest_file not in extra_files:
@@ -885,8 +881,6 @@ class Album(object):
     def generate(self, dest_dir=None, progress=None):
         if dest_dir is None:
             dest_dir = self.config.get('global', 'output-directory')
-        else:
-            dest_dir = py2compat.u(dest_dir, sys.getfilesystemencoding())
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
         if not progress:
