@@ -133,7 +133,7 @@ class Theme(object):
             raise ValueError(_('Theme %s: %s reference error: '
                 'files not found:\n%s'
                 '\n\nThe following actions may fix this:\n'
-                '\t- Running ./setup.py dl_asset\n'
+                '\t- Running ./setup.py dl_assets\n'
                 '\t- Installing deps from your distribution')
                 % (self.name, THEME_MANIFEST,
                    '\n'.join(['\t' + m['abs_dest'] for m in missing])))
