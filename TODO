@@ -13,7 +13,7 @@ Ideas to improve Lazygal (in no particular order)
 
 * Add some styles to the default theme.
 
-* Integrate Gallerific
+* Integrate Gallerific or somme similar js gallery
 
 * Archive (zip) link on directory index.
 
@@ -38,6 +38,4 @@ Ideas to improve Lazygal (in no particular order)
 * Copy instead of processing through PIL pics which are not resized (because of
   XxY> for instance).
 
-* Build picture and gallery map using EXIF GPS data.
-
-* Add a way to disable video transcoding.
+* Move to setuptools
