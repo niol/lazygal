@@ -2,6 +2,7 @@ lazygal.py
 lazygal/sourcetree.py
 lazygal/generators.py
 lazygal/metadata.py
+lazygal/theme.py
 lazygal/tpl.py
 lazygal/tplvars.py
 lazygal/genfile.py
