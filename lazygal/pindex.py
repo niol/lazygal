@@ -139,18 +139,12 @@ class PersistentIndex(make.FileMakeObject):
 
         self.data['medias'][src_media.filename] = {
             'type':   src_media.type,
-            'width':  src_media.get_size()[0],
-            'height': src_media.get_size()[1],
         }
 
-        if self.webgal.config.get('webgal', 'publish-metadata'):
-            infos = src_media.info()
-            if infos:
-                self.data['medias'][src_media.filename].update({
-                    'date': src_media.get_date_taken(),
-                    'metadata': infos.of_interest(),
-                    'comment': infos.get_comment(),
-                })
+        for key, value in src_media.md.items():
+            if self.webgal.config.get('webgal', 'publish-metadata') \
+            or key != 'metadata':
+                self.data['medias'][src_media.filename][key] = value
 
     def webgal_info(self):
         dir_info = {}

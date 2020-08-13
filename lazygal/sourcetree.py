@@ -23,7 +23,8 @@ import datetime
 import os
 import re
 import time
-from PIL import Image
+
+from PIL import Image as PILImage
 
 from . import pathutils, make, metadata
 from . import mediautils
@@ -115,7 +116,11 @@ class MediaFile(File):
     def __init__(self, path, album):
         super().__init__(path, album)
         self.broken = False
-        self._size = None
+        self.md = {
+            'date'    : None,
+            'comment' : None,
+            'metadata': {},
+        }
 
         comment_file_path = self.path + metadata.FILE_METADATA_MEDIA_SUFFIX
         if os.path.isfile(comment_file_path):
@@ -123,8 +128,42 @@ class MediaFile(File):
         else:
             self.comment_file_path = None
 
+        try:
+            mdloader = self.mdloader(self.path)
+        except ValueError as e:
+            logging.debug('Cannot load metadata for %s: %s' % (self.path, e))
+            mdloader = None
+        self._parse_metadata(mdloader)
+
+    def _parse_metadata(self, mdloader):
+        md_date = None
+        if mdloader:
+            md_date = mdloader.get_date()
+            if md_date:
+                self.md['metadata']['date'] = md_date
+                self.md['date'] = md_date
+
+        if not md_date:
+            # No date available in md, or bad format, use file mtime
+            self.md['date'] = self.get_datetime()
+
+    def set_broken(self):
+        self.broken = True
+
+    def has_reliable_date(self):
+        return 'date' in self.md['metadata']
+
+    def get_date_taken(self):
+        return self.md['date']
+
+    def get_size(self):
+        if self.broken:
+            return (None, None)
+        else:
+            return (self.md['width'], self.md['height'])
+
     def sortkey(self):
-        # Comparison between 'no EXIF' and 'EXIF' sorts EXIF after
+        # Comparison between 'no md' and 'md' sorts md after
         # (reliable here means encoded by the camera).
         if self.has_reliable_date():
             return (1, self.get_date_taken().timestamp())
@@ -134,88 +173,61 @@ class MediaFile(File):
 
 class ImageFile(MediaFile):
     type = 'image'
+    mdloader = metadata.ImageInfoTags
 
-    def __init__(self, path, album):
-        MediaFile.__init__(self, path, album)
-
-        self.date_taken = None
-        self.reliable_date = None
-        self.__date_probed = False
-
-    def info(self):
-        if self.broken: return None
-        try:
-            exif = metadata.ImageInfoTags(self.path)
-        except IOError:
-            exif = None
-            self.broken = True
-        else:
-            self.reliable_date = exif.get_date()
-        self.__date_probed = True
-        return exif
-
-    def get_size(self, img_path=None):
-        myself = False
-        if not img_path:
-            img_path = self.path
-            if self._size is not None:
-                return self._size
-            myself = True
-
-        with open(img_path, 'rb') as im_fp:
+    def probe_size(self):
+        with open(self.path, 'rb') as im_fp:
             try:
-                im = Image.open(im_fp)
+                im = PILImage.open(im_fp)
             except IOError:
-                self.broken = True
+                self.set_broken()
                 return (None, None)
             else:
-                if myself:
-                    self._size = im.size
                 return im.size
 
-    def has_reliable_date(self):
-        if not self.__date_probed:
-            self.info()
+    def _parse_metadata(self, mdloader):
+        super()._parse_metadata(mdloader)
 
-        if self.reliable_date:
-            return True
-        else:
-            return False
+        size = self.probe_size()
+        if self.broken:
+            return
 
-    def get_date_taken(self):
-        if not self.__date_probed:
-            self.info()
+        self.md.update({
+            'width' : size[0],
+            'height': size[1],
+        })
 
-        if self.reliable_date:
-            self.date_taken = self.reliable_date
-        else:
-            # No date available in EXIF, or bad format, use file mtime
-            self.date_taken = self.get_datetime()
-        return self.date_taken
+        if mdloader:
+            self.md['metadata'].update({
+                'comment'     : mdloader.get_comment() or None,
+                'rotation'    : mdloader.get_required_rotation(),
+                'camera_name' : mdloader.get_camera_name(),
+                'lens_name'   : mdloader.get_lens_name(),
+                'flash'       : mdloader.get_flash(),
+                'exposure'    : mdloader.get_exposure(),
+                'iso'         : mdloader.get_iso(),
+                'fnumber'     : mdloader.get_fnumber(),
+                'focal_length': mdloader.get_focal_length(),
+                'authorship'  : mdloader.get_authorship(),
+                'keywords'    : list(mdloader.get_keywords()),
+                'location'    : mdloader.get_location(),
+            })
 
 
 class VideoFile(MediaFile):
     type = 'video'
+    mdloader = metadata.VideoInfoTags
 
-    def get_size(self):
-        if self._size is None:
-            inspector = mediautils.GstVideoInfo(self.path)
-            try:
-                inspector.inspect()
-            except mediautils.VideoError:
-                self.broken = True
-                return (None, None)
-            self._size = inspector.videowidth, inspector.videoheight
-        return self._size
+    def _parse_metadata(self, mdloader):
+        super()._parse_metadata(mdloader)
 
-    def has_reliable_date(self):
-        return False
-
-    def get_date_taken(self):
-        return self.get_datetime()
-
-    def info(self):
-        return None
+        if mdloader:
+            self.md.update({
+                'width':  mdloader.size[0],
+                'height': mdloader.size[1],
+            })
+        else:
+            self.set_broken()
 
 
 class MediaHandler(object):
@@ -295,6 +307,10 @@ class Directory(File):
 
             media = media_handler.get_media(media_path)
             if media:
+                if media.broken:
+                    logging.error(_("  %s is BROKEN, skipped") % media.filename)
+                    continue
+
                 self.medias_names.append(filename)
                 self.medias.append(media)
             elif not self.is_metadata(filename) and\
@@ -390,7 +406,7 @@ class Directory(File):
     def latest_media_stamp(self):
         """
         Returns the latest media date:
-            - first considering all pics that have an EXIF date
+            - first considering all pics that have a MD date
             - if none have a reliable date, use file mtimes.
         """
         all_medias = self.get_all_medias()

@@ -107,26 +107,12 @@ class Image(Media):
             tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
             tpl_values['image_datetime'] = img_date
 
-            image_info = self.media.info()
-            if image_info:
-                comment = image_info.get_comment()
-                if comment == '' or comment is None:
-                    tpl_values['comment'] = None
-                else:
-                    tpl_values['comment'] = self.page._do_not_escape(comment)
+            tpl_values.update(self.media.md)
+            tpl_values['comment'] = self.page._do_not_escape(tpl_values['comment'])
 
-                tpl_values['camera_name'] = image_info.get_camera_name()
-                tpl_values['lens_name'] = image_info.get_lens_name()
-                tpl_values['flash'] = image_info.get_flash()
-                tpl_values['exposure'] = image_info.get_exposure()
-                tpl_values['iso'] = image_info.get_iso()
-                tpl_values['fnumber'] = image_info.get_fnumber()
-                tpl_values['focal_length'] = image_info.get_focal_length()
-                tpl_values['authorship'] = image_info.get_authorship()
-                tpl_values['keywords'] = ', '.join(image_info.get_keywords())
-
-                if self.page.dir.config.get('webgal', 'keep-gps'):
-                    tpl_values['location'] = image_info.get_location()
+            if 'location' in tpl_values \
+            and not self.page.dir.config.get('webgal', 'keep-gps'):
+                del tpl_values['location']
 
         return tpl_values
 

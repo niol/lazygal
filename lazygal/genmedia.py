@@ -67,31 +67,20 @@ class ResizedImage(genfile.WebalbumFile):
         logging.info("  %s %s", self.VERB, media_rel_path)
         logging.debug("(%s)", self.path)
 
-        im = self.resize(self.get_image())
-        self.save(im)
+        try:
+            im = self.resize(self.get_image())
+        except OSError:
+            self.source_media.set_broken()
+            # Make the system believe the file was built a long time ago.
+            self.stamp_build(0)
+            self.clean_output()
+        else:
+            self.save(im)
 
     def get_image(self):
         raise NotImplementedError
 
-    def call_build(self):
-        try:
-            self.build()
-        except IOError:
-            logging.error(_("  %s is BROKEN, skipped"),
-                          self.source_media.filename)
-            if not self.source_media.broken:
-                self.source_media.broken = True
-
-            # Make the system believe the file was built a long time ago.
-            self.stamp_build(0)
-        else:
-            self.stamp_build()
-
     def resize(self, im):
-        self.source_media.get_size()  # Probe brokenness
-        if self.source_media.broken:
-            raise IOError('Failed to get media size')
-
         new_size = self.get_size()
 
         im.draft(None, new_size)
@@ -124,9 +113,8 @@ class ImageOtherSize(ResizedImage):
 
     def get_rotation(self):
         if self.rotation is None:
-            source_media_md = self.source_media.info()
-            if source_media_md is not None:
-                self.rotation = source_media_md.get_required_rotation()
+            if 'rotation' in self.source_media.md['metadata']:
+                self.rotation = self.source_media.md['metadata']['rotation']
             else:
                 self.rotation = 0
         return self.rotation
@@ -134,9 +122,6 @@ class ImageOtherSize(ResizedImage):
     def get_size(self):
         if self.size is None:
             orig_size = self.source_media.get_size()
-            if self.source_media.broken:
-                return orig_size
-
             if self.get_rotation() in (90, 270, ):
                 # swap coords
                 orig_size = (orig_size[1], orig_size[0], )
@@ -160,10 +145,6 @@ class ImageOtherSize(ResizedImage):
     }
 
     def resize(self, im):
-        self.source_media.get_size()  # Probe brokenness
-        if self.source_media.broken:
-            raise IOError()
-
         rotation = self.get_rotation()
         self.get_size()
 
@@ -257,7 +238,7 @@ class WebalbumPicture(make.FileMakeObject):
         self.add_dependency(webgal_dir.source_dir)
 
         medias = [m for m in webgal_dir.source_dir.get_all_medias()
-                  if m.type == 'image' and not m.broken]
+                  if m.type == 'image']
 
         # Add video thumbs
         for m in webgal_dir.medias:
@@ -332,7 +313,7 @@ class WebVideo(genfile.WebalbumFile):
             logging.error(_("  transcoding %s failed, skipped"),
                           self.source_video.filename)
             logging.info(str(e))
-            self.source_video.broken = True
+            self.source_video.set_broken()
             self.clean_output()
         finally:
             self.progress.set_task_done()

@@ -267,9 +267,7 @@ class WebalbumImageTask(WebalbumMediaTask):
             return self.get_original_or_symlink()
         else:
             sized = genmedia.ImageOtherSize(self.webgal, self.media, size_name)
-            self.media.get_size() # probe size to check if media is broken
-            if not self.media.broken\
-            and sized.get_size() == sized.source_media.get_size():
+            if sized.get_size() == sized.source_media.get_size():
                 # Do not process if size is the same
                 return self.get_original()
             else:
@@ -342,7 +340,7 @@ class WebalbumDir(make.GroupTask):
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
         for media in self.source_dir.medias:
-            if self.tagfilters and media.info() is not None:
+            if self.tagfilters and 'keywords' in media.md['metadata']:
                 # tag-filtering is requested
                 res = True
                 for tagf in self.tagfilters:
@@ -354,7 +352,7 @@ class WebalbumDir(make.GroupTask):
                     # we look for tag words, partial matches are not wanted
                     regex = re.compile(r"\b" + tagf + r"\b")
 
-                    kwlist = ' '.join(media.info().get_keywords())
+                    kwlist = ' '.join(media.md['metadata']['keywords'])
                     if re.search(regex, kwlist) is None:
                         res = False
                         break

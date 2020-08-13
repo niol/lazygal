@@ -24,7 +24,6 @@ import codecs
 import datetime
 
 from .pygexiv2 import GExiv2
-from PIL import Image as PILImage
 
 from . import make
 from . import mediautils
@@ -115,7 +114,10 @@ class ImageInfoTags(object):
 
     def __init__(self, image_path):
         self.image_path = image_path
-        self._metadata = GExiv2.Metadata(self.image_path)
+        try:
+            self._metadata = GExiv2.Metadata(self.image_path)
+        except Exception as e:
+            raise ValueError('cannot load metadata: %s' % e)
 
     def get_date(self):
         """
