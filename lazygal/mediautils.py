@@ -1,5 +1,5 @@
 # Lazygal, a lazy static web gallery generator.
-# Copyright (C) 2010-2012 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Copyright (C) 2010-2020 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,495 +16,154 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import sys
-import signal
+import json
 import logging
-import multiprocessing
-
-
-class VideoError(Exception): pass
-
-
-try:
-    import gi
-    try:
-        gi.require_version('Gst', '1.0')
-    except ValueError:
-        raise ImportError
-    from gi.repository import GObject, GLib, Gst
-    if '__getitem__' not in dir(Gst.Caps):
-        logging.warning('Missing `python-gst-1.0` overrides, you should install the appropriate package (e.g. `python3-gst-1.0`).')
-        raise ImportError
-except ImportError:
-    HAVE_GST = False
-else:
-    HAVE_GST = True
-    gst_init = False
-    GstPbutils = False
-    gi.require_version('GstPbutils', '1.0')
-
-
-class InterruptHandler(object):
-
-    def __enter__(self):
-        self.interrupted = False
-        self.released = False
-
-        self.original_handler = signal.getsignal(signal.SIGINT)
-
-        def handler(signum, frame):
-            self.release()
-            self.interrupted = True
-        signal.signal(signal.SIGINT, handler)
-
-        return self
-
-    def __exit__(self, type, value, tb):
-        self.release()
-
-    def release(self):
-        if self.released:
-            return False
-        signal.signal(signal.SIGINT, self.original_handler)
-        self.released = True
-        return True
-
-
-def GST_init():
-    global gst_init
-    Gst.init(None)
-
-    global GstPbutils
-    from gi.repository import GstPbutils
-
-    gst_init = True
+import math
+import os
+import shutil
+import subprocess
+import tempfile
 
 
 from PIL import Image as PILImage
 
 
-class GstVideoOpener(object):
+class VideoError(Exception): pass
+
+
+FFMPEG = shutil.which('ffmpeg')
+HAVE_VIDEO = True if FFMPEG else False
+
+
+class VideoProcessor(object):
 
     def __init__(self, input_file):
-        if not gst_init:
-            GST_init()
-
-        self.input_file = input_file
-
         self.progress = None
 
-        self.pipeline = Gst.Pipeline()
-        self.running = False
-
-        self.pipeline.set_auto_flush_bus(True)
-
-        # Input
-        self.filesrc = Gst.ElementFactory.make('filesrc', None)
-        self.pipeline.add(self.filesrc)
-
-        # Decoding
-        self.decode = Gst.ElementFactory.make('decodebin', None)
-        self.decode.connect('pad-added', self.on_dynamic_pad)
-        self.pipeline.add(self.decode)
-        self.filesrc.link(self.decode)
-
-        self.aqueue = None
-        self.vqueue = None
-
-    def on_dynamic_pad(self, dbin, pad):
-        pad_type = pad.query_caps(None).to_string()[0:5]
-
-        if pad_type == 'audio':
-            if self.aqueue is not None:
-                pad.link(self.aqueue.get_static_pad('sink'))
-        elif pad_type == 'video':
-            if self.vqueue is not None:
-                pad.link(self.vqueue.get_static_pad('sink'))
-        else:
-            logging.warning("E: Unknown PAD detected: %s", pad_type)
-
-    def open(self):
-        self.filesrc.set_property('location', self.input_file)
-
-    def __post_msg(self, msg_txt):
-        msg = Gst.Message.new_application(self.pipeline,
-                                          Gst.Structure.new_empty(msg_txt))
-        self.pipeline.get_bus().post(msg)
+        self.cmd = [FFMPEG, '-nostdin', '-progress', '-', '-i', input_file]
+        self.videofilters = []
+        self.duration = None
 
     def set_progress(self, progress):
         self.progress = progress
 
-    def monitor_progress(self):
-        cp_success, current_position =\
-            self.pipeline.query_position(Gst.Format.TIME)
-        if self.media_duration is None:
-            md_success, media_duration =\
-                self.pipeline.query_duration(Gst.Format.TIME)
-            if md_success:
-                self.media_duration = media_duration
+    def scale(self, newsize):
+        self.videofilters.append('scale=%d:%d' % (newsize[0], newsize[1]))
 
-        if self.progress and self.media_duration is not None\
-        and self.media_duration > 0:
-            self.progress.set_task_progress(100 * current_position
-                                            // self.media_duration)
+    def parse_time(self, time_str):
+        h, m, s = time_str.split(':')
+        return 3600 * int(h) + 60 * int(m) + float(s)
 
-        # check if stalled
-        stalled = False
-        if current_position <= self.last_position:
-            self.stalled_counter = self.stalled_counter + 1
-            if self.stalled_counter >= 20:
-                stalled = True
-                self.__post_msg('stalled')
-        else:
-            self.last_position = current_position
-            self.stalled_counter = 0
+    def parse_output(self, line):
+        if line.startswith('Duration:'):
+            self.duration = self.parse_time(line.split(' ')[1].strip(','))
+        elif self.duration and line.startswith('out_time='):
+            position = self.parse_time(line.split('=')[1])
+            percent = math.floor(100 * position / self.duration)
+            if self.progress:
+                self.progress.set_task_progress(percent)
+            else:
+                logging.info('progress: %d%%' % percent)
 
-    def __stop_pipeline(self):
-        self.running = False
-        self.pipeline.set_state(Gst.State.NULL)
-
-    def run_pipeline(self):
-        self.pipeline.set_state(Gst.State.PLAYING)
-        self.running = True
-        self.media_duration = None
-        self.last_position = 0
-        self.stalled_counter = 0
-
-        with InterruptHandler() as ih:
-            bus = self.pipeline.get_bus()
-            while self.running:
-                if ih.interrupted:
-                    self.__stop_pipeline()
-                    raise KeyboardInterrupt
-
-                self.monitor_progress()
-
-                message = bus.timed_pop_filtered(1000000000,
-                                                 Gst.MessageType.EOS
-                                               | Gst.MessageType.ERROR
-                                               | Gst.MessageType.APPLICATION)
-                if message is None:
-                    continue
-
-                if message.type == Gst.MessageType.EOS:
-                    self.__stop_pipeline()
-                elif message.type == Gst.MessageType.ERROR:
-                    self.__stop_pipeline()
-                    raise VideoError(message.parse_error())
-                elif message.type == Gst.MessageType.APPLICATION:
-                    if message.src == self.pipeline:
-                        struct_name = message.get_structure().get_name()
-                        if struct_name == 'aborded_playback':
-                            self.__stop_pipeline()
-                        elif struct_name == 'stalled':
-                            self.__stop_pipeline()
-                            raise VideoError('Pipeline is stalled, this is a problem either in gst or in lazygal\'s use of gst')
-
-    def stop_pipeline(self):
-        msg = Gst.Message.new_application(self.pipeline,
-            Gst.Structure.new_empty('aborded_playback'))
-        self.pipeline.get_bus().post(msg)
+    def convert(self, outfile):
+        runcmd = list(self.cmd) # copy
+        if self.videofilters:
+            runcmd.extend(['-vf', ','.join(self.videofilters)])
+        runcmd.append(outfile)
+        logging.debug('RUNNING %s' % ' '.join(runcmd))
+        with subprocess.Popen(runcmd, text=True,
+                              stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT) as p:
+            for line in p.stdout:
+                line = line.strip()
+                logging.debug(line)
+                self.parse_output(line)
 
 
-class GstVideoInfo(object):
+class VideoInfo(object):
 
     def __init__(self, path):
         self.path = path
 
     def inspect(self):
-        # Init gobjects threads only if an inspection is initiated
-        if not gst_init:
-            GST_init()
-
-        discoverer = GstPbutils.Discoverer()
         try:
-            info = discoverer.discover_uri(Gst.filename_to_uri(self.path))
-        except GLib.GError as e:
-            raise VideoError(e)
-
-        vinfo_caps = info.get_video_streams()[0].get_caps()[0]
-        self.videowidth = vinfo_caps['width']
-        self.videoheight = vinfo_caps['height']
-        return info
-
-
-class GstVideoReader(GstVideoOpener):
-
-    def __init__(self, mediapath):
-        super(GstVideoReader, self).__init__(mediapath)
-
-        # Output
-        self.oqueue = Gst.ElementFactory.make('queue', 'Output')
-        self.pipeline.add(self.oqueue)
-
-    def decode_audio(self):
-        # Audio
-        self.aqueue = Gst.ElementFactory.make('queue', 'Audio input')
-        self.pipeline.add(self.aqueue)
-
-        convert = Gst.ElementFactory.make('audioconvert', 'convert')
-        self.pipeline.add(convert)
-        self.aqueue.link(convert)
-
-        self.resample = Gst.ElementFactory.make('audioresample', 'resample')
-        self.pipeline.add(self.resample)
-        convert.link(self.resample)
-
-    def decode_video(self):
-        # Video
-        self.vqueue = Gst.ElementFactory.make('queue', 'Video input')
-        self.pipeline.add(self.vqueue)
-
-        self.colorspace = Gst.ElementFactory.make('videoconvert')
-        self.pipeline.add(self.colorspace)
-        self.vqueue.link(self.colorspace)
+            info = subprocess.check_output(['ffprobe', '-v', 'error',
+                                            '-print_format', 'json',
+                                            '-show_format', '-show_streams',
+                                            self.path])
+        except subprocess.CalledProcessError:
+            raise ValueError('cannot load metadata')
+        return json.loads(info)
 
 
-class GstVideoTranscoder(GstVideoReader):
+class VideoTranscoder(VideoProcessor):
 
-    def __init__(self, mediapath, audiocodec, videocodec, muxer,
-                 width=None, height=None):
-        super(GstVideoTranscoder, self).__init__(mediapath)
-
-        # Audio
-        self.decode_audio()
-
-        self.audioenc = Gst.ElementFactory.make(audiocodec, 'audioenc')
-        self.pipeline.add(self.audioenc)
-        self.resample.link(self.audioenc)
-
-        aoqueue = Gst.ElementFactory.make("queue", "Audio output")
-        self.pipeline.add(aoqueue)
-        self.audioenc.link(aoqueue)
-
-        # Video
-        self.decode_video()
-
-        self.videoenc = Gst.ElementFactory.make(videocodec, 'videoenc')
-        self.pipeline.add(self.videoenc)
-
-        if width is not None and height is not None:
-            videoscale = Gst.ElementFactory.make('videoscale', 'videoscale')
-            videoscale.set_property('method', 'bilinear')
-            self.pipeline.add(videoscale)
-            self.colorspace.link(videoscale)
-            caps_str = 'video/x-raw,format=YUY2'
-            caps_str += ", width=%d, height=%d" % (width, height)
-            caps = Gst.Caps.from_string(caps_str)
-            caps_filter = Gst.ElementFactory.make('capsfilter', 'filter')
-            caps_filter.set_property("caps", caps)
-            self.pipeline.add(caps_filter)
-            videoscale.link(caps_filter)
-
-            scalequeue = Gst.ElementFactory.make('queue', 'Video scaling queue')
-            self.pipeline.add(scalequeue)
-            caps_filter.link(scalequeue)
-
-            scalequeue.link(self.videoenc)
-        else:
-            self.colorspace.link(self.videoenc)
-
-        voqueue = Gst.ElementFactory.make('queue', 'Video output')
-        self.pipeline.add(voqueue)
-        self.videoenc.link(voqueue)
-
-        self.muxer = Gst.ElementFactory.make(muxer, 'muxer')
-        self.pipeline.add(self.muxer)
-        aoqueue.link(self.muxer)
-        voqueue.link(self.muxer)
-
-        # Output
-        self.muxer.link(self.oqueue)
-
-        # Add output file
-        self.sink = Gst.ElementFactory.make('filesink', 'sink')
-        self.sink.set_property("sync", False)
-        self.pipeline.add(self.sink)
-        self.oqueue.link(self.sink)
-
-    def convert(self, output_file):
-        self.open()
-
-        output_file = output_file
-        self.sink.set_property("location", output_file)
-
-        self.run_pipeline()
+    def __init__(self, mediapath, videocodec, audiocodec):
+        super().__init__(mediapath)
+        self.cmd.extend(['-c:v', videocodec, '-c:a', audiocodec])
 
 
-class OggTheoraTranscoder(GstVideoTranscoder):
+class WebMTranscoder(VideoTranscoder):
 
     def __init__(self, mediapath):
-        # Working pipeline
-        # gst-launch-1.0 filesrc location=surf_luge.mov ! decodebin name=decode
-        # decode. ! queue ! videoconvert ! theoraenc ! queue ! oggmux name=muxer
-        # decode. ! queue ! audioconvert ! vorbisenc ! queue ! muxer.
-        # muxer. ! queue ! filesink location=surf_luge.ogg sync=false
-
-        super(OggTheoraTranscoder, self).__init__(mediapath,
-                                                  'vorbisenc', 'theoraenc',
-                                                  'oggmux')
+        super().__init__(mediapath, 'libvpx-vp9', 'libopus')
 
 
-class WebMTranscoder(GstVideoTranscoder):
-
-    def __init__(self, mediapath, width=None, height=None):
-        # Working pipeline
-        # gst-launch-1.0 filesrc location=oldfile.ext ! decodebin name=demux !
-        # queue ! videoconvert ! vp8enc ! webmmux name=mux ! filesink
-        # location=newfile.webm demux. ! queue ! progressreport ! audioconvert
-        # ! audioresample ! vorbisenc ! mux.
-        # (Thanks
-        # http://stackoverflow.com/questions/4649925/convert-video-to-webm-using-gstreamer/4649990#4649990
-        # ! )
-
-        super(WebMTranscoder, self).__init__(mediapath,
-                                             'vorbisenc', 'vp8enc', 'webmmux',
-                                             width, height)
-
-        self.videoenc.set_property('threads', multiprocessing.cpu_count())
-
-
-class MP4Transcoder(GstVideoTranscoder):
+class MP4Transcoder(VideoTranscoder):
 
     def __init__(self, mediapath):
-        # Working pipeline
-        # gst-launch-0.10 filesrc location=oldfile.ext ! decodebin name=demux !
-        # demux. ! queue ! audioconvert ! faac profile=2 ! queue !
-        # avmux_mp4 name=muxer
-        # demux. ! queue ! avcolorspace ! x264enc pass=4 quantizer=30
-        # subme=4 threads=0 ! queue !
-        # muxer. muxer. ! queue ! filesink location=newfile.mp4
-
-        super(MP4Transcoder, self).__init__(mediapath,
-                                            'faac', 'x264enc', 'avmux_mp4')
-
-        self.audioenc.set_property('profile', 2)
-
-        self.videoenc.set_property('pass', 4)
-        self.videoenc.set_property('quantizer', 30)
-        self.videoenc.set_property('subme', 4)
-        self.videoenc.set_property('threads', 0)
+        super().__init__(mediapath, 'libx264', 'aac')
 
 
-class VideoFrameExtractor(GstVideoReader):
+class VideoFramesExtractor(VideoProcessor):
 
-    def __init__(self, path, fps):
-        super(VideoFrameExtractor, self).__init__(path)
+    def __init__(self, input_file, resize=None, scene=True, frames=10):
+        super().__init__(input_file)
 
-        self.fps = fps
+        if scene:
+            self.videofilters.append('select=gt(scene\,0.4)')
+            self.videofilters.append('fps=1/60')
+        else: # in case of very short video with one scene
+            self.videofilters.append('fps=1')
 
-        self.decode_video()
+        if resize is not None:
+            self.scale(resize)
 
-        # Grab video size when possible
-        self.video_size = None
-        input_pad = self.colorspace.get_static_pad('sink')
-        input_pad.connect('notify::caps', self.cb_new_caps)
-
-        videorate = Gst.ElementFactory.make('videorate')
-        self.pipeline.add(videorate)
-        self.colorspace.link(videorate)
-
-        # RGB is what is assumed in order to load the frame into a PIL Image.
-        self.capsfilter = Gst.ElementFactory.make('capsfilter')
-        self.capsfilter.set_property(
-            'caps',
-            Gst.Caps.from_string('video/x-raw,format=RGB,framerate=%s/1'
-                                 % fps))
-        self.pipeline.add(self.capsfilter)
-        videorate.link(self.capsfilter)
-
-        self.app_sink = Gst.ElementFactory.make('appsink')
-        self.app_sink.set_property('emit-signals', True)
-        self.app_sink.set_property('max-buffers', 10)
-        self.app_sink.set_property('sync', False)
-        self.app_sink.connect('new-sample', self.on_new_buffer)
-        self.pipeline.add(self.app_sink)
-        self.capsfilter.link(self.app_sink)
-
-    def cb_new_caps(self, pad, args):
-        caps = pad.get_current_caps()
-        if not caps: return
-        if 'video' in caps.to_string():
-            (success, width) = caps.get_structure(0).get_int('width')
-            (success, height) = caps.get_structure(0).get_int('height')
-            self.video_size = (width, height)
-
-    def open_frame(self, buf):
-        im = PILImage.frombuffer('RGB', self.video_size, buf,
-                                 'raw', 'RGB', 0, 1)
-        return im
-
-    def on_new_buffer(self, appsink):
-        sample = appsink.emit('pull-sample')
-        gstbuf = sample.get_buffer()
-        buf = gstbuf.extract_dup(0, gstbuf.get_size())
-        self.cb_grabbed_frame_buf(buf)
-        return False
-
-    def cb_grabbed_frame_buf(self, buf):
-        raise NotImplementedError
+        self.cmd.extend(['-frames:v', str(frames), '-vsync', 'vfr'])
 
 
-class VideoFrameNthExtractor(VideoFrameExtractor):
+class VideoThumbnailer(object):
 
-    def __init__(self, path, frame_no, fps):
-        super(VideoFrameNthExtractor, self).__init__(path, fps)
-        self.frame_index = -1
-        self.frame_no = frame_no
-        self.frame = None
+    def __init__(self, video):
+        self.video = video
 
-    def cb_grabbed_frame_buf(self, buf):
-        # We're searching for the self.frame_no'th frame.
-        self.frame_index = self.frame_index + 1
-        if self.frame_index == self.frame_no:
-            self.frame = self.open_frame(buf).copy()
-            # Abord playback as frame has been found.
-            self.stop_pipeline()
+    def find_most_representative(self, images):
+        images = list(images)
+        if not images: return None
+        if len(images) == 1: return images[0]
 
-    def get_frame(self):
-        self.open()
-        self.run_pipeline()
-        return self.frame
+        histograms = []
+        for path in images:
+            with open(path, 'rb') as im_fp:
+                im = PILImage.open(im_fp)
+                histograms.append((path, im.histogram()))
 
-
-class VideoBestFrameFinder(VideoFrameExtractor):
-
-    def __init__(self, path, fps, intro_seconds):
-        super(VideoBestFrameFinder, self).__init__(path, fps)
-
-        self.max_frames = self.fps * intro_seconds  # Frames to go through
-        self.histograms = []
-
-    def cb_grabbed_frame_buf(self, buf):
-        self.frame_number = self.frame_number + 1
-
-        if self.frame_number < self.max_frames:
-            # We're searching for the best frame, grab histogram
-            self.histograms.append(self.open_frame(buf).histogram())
-        else:
-            self.stop_pipeline()
-
-    def get_best_frame(self):
-        self.open()
-        self.frame_number = -1
-        self.run_pipeline()
-
-        n_samples = len(self.histograms)
-        n_values = len(self.histograms[0])
+        n_samples = len(histograms)
+        n_values = len(histograms[0][1])
 
         # Average each histogram value
         average_hist = []
         for value_index in range(n_values):
             average = 0.0
-            for histogram in self.histograms:
+            for path, histogram in histograms:
                 average = average + (float(histogram[value_index]) / n_samples)
             average_hist.append(average)
 
         # Find histogram closest to average histogram
         min_mse = None
         best_frame_no = None
-        for hist_index in range(len(self.histograms)):
-            hist = self.histograms[hist_index]
+        for hist_index in range(len(histograms)):
+            hist = histograms[hist_index][1]
             mse = 0.0
             for value_index in range(n_values):
                 gap = average_hist[value_index] - hist[value_index]
@@ -514,35 +173,27 @@ class VideoBestFrameFinder(VideoFrameExtractor):
                 min_mse = mse
                 best_frame_no = hist_index
 
-        frame_finder = VideoFrameNthExtractor(self.input_file,
-                                              best_frame_no, self.fps)
-        return frame_finder.get_frame()
+        return histograms[hist_index][0]
 
+    def convert(self, outfile, resize=None):
+        tmpdir = tempfile.mkdtemp(prefix='lazygal-')
 
-class VideoThumbnailer(object):
-
-    def __init__(self, input_file, thumb_size=None):
-        self.input_file = input_file
-        self.thumb_size = thumb_size
-
-        # fps images per second should be enough to find a suitable thumbnail
-        self.fps = 1
-        # search thumb in first intro_seconds seconds
-        self.intro_seconds = 300
-
-    def get_thumb(self):
-        thumb_finder = VideoBestFrameFinder(self.input_file,
-                                            self.fps, self.intro_seconds)
-        return thumb_finder.get_best_frame()
-
-    def convert(self, thumbnail_path):
-        thumb = self.get_thumb()
-
-        if self.thumb_size is not None:
-            thumb.draft(None, self.thumb_size)
-            thumb = thumb.resize(self.thumb_size, PILImage.ANTIALIAS)
-
-        thumb.save(thumbnail_path)
+        try:
+            tmpimg_name = os.path.join(tmpdir,
+                '%s_%%s_%%%%d.jpg' % os.path.basename(self.video))
+            VideoFramesExtractor(self.video, resize) \
+                .convert(tmpimg_name % 'scene')
+            VideoFramesExtractor(self.video, resize, scene=False).convert(tmpimg_name % 'noscene')
+            best = self.find_most_representative(map(lambda fn:
+                                                     os.path.join(tmpdir, fn),
+                                                 os.listdir(tmpdir)))
+            if not best:
+                raise VideoError('no best frame found')
+            shutil.copyfile(best, outfile)
+        except VideoError:
+            raise
+        finally:
+            shutil.rmtree(tmpdir)
 
 
 if __name__ == '__main__':
@@ -555,9 +206,7 @@ if __name__ == '__main__':
     converter_types = sys.argv[1].split(',')
     converters = {}
     for converter_type in converter_types:
-        if converter_type == 'ogg':
-            converter = OggTheoraTranscoder
-        elif converter_type == 'webm':
+        if converter_type == 'webm':
             converter = WebMTranscoder
         elif converter_type == 'mp4':
             converter = MP4Transcoder
@@ -568,9 +217,13 @@ if __name__ == '__main__':
         converters[converter_type] = converter
 
     for file_path in sys.argv[2:]:
-        videoinfo = GstVideoInfo(file_path)
-        videoinfo.inspect()
-        print('Video is %dx%d' % (videoinfo.videowidth, videoinfo.videoheight))
+        videoinfo = VideoInfo(file_path)
+        i = videoinfo.inspect()
+        for s in i['streams']:
+            if s['codec_type'] == 'video':
+                print('Video is %dx%d, %ds' % (s['width'], s['height'],
+                                               round(float(s['duration']))))
+                break # search only first video stream
 
         fn, ext = os.path.splitext(os.path.basename(file_path))
         for converter_type, converter in converters.items():

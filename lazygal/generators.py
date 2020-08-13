@@ -288,19 +288,15 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
         self.thumb = genmedia.VideoThumb(self.webgal, self.media,
                                          genmedia.THUMB_SIZE_NAME)
+        self.add_dependency(self.thumb)
 
         self.add_dependency(self.webvideo)
 
     def get_resized(self, size_name):
         if not self.webvideo:
-            if self.webgal.newsizers[genmedia.VIDEO_SIZE_NAME] == 'original'\
-            and self.media.extension in ('.webm', '.mp4'):
-                # do not transcode webm videos
-                self.webvideo = self.get_original_or_symlink()
-            else:
-                self.webvideo = genmedia.WebVideo(self.webgal, self.media,
-                                                  genmedia.VIDEO_SIZE_NAME,
-                                                  self.webgal.progress)
+            self.webvideo = genmedia.WebVideo(self.webgal, self.media,
+                                              genmedia.VIDEO_SIZE_NAME,
+                                              self.webgal.progress)
 
         return self.webvideo
 

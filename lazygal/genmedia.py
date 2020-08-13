@@ -229,17 +229,20 @@ class VideoThumb(ResizedImage):
     def get_verb(self): return _('VIDEOTHUMB')
     VERB = property(get_verb)
 
-    def get_image(self):
+    def build(self):
+        media_rel_path = self.rel_path(self.webgal.flattening_dir)
+        logging.info("  %s %s", self.VERB, media_rel_path)
+        logging.debug("(%s)", self.path)
+
         try:
-            thumb = mediautils.VideoThumbnailer(self.source_media.path).get_thumb()
+            mediautils.VideoThumbnailer(self.source_media.path) \
+                .convert(self.path, self.get_size())
         except mediautils.VideoError as e:
             logging.error(_("  creating %s thumbnail failed, skipped"),
                           self.source_media.filename)
             logging.info(str(e))
             self.clean_output()
             raise IOError()
-        else:
-            return thumb
 
 
 class WebalbumPicture(make.FileMakeObject):
@@ -320,9 +323,9 @@ class WebVideo(genfile.WebalbumFile):
         logging.info(_("  TRANSCODE %s"), vid_rel_path)
 
         try:
-            transcoder = mediautils.WebMTranscoder(self.source_video.path,
-                                                   self.new_width,
-                                                   self.new_height)
+            transcoder = mediautils.WebMTranscoder(self.source_video.path)
+            if self.new_width is not None and self.new_height is not None:
+                transcoder.scale((self.new_width, self.new_height))
             transcoder.set_progress(self.progress)
             transcoder.convert(self.path)
         except mediautils.VideoError as e:

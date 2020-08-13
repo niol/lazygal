@@ -248,7 +248,7 @@ class MediaHandler(object):
     @staticmethod
     def warn_no_video_support():
         if not MediaHandler.NO_VIDEO_SUPPORT_WARNING_ISSUED:
-            logging.warning(_('Video support is disabled: could not load GStreamer'))
+            logging.warning(_('Video support is disabled: could not find ffmpeg'))
 
     def get_media(self, path):
         tail = os.path.basename(path)
@@ -259,7 +259,7 @@ class MediaHandler(object):
         extension = extension.lower()
         if extension in MediaHandler.FORMATS.keys():
             media_class = MediaHandler.FORMATS[extension]
-            if media_class == VideoFile and not mediautils.HAVE_GST:
+            if media_class == VideoFile and not mediautils.HAVE_VIDEO:
                 MediaHandler.warn_no_video_support()
                 return None
             return media_class(path, self.album)

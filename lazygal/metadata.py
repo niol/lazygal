@@ -27,6 +27,7 @@ from .pygexiv2 import GExiv2
 from PIL import Image as PILImage
 
 from . import make
+from . import mediautils
 
 from fractions import Fraction
 
@@ -410,6 +411,34 @@ class ImageInfoTags(object):
     def of_interest(self):
         return { tag: self._metadata[tag]
                  for tag in TAGS_OF_INTEREST if tag in self._metadata }
+
+
+class VideoInfoTags(object):
+
+    def __init__(self, path):
+        videoinfo = mediautils.VideoInfo(path).inspect()
+        self.__parse(videoinfo)
+
+    def __parse(self, videoinfo):
+        # size
+        for s in videoinfo['streams']:
+            if s['codec_type'] == 'video':
+                self.size = (s['width'], s['height'])
+                break
+        if self.size is None: # no video stream
+            self.size = (None, None)
+
+        # date
+        try:
+            raw =  videoinfo['format']['tags']['creation_time']
+        except KeyError:
+            self.creation_time = None
+        else:
+            self.creation_time = datetime.datetime.strptime(raw,
+                                                       '%Y-%m-%dT%H:%M:%S.%f%z')
+
+    def get_date(self):
+        return self.creation_time
 
 
 class NoMetadata(Exception):

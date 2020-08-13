@@ -52,11 +52,7 @@ It can be summed up by the following features :
   * [Python imaging library (PIL) friendly fork Pillow][9] >= 2.
   * [Genshi][7] >= 0.7, a *Python toolkit for generation of output for the web*.
   * [GExiv2][5] >= 0.5 (to have GObject introspection) which provides Python binding to [exiv2][6], a library to access image metadata.
-  * [Python GStreamer][23], associated GObject introspection modules (and
-    introspection overrides) and plugins for video transcoding. For instance,
-    for Debian, this means the following binary packages:
-    * `gstreamer1.0-plugins-base`, `gstreamer1.0-plugins-good`
-    * `gir1.2-gstreamer-1.0`, `gir1.2-gst-plugins-base-1.0` and `python-gst-1.0`
+  * [ffmpeg][23], for video transcoding.
 
 Building a `lazygal` installation requires :
 
@@ -67,7 +63,7 @@ Building a `lazygal` installation requires :
  [5]: http://redmine.yorba.org/projects/gexiv2/wiki
  [6]: http://exiv2.org/
  [7]: http://genshi.edgewall.org/
- [23]: http://gstreamer.freedesktop.org/modules/gst-python.html
+ [23]: https://ffmpeg.org/
  [8]: https://pandoc.org/
  [9]: https://pypi.python.org/pypi/Pillow/
 
