@@ -30,6 +30,7 @@ from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal.metadata import GEXIV2_DATE_FORMAT
 from lazygal.pygexiv2 import GExiv2
+from lazygal.mediautils import VideoProcessor
 
 
 class TestGenerators(LazygalTestGen):
@@ -583,10 +584,17 @@ class TestGenerators(LazygalTestGen):
             raise
 
     def test_withvideo(self):
-        source_subgal = self.setup_subgal('subgal', [], ['vid.mov'])
+        source_subgal = self.setup_subgal('subgal', [], ['vid.mov',
+                                                         'vid-silent.mov'])
+
+        # silence a video to make sure it does not crash
+        silencer = VideoProcessor(os.path.join(source_subgal.path, 'vid.mov'))
+        silencer.cmd.extend(['-c', 'copy', '-an'])
+        # overwrite the existing file
+        silencer.convert(os.path.join(source_subgal.path, 'vid-silent.mov'))
 
         # create empty video file to ensure nothing crashes
-        self.create_file(os.path.join(source_subgal.path, 'vid_broken.mov'))
+        self.create_file(os.path.join(source_subgal.path, 'vid-broken.mov'))
 
         dest_path = self.get_working_path()
 
@@ -605,7 +613,9 @@ class TestGenerators(LazygalTestGen):
         self.assertTrue(os.path.isdir(dest_subgal_path))
         for fn in ('index.html', 'index_medium.html',
                    'vid.html', 'vid_medium.html', 'vid_thumb.jpg',
-                   'vid_video.webm'):
+                   'vid_video.webm',
+                   'vid-silent.html', 'vid-silent_medium.html', 'vid-silent_thumb.jpg',
+                   'vid-silent_video.webm'):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)),
                             error % fn)
 
