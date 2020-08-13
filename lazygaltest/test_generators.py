@@ -83,7 +83,7 @@ class TestGenerators(LazygalTestGen):
                              {'media': 1, 'video': 0, 'image': 1})
             self.assertEqual(pindex['subgals'], ['subgal'])
 
-        # Check JSON sugal index
+        # Check JSON subgal index
         with open(os.path.join(dest_path, 'subgal', 'index.json')) as json_fp:
             pindex = json.load(json_fp)
             self.assertEqual(pindex['medias'], {'subgal_img.jpg': {
@@ -592,7 +592,7 @@ class TestGenerators(LazygalTestGen):
 
         self.album.generate(dest_path)
 
-        error = '%s has not been generate though it should have'
+        error = '%s has not been generated though it should have'
 
         # Check root dir contents
         self.assertTrue(os.path.isdir(dest_path))
