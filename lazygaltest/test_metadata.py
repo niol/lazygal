@@ -256,6 +256,13 @@ Album image identifier "first\xe3.jpg"
             'altitude': 1527
         })
 
+    def test_video(self):
+        sample = 'vid.mov'
+        vid_md = metadata.VideoInfoTags(self.get_sample_path(sample))
+        self.assertEqual(vid_md.get_date(),
+                         datetime.datetime(2007, 2, 10, 17, 51, 8,
+                                           tzinfo=datetime.timezone.utc))
+
 
 if __name__ == '__main__':
     unittest.main()
