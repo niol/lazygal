@@ -48,7 +48,7 @@ class TemplateVariables(object):
 class Media(TemplateVariables):
 
     def __init__(self, page, webalbum_media):
-        super(Media, self).__init__(page)
+        super().__init__(page)
         self.webalbum_media = webalbum_media
         self.media = webalbum_media.media
 
@@ -154,7 +154,7 @@ def media_vars(page, webalbum_media):
 class SrcPath(TemplateVariables):
 
     def __init__(self, page, srcpath):
-        super(SrcPath, self).__init__(page)
+        super().__init__(page)
         self.srcpath = srcpath
 
     def should_be_flattened(self):
@@ -203,7 +203,7 @@ class SrcPath(TemplateVariables):
 class Webgal(SrcPath):
 
     def __init__(self, page, webgal):
-        super(Webgal, self).__init__(page, webgal.source_dir.path)
+        super().__init__(page, webgal.source_dir.path)
         self.webgal = webgal
 
     def info(self):

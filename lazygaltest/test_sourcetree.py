@@ -32,7 +32,7 @@ from lazygal.sourcetree import Directory
 class TestSourceTree(LazygalTest):
 
     def setUp(self):
-        super(TestSourceTree, self).setUp()
+        super().setUp()
 
         self.source_dir = self.get_working_path()
         self.album = Album(self.source_dir)

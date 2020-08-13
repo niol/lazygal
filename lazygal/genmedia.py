@@ -46,7 +46,7 @@ class ResizedImage(genfile.WebalbumFile):
                                                         size_name,
                                                         self.force_extension)
         path = os.path.join(self.webgal.path, self.filename)
-        genfile.WebalbumFile.__init__(self, path, webgal)
+        super().__init__(path, webgal)
 
         self.newsizer = self.webgal.newsizers[size_name]
         self.size = None
@@ -116,7 +116,7 @@ class ResizedImage(genfile.WebalbumFile):
 class ImageOtherSize(ResizedImage):
 
     def __init__(self, webgal, source_image, size_name):
-        super(ImageOtherSize, self).__init__(webgal, source_image, size_name)
+        super().__init__(webgal, source_image, size_name)
         self.rotation = None
 
     def get_verb(self): return _('RESIZE')
@@ -216,7 +216,7 @@ class ImageOtherSize(ResizedImage):
             logging.error(_("Could not copy metadata in reduced picture: %s"), e)
 
     def save(self, im):
-        super(ImageOtherSize, self).save(im)
+        super().save(im)
 
         if self.webgal.config.get('webgal', 'publish-metadata'):
             self.copy_metadata()
@@ -249,7 +249,7 @@ class WebalbumPicture(make.FileMakeObject):
     def __init__(self, webgal_dir):
         self.path = os.path.join(webgal_dir.path,
                                  webgal_dir.get_webalbumpic_filename())
-        make.FileMakeObject.__init__(self, self.path)
+        super().__init__(self.path)
 
         self.add_dependency(webgal_dir.source_dir)
 
@@ -305,7 +305,7 @@ class WebVideo(genfile.WebalbumFile):
         self.filename = self.webgal._add_size_qualifier(self.source_video.filename,
                                                         size_name, '.webm')
         path = os.path.join(self.webgal.path, self.filename)
-        genfile.WebalbumFile.__init__(self, path, webgal)
+        super().__init__(path, webgal)
 
         newsizer = self.webgal.newsizers[size_name]
         if newsizer == 'original':

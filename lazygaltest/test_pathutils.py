@@ -30,7 +30,7 @@ from lazygal.sourcetree import Directory
 class TestPathutils(LazygalTest):
 
     def setUp(self):
-        super(TestPathutils, self).setUp()
+        super().setUp()
         self.test_root = self.get_working_path()
 
     def d(self, dpath):

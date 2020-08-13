@@ -36,7 +36,7 @@ from lazygal.pygexiv2 import GExiv2
 class TestFileMetadata(LazygalTest):
 
     def setUp(self):
-        super(TestFileMetadata, self).setUp()
+        super().setUp()
 
         self.source_dir = self.get_working_path()
         album = Album(self.source_dir)

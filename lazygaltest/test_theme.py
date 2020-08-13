@@ -25,7 +25,7 @@ import lazygal.theme as t
 class TestTheme(LazygalTest):
 
     def setUp(self):
-        super(TestTheme, self).setUp()
+        super().setUp()
 
         self.themes_dir = self.get_working_path()
         self.theme_name = 'test_theme'

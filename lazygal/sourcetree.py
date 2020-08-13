@@ -35,7 +35,7 @@ SOURCEDIR_CONFIGFILE = '.lazygal'
 class File(make.FileSimpleDependency):
 
     def __init__(self, path, album):
-        make.FileSimpleDependency.__init__(self, path)
+        super().__init__(path)
 
         self.path = path
         self.album = album
@@ -113,7 +113,7 @@ class File(make.FileSimpleDependency):
 class MediaFile(File):
 
     def __init__(self, path, album):
-        File.__init__(self, path, album)
+        super().__init__(path, album)
         self.broken = False
         self._size = None
 
@@ -270,7 +270,7 @@ class MediaHandler(object):
 class Directory(File):
 
     def __init__(self, source, subdirs, filenames, album):
-        File.__init__(self, source, album)
+        super().__init__(source, album)
 
         # No breaking up of filename and extension for directories
         self.name = self.filename

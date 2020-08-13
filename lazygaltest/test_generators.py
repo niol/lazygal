@@ -602,7 +602,7 @@ class TestGenerators(LazygalTestGen):
 class TestSpecialGens(LazygalTestGen):
 
     def setUp(self):
-        super(TestSpecialGens, self).setUp(False)
+        super().setUp(False)
         self.dest_path = os.path.join(self.tmpdir, 'dst')
 
     def test_paginate(self):
@@ -698,7 +698,7 @@ class TestSpecialGens(LazygalTestGen):
 class TestSorting(LazygalTestGen):
 
     def setUp(self):
-        super(TestSorting, self).setUp(False)
+        super().setUp(False)
         self.dest_path = os.path.join(self.tmpdir, 'dst')
 
     def __setup_pics(self, subgal_name=None):

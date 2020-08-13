@@ -180,7 +180,7 @@ class GroupTask(MakeTask):
         return True  # GroupTask is all about the deps.
 
     def update_build_status(self):
-        super(GroupTask, self).update_build_status()
+        super().update_build_status()
         # Find youngest dep, which should indicate latest build.
         mtime = None
         for dependency in self.deps:
@@ -194,7 +194,7 @@ class GroupTask(MakeTask):
             self.stamp_build(mtime)
 
     def add_dependency(self, dependency):
-        super(GroupTask, self).add_dependency(dependency)
+        super().add_dependency(dependency)
         dep_mtime = dependency.get_mtime()
         if dep_mtime > self.get_mtime():
             self.stamp_build(dep_mtime)
@@ -204,14 +204,17 @@ class GroupTask(MakeTask):
 
 
 class FileMakeObject(MakeTask):
+    """
+    A generic task to build a file.
+    """
 
     def __init__(self, path):
         self._path = path
-        super(FileMakeObject, self).__init__()
+        super().__init__()
         self.register_output(self._path)
 
     def update_build_status(self):
-        super(FileMakeObject, self).update_build_status()
+        super().update_build_status()
         # Update build info according to file existence
         if os.path.exists(self._path):
             self.stamp_build(os.path.getmtime(self._path))
@@ -232,7 +235,7 @@ class FileSimpleDependency(FileMakeObject):
     """
 
     def __init__(self, path):
-        super(FileSimpleDependency, self).__init__(path)
+        super().__init__(path)
         assert self.built_once(), path
 
     def build(self):
@@ -250,7 +253,7 @@ class FileCopy(FileMakeObject):
     def __init__(self, src, dst):
         self.src = src
         self.path = dst
-        FileMakeObject.__init__(self, dst)
+        super().__init__(dst)
         self.add_file_dependency(self.src)
 
     def build(self):
@@ -267,7 +270,7 @@ class FileSymlink(FileMakeObject):
     def __init__(self, src, dst):
         self.src = src
         self.dst = dst
-        FileMakeObject.__init__(self, dst)
+        super().__init__(dst)
         self.add_file_dependency(self.src)
 
     def build(self):

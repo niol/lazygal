@@ -28,7 +28,7 @@ from . import pathutils
 class WebalbumFile(make.FileMakeObject):
 
     def __init__(self, path, dir):
-        super(WebalbumFile, self).__init__(path)
+        super().__init__(path)
         self.dir = dir
         self.path = path
 
@@ -54,7 +54,7 @@ class MediaOriginal(WebalbumFile):
     def __init__(self, dir, source_media):
         self.filename = source_media.filename
         path = os.path.join(dir.path, self.filename)
-        super(MediaOriginal, self).__init__(path, dir)
+        super().__init__(path, dir)
 
         self.source_media = source_media
 
@@ -67,7 +67,7 @@ class MediaOriginal(WebalbumFile):
 class CopyMediaOriginal(MediaOriginal):
 
     def __init__(self, dir, source_media):
-        super(CopyMediaOriginal, self).__init__(dir, source_media)
+        super().__init__(dir, source_media)
         self.add_dependency(make.FileCopy(self.source_media.path, self.path))
 
     def build(self):
@@ -78,7 +78,7 @@ class CopyMediaOriginal(MediaOriginal):
 class SymlinkMediaOriginal(MediaOriginal):
 
     def __init__(self, dir, source_media):
-        super(SymlinkMediaOriginal, self).__init__(dir, source_media)
+        super().__init__(dir, source_media)
         self.add_dependency(make.FileSymlink(self.source_media.path, self.path))
 
     def build(self):
@@ -91,7 +91,7 @@ class WebalbumArchive(WebalbumFile):
     def __init__(self, webgal_dir):
         self.filename = webgal_dir.source_dir.name + '.zip'
         self.path = os.path.join(webgal_dir.path, self.filename)
-        WebalbumFile.__init__(self, self.path, webgal_dir)
+        super().__init__(self.path, webgal_dir)
 
         self.add_dependency(self.dir.source_dir)
         self.pics = list(map(lambda x: os.path.join(self.dir.source_dir.path,
@@ -118,12 +118,12 @@ class WebalbumArchive(WebalbumFile):
 class SharedFileCopy(make.FileCopy):
 
     def __init__(self, src, dst):
-        make.FileCopy.__init__(self, src, dst)
+        super().__init__(src, dst)
 
     def build(self):
         logging.info(_("CP %%SHAREDDIR%%/%s"), os.path.basename(self.path))
         logging.debug("(%s)", self.path)
-        make.FileCopy.build(self)
+        super().build()
 
 
 # vim: ts=4 sw=4 expandtab

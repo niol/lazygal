@@ -63,7 +63,7 @@ class SubgalSort(make.MakeTask):
     """
 
     def __init__(self, webgal_dir):
-        make.MakeTask.__init__(self)
+        super().__init__()
         self.set_dep_only()
         self.webgal_dir = webgal_dir
 
@@ -115,7 +115,7 @@ class SubgalBreak(make.MakeTask):
     """
 
     def __init__(self, webgal_dir):
-        make.MakeTask.__init__(self)
+        super().__init__()
         self.webgal_dir = webgal_dir
 
         self.__last_page_number = -1
@@ -195,7 +195,7 @@ class SubgalBreak(make.MakeTask):
 class WebalbumMediaTask(make.GroupTask):
 
     def __init__(self, webgal, media):
-        super(WebalbumMediaTask, self).__init__()
+        super().__init__()
 
         self.webgal = webgal
         self.media = media
@@ -246,7 +246,7 @@ class WebalbumMediaTask(make.GroupTask):
         return genpage.WebalbumBrowsePage(self.webgal, size_name, self)
 
     def make(self):
-        super(WebalbumMediaTask, self).make()
+        super().make()
         self.webgal.media_done()
 
 
@@ -256,7 +256,7 @@ class WebalbumImageTask(WebalbumMediaTask):
     """
 
     def __init__(self, webgal, image):
-        super(WebalbumImageTask, self).__init__(webgal, image)
+        super().__init__(webgal, image)
 
         self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
                                              genmedia.THUMB_SIZE_NAME)
@@ -284,7 +284,7 @@ class WebalbumVideoTask(WebalbumMediaTask):
     def __init__(self, webgal, video):
         self.webvideo = None
 
-        super(WebalbumVideoTask, self).__init__(webgal, video)
+        super().__init__(webgal, video)
 
         self.thumb = genmedia.VideoThumb(self.webgal, self.media,
                                          genmedia.THUMB_SIZE_NAME)
@@ -315,7 +315,7 @@ class WebalbumDir(make.GroupTask):
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
         if self.path.endswith(os.sep): self.path = os.path.dirname(self.path)
 
-        super(WebalbumDir, self).__init__()
+        super().__init__()
 
         self.progress = progress
 
@@ -336,7 +336,7 @@ class WebalbumDir(make.GroupTask):
         self.add_dependency(self.pindex)
 
     def populate_deps(self):
-        super(WebalbumDir, self).populate_deps()
+        super().populate_deps()
 
         for s in self.subgals:
             if not s.has_media_below():
@@ -557,7 +557,7 @@ class WebalbumDir(make.GroupTask):
     def register_output(self, output):
         # We only care about output in the current directory
         if os.path.dirname(output) == self.path:
-            super(WebalbumDir, self).register_output(output)
+            super().register_output(output)
 
     def register_feed(self, feed):
         self.feed = feed
@@ -675,7 +675,7 @@ class WebalbumDir(make.GroupTask):
             self.album.cleanup(dest_file, self.path)
 
     def make(self, force=False):
-        super(WebalbumDir, self).make(force)
+        super().make(force)
         self.update_build_status()
 
     def media_done(self):
@@ -695,7 +695,7 @@ class SharedFiles(make.FileMakeObject):
             logging.debug("(%s)", self.path)
             os.makedirs(self.path)
 
-        super(SharedFiles, self).__init__(self.path)
+        super().__init__(self.path)
 
         self.expected_shared_files = []
         for shared in self.album.theme.shared_files:

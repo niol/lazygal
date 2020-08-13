@@ -31,7 +31,7 @@ from lazygal.sourcetree import Directory
 class TestConf(LazygalTestGen):
 
     def setUp(self):
-        super(TestConf, self).setUp(album=False)
+        super().setUp(album=False)
 
     def test_perdir_conf_old(self):
         """

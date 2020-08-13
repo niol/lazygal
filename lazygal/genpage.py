@@ -38,9 +38,7 @@ class WebalbumPage(genfile.WebalbumFile):
 
         page_filename = self._add_size_qualifier(base_name + '.html',
                                                  self.size_name)
-        genfile.WebalbumFile.__init__(self,
-                                      os.path.join(dir.path, page_filename),
-                                      dir)
+        super().__init__(os.path.join(dir.path, page_filename), dir)
 
         self.page_template = None
 
@@ -91,7 +89,7 @@ class WebalbumBrowsePage(WebalbumPage):
     def __init__(self, dir, size_name, webalbum_media):
         self.webalbum_media = webalbum_media
         self.media = self.webalbum_media.media
-        WebalbumPage.__init__(self, dir, size_name, self.media.name)
+        super().__init__(dir, size_name, self.media.name)
 
         self.add_dependency(self.webalbum_media.resized[size_name])
         if webalbum_media.original:
@@ -162,7 +160,7 @@ class WebalbumIndexPage(WebalbumPage):
 
     def __init__(self, dir, size_name, page_number, subgals, galleries):
         page_paginated_name = self._get_paginated_name(page_number)
-        WebalbumPage.__init__(self, dir, size_name, page_paginated_name)
+        super().__init__(dir, size_name, page_paginated_name)
 
         self.page_number = page_number
         self.subgals = subgals
@@ -290,7 +288,7 @@ class WebalbumFeed(make.FileMakeObject):
 
     def __init__(self, album, dir_path, pub_url):
         self.path = os.path.join(dir_path, 'index.xml')
-        super(WebalbumFeed, self).__init__(self.path)
+        super().__init__(self.path)
 
         self.album = album
         self.pub_url = pub_url
@@ -356,7 +354,7 @@ class SharedFileTemplate(make.FileMakeObject):
         else:
             raise ValueError(_('We have a template with an extension that does not start with a t. Aborting.'))
 
-        make.FileMakeObject.__init__(self, self.path)
+        super().__init__(self.path)
         self.add_file_dependency(shared_tpl_name)
 
     def build(self):

@@ -47,7 +47,7 @@ class ProgressConsoleHandler(logging.StreamHandler):
     def close(self):
         self.clear_last_progress()
         self.flush()
-        super(ProgressConsoleHandler, self).close()
+        super().close()
 
 
 # vim: ts=4 sw=4 expandtab

@@ -422,7 +422,7 @@ class NoMetadata(Exception):
 class DirectoryMetadata(make.GroupTask):
 
     def __init__(self, dir_path):
-        super(DirectoryMetadata, self).__init__()
+        super().__init__()
 
         self.dir_path = dir_path
         self.add_file_dependency(self.dir_path)
@@ -545,7 +545,7 @@ class DefaultMetadata(make.FileMakeObject):
         self.source_dir = source_dir
 
         metadata_path = os.path.join(self.source_dir.path, MATEW_METADATA)
-        super(DefaultMetadata, self).__init__(metadata_path)
+        super().__init__(metadata_path)
 
         self.album = album
 

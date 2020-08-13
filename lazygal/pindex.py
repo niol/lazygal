@@ -38,8 +38,7 @@ JSON_INDEX_FILENAME = 'index.json'
 class PersistentIndex(make.FileMakeObject):
 
     def __init__(self, webgal):
-        super(PersistentIndex, self).__init__(os.path.join(webgal.path,
-                                                           JSON_INDEX_FILENAME))
+        super().__init__(os.path.join(webgal.path, JSON_INDEX_FILENAME))
         self.webgal = webgal
 
         self.add_dependency(self.webgal.source_dir)

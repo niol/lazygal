@@ -87,7 +87,7 @@ class LazygalTest(unittest.TestCase):
 class LazygalTestGen(LazygalTest):
 
     def setUp(self, album=True):
-        super(LazygalTestGen, self).setUp()
+        super().setUp()
 
         self.tmpdir = self.get_working_path()
         self.source_dir = os.path.join(self.tmpdir, 'src')
