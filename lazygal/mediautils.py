@@ -40,7 +40,9 @@ class VideoProcessor(object):
     def __init__(self, input_file):
         self.progress = None
 
-        self.cmd = [FFMPEG, '-nostdin', '-progress', '-', '-i', input_file]
+        self.cmd = [FFMPEG, '-nostdin', '-progress', '-',
+                    '-y', # force overwrite existing file
+                    '-i', input_file]
         self.videofilters = []
         self.duration = None
 
