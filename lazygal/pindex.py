@@ -32,6 +32,15 @@ def json_serializer(obj):
     raise TypeError('Type %s is not JSON serializable', type(obj))
 
 
+def datetime_hook(json_dict):
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
+        except:
+            pass # not a datetime
+    return json_dict
+
+
 JSON_INDEX_FILENAME = 'index.json'
 
 
@@ -50,7 +59,7 @@ class PersistentIndex(make.FileMakeObject):
         self.data = None
         try:
             with open(self._path, 'r') as json_fp:
-                self.data = json.load(json_fp)
+                self.data = json.load(json_fp, object_hook=datetime_hook)
         except FileNotFoundError:
             self.data = collections.OrderedDict()
         except ValueError:
