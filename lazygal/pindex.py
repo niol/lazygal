@@ -155,6 +155,10 @@ class PersistentIndex(make.FileMakeObject):
             or key != 'metadata':
                 self.data['medias'][src_media.filename][key] = value
 
+        i = self.data['medias'][src_media.filename]
+        if 'metadata' in i and not self.webgal.config.get('webgal', 'keep-gps'):
+            i['metadata']['location'] = None
+
     def webgal_info(self):
         dir_info = {}
         if self.webgal.source_dir.metadata:
