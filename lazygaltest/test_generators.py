@@ -417,6 +417,12 @@ class TestGenerators(LazygalTestGen):
         def long(): return dest_image['Exif.GPSInfo.GPSLatitude']
         self.assertRaises(KeyError, long)
 
+        # Check that metadata is not in the JSON index
+        with open(os.path.join(dest_dir, 'index.json')) as json_fp:
+            pindex = json.load(json_fp)
+            self.assertEqual(pindex['medias']['md_filled.jpg']['metadata']['location'],
+                             None)
+
     def test_metadata_osize_nopublish(self):
         config = lazygal.config.LazygalConfig()
         config.set('webgal', 'publish-metadata', 'No')
@@ -440,6 +446,11 @@ class TestGenerators(LazygalTestGen):
         # Check that metadata is not here for reduced pictures.
         def com(): return dest_image['Exif.Photo.UserComment']
         self.assertRaises(KeyError, com)
+
+        # Check that metadata is not in the JSON index
+        with open(os.path.join(dest_dir, 'index.json')) as json_fp:
+            pindex = json.load(json_fp)
+            assert 'metadata' not in pindex['medias']['md_filled.jpg']
 
     def test_resize_rotate_size(self):
         config = lazygal.config.LazygalConfig()
