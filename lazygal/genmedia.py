@@ -35,7 +35,7 @@ THUMB_SIZE_NAME = 'thumb'
 VIDEO_SIZE_NAME = 'video'
 
 
-class ResizedImage(genfile.WebalbumFile):
+class ResizedMedia(genfile.WebalbumFile):
 
     force_extension = None
 
@@ -67,18 +67,18 @@ class ResizedImage(genfile.WebalbumFile):
         logging.info("  %s %s", self.VERB, media_rel_path)
         logging.debug("(%s)", self.path)
 
-        try:
-            im = self.resize(self.get_image())
-        except OSError:
-            self.source_media.set_broken()
-            # Make the system believe the file was built a long time ago.
-            self.stamp_build(0)
-            self.clean_output()
-        else:
-            self.save(im)
+        if not self.source_media.broken:
+            self.do_build()
 
-    def get_image(self):
-        raise NotImplementedError
+
+class ImageOtherSize(ResizedMedia):
+
+    def __init__(self, webgal, source_image, size_name):
+        super().__init__(webgal, source_image, size_name)
+        self.rotation = None
+
+    def get_verb(self): return _('RESIZE')
+    VERB = property(get_verb)
 
     def resize(self, im):
         new_size = self.get_size()
@@ -101,15 +101,8 @@ class ResizedImage(genfile.WebalbumFile):
                         raise
             calibrated = True
 
-
-class ImageOtherSize(ResizedImage):
-
-    def __init__(self, webgal, source_image, size_name):
-        super().__init__(webgal, source_image, size_name)
-        self.rotation = None
-
-    def get_verb(self): return _('RESIZE')
-    VERB = property(get_verb)
+        if self.webgal.config.get('webgal', 'publish-metadata'):
+            self.copy_metadata()
 
     def get_rotation(self):
         if self.rotation is None:
@@ -196,25 +189,26 @@ class ImageOtherSize(ResizedImage):
         except Exception as e:
             logging.error(_("Could not copy metadata in reduced picture: %s"), e)
 
-    def save(self, im):
-        super().save(im)
+    def do_build(self):
+        try:
+            im = self.resize(self.get_image())
+        except OSError:
+            self.source_media.set_broken()
+            # Make the system believe the file was built a long time ago.
+            self.stamp_build(0)
+            self.clean_output()
+        else:
+            self.save(im)
 
-        if self.webgal.config.get('webgal', 'publish-metadata'):
-            self.copy_metadata()
 
-
-class VideoThumb(ResizedImage):
+class VideoThumb(ResizedMedia):
 
     force_extension = '.jpg'
 
     def get_verb(self): return _('VIDEOTHUMB')
     VERB = property(get_verb)
 
-    def build(self):
-        media_rel_path = self.rel_path(self.webgal.flattening_dir)
-        logging.info("  %s %s", self.VERB, media_rel_path)
-        logging.debug("(%s)", self.path)
-
+    def do_build(self):
         try:
             mediautils.VideoThumbnailer(self.source_media.path) \
                 .convert(self.path, self.get_size())
@@ -223,7 +217,6 @@ class VideoThumb(ResizedImage):
                           self.source_media.filename)
             logging.info(str(e))
             self.clean_output()
-            raise IOError()
 
 
 class WebalbumPicture(make.FileMakeObject):
