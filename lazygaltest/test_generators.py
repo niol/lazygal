@@ -514,7 +514,7 @@ class TestGenerators(LazygalTestGen):
         tagnotfound_path        = self.add_img(self.source_dir, 'tagnotfound.jpg')
         untagged_path           = self.add_img(self.source_dir, 'untagged.jpg')
         sdir_tagfound           = self.setup_subgal('sdir_tagfound', ['sdir_tagfound.jpg', 'sdir_tagnotfound.jpg'])
-        sdir_tagnotfound        = self.setup_subgal('sdir_tagnotfound', ['sdir_tagfound.jpg', 'sdir_tagnotfound.jpg'])
+        sdir_tagnotfound        = self.setup_subgal('sdir_tagnotfound', ['sdir_tagnotfound.jpg'])
         sdir_untagged           = self.setup_subgal('sdir_untagged', ['untagged.jpg'])
         tagfound_subdir_path    = os.path.join(self.source_dir, sdir_tagfound.name, 'sdir_tagfound.jpg')
         tagnotfound_subdir_path = os.path.join(self.source_dir, sdir_tagnotfound.name, 'sdir_tagnotfound.jpg')
