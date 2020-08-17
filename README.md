@@ -121,6 +121,22 @@ pages. Updating a source checkout of the `lazygal` repository is done using
 
 Patches are very welcome.
 
+### Test suite
+
+There is a test suite validating many options and ensuring that things do not
+break too often. The full test suite can be run:
+
+    $ ./setup.py test
+
+Inidividual tests can be run using unittest facilities, for instance for the
+`test_cleanup` test in the `TestGenerators` test case:
+
+    $ python3 -m lazygaltest.test_generators TestGenerators.test_cleanup
+
+or the whole `TestGenerators` test case
+
+    $ python3 -m lazygaltest.test_generators TestGenerators.test_cleanup
+
 ### Translations
 
 To start a new translation, for example `cs_CZ`, you can proceed as follows. The first script requires `intltool-update` and `xgettext` from the GNU `gettext` package.
