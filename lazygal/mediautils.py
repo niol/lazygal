@@ -43,7 +43,7 @@ class VideoProcessor(object):
         self.global_opts = ['-nostdin', '-progress', '-',
                             '-y', # force overwrite existing file
                            ]
-        self.input_file_opts = []
+        self.input_file_opts = ['-hwaccel', 'auto']
         self.input_file = input_file
         self.output_file_opts = []
 
