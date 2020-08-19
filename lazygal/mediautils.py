@@ -40,6 +40,13 @@ class VideoProcessor(object):
     def __init__(self, input_file):
         self.progress = None
 
+        self.global_opts = ['-nostdin', '-progress', '-',
+                            '-y', # force overwrite existing file
+                           ]
+        self.input_file_opts = []
+        self.input_file = input_file
+        self.output_file_opts = []
+
         self.cmd = [FFMPEG, '-nostdin', '-progress', '-',
                     '-y', # force overwrite existing file
                     '-i', input_file]
@@ -68,9 +75,13 @@ class VideoProcessor(object):
                 logging.info('progress: %d%%' % percent)
 
     def convert(self, outfile):
-        runcmd = list(self.cmd) # copy
+        runcmd = [FFMPEG]
+        runcmd.extend(self.global_opts)
+        runcmd.extend(self.input_file_opts)
+        runcmd.extend(['-i', self.input_file])
         if self.videofilters:
             runcmd.extend(['-vf', ','.join(self.videofilters)])
+        runcmd.extend(self.output_file_opts)
         runcmd.append(outfile)
         logging.debug('RUNNING %s' % ' '.join(runcmd))
         with subprocess.Popen(runcmd, text=True,
@@ -102,7 +113,8 @@ class VideoTranscoder(VideoProcessor):
 
     def __init__(self, mediapath, videocodec, audiocodec):
         super().__init__(mediapath)
-        self.cmd.extend(['-c:v', videocodec, '-c:a', audiocodec])
+        self.output_file_opts.extend(['-c:v', videocodec,
+                                      '-c:a', audiocodec])
 
 
 class WebMTranscoder(VideoTranscoder):
@@ -131,7 +143,8 @@ class VideoFramesExtractor(VideoProcessor):
         if resize is not None:
             self.scale(resize)
 
-        self.cmd.extend(['-frames:v', str(frames), '-vsync', 'vfr'])
+        self.output_file_opts.extend(['-frames:v', str(frames),
+                                      '-vsync', 'vfr'])
 
 
 class VideoThumbnailer(object):
