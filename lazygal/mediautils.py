@@ -121,12 +121,18 @@ class WebMTranscoder(VideoTranscoder):
 
     def __init__(self, mediapath):
         super().__init__(mediapath, 'libvpx-vp9', 'libopus')
+        self.output_file_opts.extend(['-crf', '22', '-b:v', '2000k',
+                                     ])
 
 
 class MP4Transcoder(VideoTranscoder):
 
     def __init__(self, mediapath):
         super().__init__(mediapath, 'libx264', 'aac')
+        self.output_file_opts.extend(['-movflags', 'faststart',
+                                      '-preset', 'slow',
+                                      '-crf', '22'
+                                     ])
 
 
 class VideoFramesExtractor(VideoProcessor):
