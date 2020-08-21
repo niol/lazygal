@@ -6,36 +6,36 @@
 
 It can be summed up by the following features :
 
-  *   Command line based (thus scriptable).
-  *   Handles album updates :
-    - Lazy : do not build what's already there.
-    - Tells you what should not be in your generated directories (and delete it
+  * Command line based (thus scriptable).
+  * Handles album updates :
+    * Lazy : do not build what's already there.
+    * Tells you what should not be in your generated directories (and delete it
       if you want to).
-  *   Presents all your pictures and videos and associated data:
-    - Recursive : generates subgalleries. Follows symlinks for flexibility.
-    - Sort pictures in the same directory by EXIF date if available. More
+  * Presents all your pictures and videos and associated data:
+    * Recursive : generates subgalleries. Follows symlinks for flexibility.
+    * Sort pictures in the same directory by EXIF date if available. More
       sorting options available.
-    - Auto rotates pictures if they contain sensor info.
-    - Reads and present selected image metadata.
-    - Copies image metadata in reduced pictures.
-  *   Makes browsing sharing pictures easy :
-    - Can generate multiple sizes to browse pictures.
-    - Breadcrumbs on every page.
-    - RSS feed generation for your album updates.
-    - Optional generation of ZIP archives of original pictures.
-    - Output internationalization.
-    - Optional breaking of big galleries (directories) on multiple pages.
-    - HTML5 video pages for videos
-  *   Make customization easy :
-    - Theming.
-    - XHTML and CSS compliance for provided themes.
-    - Multiple options for album and picture metadata (picture metadata, flat
+    * Auto rotates pictures if they contain sensor info.
+    * Reads and present selected image metadata.
+    * Copies image metadata in reduced pictures.
+  * Makes browsing sharing pictures easy :
+    * Can generate multiple sizes to browse pictures.
+    * Breadcrumbs on every page.
+    * RSS feed generation for your album updates.
+    * Optional generation of ZIP archives of original pictures.
+    * Output internationalization.
+    * Optional breaking of big galleries (directories) on multiple pages.
+    * HTML5 video pages for videos
+  * Make customization easy :
+    * Theming.
+    * XHTML and CSS compliance for provided themes.
+    * Multiple options for album and picture metadata (picture metadata, flat
       files).
-    - Add template variables from the command line or from a configuration
+    * Add template variables from the command line or from a configuration
       file.
-    - Per-directory configuration.
-    - Javascript or fully static navigation.
-  *   Does not change your original pictures directories (the source argument).
+    * Per-directory configuration.
+    * Javascript or fully static navigation.
+  * Does not change your original pictures directories (the source argument).
 
  [1]: http://python.org
 
@@ -163,7 +163,7 @@ bug tracking application.
 For now, bug reports and feature requests may go in :
 
 *   by e-mail, directly to <alexandre.rossi@gmail.com> (please put `lazygal` somewhere in the subject),
-*   through the [Debian Bug Tracking System][22] to which I think I subscribed,
+*   through the [Debian Bug Tracking System][22] to which I subscribed,
 *   through the [Lazygal's Github bug tracker][24].
 
  [22]: http://bugs.debian.org/lazygal
