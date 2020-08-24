@@ -137,6 +137,11 @@ or the whole `TestGenerators` test case
 
     $ python3 -m lazygaltest.test_generators TestGenerators.test_cleanup
 
+`DEBUG` logging can be set in the test suite by setting the `DEBUG` environment
+variable to any value.
+
+    $ DEBUG=1 python3 -m lazygaltest.test_generators TestGenerators.test_cleanup
+
 ### Translations
 
 To start a new translation, for example `cs_CZ`, you can proceed as follows. The first script requires `intltool-update` and `xgettext` from the GNU `gettext` package.

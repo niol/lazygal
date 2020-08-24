@@ -38,9 +38,17 @@ LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
 gettext.install('lazygal', LOCALES_PATH)
 
 
-# Init quiet logging
+# Init logging
 import logging
 logging.basicConfig(format='%(message)s', level=logging.ERROR)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+try:
+    debug = os.environ['DEBUG']
+except KeyError:
+    pass # no explicit logger level passed
+else:
+    logger.setLevel(logging.DEBUG)
 
 
 def has_symlinks():
