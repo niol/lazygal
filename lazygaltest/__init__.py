@@ -46,7 +46,7 @@ logger.setLevel(logging.INFO)
 try:
     debug = os.environ['DEBUG']
 except KeyError:
-    pass # no explicit logger level passed
+    logger.setLevel(logging.ERROR)
 else:
     logger.setLevel(logging.DEBUG)
 
