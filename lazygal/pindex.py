@@ -86,6 +86,8 @@ class PersistentIndex(JSONWebFile):
     def __init__(self, webgal):
         super().__init__(webgal)
 
+        for f in self.webgal.config.files:
+            self.add_file_dependency(f)
         self.add_dependency(self.webgal.source_dir)
         for src_media in self.webgal.source_dir.medias:
             self.add_dependency(src_media)

@@ -230,6 +230,7 @@ class LazygalConfig(object):
 
         self.load(self.load_file(DEFAULT_CONFIG_PATH),
                   defaults=True, setvalue=load_defaults)
+        self.files = [DEFAULT_CONFIG_PATH]
 
     def has_section(self, section):
         return section in self.c
@@ -312,6 +313,8 @@ class LazygalConfig(object):
                 raise
             else:
                 logging.warning(_('INI-style config file format is deprecated.'))
+        else:
+            self.files.append(path)
 
     def __str__(self):
         return json.dumps(self.c)
