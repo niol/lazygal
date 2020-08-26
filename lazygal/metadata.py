@@ -89,6 +89,27 @@ def decode_exif_user_comment(raw, imgpath):
     return text
 
 
+def parse_date(s):
+    d = None
+    last_e = None
+    for f in ('%Y-%m-%dT%H:%M:%S.%f%z',
+              '%Y-%m-%dT%H:%M:%S%z',
+              '%Y-%m-%dT%H:%M:%S.%f',
+              '%Y-%m-%dT%H:%M:%S',
+             ):
+        try:
+            d = datetime.datetime.strptime(s, f)
+        except ValueError as e:
+            last_e = e # try next format
+        else:
+            break # parsing successful
+
+    if d:
+        return d
+    else:
+        raise last_e
+
+
 class FileMetadata(object):
 
     def __init__(self, path):
@@ -433,11 +454,9 @@ class VideoInfoTags(object):
         # date
         try:
             raw =  videoinfo['format']['tags']['creation_time']
-        except KeyError:
+            self.creation_time = parse_date(raw)
+        except (KeyError, ValueError):
             self.creation_time = None
-        else:
-            self.creation_time = datetime.datetime.strptime(raw,
-                                                       '%Y-%m-%dT%H:%M:%S.%f%z')
 
     def get_date(self):
         return self.creation_time
