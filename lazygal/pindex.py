@@ -34,10 +34,11 @@ def json_serializer(obj):
 
 def datetime_hook(json_dict):
     for (key, value) in json_dict.items():
-        try:
-            json_dict[key] = datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S")
-        except:
-            pass # not a datetime
+        if type(value) is str:
+            try:
+                json_dict[key] = datetime.datetime.fromisoformat(value)
+            except ValueError:
+                pass # not a datetime in ISO8601 format
     return json_dict
 
 
