@@ -53,9 +53,12 @@ class MakeTask(object):
     def add_dependency(self, dependency):
         if self in dependency.deps:
             raise CircularDependency("%s <-> %s" % (self, dependency))
-        self.deps.append(dependency)
-        for output_item in dependency.output_items:
-            self.register_output(output_item)
+        if dependency in self.deps:
+            raise RuntimeError('adding same dep twice')
+        else:
+            self.deps.append(dependency)
+            for output_item in dependency.output_items:
+                self.register_output(output_item)
 
     def add_file_dependency(self, file_path):
         self.add_dependency(FileSimpleDependency(file_path))
