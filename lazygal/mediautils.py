@@ -84,7 +84,7 @@ class VideoProcessor(object):
         runcmd.extend(self.output_file_opts)
         runcmd.append(outfile)
         logging.debug('RUNNING %s' % ' '.join(runcmd))
-        with subprocess.Popen(runcmd, text=True,
+        with subprocess.Popen(runcmd, text=True, errors='replace',
                               stdout=subprocess.PIPE,
                               stderr=subprocess.STDOUT) as p:
             for line in p.stdout:
