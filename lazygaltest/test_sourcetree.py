@@ -95,7 +95,7 @@ class TestSourceTree(LazygalTest):
         img.save_file()
         os.utime(imgpath, (0, datetime(2011, 7, 2).timestamp()))
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(),
+        self.assertEqual(d.latest_media_stamp(from_media=True),
                          datetime(2011, 7, 4).timestamp())
 
         # mixed exif and no exif test
@@ -105,7 +105,7 @@ class TestSourceTree(LazygalTest):
             datetime(2015, 7, 4).strftime('%Y:%m:%d %H:%M:%S')
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(),
+        self.assertEqual(d.latest_media_stamp(from_media=True),
                          datetime(2015, 7, 4).timestamp())
 
         # full exif
@@ -120,7 +120,7 @@ class TestSourceTree(LazygalTest):
             datetime(2015, 8, 20).strftime('%Y:%m:%d %H:%M:%S')
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(),
+        self.assertEqual(d.latest_media_stamp(from_media=True),
                          datetime(2015, 8, 20).timestamp())
 
 

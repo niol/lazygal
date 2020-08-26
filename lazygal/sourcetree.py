@@ -117,10 +117,12 @@ class MediaFile(File):
         super().__init__(path, album)
         self.broken = False
         self.md = {
+            'type'    : self.type,
             'date'    : None,
             'comment' : None,
             'metadata': {},
         }
+        self.__md_loaded = False
 
         comment_file_path = self.path + metadata.FILE_METADATA_MEDIA_SUFFIX
         if os.path.isfile(comment_file_path):
@@ -128,12 +130,29 @@ class MediaFile(File):
         else:
             self.comment_file_path = None
 
+    def load_metadata_from_mediafile(self):
         try:
             mdloader = self.mdloader(self.path)
         except ValueError as e:
             logging.debug('Cannot load metadata for %s: %s' % (self.path, e))
             mdloader = None
         self._parse_metadata(mdloader)
+
+    def load_metadata(self, pindex):
+        if not self.__md_loaded:
+            if not pindex:
+                self.load_metadata_from_mediafile()
+            elif self.get_mtime() < pindex.get_mtime() \
+            or self.filename in pindex.data['medias']:
+                # load metadata from persistent index
+                self.md = pindex.data['medias'][self.filename]
+            else:
+                # load metadata from file
+                self.load_metadata_from_mediafile()
+                pindex.load_media(self)
+
+            assert self.md['date'].__class__ == datetime.datetime
+            self.__md_loaded = True
 
     def _parse_metadata(self, mdloader):
         md_date = None
@@ -151,7 +170,7 @@ class MediaFile(File):
         self.broken = True
 
     def has_reliable_date(self):
-        return 'date' in self.md['metadata']
+        return 'date' in self.md['metadata'] and self.md['metadata']['date']
 
     def get_date_taken(self):
         return self.md['date']
@@ -403,7 +422,7 @@ class Directory(File):
             all_subdirs.extend(subdir.get_all_subdirs())
         return all_subdirs
 
-    def latest_media_stamp(self):
+    def latest_media_stamp(self, from_media=False):
         """
         Returns the latest media date:
             - first considering all pics that have a MD date
@@ -412,6 +431,7 @@ class Directory(File):
         all_medias = self.get_all_medias()
         media_stamp_max = None
         for m in all_medias:
+            m.load_metadata(not from_media)
             if m.has_reliable_date():
                 media_stamp = m.get_date_taken().timestamp()
                 if media_stamp_max is None or media_stamp > media_stamp_max:

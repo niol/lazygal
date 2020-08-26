@@ -205,7 +205,7 @@ class Webgal(SrcPath):
         if 'album_name' not in dir_info:
             dir_info['album_name'] = self.webgal.source_dir.human_name
 
-        dirzip = self.webgal.pindex.dirzip()
+        dirzip = self.webgal.webassets.data['dirzip']
         if dirzip:
             archive_rel_dir = self.webgal.rel_path(self.page.dir.path)
             archive_rel_path = posixpath.join(archive_rel_dir,

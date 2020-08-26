@@ -209,15 +209,16 @@ class WebalbumMediaTask(make.GroupTask):
 
         for size_name in self.webgal.browse_sizes:
             self.resized[size_name] = self.get_resized(size_name)
-            self.add_dependency(self.resized[size_name])
-
-            if self.webgal.original and not self.webgal.orig_base:
-                self.add_dependency(self.get_original())
+            if self.resized[size_name] not in self.deps:
+                self.add_dependency(self.resized[size_name])
 
             if self.webgal.album.theme.kind == 'static':
                 self.browse_pages[size_name] = self.get_browse_page(size_name)
                 if self.webgal.album.force_gen_pages:
                     self.browse_pages[size_name].stamp_delete()
+
+        if self.webgal.original and not self.webgal.orig_base:
+            self.add_dependency(self.get_original())
 
     def set_next(self, media):
         self.next = media
@@ -288,8 +289,6 @@ class WebalbumVideoTask(WebalbumMediaTask):
                                          genmedia.THUMB_SIZE_NAME)
         self.add_dependency(self.thumb)
 
-        self.add_dependency(self.webvideo)
-
     def get_resized(self, size_name):
         if not self.webvideo:
             self.webvideo = genmedia.WebVideo(self.webgal, self.media,
@@ -313,10 +312,7 @@ class WebalbumDir(make.GroupTask):
 
         self.progress = progress
 
-        self.add_dependency(self.source_dir)
         self.subgals = subgals
-        for srcdir in self.source_dir.subdirs:
-            self.add_dependency(srcdir)
         self.album = album
         self.feed = None
 
@@ -328,6 +324,8 @@ class WebalbumDir(make.GroupTask):
 
         self.pindex = pindex.PersistentIndex(self)
         self.add_dependency(self.pindex)
+        self.webassets = pindex.WebAssets(self)
+        self.webassets.add_dependency(self.pindex)
 
     def populate_deps(self):
         super().populate_deps()
@@ -340,7 +338,8 @@ class WebalbumDir(make.GroupTask):
         self.sort_task = SubgalSort(self)
         self.sort_task.add_dependency(self.source_dir)
         for media in self.source_dir.medias:
-            if self.tagfilters and 'keywords' in media.md['metadata']:
+            media.load_metadata(self.pindex)
+            if self.tagfilters:
                 # tag-filtering is requested
                 res = True
                 for tagf in self.tagfilters:
@@ -356,7 +355,8 @@ class WebalbumDir(make.GroupTask):
                     if re.search(regex, kwlist) is None:
                         res = False
                         break
-                if res is False:
+                if not res:
+                    self.pindex.unpublish_media(media)
                     self.media_done()
                     continue
 
@@ -379,22 +379,11 @@ class WebalbumDir(make.GroupTask):
                 self.medias.append(media_task)
                 self.add_dependency(media_task)
 
-        # Create the directory if it does not exist
-        if not os.path.isdir(self.path) and self.has_media_below():
-            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s"),
-                         self.source_dir.strip_root())
-            logging.debug("(%s)", self.path)
-            os.makedirs(self.path)
-
-        if self.pindex.dirzip():
-            self.dirzip = genfile.WebalbumArchive(self)
-            self.add_dependency(self.dirzip)
-            self.pindex.add_dependency(self.dirzip)
-
         self.index_pages = []
 
         if self.has_media_below() and not self.should_be_flattened():
             self.break_task = SubgalBreak(self)
+            self.break_task.add_dependency(self.pindex)
 
             if self.thumbs_per_page > 0:
                 self.break_task.add_dependency(self.sort_task)
@@ -407,6 +396,12 @@ class WebalbumDir(make.GroupTask):
             self.add_dependency(self.webgal_pic)
         else:
             self.break_task = None
+
+        self.dirzip = None
+        if self.config.get('webgal', 'dirzip') and len(self.medias) > 1:
+            self.dirzip = genfile.WebalbumArchive(self)
+            self.add_dependency(self.dirzip)
+            self.webassets.add_dependency(self.dirzip)
 
     def __parse_browse_sizes(self, sizes_defs):
         fixed_sizes_defs = sizes_defs

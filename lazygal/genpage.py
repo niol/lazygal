@@ -172,6 +172,7 @@ class WebalbumIndexPage(WebalbumPage):
                 dir.flattening_dir = self.dir
 
             self.add_dependency(dir.pindex)
+            self.add_dependency(dir.webassets)
             self.add_dependency(dir.sort_task)
 
             if size_name in dir.browse_sizes:
@@ -182,15 +183,10 @@ class WebalbumIndexPage(WebalbumPage):
                         self.add_dependency(media.browse_pages[size_name])
                         # Ensure dir depends on browse page (usefull for cleanup
                         # checks when dir is flattenend).
-                        dir.add_dependency(media.browse_pages[size_name])
+                        if self.dir.should_be_flattened():
+                            dir.add_dependency(media.browse_pages[size_name])
             else:
                 logging.warning(_("  Size '%s' is not available in '%s' due to configuration: medias won't be shown on index."), size_name, dir.path)
-
-            if self.dir.pindex.dirzip():
-                self.add_dependency(self.dir.dirzip)
-
-        for subgal in self.subgals:
-            self.add_dependency(subgal.pindex)
 
         if self.dir.album.theme.kind == 'static':
             self.set_template('dirindex.thtml')
