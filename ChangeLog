@@ -1,3 +1,11 @@
+Lazygal 0.10 (2020-08-27)
+  * drop pyexiv2 alternate dependency (deprecated)
+  * cache media metadata in persistent index
+  * ensure no crash if silent video (Github Fixes #1)
+  * use ffmpeg instead of gst
+  * Minor typo "dl_asset" (github Fixes #5)
+  * drop py2
+
 Lazygal 0.9.4 (2020-05-18)
   * do not transcode mp4
   * accept simpler size defs in json config and improve documentation

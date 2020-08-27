@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-24 14:44+0200\n"
+"POT-Creation-Date: 2020-08-27 12:46+0200\n"
 "PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -249,22 +249,28 @@ msgstr "L'opzione --orig-symlink non è disponibile in questa piattaforma."
 msgid "Interrupted."
 msgstr "Interrotto."
 
-#: ../lazygal/sourcetree.py:93 ../lazygal/sourcetree.py:335
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:370
 msgid "Root not found"
 msgstr "La directory radice non è stata trovata"
 
-#: ../lazygal/sourcetree.py:251
-msgid "Video support is disabled: could not load GStreamer"
+#: ../lazygal/sourcetree.py:282
+#, fuzzy
+msgid "Video support is disabled: could not find ffmpeg"
 msgstr "Il supporto video è disabilitato: impossibile caricare GStreamer"
 
-#: ../lazygal/sourcetree.py:291
+#: ../lazygal/sourcetree.py:322
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr ""
 "..Si ignora %s, impossibile aprire il file (collegamento simbolico "
 "interrotto?)."
 
-#: ../lazygal/sourcetree.py:302
+#: ../lazygal/sourcetree.py:330
+#, python-format
+msgid "  %s is BROKEN, skipped"
+msgstr "  %s è ROTTO, si ignora"
+
+#: ../lazygal/sourcetree.py:337
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  Si ignora %s, formato non supportato."
@@ -288,63 +294,58 @@ msgstr "Criterio di ordine \"%s\" sconosciuto"
 msgid "  BREAKING web gallery into multiple pages"
 msgstr "  IMPAGINAZIONE della galleria web"
 
-#: ../lazygal/generators.py:378
+#: ../lazygal/generators.py:372
 #, fuzzy, python-format
 msgid "Video support disabled: ignoring %s."
 msgstr "Il supporto video è disabilitato: impossibile caricare GStreamer"
 
-#: ../lazygal/generators.py:390
-#, python-format
-msgid "  MKDIR %%WEBALBUMROOT%%/%s"
-msgstr "  MKDIR %%WEBALBUMROOT%%/%s"
-
-#: ../lazygal/generators.py:434
+#: ../lazygal/generators.py:423
 #, python-format
 msgid "Size name '%s' is reserved for internal processing."
 msgstr ""
 "Il nome della dimensione \"%s\" è riservato per l'elaborazione interna."
 
-#: ../lazygal/generators.py:449
+#: ../lazygal/generators.py:438
 #, python-format
 msgid "'%s' for size '%s' does not describe a known size syntax."
 msgstr ""
 "\"%s\" per la dimensione \"%s\" non descrive una sintassi di dimensione "
 "conosciuta."
 
-#: ../lazygal/generators.py:467
+#: ../lazygal/generators.py:456
 #, python-format
 msgid "  Trying loading gallery configs: %s"
 msgstr "  Tentativo di caricamento delle configurazioni della galleria: %s"
 
-#: ../lazygal/generators.py:510
+#: ../lazygal/generators.py:499
 msgid "Bad syntax for webalbumpic-size."
 msgstr "Sintassi non corretta per webalbumpic-size."
 
-#: ../lazygal/generators.py:694
+#: ../lazygal/generators.py:683
 msgid "MKDIR %SHAREDDIR%"
 msgstr "MKDIR %SHAREDDIR%"
 
-#: ../lazygal/generators.py:776
+#: ../lazygal/generators.py:765
 #, fuzzy, python-format
 msgid "current task %d%%"
 msgstr ", compito attuale %d%%"
 
-#: ../lazygal/generators.py:778
+#: ../lazygal/generators.py:767
 #, python-format
 msgid "Progress: %s"
 msgstr ""
 
-#: ../lazygal/generators.py:791
+#: ../lazygal/generators.py:780
 #, python-format
 msgid "Trying loading user config %s"
 msgstr "Tentativo di caricamento delle configurazioni utente %s"
 
-#: ../lazygal/generators.py:796
+#: ../lazygal/generators.py:785
 #, python-format
 msgid "Loading root config %s"
 msgstr "Caricamento delle configurazioni del progetto %s"
 
-#: ../lazygal/generators.py:800
+#: ../lazygal/generators.py:789
 #, python-format
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
@@ -352,33 +353,33 @@ msgstr ""
 "'%s' usa una sintassi deprecata: consultare la pagina di manuale lazygal."
 "conf(5)."
 
-#: ../lazygal/generators.py:856
+#: ../lazygal/generators.py:845
 #, python-format
 msgid "Generating metadata in %s"
 msgstr "Generazione dei metadati in %s"
 
-#: ../lazygal/generators.py:862 ../lazygal/generators.py:922
+#: ../lazygal/generators.py:851 ../lazygal/generators.py:911
 #, python-format
 msgid "[Entering %%ALBUMROOT%%/%s]"
 msgstr "[Ingresso in %%ALBUMROOT%%/%s]"
 
-#: ../lazygal/generators.py:893
+#: ../lazygal/generators.py:882
 msgid "Fatal error, web gallery directory is within source tree."
 msgstr ""
 "Errore fatale, la directory della galleria web si trova dentro l'albero dei "
 "sorgenti."
 
-#: ../lazygal/generators.py:895
+#: ../lazygal/generators.py:884
 #, python-format
 msgid "Generating to %s"
 msgstr "Generazione in %s"
 
-#: ../lazygal/generators.py:915
+#: ../lazygal/generators.py:904
 #, python-format
 msgid "(%s) has been skipped"
 msgstr "(%s) è stato ignorato"
 
-#: ../lazygal/generators.py:919
+#: ../lazygal/generators.py:908
 #, python-format
 msgid ""
 "(%s) has been skipped because its name collides with the shared material "
@@ -387,7 +388,7 @@ msgstr ""
 "(%s) è stato ignorato perché il suo nome è in conflitto col nome della "
 "directory del materiale condiviso"
 
-#: ../lazygal/generators.py:957
+#: ../lazygal/generators.py:946
 msgid ""
 "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
 msgstr ""
@@ -395,37 +396,37 @@ msgstr ""
 "file\" o l'opzione --check-all-dirs per scavalcare l'impostazione "
 "predefinita."
 
-#: ../lazygal/generators.py:965
+#: ../lazygal/generators.py:954
 #, python-format
 msgid "[Leaving  %%ALBUMROOT%%/%s]"
 msgstr "[Uscita da  %%ALBUMROOT%%/%s]"
 
 #. remove null byte
 #. GExiv2 < 0.10.3
-#: ../lazygal/metadata.py:237
+#: ../lazygal/metadata.py:263
 #, python-format
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:315 ../lazygal/metadata.py:344
+#: ../lazygal/metadata.py:341 ../lazygal/metadata.py:370
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (equivalente a 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:453
+#: ../lazygal/metadata.py:505
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Impossibile aprire il file dei metadati %s"
 
-#: ../lazygal/metadata.py:558
+#: ../lazygal/metadata.py:610
 msgid "  SKIPPED because metadata exists."
 msgstr "  IGNORATO perché i metadati esistono già."
 
-#: ../lazygal/metadata.py:560
+#: ../lazygal/metadata.py:612
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  IGNORATO perché la directory non contiene immagini."
 
-#: ../lazygal/metadata.py:569
+#: ../lazygal/metadata.py:621
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
@@ -481,54 +482,49 @@ msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
 #: ../lazygal/genmedia.py:80
-#, python-format
-msgid "  %s is BROKEN, skipped"
-msgstr "  %s è ROTTO, si ignora"
-
-#: ../lazygal/genmedia.py:122
 msgid "RESIZE"
 msgstr "RIDIMENSIONA"
 
-#: ../lazygal/genmedia.py:193
+#: ../lazygal/genmedia.py:167
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossibile aprire il file dei metadati %s"
 
-#: ../lazygal/genmedia.py:216
+#: ../lazygal/genmedia.py:190
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossibile copiare i metadati nell'immagine ridotta: %s"
 
-#: ../lazygal/genmedia.py:229
+#: ../lazygal/genmedia.py:208
 msgid "VIDEOTHUMB"
 msgstr "MINIATURAVIDEO"
 
-#: ../lazygal/genmedia.py:236
+#: ../lazygal/genmedia.py:216
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  errore nella creazione della miniatura di %s, si ignora"
 
-#: ../lazygal/genmedia.py:271
+#: ../lazygal/genmedia.py:248
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'immagine fornita per l'album %s non esiste."
 
-#: ../lazygal/genmedia.py:291
+#: ../lazygal/genmedia.py:268
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:320
+#: ../lazygal/genmedia.py:297
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODIFICA %s"
 
-#: ../lazygal/genmedia.py:329
+#: ../lazygal/genmedia.py:306
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  errore nella transcodifica di %s, si ignora"
 
-#: ../lazygal/genpage.py:117 ../lazygal/genpage.py:240
+#: ../lazygal/genpage.py:115 ../lazygal/genpage.py:234
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
@@ -542,17 +538,17 @@ msgstr ""
 ".. La dimensione \"%s\" non è disponibile in \"%s\" a causa della "
 "configurazione usata. I media non appariranno nell'indice."
 
-#: ../lazygal/genpage.py:339
+#: ../lazygal/genpage.py:333
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:357
+#: ../lazygal/genpage.py:351
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr "C'è un modello con un estensione che non inizia con una t. Interrotto."
 
-#: ../lazygal/genpage.py:363
+#: ../lazygal/genpage.py:357
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
@@ -581,27 +577,27 @@ msgstr ""
 "separati dalla virgola:\n"
 "\tes: \"small=640x480,medium=1024x768\"."
 
-#: ../lazygal/config.py:254
+#: ../lazygal/config.py:255
 #, python-format
 msgid "%s in section %s"
 msgstr ""
 
-#: ../lazygal/config.py:266
+#: ../lazygal/config.py:267
 #, fuzzy, python-format
 msgid "option '%s' is not valid in section '%s'"
 msgstr "..Si ignora l'opzione sconosciuta \"%s\" nella sezione \"%s\"."
 
-#: ../lazygal/config.py:281 ../lazygal/config.py:299
+#: ../lazygal/config.py:282 ../lazygal/config.py:300
 #, fuzzy, python-format
 msgid "Ignoring option: %s"
 msgstr "..Si ignora la sezione sconosciuta \"%s\"."
 
-#: ../lazygal/config.py:303
+#: ../lazygal/config.py:304
 #, python-format
 msgid "Cannot load non-existent config %s."
 msgstr ""
 
-#: ../lazygal/config.py:314
+#: ../lazygal/config.py:315
 msgid "INI-style config file format is deprecated."
 msgstr ""
 
@@ -690,6 +686,9 @@ msgstr "sottogallerie"
 #: ../themes/image-index/gallerylink.thtml:26
 msgid "photos"
 msgstr "foto"
+
+#~ msgid "  MKDIR %%WEBALBUMROOT%%/%s"
+#~ msgstr "  MKDIR %%WEBALBUMROOT%%/%s"
 
 #~ msgid "Loading %s for theme %s"
 #~ msgstr "Caricamento di %s per il tema %s"

@@ -1,7 +1,43 @@
+Lazygal 0.10 (2020-08-27)
+  * drop pyexiv2 alternate dependency (deprecated)
+  * rebuild on conf file update
+  * cache media metadata in persistent index
+  * fix tests not quiet
+  * use stdlib iso8601 parsing function
+  * check more things in test_second_build
+  * allow more date formats in video metadata
+  * fix crash on bad chars in ffmpeg stdout
+  * make it possible to enable debug logging in the test suite
+  * make readme suit gihut markdown
+  * improve video transcoding quality
+  * enable hwaccel in ffmpeg playback if available
+  * make it easier to modify ffmpeg command line in subclasses
+  * document test suite usage
+  * fix tag filtering test: dir won't be generated if all pics don't have tag
+  * tests: use assertFalse instead of assert not to get FAILURE instead of ERROR
+  * refactor genmedia and rename ResizedImage to ResizedMedia
+  * remove gps from persistent index if not wanted
+  * load datetime objects from persistent index
+  * test that md is not published in persistent index when wanted
+  * ensure no crash if silent video (Github Fixes #1)
+  * typos
+  * ensure ffmpeg overwrites exsinting files in case of update
+  * test video metadata
+  * try to harmonize how media metadata is accessed
+  * use ffmpeg instead of gst
+  * properly use py3 super()
+  * update TODO
+  * refresh translations
+  * Minor typo "dl_asset" (github Fixes #5)
+  * drop py2
+  * sample_album: allow easy second run
+
 Lazygal 0.9.4 (2020-05-18)
+  * set version to 0.9.4
   * add command to generate sample album
   * do not transcode mp4
   * add distutils commands description
+  * remove usage of deprecated cElementTree (Fedora #1817673)
   * add Fedora jquery path to themes
   * accept simpler size defs in json config and improve documentation
   * remove progress when printing error message
@@ -31,6 +67,7 @@ Lazygal 0.9.4 (2020-05-18)
 Lazygal 0.9.3 (2018-10-10)
   * set version to 0.9.3
   * better wording for the directory 'shared' in docs
+  * fixup! fix crash on rebuild with --dir-flattening-depth (Debian Closes: #902764)
   * fix crash on rebuild with --dir-flattening-depth (Debian Closes: #902764)
   * improve --default-style doc
   * update SCM ignore file
