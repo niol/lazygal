@@ -23,7 +23,9 @@ import logging
 import codecs
 import datetime
 
-from .pygexiv2 import GExiv2
+import gi
+gi.require_version('GExiv2', '0.10')
+from gi.repository import GExiv2
 
 from . import make
 from . import mediautils

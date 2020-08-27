@@ -28,7 +28,7 @@ import shutil
 from .config import LazygalConfig
 from .config import USER_CONFIG_PATH, LazygalConfigDeprecated
 from .sourcetree import SOURCEDIR_CONFIGFILE
-from .pygexiv2 import GExiv2
+from .metadata import GExiv2
 
 from . import make
 from . import pathutils

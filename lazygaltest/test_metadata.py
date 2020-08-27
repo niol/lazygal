@@ -30,7 +30,6 @@ from lazygal import metadata
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album
 from lazygal.sourcetree import Directory
-from lazygal.pygexiv2 import GExiv2
 
 
 class TestFileMetadata(LazygalTest):
@@ -62,7 +61,7 @@ class TestFileMetadata(LazygalTest):
         img_path = self.add_img(self.source_dir, 'captioned_pic.jpg')
 
         # Set dumy comment which should be ignored.
-        im = GExiv2.Metadata(img_path)
+        im = metadata.GExiv2.Metadata(img_path)
         im['Exif.Photo.UserComment'] = 'comment not to show'
         im.save_file()
 

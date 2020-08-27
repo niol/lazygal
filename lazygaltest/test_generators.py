@@ -28,8 +28,7 @@ from . import LazygalTestGen, has_symlinks
 import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
-from lazygal.metadata import GEXIV2_DATE_FORMAT
-from lazygal.pygexiv2 import GExiv2
+from lazygal.metadata import GEXIV2_DATE_FORMAT, GExiv2
 from lazygal.mediautils import VideoProcessor
 
 
