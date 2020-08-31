@@ -29,7 +29,7 @@ import lazygal.config
 from lazygal.generators import WebalbumDir
 from lazygal.sourcetree import Directory
 from lazygal.metadata import GEXIV2_DATE_FORMAT, GExiv2
-from lazygal.mediautils import VideoProcessor
+from lazygal.mediautils import VideoProcessor, HAVE_VIDEO
 
 
 class TestGenerators(LazygalTestGen):
@@ -593,6 +593,7 @@ class TestGenerators(LazygalTestGen):
             print(os.listdir(dest_dir))
             raise
 
+    @unittest.skipIf(not HAVE_VIDEO, 'video support not available')
     def test_withvideo(self):
         source_subgal = self.setup_subgal('subgal', [], ['vid.mov',
                                                          'vid-silent.mov'])

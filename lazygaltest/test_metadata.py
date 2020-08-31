@@ -26,6 +26,7 @@ import codecs
 
 
 from . import LazygalTest
+from lazygal import mediautils
 from lazygal import metadata
 metadata.FILE_METADATA_ENCODING = 'utf-8'  # force for these tests
 from lazygal.generators import Album
@@ -255,6 +256,7 @@ Album image identifier "first\xe3.jpg"
             'altitude': 1527
         })
 
+    @unittest.skipIf(not mediautils.HAVE_VIDEO, 'video support not available')
     def test_video(self):
         sample = 'vid.mov'
         vid_md = metadata.VideoInfoTags(self.get_sample_path(sample))

@@ -32,7 +32,8 @@ class VideoError(Exception): pass
 
 
 FFMPEG = shutil.which('ffmpeg')
-HAVE_VIDEO = True if FFMPEG else False
+FFPROBE = shutil.which('ffprobe')
+HAVE_VIDEO = FFMPEG and FFPROBE
 
 
 class VideoProcessor(object):
@@ -100,7 +101,7 @@ class VideoInfo(object):
 
     def inspect(self):
         try:
-            info = subprocess.check_output(['ffprobe', '-v', 'error',
+            info = subprocess.check_output([FFPROBE, '-v', 'error',
                                             '-print_format', 'json',
                                             '-show_format', '-show_streams',
                                             self.path])
