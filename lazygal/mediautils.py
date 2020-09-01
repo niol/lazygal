@@ -104,7 +104,8 @@ class VideoInfo(object):
             info = subprocess.check_output([FFPROBE, '-v', 'error',
                                             '-print_format', 'json',
                                             '-show_format', '-show_streams',
-                                            self.path])
+                                            self.path],
+                                            stderr=subprocess.DEVNULL)
         except subprocess.CalledProcessError:
             raise ValueError('cannot load metadata')
         return json.loads(info)
