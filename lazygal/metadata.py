@@ -267,7 +267,8 @@ class ImageInfoTags(object):
     def get_exif_usercomment(self):
         ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00\n')
         ret = decode_exif_user_comment(ret, self.image_path)
-        if ret == 'User comments':
+        # exiv2 may spit out some useless strings sometimes
+        if ret in ('User comments', 'binary comment'):
             return ''
         return ret
 
