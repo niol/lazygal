@@ -143,7 +143,7 @@ class MediaFile(File):
             if not pindex:
                 self.load_metadata_from_mediafile()
             elif self.get_mtime() < pindex.get_mtime() \
-            or self.filename in pindex.data['medias']:
+            and self.filename in pindex.data['medias']:
                 # load metadata from persistent index
                 self.md = pindex.data['medias'][self.filename]
             else:
