@@ -25,7 +25,7 @@ import datetime
 
 import gi
 gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2
+from gi.repository import GExiv2, GLib
 
 from . import make
 from . import mediautils
@@ -139,7 +139,7 @@ class ImageInfoTags(object):
         self.image_path = image_path
         try:
             self._metadata = GExiv2.Metadata(self.image_path)
-        except Exception as e:
+        except GLib.Error as e:
             raise ValueError('cannot load metadata: %s' % e)
 
     def get_date(self):
