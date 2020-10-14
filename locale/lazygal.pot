@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 12:46+0200\n"
+"POT-Creation-Date: 2020-10-14 18:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -353,25 +353,25 @@ msgstr ""
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:341 ../lazygal/metadata.py:370
+#: ../lazygal/metadata.py:342 ../lazygal/metadata.py:371
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr ""
 
-#: ../lazygal/metadata.py:505
+#: ../lazygal/metadata.py:506
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr ""
 
-#: ../lazygal/metadata.py:610
+#: ../lazygal/metadata.py:611
 msgid "  SKIPPED because metadata exists."
 msgstr ""
 
-#: ../lazygal/metadata.py:612
+#: ../lazygal/metadata.py:613
 msgid "  SKIPPED because directory does not contain images."
 msgstr ""
 
-#: ../lazygal/metadata.py:621
+#: ../lazygal/metadata.py:622
 #, python-format
 msgid "GEN %s"
 msgstr ""
@@ -430,68 +430,68 @@ msgstr ""
 msgid "RESIZE"
 msgstr ""
 
-#: ../lazygal/genmedia.py:167
+#: ../lazygal/genmedia.py:169
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr ""
 
-#: ../lazygal/genmedia.py:190
+#: ../lazygal/genmedia.py:192
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:208
+#: ../lazygal/genmedia.py:210
 msgid "VIDEOTHUMB"
 msgstr ""
 
-#: ../lazygal/genmedia.py:216
+#: ../lazygal/genmedia.py:218
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:248
+#: ../lazygal/genmedia.py:250
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr ""
 
-#: ../lazygal/genmedia.py:268
+#: ../lazygal/genmedia.py:270
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:297
+#: ../lazygal/genmedia.py:299
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:306
+#: ../lazygal/genmedia.py:308
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr ""
 
-#: ../lazygal/genpage.py:115 ../lazygal/genpage.py:234
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:235
 #, python-format
 msgid "  XHTML %s"
 msgstr ""
 
-#: ../lazygal/genpage.py:189
+#: ../lazygal/genpage.py:190
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
 "shown on index."
 msgstr ""
 
-#: ../lazygal/genpage.py:333
+#: ../lazygal/genpage.py:334
 #, python-format
 msgid "FEED %s"
 msgstr ""
 
-#: ../lazygal/genpage.py:351
+#: ../lazygal/genpage.py:352
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 
-#: ../lazygal/genpage.py:357
+#: ../lazygal/genpage.py:358
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr ""

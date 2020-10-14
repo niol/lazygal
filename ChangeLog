@@ -1,3 +1,10 @@
+Lazygal 0.10.1 (2020-10-14)
+  * fix RuntimeError when input pic does not need resize (Github #9)
+  * fix crash with zero-sized pics in source_dir
+  * fix failure to load metadata from new file in existing dir
+  * ignore exiv2 returning 'binary comment' (Github Fixes #8)
+  * skip video tests when not HAVE_VIDEO (Github Fixes #7)
+
 Lazygal 0.10 (2020-08-27)
   * drop pyexiv2 alternate dependency (deprecated)
   * cache media metadata in persistent index
