@@ -39,3 +39,7 @@ Ideas to improve Lazygal (in no particular order)
   XxY> for instance).
 
 * Move to setuptools
+
+* use GExiv2.Metadata.get_comment() instead of maintaining the logic in
+  lazygal.
+  https://lazka.github.io/pgi-docs/#GExiv2-0.10/classes/Metadata.html#GExiv2.Metadata.get_comment
