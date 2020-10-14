@@ -630,6 +630,13 @@ class TestGenerators(LazygalTestGen):
             self.assertTrue(os.path.isfile(os.path.join(dest_subgal_path, fn)),
                             error % fn)
 
+    def test_brokenpics(self):
+        # create zero-size img in source_dir
+        self.create_file(os.path.join(self.source_dir, 'img.jpg'))
+
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
 
 class TestSpecialGens(LazygalTestGen):
 

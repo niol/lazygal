@@ -115,7 +115,9 @@ class ImageOtherSize(ResizedMedia):
     def get_size(self):
         if self.size is None:
             orig_size = self.source_media.get_size()
-            if self.get_rotation() in (90, 270, ):
+            if orig_size == (0, 0, ): # broken pic
+                self.size = orig_size
+            elif self.get_rotation() in (90, 270, ):
                 # swap coords
                 orig_size = (orig_size[1], orig_size[0], )
                 self.size = self.newsizer.dest_size(orig_size)

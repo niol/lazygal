@@ -177,7 +177,7 @@ class MediaFile(File):
 
     def get_size(self):
         if self.broken:
-            return (None, None)
+            return (0, 0)
         else:
             return (self.md['width'], self.md['height'])
 
