@@ -3,7 +3,7 @@
 
 # NAME
 
-Configuration file for lazygal, a static web gallery generator.
+lazygal.conf - Configuration file for lazygal, a static web gallery generator.
 
 FORMAT DESCRIPTION
 ==================
