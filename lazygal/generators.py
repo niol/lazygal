@@ -207,6 +207,9 @@ class WebalbumMediaTask(make.GroupTask):
         self.resized = {}
         self.browse_pages = {}
 
+        if self.webgal.original and not self.webgal.orig_base:
+            self.add_dependency(self.get_original())
+
         for size_name in self.webgal.browse_sizes:
             self.resized[size_name] = self.get_resized(size_name)
             if self.resized[size_name] not in self.deps:
@@ -216,9 +219,6 @@ class WebalbumMediaTask(make.GroupTask):
                 self.browse_pages[size_name] = self.get_browse_page(size_name)
                 if self.webgal.album.force_gen_pages:
                     self.browse_pages[size_name].stamp_delete()
-
-        if self.webgal.original and not self.webgal.orig_base:
-            self.add_dependency(self.get_original())
 
     def set_next(self, media):
         self.next = media

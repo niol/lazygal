@@ -476,6 +476,22 @@ class TestGenerators(LazygalTestGen):
         self.assertEqual(im.size, (400, 600, ))
         im.close()
 
+    def test_sizeasoriginal(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'original', True)
+        config.set('webgal', 'image-size', 'std=0x0')
+        self.setup_album(config)
+
+        self.add_img(self.source_dir, 'img.jpg')
+
+        dest_dir = self.get_working_path()
+        self.album.generate(dest_dir)
+
+        shouldbeoriginal = os.path.join(dest_dir, 'img.jpg')
+        im = Image.open(shouldbeoriginal)
+        self.assertEqual(im.size, (640, 427, ))
+        im.close()
+
     def test_feed(self):
         config = lazygal.config.LazygalConfig()
         config.set('global', 'puburl', 'http://example.com/album/')
