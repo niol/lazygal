@@ -92,7 +92,8 @@ class WebalbumBrowsePage(WebalbumPage):
         super().__init__(dir, size_name, self.media.name)
 
         self.add_dependency(self.webalbum_media.resized[size_name])
-        if webalbum_media.original:
+        if self.webalbum_media.original \
+        and self.webalbum_media.original not in self.deps:
             self.add_dependency(self.webalbum_media.original)
 
         # Depends on source directory in case an image was deleted
