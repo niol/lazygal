@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-27 12:46+0200\n"
+"POT-Creation-Date: 2020-10-14 18:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -68,11 +68,11 @@ msgstr ""
 
 #: ../lazygal.py:89 ../lazygal.py:162
 msgid "PATTERN"
-msgstr ""
+msgstr "MOTIF"
 
 #: ../lazygal.py:90
 msgid "Specifies pathname(s) which will be ignored during final cleanup"
-msgstr ""
+msgstr "Spécifier les chemins qui seront gardés lors du nettoyage"
 
 #: ../lazygal.py:94
 msgid "Display program version."
@@ -217,7 +217,8 @@ msgstr ""
 msgid ""
 "Regular expression pattern(s) describing directories or filenames to exclude "
 "from consideration."
-msgstr ""
+msgstr "Expressions régulières décrivant les répertoires ou les noms de "
+"fichier à exclure de l'analyse."
 
 #: ../lazygal.py:167
 msgid ""
@@ -407,25 +408,25 @@ msgstr "[Sortie de %%ALBUMROOT%%/%s]"
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr "L'encodage de '%s' est mauvais, ignoré"
 
-#: ../lazygal/metadata.py:341 ../lazygal/metadata.py:370
+#: ../lazygal/metadata.py:342 ../lazygal/metadata.py:371
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (équivalent 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:505
+#: ../lazygal/metadata.py:506
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Impossible d'ouvrir le fichier de description %s"
 
-#: ../lazygal/metadata.py:610
+#: ../lazygal/metadata.py:611
 msgid "  SKIPPED because metadata exists."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:612
+#: ../lazygal/metadata.py:613
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  IGNORE car le fichier de description existe déjà."
 
-#: ../lazygal/metadata.py:621
+#: ../lazygal/metadata.py:622
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
@@ -490,51 +491,51 @@ msgstr "CP %%SHAREDDIR%%/%s"
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:167
+#: ../lazygal/genmedia.py:169
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossible de copier le champ de métadonnées %s"
 
-#: ../lazygal/genmedia.py:190
+#: ../lazygal/genmedia.py:192
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:208
+#: ../lazygal/genmedia.py:210
 msgid "VIDEOTHUMB"
 msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:216
+#: ../lazygal/genmedia.py:218
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:248
+#: ../lazygal/genmedia.py:250
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:268
+#: ../lazygal/genmedia.py:270
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:297
+#: ../lazygal/genmedia.py:299
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:306
+#: ../lazygal/genmedia.py:308
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
 
-#: ../lazygal/genpage.py:115 ../lazygal/genpage.py:234
+#: ../lazygal/genpage.py:116 ../lazygal/genpage.py:235
 #, python-format
 msgid "  XHTML %s"
 msgstr "  XHTML %s"
 
-#: ../lazygal/genpage.py:189
+#: ../lazygal/genpage.py:190
 #, python-format
 msgid ""
 "  Size '%s' is not available in '%s' due to configuration: medias won't be "
@@ -543,18 +544,18 @@ msgstr ""
 "  La taille '%s' n'est pas disponible dans '%s' à cause de la "
 "configuration : les médias correspondants ne seront par présents sur l'index."
 
-#: ../lazygal/genpage.py:333
+#: ../lazygal/genpage.py:334
 #, python-format
 msgid "FEED %s"
 msgstr "FEED %s"
 
-#: ../lazygal/genpage.py:351
+#: ../lazygal/genpage.py:352
 msgid ""
 "We have a template with an extension that does not start with a t. Aborting."
 msgstr ""
 "Il y a un modèle avec une extension qui ne commence par par t. Abandon."
 
-#: ../lazygal/genpage.py:357
+#: ../lazygal/genpage.py:358
 #, python-format
 msgid "TPL %%SHAREDDIR%%/%s"
 msgstr "TPL %%SHAREDDIR%%/%s"
