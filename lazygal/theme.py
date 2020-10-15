@@ -157,7 +157,7 @@ class Theme(object):
             styles.append(style)
 
         if not found_default:
-            raise ValueError(_('Unknown default style \'%s\'') % default_style)
+            logging.error(_('Unknown default style \'%s\'') % default_style)
 
         return styles
 
