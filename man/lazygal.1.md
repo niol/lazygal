@@ -108,7 +108,12 @@ included below. For a complete description, see the `-h` switch.
 :   Size of images, define as name=xxy, \..., eg.
     small=800x600,medium=1024x768. The special dimensions 0x0 use
     original size. Refer to the IMAGE RESIZE DESCRIPTION section for
-    more information on the available syntax.
+    more information on the available syntax. The number of sizes provided
+    will define the number of sizes that will be generated:
+    `--image-size="medium=800x600"` will only generate all images for a medium
+    size (no small size)
+    `--image-size="small=640x480,medium=800x600,large=1024x768"` will
+    generate 3 sizes for all images (small, medium, large)
 
 `-T THUMBNAIL_SIZE` `--thumbnail-size=THUMBNAIL_SIZE`
 
