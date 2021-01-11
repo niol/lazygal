@@ -74,7 +74,13 @@ class ResizedMedia(genfile.WebalbumFile):
 class ImageOtherSize(ResizedMedia):
 
     def __init__(self, webgal, source_image, size_name):
+        if 'alphachannel' in source_image.md \
+        and source_image.md['alphachannel']:
+            self.force_extension = '.png'
+        else:
+            self.force_extension = '.jpg'
         super().__init__(webgal, source_image, size_name)
+
         self.rotation = None
 
     def get_verb(self): return _('RESIZE')
@@ -87,9 +93,21 @@ class ImageOtherSize(ResizedMedia):
         return im.resize(new_size, PILImage.ANTIALIAS)
 
     def save(self, im):
+        if 'alphachannel' in self.source_media.md \
+        and self.source_media.md['alphachannel']:
+            self.save_png(im)
+        else:
+            self.save_jpeg(im)
+
+    def save_png(self, im):
+        with open(self.path, 'w+b') as im_fp:
+            im.save(im_fp, 'png', quality=self.webgal.quality,
+                    **self.webgal.save_options)
+
+    def save_jpeg(self, im):
         calibrated = False
         while not calibrated:
-            with open(self.path, 'w+') as im_fp:
+            with open(self.path, 'w+b') as im_fp:
                 try:
                     im.save(im_fp, 'jpeg', quality=self.webgal.quality,
                             **self.webgal.save_options)
@@ -100,9 +118,6 @@ class ImageOtherSize(ResizedMedia):
                     else:
                         raise
             calibrated = True
-
-        if self.webgal.config.get('webgal', 'publish-metadata'):
-            self.copy_metadata()
 
     def get_rotation(self):
         if self.rotation is None:
@@ -201,6 +216,8 @@ class ImageOtherSize(ResizedMedia):
             self.clean_output()
         else:
             self.save(im)
+            if self.webgal.config.get('webgal', 'publish-metadata'):
+                self.copy_metadata()
 
 
 class VideoThumb(ResizedMedia):

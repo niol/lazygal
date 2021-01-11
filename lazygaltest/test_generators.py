@@ -91,6 +91,7 @@ class TestGenerators(LazygalTestGen):
                 'date': '2010-02-05T23:56:24',
                 'width': 640,
                 'height': 427,
+                'alphachannel': False,
                 'metadata': {
                     'date'        : '2010-02-05T23:56:24',
                     'comment'     : None,
@@ -491,6 +492,13 @@ class TestGenerators(LazygalTestGen):
         im = Image.open(shouldbeoriginal)
         self.assertEqual(im.size, (640, 427, ))
         im.close()
+
+    def test_image_with_alpha(self):
+        im = Image.new("RGBA", (100,100))
+        im.save(os.path.join(self.source_dir, 'with-alpha.png'))
+
+        dest_path = self.get_working_path()
+        self.album.generate(dest_path)
 
     def test_feed(self):
         config = lazygal.config.LazygalConfig()

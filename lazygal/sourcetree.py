@@ -194,7 +194,7 @@ class ImageFile(MediaFile):
     type = 'image'
     mdloader = metadata.ImageInfoTags
 
-    def probe_size(self):
+    def probe(self):
         with open(self.path, 'rb') as im_fp:
             try:
                 im = PILImage.open(im_fp)
@@ -202,19 +202,20 @@ class ImageFile(MediaFile):
                 self.set_broken()
                 return (None, None)
             else:
-                return im.size
+                return {
+                    'width'       : im.size[0],
+                    'height'      : im.size[1],
+                    'alphachannel': im.mode in ('RGBA', 'LA'),
+                }
 
     def _parse_metadata(self, mdloader):
         super()._parse_metadata(mdloader)
 
-        size = self.probe_size()
+        i = self.probe()
         if self.broken:
             return
 
-        self.md.update({
-            'width' : size[0],
-            'height': size[1],
-        })
+        self.md.update(i)
 
         if mdloader:
             self.md['metadata'].update({
