@@ -92,7 +92,7 @@ included below. For a complete description, see the `-h` switch.
     given here will be in addition to those specified in configuration
     files.
 
-`--excludes=PATTERN`
+`--exclude=PATTERN`
 
 :   Specify a file pattern (or name) which should be ignored during
     processing. May be specified more than once. Values given here will
