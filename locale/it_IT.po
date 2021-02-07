@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-14 18:23+0200\n"
+"POT-Creation-Date: 2021-02-07 20:09+0100\n"
 "PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -249,28 +249,28 @@ msgstr "L'opzione --orig-symlink non è disponibile in questa piattaforma."
 msgid "Interrupted."
 msgstr "Interrotto."
 
-#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:370
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:371
 msgid "Root not found"
 msgstr "La directory radice non è stata trovata"
 
-#: ../lazygal/sourcetree.py:282
+#: ../lazygal/sourcetree.py:283
 #, fuzzy
 msgid "Video support is disabled: could not find ffmpeg"
 msgstr "Il supporto video è disabilitato: impossibile caricare GStreamer"
 
-#: ../lazygal/sourcetree.py:322
+#: ../lazygal/sourcetree.py:323
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr ""
 "..Si ignora %s, impossibile aprire il file (collegamento simbolico "
 "interrotto?)."
 
-#: ../lazygal/sourcetree.py:330
+#: ../lazygal/sourcetree.py:331
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr "  %s è ROTTO, si ignora"
 
-#: ../lazygal/sourcetree.py:337
+#: ../lazygal/sourcetree.py:338
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  Si ignora %s, formato non supportato."
@@ -481,45 +481,45 @@ msgstr "  ZIP %s"
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/genmedia.py:80
+#: ../lazygal/genmedia.py:86
 msgid "RESIZE"
 msgstr "RIDIMENSIONA"
 
-#: ../lazygal/genmedia.py:169
+#: ../lazygal/genmedia.py:184
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossibile aprire il file dei metadati %s"
 
-#: ../lazygal/genmedia.py:192
+#: ../lazygal/genmedia.py:207
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossibile copiare i metadati nell'immagine ridotta: %s"
 
-#: ../lazygal/genmedia.py:210
+#: ../lazygal/genmedia.py:227
 msgid "VIDEOTHUMB"
 msgstr "MINIATURAVIDEO"
 
-#: ../lazygal/genmedia.py:218
+#: ../lazygal/genmedia.py:235
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  errore nella creazione della miniatura di %s, si ignora"
 
-#: ../lazygal/genmedia.py:250
+#: ../lazygal/genmedia.py:267
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'immagine fornita per l'album %s non esiste."
 
-#: ../lazygal/genmedia.py:270
+#: ../lazygal/genmedia.py:287
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:299
+#: ../lazygal/genmedia.py:316
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODIFICA %s"
 
-#: ../lazygal/genmedia.py:308
+#: ../lazygal/genmedia.py:325
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  errore nella transcodifica di %s, si ignora"

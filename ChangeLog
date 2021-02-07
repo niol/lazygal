@@ -1,3 +1,8 @@
+Lazygal 0.10.2 (2021-02-07)
+  * man page typo: --excludes instead of --exclude
+  * fix processing pngs with alpha channel
+  * improve --image-size doc (Thanks Gurvan Huiban for the suggestion)
+
 Lazygal 0.10.1 (2020-10-14)
   * fix RuntimeError when input pic does not need resize (Github #9)
   * fix crash with zero-sized pics in source_dir

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Lazygal, a static web gallery generator.
 # Copyright (C) 2007-2010 Mickael Royer <mickael.royer@gmail.com>

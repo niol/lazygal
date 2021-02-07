@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-10-14 18:23+0200\n"
+"POT-Creation-Date: 2021-02-07 20:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -217,8 +217,9 @@ msgstr ""
 msgid ""
 "Regular expression pattern(s) describing directories or filenames to exclude "
 "from consideration."
-msgstr "Expressions régulières décrivant les répertoires ou les noms de "
-"fichier à exclure de l'analyse."
+msgstr ""
+"Expressions régulières décrivant les répertoires ou les noms de fichier à "
+"exclure de l'analyse."
 
 #: ../lazygal.py:167
 msgid ""
@@ -254,25 +255,25 @@ msgstr "L'option --orig-symlink n'est pas disponible sur cette plateforme."
 msgid "Interrupted."
 msgstr "Interrompu."
 
-#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:370
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:371
 msgid "Root not found"
 msgstr "La racine n'a pas été trouvée"
 
-#: ../lazygal/sourcetree.py:282
+#: ../lazygal/sourcetree.py:283
 msgid "Video support is disabled: could not find ffmpeg"
 msgstr "Support des vidéos désactivé: impossible de trouver ffmpeg"
 
-#: ../lazygal/sourcetree.py:322
+#: ../lazygal/sourcetree.py:323
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr "  Ignore %s, impossible d'ouvrir le fichier (lien symbolique cassé?)."
 
-#: ../lazygal/sourcetree.py:330
+#: ../lazygal/sourcetree.py:331
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr "  %s est CASSE, ignoré"
 
-#: ../lazygal/sourcetree.py:337
+#: ../lazygal/sourcetree.py:338
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  %s ignoré, format non supporté."
@@ -487,45 +488,45 @@ msgstr "  ZIP %s"
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/genmedia.py:80
+#: ../lazygal/genmedia.py:86
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:169
+#: ../lazygal/genmedia.py:184
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossible de copier le champ de métadonnées %s"
 
-#: ../lazygal/genmedia.py:192
+#: ../lazygal/genmedia.py:207
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:210
+#: ../lazygal/genmedia.py:227
 msgid "VIDEOTHUMB"
 msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:218
+#: ../lazygal/genmedia.py:235
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:250
+#: ../lazygal/genmedia.py:267
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:270
+#: ../lazygal/genmedia.py:287
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:299
+#: ../lazygal/genmedia.py:316
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:308
+#: ../lazygal/genmedia.py:325
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
