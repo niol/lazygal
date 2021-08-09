@@ -130,7 +130,8 @@ class PictureMess:
     def write(self, output_file):
         self.__build_picture_mess()
 
-        shadow = Image.new('RGBA', self.picture_mess.size, self.bg)
+        mode = self.bg == Color.TRANSPARENT and 'RGBA' or 'RGB'
+        shadow = Image.new(mode, self.picture_mess.size, self.bg)
 
         shadow.paste('black', None, self.picture_mess)
         shadow = shadow.filter(ImageFilter.BLUR)

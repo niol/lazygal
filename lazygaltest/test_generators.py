@@ -500,6 +500,16 @@ class TestGenerators(LazygalTestGen):
         dest_path = self.get_working_path()
         self.album.generate(dest_path)
 
+    def test_webalbumpic_bg(self):
+        config = lazygal.config.LazygalConfig()
+        config.set('webgal', 'webalbumpic-bg', 'black')
+        self.setup_album(config)
+
+        self.add_img(self.source_dir, 'img.jpg')
+
+        dest_path = self.get_working_path()
+        self.album.generate(dest_path)
+
     def test_feed(self):
         config = lazygal.config.LazygalConfig()
         config.set('global', 'puburl', 'http://example.com/album/')
