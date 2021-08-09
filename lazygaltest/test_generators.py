@@ -450,7 +450,7 @@ class TestGenerators(LazygalTestGen):
         # Check that metadata is not in the JSON index
         with open(os.path.join(dest_dir, 'index.json')) as json_fp:
             pindex = json.load(json_fp)
-            self.assertFalse('metadata' in pindex['medias']['md_filled.jpg'])
+            self.assertFalse(pindex['medias']['md_filled.jpg']['metadata'])
 
     def test_resize_rotate_size(self):
         config = lazygal.config.LazygalConfig()

@@ -154,12 +154,16 @@ class PersistentIndex(JSONWebFile):
         self.data['medias'][src_media.filename] = {}
 
         for key, value in src_media.md.items():
-            if self.webgal.config.get('webgal', 'publish-metadata') \
-            or key != 'metadata':
-                self.data['medias'][src_media.filename][key] = value
+            if not self.webgal.config.get('webgal', 'publish-metadata') \
+            and key == 'metadata':
+                v = {}
+            else:
+                v = value
+            self.data['medias'][src_media.filename][key] = v
 
         i = self.data['medias'][src_media.filename]
-        if 'metadata' in i and not self.webgal.config.get('webgal', 'keep-gps'):
+        if 'location' in i['metadata'] \
+        and not self.webgal.config.get('webgal', 'keep-gps'):
             i['metadata']['location'] = None
 
     def unpublish_media(self, src_media):
