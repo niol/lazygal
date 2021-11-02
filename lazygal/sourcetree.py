@@ -119,8 +119,9 @@ class MediaFile(File):
         self.md = {
             'type'    : self.type,
             'date'    : None,
-            'comment' : None,
-            'metadata': {},
+            'metadata': {
+                'comment': None,
+            },
         }
         self.__md_loaded = False
 

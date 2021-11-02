@@ -87,7 +87,6 @@ class TestGenerators(LazygalTestGen):
         with open(os.path.join(dest_path, 'subgal', 'index.json')) as json_fp:
             pindex = json.load(json_fp)
             self.assertEqual(pindex['medias'], {'subgal_img.jpg': {
-                'comment': None,
                 'date': '2010-02-05T23:56:24',
                 'width': 640,
                 'height': 427,
