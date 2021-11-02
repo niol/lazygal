@@ -8,8 +8,8 @@
 
     <div class="caption">
         <div class="image_comment" py:if="media.comment">$media.comment</div>
-        <div class="image_date" py:if="media.image_datetime">
-            ${_('Taken')} ${media.image_datetime.strftime(_('on %d/%m/%Y at %H:%M'))}
+        <div class="image_date" py:if="media.date">
+            ${_('Taken')} ${media.date.strftime(_('on %d/%m/%Y at %H:%M'))}
         </div>
         <div class="authorship" py:if="media.authorship">${_('Author')}&nbsp;: $media.authorship</div>
         <div py:if="media.original_link" class="original_link"><a href="$media.original_link">${_('Original picture')}</a></div>

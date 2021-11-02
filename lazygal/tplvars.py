@@ -103,9 +103,6 @@ class Image(Media):
 
         if self.page.dir.config.get('webgal', 'publish-metadata'):
             tpl_values['publish_metadata'] = True
-            img_date = self.media.get_date_taken()
-            tpl_values['image_date'] = img_date.strftime(_("on %d/%m/%Y at %H:%M"))
-            tpl_values['image_datetime'] = img_date
             tpl_values.update(self.media.md['metadata'])
 
             if tpl_values['comment']:
