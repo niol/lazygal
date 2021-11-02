@@ -108,7 +108,8 @@ class Image(Media):
             tpl_values['image_datetime'] = img_date
             tpl_values.update(self.media.md['metadata'])
 
-            tpl_values['comment'] = self.page._do_not_escape(tpl_values['comment'])
+            if tpl_values['comment']:
+                tpl_values['comment'] = self.page._do_not_escape(tpl_values['comment'])
 
             if 'location' in tpl_values \
             and not self.page.dir.config.get('webgal', 'keep-gps'):
