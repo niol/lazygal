@@ -1,3 +1,9 @@
+Lazygal 0.10.3 (2021-11-02)
+  * prevent 'None' comment showing up in templates
+  * fix metadata not showing in templates
+  * fix crash when webalbum-bg != transparent with recent pillow (Github #12)
+  * fix crash on second gen when publish-metadata=No
+
 Lazygal 0.10.2 (2021-02-07)
   * man page typo: --excludes instead of --exclude
   * fix processing pngs with alpha channel

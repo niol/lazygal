@@ -1,4 +1,13 @@
+Lazygal 0.10.3 (2021-11-02)
+  * avoid duplication of date vars in templates
+  * prevent 'None' comment showing up in templates
+  * fix metadata not showing in templates
+  * remove print_function import (deprecated with py3)
+  * fix crash when webalbum-bg != transparent with recent pillow (Github #12)
+  * fix crash on second gen when publish-metadata=No
+
 Lazygal 0.10.2 (2021-02-07)
+  * set version to 0.10.2
   * man page typo: --excludes instead of --exclude
   * fix processing pngs with alpha channel
   * don't stop processing on unknown default style
