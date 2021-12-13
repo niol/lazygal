@@ -11,7 +11,7 @@ function gotopage(divid) {
     }
 }
 
-$(document).keypress(function(e) {
+$(document).keydown(function(e) {
     switch(e.keyCode) {
         case 37: /* Left */
             gotopage('prev_link');

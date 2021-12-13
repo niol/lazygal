@@ -14,8 +14,12 @@
             <!--! Breadcrumbs -->
             <div class="breadcrumbs">
                 <ul>
-                    <li py:for="webgal in webgal_path">
+                    <li py:for="webgal in webgal_path[:-1]">
                         <a href="${webgal.link}" py:content="webgal.name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»&nbsp;'" />
+                    </li>
+                    <li py:if="webgal_path[-1:]" id="index_link">
+                        <a href="${webgal_path[-1].link}"
+                        py:content="webgal_path[-1].name + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;»&nbsp;'" />
                     </li>
                     <li>
                         <a class="bc_current" href="" py:content="name" />
