@@ -30,6 +30,10 @@ detected, changes in command line options and configuration files since
 last generation are not and the user should manually delete files that
 need to be generated again.
 
+`lazygal` source directory crawling will follow symbolic links on directories
+so that you can arrange what you want to publish in any way that suits you
+without copying data around.
+
 # OPTIONS
 
 These programs follow the usual GNU command line syntax, with long
