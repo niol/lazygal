@@ -17,21 +17,22 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-from distutils.core import setup, Command
-import distutils.sysconfig
-import distutils.command.build_scripts
-import distutils.command.build
-from distutils.dep_util import newer
-from distutils.spawn import find_executable
-import re
-import os
-import sys
+
 import glob
 import gettext
 import json
 import locale
+import os
+import os.path
+import re
+import shutil
+import stat
+import sys
 import urllib.request
-from stat import ST_MODE
+
+
+import setuptools
+import setuptools.command.build_py
 
 
 import lazygal
@@ -40,7 +41,14 @@ import lazygal
 gettext.install('lazygal')
 
 
-class test_lazygal(Command):
+def newer(fpath1, fpath2):
+    if os.path.isfile(fpath2):
+        return os.path.getmtime(fpath1) > os.path.getmtime(fpath2)
+    else:
+        return True
+
+
+class test_lazygal(setuptools.Command):
 
     description = 'Run the test suite'
     user_options = []
@@ -56,7 +64,7 @@ class test_lazygal(Command):
         lazygaltest.run()
 
 
-class dl_assets(Command):
+class dl_assets(setuptools.Command):
 
     description = 'Download extra assets if not provided by the system'
     user_options = []
@@ -72,13 +80,13 @@ class dl_assets(Command):
         for t in lazygal.theme.get_themes():
             for a in t.get_missing_external_assets():
                 asset_file = urllib.request.urlopen(a['url'])
-                distutils.log.info('downloading %s into %s' \
+                setuptools.log.info('downloading %s into %s' \
                                    % (a['url'], a['abs_dest']))
                 with open(a['abs_dest'], 'wb') as output:
                     output.write(asset_file.read())
 
 
-class sample_album(Command):
+class sample_album(setuptools.Command):
 
     description = 'Generate a sample album for testing purposes'
     user_options = [
@@ -96,14 +104,14 @@ class sample_album(Command):
         lazygaltest.sample_album(self.outdir)
 
 
-class build_manpages(Command):
+class build_manpages(setuptools.Command):
 
     description = 'Build manpages'
     user_options = []
 
     manpages = None
     mandir = os.path.join(os.path.dirname(__file__), 'man')
-    executable = find_executable('pandoc')
+    executable = shutil.which('pandoc')
 
     def initialize_options(self):
         pass
@@ -131,7 +139,7 @@ class build_manpages(Command):
             data_files.append((targetpath, (manpage, ), ))
 
 
-class build_i18n_lazygal(Command):
+class build_i18n_lazygal(setuptools.Command):
 
     description = 'Build i18n files'
     user_options = []
@@ -164,7 +172,7 @@ class build_i18n_lazygal(Command):
             data_files.append((targetpath, (mo_file,)))
 
 
-class build_lazygal(distutils.command.build.build):
+class build_lazygal(setuptools.command.build_py.build_py):
 
     def __has_manpages(self, command):
         return 'build_manpages' in self.distribution.cmdclass\
@@ -173,98 +181,11 @@ class build_lazygal(distutils.command.build.build):
     def __has_i18n(self, command):
         return 'build_i18n' in self.distribution.cmdclass
 
-    def finalize_options(self):
-        distutils.command.build.build.finalize_options(self)
-        self.sub_commands.append(("build_i18n", self.__has_i18n))
-        self.sub_commands.append(("build_manpages", self.__has_manpages))
-
-
-# check if Python is called on the first line with this expression
-first_line_re = re.compile('^#!.*python[0-9.]*([ \t].*)?$')
-
-
-class build_scripts_lazygal(distutils.command.build_scripts.build_scripts, object):
-    """
-    This is mostly distutils copy, it just renames script according
-    to platform (.py for Windows, without extension for others)
-    """
-    def copy_scripts(self):
-        """Copy each script listed in 'self.scripts'; if it's marked as a
-        Python script in the Unix way (first line matches 'first_line_re',
-        ie. starts with "\#!" and contains "python"), then adjust the first
-        line to refer to the current Python interpreter as we copy.
-        """
-        self.mkpath(self.build_dir)
-        outfiles = []
-        for script in self.scripts:
-            adjust = 0
-            script = distutils.util.convert_path(script)
-            outfile = os.path.join(self.build_dir, os.path.splitext(os.path.basename(script))[0])
-            if sys.platform == 'win32':
-                outfile += os.extsep + 'py'
-            outfiles.append(outfile)
-
-            if not self.force and not distutils.dep_util.newer(script, outfile):
-                distutils.log.debug("not copying %s (up-to-date)", script)
-                continue
-
-            # Always open the file, but ignore failures in dry-run mode --
-            # that way, we'll get accurate feedback if we can read the
-            # script.
-            try:
-                f = open(script, "r")
-            except IOError:
-                if not self.dry_run:
-                    raise
-                f = None
-            else:
-                first_line = f.readline()
-                if not first_line:
-                    self.warn("%s is an empty file (skipping)" % script)
-                    continue
-
-                match = first_line_re.match(first_line)
-                if match:
-                    adjust = 1
-                    post_interp = match.group(1) or ''
-
-            if adjust:
-                distutils.log.info("copying and adjusting %s -> %s", script,
-                                   self.build_dir)
-                if not self.dry_run:
-                    outf = open(outfile, "w")
-                    if not distutils.sysconfig.python_build:
-                        outf.write("#!%s%s\n" %
-                                   (os.path.normpath(sys.executable),
-                                    post_interp))
-                    else:
-                        outf.write(
-                            "#!%s%s\n" %
-                            (os.path.join(
-                             distutils.sysconfig.get_config_var("BINDIR"),
-                             "python" + distutils.sysconfig.get_config_var("EXE")),
-                             post_interp))
-                    outf.writelines(f.readlines())
-                    outf.close()
-                if f:
-                    f.close()
-            else:
-                f.close()
-                self.copy_file(script, outfile)
-
-        if os.name == 'posix':
-            for file in outfiles:
-                if self.dry_run:
-                    distutils.log.info("changing mode of %s", file)
-                else:
-                    oldmode = os.stat(file)[ST_MODE] & 0o7777
-                    newmode = (oldmode | 0o555) & 0o7777
-                    if newmode != oldmode:
-                        distutils.log.info("changing mode of %s from %o to %o",
-                                           file, oldmode, newmode)
-                        os.chmod(file, newmode)
-
-    # copy_scripts ()
+    def run(self):
+        if build_manpages.executable is not None:
+            self.run_command('build_manpages')
+        self.run_command('build_i18n')
+        super(build_lazygal, self).run()
 
 
 # list themes to install
@@ -276,7 +197,8 @@ for theme in themes:
         (os.path.join('share', 'lazygal', 'themes', themename),
          glob.glob(os.path.join('themes', themename, '*'))))
 
-setup(
+
+setuptools.setup(
     name = 'lazygal',
     version = lazygal.__version__,
     description = 'Static web gallery generator',
@@ -306,11 +228,13 @@ setup(
     ],
     packages = ['lazygal'],
     package_data = {'lazygal': ['defaults.json'], },
-    scripts = ['lazygal.py'],
-    # Override certain command classes with our own ones
+    entry_points = {
+        'console_scripts': [
+            'lazygal = lazygal.cmdline:main',
+        ]
+    },
     cmdclass = {
-        'build'         : build_lazygal,
-        'build_scripts' : build_scripts_lazygal,
+        'build_py'      : build_lazygal,
         'build_i18n'    : build_i18n_lazygal,
         'build_manpages': build_manpages,
         'dl_assets'     : dl_assets,
