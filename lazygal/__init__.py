@@ -45,6 +45,8 @@ def query_git_for_tag(gitdir):
     if len(tokens[-1]) != 8:
         # this is not a hash
         return None
+    elif tokens[0].startswith('debian/'):
+        return None
     else:
         return '%s+%s.%s' % tuple(tokens)
 
