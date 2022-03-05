@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-07 20:09+0100\n"
+"POT-Creation-Date: 2022-03-05 17:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -17,263 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal.py:50
-msgid "usage: %prog [options] albumdir"
-msgstr "usage: %prog [options] albumdir"
-
-#. The help option must be changed to comply with i18n.
-#: ../lazygal.py:54
-msgid "Show this help message and exit."
-msgstr "Afficher ce message d'aide et quitter."
-
-#: ../lazygal.py:59
-msgid "Don't output anything except for errors."
-msgstr "N'afficher que les erreurs."
-
-#: ../lazygal.py:63
-msgid "Output everything that lazygal is doing."
-msgstr "Afficher tout ce que lazygal fait."
-
-#: ../lazygal.py:67
-msgid ""
-"Directory where web pages, slides and thumbs will be written (default is "
-"current directory)."
-msgstr ""
-"Répertoire dans lequel les pages, les images et les miniatures seront écrits "
-"(par défaut le répertoire courant)."
-
-#: ../lazygal.py:71
-msgid "Theme name (looked up in theme directory) or theme full path."
-msgstr ""
-"Identifiant du thème (utilisé dans le répertoire des thèmes) ou chemin "
-"complet d'un thème."
-
-#: ../lazygal.py:75
-msgid "Default style to apply to the theme."
-msgstr "Style par défaut à appliquer au thème."
-
-#: ../lazygal.py:79
-msgid "Common variables to load all templates with."
-msgstr "Variables communes avec lesquelles charger tous les modèles."
-
-#: ../lazygal.py:83
-msgid "Force rebuild of all pages."
-msgstr "Forcer la reconstruction de toutes les pages."
-
-#: ../lazygal.py:87
-msgid "Clean destination directory of files that should not be there."
-msgstr ""
-"Supprimer dans le répertoire de destination tous les fichiers qui ne doivent "
-"pas s'y trouver."
-
-#: ../lazygal.py:89 ../lazygal.py:162
-msgid "PATTERN"
-msgstr "MOTIF"
-
-#: ../lazygal.py:90
-msgid "Specifies pathname(s) which will be ignored during final cleanup"
-msgstr "Spécifier les chemins qui seront gardés lors du nettoyage"
-
-#: ../lazygal.py:94
-msgid "Display program version."
-msgstr "Afficher la version du programme."
-
-#: ../lazygal.py:98
-msgid ""
-"Exhaustively go through all directories regardless of source modification "
-"time."
-msgstr ""
-"Parcourir exhaustivement tous les répertoires sans examiner la date de "
-"modification du répertoire source."
-
-#: ../lazygal.py:102
-msgid ""
-"Level below which the directory tree is flattened. Default is 'No' which "
-"disables this feature."
-msgstr ""
-"Niveau de hierarchie au dessous duquel l'arborescence des galleries est "
-"rassemblée sur une page. Par défaut 'No' qui désactive cette fonctionnalité."
-
-#: ../lazygal.py:106
-msgid ""
-"Size of images, define as <name>=SIZE,..., eg. small=800x600,"
-"medium=1024x768. The special value 0x0 uses original size. See manual page "
-"for SIZE syntax."
-msgstr ""
-"Taille des images, à définir comme suit <name>=TAILLE,..., eg. small=800x600,"
-"medium=1024x768. La valeur spéciale 0x0 conserve la taille originale. Voir "
-"le manuel pour la syntaxe de TAILLE."
-
-#: ../lazygal.py:110
-msgid ""
-"Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE "
-"syntax."
-msgstr ""
-"Taille des miniatures, à définir comme suit TAILLE, eg. 150x113. Voir le "
-"manuel pour la syntaxe de TAILLE."
-
-#: ../lazygal.py:114
-msgid "Quality of generated JPEG images (default is 85)."
-msgstr "Qualité des JPEG générés (85 par défaut)"
-
-#: ../lazygal.py:118
-msgid "Include original photos in output."
-msgstr "Copier les photos originales dans ce qui est produit."
-
-#: ../lazygal.py:122
-msgid ""
-"Do not copy original photos in output directory, instead link them using "
-"submitted relative path as base."
-msgstr ""
-"Ne pas copier les photos originales dans le répertoire de production de "
-"l'album web, au lieu de cela les référencer directement en utilisant le "
-"chemin relatif de base fourni"
-
-#: ../lazygal.py:126
-msgid ""
-"Do not copy original photos in output directory, instead create symlinks to "
-"their original locations."
-msgstr ""
-"Ne pas copier les photos originales dans le répertoire de production de "
-"l'album web, au lieu de cela, créer un lien symbolique vers leur emplacement."
-
-#: ../lazygal.py:130
-msgid "Publication URL (only useful for feed generation)."
-msgstr ""
-"Adresse URL de publication (utilisé uniquement pour la génération du flux)."
-
-#: ../lazygal.py:134
-msgid ""
-"Generate metadata description files where they don't exist instead of "
-"generating the web gallery."
-msgstr ""
-"Générer les fichiers de description qui n'existent pas au lieu de générer "
-"des galleries web."
-
-#: ../lazygal.py:138
-msgid ""
-"Maximum number of thumbs per index page. This enables index pagination (0 is "
-"unlimited)."
-msgstr ""
-"Nombre maximum de miniatures par page d'index. Ceci active la pagination "
-"pour les index (0 correspond à sans limite)."
-
-#: ../lazygal.py:142
-msgid "Make a zip archive of original pictures for each directory."
-msgstr ""
-"Générer une archive zip contenant les images originales pour chaque "
-"répertoire."
-
-#: ../lazygal.py:146
-msgid ""
-"Webalbum picture background color. Default is transparent, and implies the "
-"PNG format. Any other value, e.g. red, white, blue, uses JPEG."
-msgstr ""
-"Couleur de fond de l'image représentant une gallerie. Par défaut "
-"transparente, ce qui implique le format PNG. Pour toutes autre valeur, par "
-"exemple red, white, blue, c'est le format JPEG qui est utilisé."
-
-#: ../lazygal.py:151
-msgid "Webalbum picture type. Default is messy."
-msgstr "Type d'image représentant les galleries. Par défaut 'messy'."
-
-#: ../lazygal.py:153 ../lazygal.py:156
-msgid "ORDER"
-msgstr "TRI"
-
-#: ../lazygal.py:154
-msgid ""
-"Sort order for images in a folder: filename, numeric, mtime, or exif. Add ':"
-"reverse' to reverse the chosen order."
-msgstr ""
-"Ordre de classement pour les images dans un dossier : par nom de fichier "
-"'filename', nombre dans nom de fichier 'numeric', date de modification de "
-"fichier 'mtime' ou date de prise de vue 'exif'. Ajouter ':reverse' pour "
-"inverser l'ordre'"
-
-#: ../lazygal.py:157
-msgid ""
-"Sort order for sub galleries in a folder: dirname, numeric, exif or mtime. "
-"Add ':reverse' to reverse the chosen order."
-msgstr ""
-"Ordre de classement pour les sous-galleries : par nom de répertoire "
-"'dirname', nombre dans le nom de fichier 'numeric', date de la dernière "
-"photo ou date de modification de fichier 'mtime'. Ajouter ':reverse' pour "
-"inverser l'ordre'"
-
-#: ../lazygal.py:159
-msgid "TAG"
-msgstr "MOT-CLÉ"
-
-#: ../lazygal.py:160
-msgid ""
-"Only include in the gallery pics whose IPTC keywords match the supplied "
-"filter(s)."
-msgstr ""
-"Ne prendre en compte que les images dont l'un des most-clés IPTC est présent "
-"dans la liste donnée en argument."
-
-#: ../lazygal.py:163
-msgid ""
-"Regular expression pattern(s) describing directories or filenames to exclude "
-"from consideration."
-msgstr ""
-"Expressions régulières décrivant les répertoires ou les noms de fichier à "
-"exclure de l'analyse."
-
-#: ../lazygal.py:167
-msgid ""
-"Do not remove GPS location tags from EXIF metadata. Mostly useful with "
-"holiday photos."
-msgstr ""
-"Ne pas enlever les coordonnées GPS dans les métadonnées avant la "
-"publication. Surtout utile pour les photos de vacances."
-
-#: ../lazygal.py:171
-msgid "Do not process videos nor include them in indexes."
-msgstr "Ignorer les vidéos et ne pas les montrer sur les indexs."
-
-#: ../lazygal.py:175
-#, python-format
-msgid "lazygal version %s"
-msgstr "lazygal version %s"
-
-#: ../lazygal.py:180
-msgid "Bad command line: wrong number of arguments."
-msgstr "Mauvaise ligne de commande : nombre d'arguments incorrect."
-
-#: ../lazygal.py:184
-#, python-format
-msgid "Directory %s does not exist."
-msgstr "Le répertoire %s n'existe pas."
-
-#: ../lazygal.py:242
-msgid "Option --orig-symlink is not available on this platform."
-msgstr "L'option --orig-symlink n'est pas disponible sur cette plateforme."
-
-#: ../lazygal.py:296
-msgid "Interrupted."
-msgstr "Interrompu."
-
-#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:371
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:372
 msgid "Root not found"
 msgstr "La racine n'a pas été trouvée"
 
-#: ../lazygal/sourcetree.py:283
+#: ../lazygal/sourcetree.py:284
 msgid "Video support is disabled: could not find ffmpeg"
 msgstr "Support des vidéos désactivé: impossible de trouver ffmpeg"
 
-#: ../lazygal/sourcetree.py:323
+#: ../lazygal/sourcetree.py:324
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr "  Ignore %s, impossible d'ouvrir le fichier (lien symbolique cassé?)."
 
-#: ../lazygal/sourcetree.py:331
+#: ../lazygal/sourcetree.py:332
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr "  %s est CASSE, ignoré"
 
-#: ../lazygal/sourcetree.py:338
+#: ../lazygal/sourcetree.py:339
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  %s ignoré, format non supporté."
@@ -474,10 +236,6 @@ msgstr "Style par défaut inconnu %s"
 msgid "Unknown template type for %s"
 msgstr "Type de modèle inconnu %s"
 
-#: ../lazygal/tplvars.py:107 ../themes/nojs/image.thtml:9
-msgid "on %d/%m/%Y at %H:%M"
-msgstr "le %d/%m/%Y à %H:%M"
-
 #: ../lazygal/genfile.py:105
 #, python-format
 msgid "  ZIP %s"
@@ -488,45 +246,45 @@ msgstr "  ZIP %s"
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/genmedia.py:86
+#: ../lazygal/genmedia.py:93
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:184
+#: ../lazygal/genmedia.py:191
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossible de copier le champ de métadonnées %s"
 
-#: ../lazygal/genmedia.py:207
+#: ../lazygal/genmedia.py:214
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:227
+#: ../lazygal/genmedia.py:234
 msgid "VIDEOTHUMB"
 msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:235
+#: ../lazygal/genmedia.py:242
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:274
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:294
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:316
+#: ../lazygal/genmedia.py:323
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:325
+#: ../lazygal/genmedia.py:332
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
@@ -634,6 +392,10 @@ msgstr "suivante"
 msgid "Taken"
 msgstr "Prise"
 
+#: ../themes/nojs/image.thtml:9
+msgid "on %d/%m/%Y at %H:%M"
+msgstr "le %d/%m/%Y à %H:%M"
+
 #: ../themes/nojs/image.thtml:11
 msgid "Author"
 msgstr "Auteur"
@@ -695,3 +457,203 @@ msgstr "sous-galleries"
 #: ../themes/image-index/gallerylink.thtml:26
 msgid "photos"
 msgstr "photos"
+
+#~ msgid "usage: %prog [options] albumdir"
+#~ msgstr "usage: %prog [options] albumdir"
+
+#~ msgid "Show this help message and exit."
+#~ msgstr "Afficher ce message d'aide et quitter."
+
+#~ msgid "Don't output anything except for errors."
+#~ msgstr "N'afficher que les erreurs."
+
+#~ msgid "Output everything that lazygal is doing."
+#~ msgstr "Afficher tout ce que lazygal fait."
+
+#~ msgid ""
+#~ "Directory where web pages, slides and thumbs will be written (default is "
+#~ "current directory)."
+#~ msgstr ""
+#~ "Répertoire dans lequel les pages, les images et les miniatures seront "
+#~ "écrits (par défaut le répertoire courant)."
+
+#~ msgid "Theme name (looked up in theme directory) or theme full path."
+#~ msgstr ""
+#~ "Identifiant du thème (utilisé dans le répertoire des thèmes) ou chemin "
+#~ "complet d'un thème."
+
+#~ msgid "Default style to apply to the theme."
+#~ msgstr "Style par défaut à appliquer au thème."
+
+#~ msgid "Common variables to load all templates with."
+#~ msgstr "Variables communes avec lesquelles charger tous les modèles."
+
+#~ msgid "Force rebuild of all pages."
+#~ msgstr "Forcer la reconstruction de toutes les pages."
+
+#~ msgid "Clean destination directory of files that should not be there."
+#~ msgstr ""
+#~ "Supprimer dans le répertoire de destination tous les fichiers qui ne "
+#~ "doivent pas s'y trouver."
+
+#~ msgid "PATTERN"
+#~ msgstr "MOTIF"
+
+#~ msgid "Specifies pathname(s) which will be ignored during final cleanup"
+#~ msgstr "Spécifier les chemins qui seront gardés lors du nettoyage"
+
+#~ msgid "Display program version."
+#~ msgstr "Afficher la version du programme."
+
+#~ msgid ""
+#~ "Exhaustively go through all directories regardless of source modification "
+#~ "time."
+#~ msgstr ""
+#~ "Parcourir exhaustivement tous les répertoires sans examiner la date de "
+#~ "modification du répertoire source."
+
+#~ msgid ""
+#~ "Level below which the directory tree is flattened. Default is 'No' which "
+#~ "disables this feature."
+#~ msgstr ""
+#~ "Niveau de hierarchie au dessous duquel l'arborescence des galleries est "
+#~ "rassemblée sur une page. Par défaut 'No' qui désactive cette "
+#~ "fonctionnalité."
+
+#~ msgid ""
+#~ "Size of images, define as <name>=SIZE,..., eg. small=800x600,"
+#~ "medium=1024x768. The special value 0x0 uses original size. See manual "
+#~ "page for SIZE syntax."
+#~ msgstr ""
+#~ "Taille des images, à définir comme suit <name>=TAILLE,..., eg. "
+#~ "small=800x600,medium=1024x768. La valeur spéciale 0x0 conserve la taille "
+#~ "originale. Voir le manuel pour la syntaxe de TAILLE."
+
+#~ msgid ""
+#~ "Size of thumbnails, define as SIZE, eg. 150x113. See manual page for SIZE "
+#~ "syntax."
+#~ msgstr ""
+#~ "Taille des miniatures, à définir comme suit TAILLE, eg. 150x113. Voir le "
+#~ "manuel pour la syntaxe de TAILLE."
+
+#~ msgid "Quality of generated JPEG images (default is 85)."
+#~ msgstr "Qualité des JPEG générés (85 par défaut)"
+
+#~ msgid "Include original photos in output."
+#~ msgstr "Copier les photos originales dans ce qui est produit."
+
+#~ msgid ""
+#~ "Do not copy original photos in output directory, instead link them using "
+#~ "submitted relative path as base."
+#~ msgstr ""
+#~ "Ne pas copier les photos originales dans le répertoire de production de "
+#~ "l'album web, au lieu de cela les référencer directement en utilisant le "
+#~ "chemin relatif de base fourni"
+
+#~ msgid ""
+#~ "Do not copy original photos in output directory, instead create symlinks "
+#~ "to their original locations."
+#~ msgstr ""
+#~ "Ne pas copier les photos originales dans le répertoire de production de "
+#~ "l'album web, au lieu de cela, créer un lien symbolique vers leur "
+#~ "emplacement."
+
+#~ msgid "Publication URL (only useful for feed generation)."
+#~ msgstr ""
+#~ "Adresse URL de publication (utilisé uniquement pour la génération du "
+#~ "flux)."
+
+#~ msgid ""
+#~ "Generate metadata description files where they don't exist instead of "
+#~ "generating the web gallery."
+#~ msgstr ""
+#~ "Générer les fichiers de description qui n'existent pas au lieu de générer "
+#~ "des galleries web."
+
+#~ msgid ""
+#~ "Maximum number of thumbs per index page. This enables index pagination (0 "
+#~ "is unlimited)."
+#~ msgstr ""
+#~ "Nombre maximum de miniatures par page d'index. Ceci active la pagination "
+#~ "pour les index (0 correspond à sans limite)."
+
+#~ msgid "Make a zip archive of original pictures for each directory."
+#~ msgstr ""
+#~ "Générer une archive zip contenant les images originales pour chaque "
+#~ "répertoire."
+
+#~ msgid ""
+#~ "Webalbum picture background color. Default is transparent, and implies "
+#~ "the PNG format. Any other value, e.g. red, white, blue, uses JPEG."
+#~ msgstr ""
+#~ "Couleur de fond de l'image représentant une gallerie. Par défaut "
+#~ "transparente, ce qui implique le format PNG. Pour toutes autre valeur, "
+#~ "par exemple red, white, blue, c'est le format JPEG qui est utilisé."
+
+#~ msgid "Webalbum picture type. Default is messy."
+#~ msgstr "Type d'image représentant les galleries. Par défaut 'messy'."
+
+#~ msgid "ORDER"
+#~ msgstr "TRI"
+
+#~ msgid ""
+#~ "Sort order for images in a folder: filename, numeric, mtime, or exif. Add "
+#~ "':reverse' to reverse the chosen order."
+#~ msgstr ""
+#~ "Ordre de classement pour les images dans un dossier : par nom de fichier "
+#~ "'filename', nombre dans nom de fichier 'numeric', date de modification de "
+#~ "fichier 'mtime' ou date de prise de vue 'exif'. Ajouter ':reverse' pour "
+#~ "inverser l'ordre'"
+
+#~ msgid ""
+#~ "Sort order for sub galleries in a folder: dirname, numeric, exif or "
+#~ "mtime. Add ':reverse' to reverse the chosen order."
+#~ msgstr ""
+#~ "Ordre de classement pour les sous-galleries : par nom de répertoire "
+#~ "'dirname', nombre dans le nom de fichier 'numeric', date de la dernière "
+#~ "photo ou date de modification de fichier 'mtime'. Ajouter ':reverse' pour "
+#~ "inverser l'ordre'"
+
+#~ msgid "TAG"
+#~ msgstr "MOT-CLÉ"
+
+#~ msgid ""
+#~ "Only include in the gallery pics whose IPTC keywords match the supplied "
+#~ "filter(s)."
+#~ msgstr ""
+#~ "Ne prendre en compte que les images dont l'un des most-clés IPTC est "
+#~ "présent dans la liste donnée en argument."
+
+#~ msgid ""
+#~ "Regular expression pattern(s) describing directories or filenames to "
+#~ "exclude from consideration."
+#~ msgstr ""
+#~ "Expressions régulières décrivant les répertoires ou les noms de fichier à "
+#~ "exclure de l'analyse."
+
+#~ msgid ""
+#~ "Do not remove GPS location tags from EXIF metadata. Mostly useful with "
+#~ "holiday photos."
+#~ msgstr ""
+#~ "Ne pas enlever les coordonnées GPS dans les métadonnées avant la "
+#~ "publication. Surtout utile pour les photos de vacances."
+
+#~ msgid "Do not process videos nor include them in indexes."
+#~ msgstr "Ignorer les vidéos et ne pas les montrer sur les indexs."
+
+#, python-format
+#~ msgid "lazygal version %s"
+#~ msgstr "lazygal version %s"
+
+#~ msgid "Bad command line: wrong number of arguments."
+#~ msgstr "Mauvaise ligne de commande : nombre d'arguments incorrect."
+
+#, python-format
+#~ msgid "Directory %s does not exist."
+#~ msgstr "Le répertoire %s n'existe pas."
+
+#~ msgid "Option --orig-symlink is not available on this platform."
+#~ msgstr "L'option --orig-symlink n'est pas disponible sur cette plateforme."
+
+#~ msgid "Interrupted."
+#~ msgstr "Interrompu."

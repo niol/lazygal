@@ -1,3 +1,8 @@
+Lazygal 0.10.4 (2022-03-05)
+  * switch to setuptools
+  * document that lazygal follows dir symlinks (github Fixes #15)
+  * inverted theme: fix keyboard shortcuts (thanks Didier Rochet for reporting)
+
 Lazygal 0.10.3 (2021-11-02)
   * prevent 'None' comment showing up in templates
   * fix metadata not showing in templates
