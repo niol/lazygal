@@ -42,11 +42,11 @@ def query_git_for_tag(gitdir):
                                  'describe', '--tags', )) \
         .decode(sys.stdout.encoding).strip()
     tokens = o.split('-')
-    h = tokens[-1]
-    if len(h) != 8:
+    if len(tokens[-1]) != 8:
         # this is not a hash
-        h = None
-    return '+'.join(tokens), h
+        return None
+    else:
+        return '%s+%s.%s' % tuple(tokens)
 
 
 def git_repo_mtime(gitdir):
@@ -75,11 +75,10 @@ def get_git_rev():
                     os.unlink(last_revision_cache)
                 return ''
             else:
-                v, h = lastrev
-                if h:
+                if lastrev:
                     with open(last_revision_cache, 'w') as fp:
-                        fp.write(v)
-                    return v
+                        fp.write(lastrev)
+                    return lastrev
                 else:
                     return ''
     else:
