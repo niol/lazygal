@@ -1,3 +1,6 @@
+Lazygal 0.10.5 (2022-03-05)
+  * ignore debian tags in git version check
+
 Lazygal 0.10.4 (2022-03-05)
   * switch to setuptools
   * document that lazygal follows dir symlinks (github Fixes #15)

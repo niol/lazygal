@@ -1,5 +1,10 @@
-Lazygal 0.10.4 (2022-03-05)
+Lazygal 0.10.5 (2022-03-05)
+  * ignore debian tags in git version check
+
+Lazygal 0.10.4, origin/master, origin/HEAD (2022-03-05)
+  * set version to 0.10.4
   * switch to setuptools
+  * make snapshot version compliant with pep440
   * document that lazygal follows dir symlinks (github Fixes #15)
   * inverted theme: fix keyboard shortcuts (thanks Didier Rochet for reporting)
 
