@@ -261,7 +261,11 @@ class MediaHandler(object):
                '.mp4' : VideoFile,
                '.3gp' : VideoFile,
                '.webm': VideoFile,
-               }
+               '.mpeg': VideoFile,
+               '.gif' : VideoFile,
+               '.mpg' : VideoFile,
+               '.mts' : VideoFile,
+    }
 
     def __init__(self, album):
         self.album = album
