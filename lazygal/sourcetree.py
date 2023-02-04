@@ -177,10 +177,13 @@ class MediaFile(File):
         return self.md['date']
 
     def get_size(self):
-        if self.broken:
-            return (0, 0)
-        else:
+        try:
+            if self.broken:
+                raise KeyError()
             return (self.md['width'], self.md['height'])
+        except KeyError:
+            self.broken = True
+            return (0, 0)
 
     def sortkey(self):
         # Comparison between 'no md' and 'md' sorts md after
