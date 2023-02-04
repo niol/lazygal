@@ -117,6 +117,10 @@ class PersistentIndex(JSONWebFile):
         self.data['medias'] = {}
 
     def __populate_data(self):
+        # reset counts
+        for t in ('media', 'image', 'video', 'subgal'):
+            self.data['count'][t] = 0
+
         for media in self.webgal.source_dir.medias:
             for t in ('media', media.type):
                 self.data['count'][t] = self.data['count'][t] + 1
