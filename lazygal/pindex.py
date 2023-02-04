@@ -103,11 +103,10 @@ class PersistentIndex(JSONWebFile):
 
         self.data['count'] = {
             'media' : 0,
-            'image'  : 0,
-            'video'  : 0,
-            'subgal': len(self.webgal.source_dir.subdirs),
+            'image' : 0,
+            'video' : 0,
+            'subgal': 0,
         }
-
 
         self.data['all_count'] = {
             'media' : 0,
@@ -130,15 +129,14 @@ class PersistentIndex(JSONWebFile):
         for media_filename in to_delete:
             del(self.data['medias'][media_filename])
 
-        if 'subgals' not in self.data:
-            self.data['subgals'] = []
-
         self.data['all_count'] = {
             'media' : self.data['count']['media'],
             'image' : self.data['count']['image'],
             'video' : self.data['count']['video'],
         }
 
+        self.data['count']['subgal'] = len(self.webgal.subgals)
+        self.data['subgals'] = []
         for subgal in self.webgal.subgals:
             for count_type in self.data['all_count']:
                 self.data['all_count'][count_type] =\
