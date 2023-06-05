@@ -217,7 +217,7 @@ class ImageInfoTags(object):
                 v = self._metadata.get_tag_interpreted_string(key)
                 if v is None:
                     raise KeyError
-            except KeyError:
+            except (KeyError, UnicodeDecodeError):
                 pass
             else:
                 vendor_values.append(v.strip())

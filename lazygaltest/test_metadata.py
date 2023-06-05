@@ -213,6 +213,10 @@ Album image identifier "first\xe3.jpg"
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
         self.assertEqual(im_md.get_lens_name(), 'smc PENTAX-DA 18-55mm F3.5-5.6 AL WR')
 
+        sample = 'sample-bad-lens.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md.get_lens_name(), '')
+
     def test_flash(self):
         sample = 'sample-model-pentax1.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
