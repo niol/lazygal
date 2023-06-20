@@ -1,3 +1,9 @@
+Lazygal 0.10.6 (2023-06-05)
+  * fix UnicodeDecodeError on garbage in LensName
+  * reset counts in pindex (Github Fixes #17)
+  * make generated mp4 more compatible with browsers
+  * handle more video formats (thanks Björn)
+
 Lazygal 0.10.5 (2022-03-05)
   * ignore debian tags in git version check
 
