@@ -90,7 +90,7 @@ class ImageOtherSize(ResizedMedia):
         new_size = self.get_size()
 
         im.draft(None, new_size)
-        return im.resize(new_size, PILImage.ANTIALIAS)
+        return im.resize(new_size, PILImage.LANCZOS)
 
     def save(self, im):
         if 'alphachannel' in self.source_media.md \
@@ -159,7 +159,7 @@ class ImageOtherSize(ResizedMedia):
         self.get_size()
 
         im.draft(None, self.unrotated_size)
-        im = im.resize(self.unrotated_size, PILImage.ANTIALIAS)
+        im = im.resize(self.unrotated_size, PILImage.LANCZOS)
 
         # Use EXIF data to rotate target image if available and required
         if rotation != 0:

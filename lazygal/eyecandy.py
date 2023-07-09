@@ -58,7 +58,7 @@ class PictureMess:
         white = maxi = None
         with open(image_path, 'rb') as img_fp:
             img = Image.open(img_fp)
-            img.thumbnail(self.thumb_size, Image.ANTIALIAS)
+            img.thumbnail(self.thumb_size, Image.LANCZOS)
             white_size = [x + 2 * self.THUMB_WHITE_WIDTH for x in img.size]
             white = Image.new('RGB', white_size, 'white')
             white.paste(img, (self.THUMB_WHITE_WIDTH, self.THUMB_WHITE_WIDTH))
@@ -75,7 +75,7 @@ class PictureMess:
         thumb = thumb.rotate(rotation, resample=Image.BILINEAR)
 
         thumb = thumb.crop(thumb.getbbox())
-        thumb.thumbnail(self.thumb_size, Image.ANTIALIAS)
+        thumb.thumbnail(self.thumb_size, Image.LANCZOS)
         return thumb
 
     def __rand_coord_with_step(self, coord, holding_coord):
