@@ -1,4 +1,8 @@
-Lazygal 0.10.6 (2023-06-05)
+Lazygal 0.10.7 (2023-07-09)
+  * Pillow Image.ANTIALIAS is deprecated
+
+Lazygal 0.10.6 (2023-06-20)
+  * set version to 0.10.6
   * fix UnicodeDecodeError on garbage in LensName
   * reset counts in pindex (Github Fixes #17)
   * reset subgal info in pindex to avoid duplicates
