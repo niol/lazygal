@@ -1,5 +1,5 @@
 # Lazygal, a lazy static web gallery generator.
-# Copyright (C) 2007-2021 Alexandre Rossi <alexandre.rossi@gmail.com>
+# Copyright (C) 2007-2023 Alexandre Rossi <alexandre.rossi@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -292,10 +292,6 @@ def main():
             album.generate(progress=progress)
         except KeyboardInterrupt:
             print(_("Interrupted."), file=sys.stderr)
-            sys.exit(1)
-        except ValueError as e:
-            sys.stdout.write("\r")
-            print(e)
             sys.exit(1)
 
 
