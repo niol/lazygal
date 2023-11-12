@@ -122,7 +122,7 @@ class VideoTranscoder(VideoProcessor):
         super().__init__(mediapath)
         self.output_file_opts.extend(['-c:v', videocodec,
                                       '-c:a', audiocodec])
-        self.videofilters.extend('format=yuv420p')
+        self.videofilters.append('format=yuv420p')
 
 
 class WebMTranscoder(VideoTranscoder):
