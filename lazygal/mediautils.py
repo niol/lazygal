@@ -95,6 +95,8 @@ class VideoProcessor(object):
                 line = line.strip()
                 logging.debug(line)
                 self.parse_output(line)
+        if p.returncode != 0:
+            raise VideoError('%s failed' % ' '.join(runcmd))
 
 
 class VideoInfo(object):
