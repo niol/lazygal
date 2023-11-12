@@ -68,7 +68,10 @@ class VideoProcessor(object):
         if line.startswith('Duration:'):
             self.duration = self.parse_time(line.split(' ')[1].strip(','))
         elif self.duration and line.startswith('out_time='):
-            position = self.parse_time(line.split('=')[1])
+            try:
+                position = self.parse_time(line.split('=')[1])
+            except ValueError:
+                position = 0
             percent = math.floor(100 * position / self.duration)
             if self.progress:
                 self.progress.set_task_progress(percent)
