@@ -198,7 +198,7 @@ class ImageOtherSize(ResizedMedia):
         if not self.webgal.keep_gps:
             for tag in self.PRIVATE_IMAGE_TAGS:
                 try:
-                    dest_imgtags.clear_tag(tag)
+                    dest_imgtags.try_clear_tag(tag)
                 except KeyError:
                     pass
         try:

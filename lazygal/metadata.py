@@ -210,11 +210,10 @@ class ImageInfoTags(object):
         Return name of used lenses. This usually makes sense only for
         SLR cameras and uses various maker notes.
         """
-        interpret = self._metadata.get_tag_interpreted_string
         vendor_values = []
         for key in VENDOR_EXIF_CODES:
             try:
-                v = self._metadata.get_tag_interpreted_string(key)
+                v = self._metadata.try_get_tag_interpreted_string(key)
                 if v is None:
                     raise KeyError
             except (KeyError, UnicodeDecodeError):
@@ -297,7 +296,7 @@ class ImageInfoTags(object):
 
     def get_flash(self):
         try:
-            flash_info = self._metadata.get_tag_interpreted_string('Exif.Photo.Flash')
+            flash_info = self._metadata.try_get_tag_interpreted_string('Exif.Photo.Flash')
             return self._fallback_to_encoding(flash_info)
         except (ValueError, KeyError):
             return ''
@@ -376,7 +375,7 @@ class ImageInfoTags(object):
 
     def get_jpeg_comment(self):
         try:
-            comment = self._metadata.get_comment()
+            comment = self._metadata.try_get_comment()
             if comment is None or '\x00' in comment:
                 raise ValueError  # ignore missing or broken JPEG comments
             return self._fallback_to_encoding(comment.strip(' '))
@@ -403,7 +402,7 @@ class ImageInfoTags(object):
                     'Xmp.dc.subject',
                     'Xmp.digiKam.TagsList', ):
             try:
-                values = self._metadata.get_tag_multiple(key)
+                values = self._metadata.try_get_tag_multiple(key)
             except KeyError:
                 pass
             else:
@@ -413,7 +412,7 @@ class ImageInfoTags(object):
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:
         #   "No namespace info available for XMP prefix `lr'"
-        #kw += self._metadata.get_tag_multiple('Xmp.lr.hierarchicalSubject')
+        #kw += self._metadata.try_get_tag_multiple('Xmp.lr.hierarchicalSubject')
 
         #remove duplicates
         kw = set(kw)
@@ -421,7 +420,7 @@ class ImageInfoTags(object):
         return kw
 
     def get_location(self):
-        loc = self._metadata.get_gps_info()
+        loc = self._metadata.try_get_gps_info()
         if loc == (0, 0, 0):
             return None
         else:

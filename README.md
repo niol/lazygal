@@ -51,7 +51,7 @@ It can be summed up by the following features :
   * [Python][1] >= 3.7.
   * [Python imaging library (PIL) friendly fork Pillow][9] >= 2.
   * [Genshi][7] >= 0.7, a *Python toolkit for generation of output for the web*.
-  * [GExiv2][5] >= 0.5 (to have GObject introspection) which provides Python binding to [exiv2][6], a library to access image metadata.
+  * [GExiv2][5] >= 0.14 which provides Python binding to [exiv2][6], a library to access image metadata.
   * [ffmpeg][23], for video transcoding.
 
 Building a `lazygal` installation requires :
