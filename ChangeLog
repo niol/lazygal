@@ -1,3 +1,9 @@
+Lazygal 0.10.8 (2023-11-12)
+  * fix transcoder video filter add
+  * do not ignore ffmpeg return code
+  * handle N/A as time_pos in ffmpeg > 6.1 output (Debian Closes: #1055818)
+  * fixup GExiv2 deprecations
+
 Lazygal 0.10.7 (2023-07-09)
   * Pillow Image.ANTIALIAS is deprecated
 
