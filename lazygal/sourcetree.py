@@ -107,7 +107,7 @@ class File(make.FileSimpleDependency):
         return datetime.datetime.fromtimestamp(self.get_mtime())
 
     def name_numeric(self):
-        numeric_part = re.sub("\D", "", self.filename)
+        numeric_part = re.sub(r'\D', '', self.filename)
         return numeric_part and int(numeric_part) or 0
 
 

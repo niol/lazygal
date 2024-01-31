@@ -149,7 +149,7 @@ class VideoFramesExtractor(VideoProcessor):
         super().__init__(input_file)
 
         if scene:
-            self.videofilters.append('select=gt(scene\,0.4)')
+            self.videofilters.append('select=gt(scene\\,0.4)')
             self.videofilters.append('fps=1/60')
         else: # in case of very short video with one scene
             self.videofilters.append('fps=1')
