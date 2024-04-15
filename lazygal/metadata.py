@@ -405,9 +405,12 @@ class ImageInfoTags(object):
                 values = self._metadata.try_get_tag_multiple(key)
             except KeyError:
                 pass
+            except UnicodeDecodeError:
+                values = self._metadata.get_raw(key).split(b'\x1c')
             else:
                 for value in values:
-                    kw.append(self._fallback_to_encoding(value))
+                    if value:
+                        kw.append(self._fallback_to_encoding(value))
         # FIXME
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:

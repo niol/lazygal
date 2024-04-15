@@ -245,6 +245,14 @@ Album image identifier "first\xe3.jpg"
                     ])
                 )
 
+    def test_invalid_iptc_keyword(self):
+        sample = 'sample-bad-iptc-keywords.jpg'
+        im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
+        self.assertEqual(im_md._metadata.get_raw('Iptc.Application2.Keywords'),
+                         b'Anton\x1c\x1c\x1c\x1cBj\xf6rn')
+        self.assertEqual(im_md.get_keywords(),
+                         {'Personen/Kollegen/Björn', 'Anton', 'Personen/Familie/Anton', 'Björn'})
+
     def test_location(self):
         sample = 'sample.jpg'
         im_md = metadata.ImageInfoTags(self.get_sample_path(sample))
