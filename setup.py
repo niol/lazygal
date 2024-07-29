@@ -130,9 +130,9 @@ class build_manpages(setuptools.Command):
             manpage = os.path.splitext(manpagesrc)[0] # remove '.md' at the end
             section = manpage[-1:]
             if newer(manpagesrc, manpage):
-                cmd = (self.executable, '-s', '-t', 'man',
+                cmd = [self.executable, '-s', '-t', 'man',
                        '-o', manpage,
-                       manpagesrc)
+                       manpagesrc]
                 self.spawn(cmd)
 
             targetpath = os.path.join("share", "man", 'man%s' % section)
