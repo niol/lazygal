@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-05 17:39+0100\n"
+"POT-Creation-Date: 2024-07-29 11:33+0200\n"
 "PO-Revision-Date: 2014-02-10 11:26+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -18,25 +18,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:372
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:379
 msgid "Root not found"
 msgstr "Kořenový adresář nebyl nalezen"
 
-#: ../lazygal/sourcetree.py:284
+#: ../lazygal/sourcetree.py:291
 msgid "Video support is disabled: could not find ffmpeg"
 msgstr ""
 
-#: ../lazygal/sourcetree.py:324
+#: ../lazygal/sourcetree.py:331
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr "  Přeskakuji %s, nelze otevřít soubor (poškozený odkaz?)."
 
-#: ../lazygal/sourcetree.py:332
+#: ../lazygal/sourcetree.py:339
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr "  %s je ROZBITÝ, přeskoče"
 
-#: ../lazygal/sourcetree.py:339
+#: ../lazygal/sourcetree.py:346
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr "  Ignoruji %s, formát není podporovaný."
@@ -160,30 +160,30 @@ msgstr "[Opouštím %%ALBUMROOT%%/%s]"
 
 #. remove null byte
 #. GExiv2 < 0.10.3
-#: ../lazygal/metadata.py:263
+#: ../lazygal/metadata.py:262
 #, python-format
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:342 ../lazygal/metadata.py:371
+#: ../lazygal/metadata.py:341 ../lazygal/metadata.py:370
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (ekvivalent 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:506
+#: ../lazygal/metadata.py:508
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Nepodařilo se otevřít soubor s popisky %s"
 
-#: ../lazygal/metadata.py:611
+#: ../lazygal/metadata.py:613
 msgid "  SKIPPED because metadata exists."
 msgstr "  PŘESKOČENO protože metadata existují."
 
-#: ../lazygal/metadata.py:613
+#: ../lazygal/metadata.py:615
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  PŘESKOČENO protože adresář neobsahuje žádné obrázky."
 
-#: ../lazygal/metadata.py:622
+#: ../lazygal/metadata.py:624
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
@@ -234,45 +234,45 @@ msgstr "  ZIP %s"
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/genmedia.py:93
+#: ../lazygal/genmedia.py:86
 msgid "RESIZE"
 msgstr "ZMENŠIT"
 
-#: ../lazygal/genmedia.py:191
+#: ../lazygal/genmedia.py:184
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Nepodařilo se otevřít soubor s popisky %s"
 
-#: ../lazygal/genmedia.py:214
+#: ../lazygal/genmedia.py:207
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Nepodařilo se zkopírovat metadata do zmenšeného obrázku: %s"
 
-#: ../lazygal/genmedia.py:234
+#: ../lazygal/genmedia.py:227
 msgid "VIDEOTHUMB"
 msgstr "VIDEONÁHLED"
 
-#: ../lazygal/genmedia.py:242
+#: ../lazygal/genmedia.py:235
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  vytváření náhledu pro %s selhalo, přeskakuji"
 
-#: ../lazygal/genmedia.py:274
+#: ../lazygal/genmedia.py:267
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "Zadaný obrázek alba %s neexistuje."
 
-#: ../lazygal/genmedia.py:294
+#: ../lazygal/genmedia.py:287
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  ADROBR %s"
 
-#: ../lazygal/genmedia.py:323
+#: ../lazygal/genmedia.py:316
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  PŘEVÉST %s"
 
-#: ../lazygal/genmedia.py:332
+#: ../lazygal/genmedia.py:325
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  převedení %s selhalo, přeskakuji"

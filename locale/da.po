@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-05 17:39+0100\n"
+"POT-Creation-Date: 2024-07-29 11:33+0200\n"
 "PO-Revision-Date: 2008-12-03 16:45+0100\n"
 "Last-Translator: Thomas Damgaard <me@thomasdamgaard.dk>\n"
 "Language-Team: Danish\n"
@@ -17,25 +17,25 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:372
+#: ../lazygal/sourcetree.py:94 ../lazygal/sourcetree.py:379
 msgid "Root not found"
 msgstr ""
 
-#: ../lazygal/sourcetree.py:284
+#: ../lazygal/sourcetree.py:291
 msgid "Video support is disabled: could not find ffmpeg"
 msgstr ""
 
-#: ../lazygal/sourcetree.py:324
+#: ../lazygal/sourcetree.py:331
 #, python-format
 msgid "  Ignoring %s, cannot open file (broken symlink?)."
 msgstr ""
 
-#: ../lazygal/sourcetree.py:332
+#: ../lazygal/sourcetree.py:339
 #, python-format
 msgid "  %s is BROKEN, skipped"
 msgstr " %s er DEFEKT, sprang over"
 
-#: ../lazygal/sourcetree.py:339
+#: ../lazygal/sourcetree.py:346
 #, python-format
 msgid "  Ignoring %s, format not supported."
 msgstr ""
@@ -154,31 +154,31 @@ msgstr ""
 
 #. remove null byte
 #. GExiv2 < 0.10.3
-#: ../lazygal/metadata.py:263
+#: ../lazygal/metadata.py:262
 #, python-format
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:342 ../lazygal/metadata.py:371
+#: ../lazygal/metadata.py:341 ../lazygal/metadata.py:370
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (35 mm-ækvivalent: %s mm)"
 
-#: ../lazygal/metadata.py:506
+#: ../lazygal/metadata.py:508
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Kunne ikke åbne filen %s"
 
-#: ../lazygal/metadata.py:611
+#: ../lazygal/metadata.py:613
 msgid "  SKIPPED because metadata exists."
 msgstr " SPRANG OVER fordi metadata findes i forvejen."
 
-#: ../lazygal/metadata.py:613
+#: ../lazygal/metadata.py:615
 #, fuzzy
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  SPRANG OVER fordi mappen ikke indeholder billeder."
 
-#: ../lazygal/metadata.py:622
+#: ../lazygal/metadata.py:624
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"
@@ -229,46 +229,46 @@ msgstr "  ZIP %s"
 msgid "CP %%SHAREDDIR%%/%s"
 msgstr "CP %%SHAREDDIR%%/%s"
 
-#: ../lazygal/genmedia.py:93
+#: ../lazygal/genmedia.py:86
 #, fuzzy
 msgid "RESIZE"
 msgstr "  RESIZE %s"
 
-#: ../lazygal/genmedia.py:191
+#: ../lazygal/genmedia.py:184
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Kunne ikke åbne filen %s"
 
-#: ../lazygal/genmedia.py:214
+#: ../lazygal/genmedia.py:207
 #, fuzzy, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Kunne ikke åbne filen %s"
 
-#: ../lazygal/genmedia.py:234
+#: ../lazygal/genmedia.py:227
 msgid "VIDEOTHUMB"
 msgstr ""
 
-#: ../lazygal/genmedia.py:242
+#: ../lazygal/genmedia.py:235
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:274
+#: ../lazygal/genmedia.py:267
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr ""
 
-#: ../lazygal/genmedia.py:294
+#: ../lazygal/genmedia.py:287
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:323
+#: ../lazygal/genmedia.py:316
 #, fuzzy, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODE %s"
 
-#: ../lazygal/genmedia.py:332
+#: ../lazygal/genmedia.py:325
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr ""

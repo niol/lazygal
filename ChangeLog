@@ -1,3 +1,10 @@
+Lazygal 0.10.10 (2024-07-29)
+  * fix TypeError on py3.12 distutils.spawn() (Debian #1077438)
+  * fix crash on badly encoded iptc keyword (Debian #1008965)
+
+Lazygal 0.10.9 (2024-01-31)
+  * fix invalid escape sequences with py312 (Debian Closes: #1061807)
+
 Lazygal 0.10.8 (2023-11-12)
   * fix transcoder video filter add
   * do not ignore ffmpeg return code
