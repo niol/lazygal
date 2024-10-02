@@ -60,7 +60,7 @@ Building a `lazygal` installation requires :
   *   [pandoc][8] to build manpages from markdown sources.
 
  [4]: http://www.pythonware.com/products/pil/
- [5]: http://redmine.yorba.org/projects/gexiv2/wiki
+ [5]: https://gitlab.gnome.org/GNOME/gexiv2/
  [6]: http://exiv2.org/
  [7]: http://genshi.edgewall.org/
  [23]: https://ffmpeg.org/
