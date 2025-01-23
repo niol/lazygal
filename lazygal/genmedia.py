@@ -109,6 +109,10 @@ class ImageOtherSize(ResizedMedia):
         while not calibrated:
             with open(self.path, 'w+b') as im_fp:
                 try:
+                    if im.mode != 'RGB':
+                        # convert indexed images into RGB mode, usefull
+                        # for PNG indexed images
+                        im = im.convert('RGB')
                     im.save(im_fp, 'jpeg', quality=self.webgal.quality,
                             **self.webgal.save_options)
                 except IOError as e:
