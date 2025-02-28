@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 11:33+0200\n"
+"POT-Creation-Date: 2025-02-28 10:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -232,41 +232,41 @@ msgstr ""
 msgid "RESIZE"
 msgstr ""
 
-#: ../lazygal/genmedia.py:184
+#: ../lazygal/genmedia.py:188
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr ""
 
-#: ../lazygal/genmedia.py:207
+#: ../lazygal/genmedia.py:211
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:227
+#: ../lazygal/genmedia.py:231
 msgid "VIDEOTHUMB"
 msgstr ""
 
-#: ../lazygal/genmedia.py:235
+#: ../lazygal/genmedia.py:239
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr ""
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:271
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr ""
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:291
 #, python-format
 msgid "  DIRPIC %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:316
+#: ../lazygal/genmedia.py:320
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr ""
 
-#: ../lazygal/genmedia.py:325
+#: ../lazygal/genmedia.py:329
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr ""

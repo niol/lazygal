@@ -1,4 +1,9 @@
+Lazygal 0.10.11 (2025-01-23)
+  * fix failure with PNG indexed images (Debian Closes: #1092599)
+  * update GExiv2 link in README (Fix #19)
+
 Lazygal 0.10.10 (2024-07-29)
+  * set version to 0.10.10
   * fix TypeError on py3.12 distutils.spawn() (Debian #1077438)
   * fix crash on badly encoded iptc keyword (Debian #1008965)
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 11:33+0200\n"
+"POT-Creation-Date: 2025-02-28 10:32+0100\n"
 "PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -118,8 +118,8 @@ msgstr "Caricamento delle configurazioni del progetto %s"
 msgid ""
 "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
 msgstr ""
-"'%s' usa una sintassi deprecata: consultare la pagina di manuale lazygal."
-"conf(5)."
+"'%s' usa una sintassi deprecata: consultare la pagina di manuale "
+"lazygal.conf(5)."
 
 #: ../lazygal/generators.py:845
 #, python-format
@@ -249,41 +249,41 @@ msgstr "CP %%SHAREDDIR%%/%s"
 msgid "RESIZE"
 msgstr "RIDIMENSIONA"
 
-#: ../lazygal/genmedia.py:184
+#: ../lazygal/genmedia.py:188
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossibile aprire il file dei metadati %s"
 
-#: ../lazygal/genmedia.py:207
+#: ../lazygal/genmedia.py:211
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossibile copiare i metadati nell'immagine ridotta: %s"
 
-#: ../lazygal/genmedia.py:227
+#: ../lazygal/genmedia.py:231
 msgid "VIDEOTHUMB"
 msgstr "MINIATURAVIDEO"
 
-#: ../lazygal/genmedia.py:235
+#: ../lazygal/genmedia.py:239
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  errore nella creazione della miniatura di %s, si ignora"
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:271
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'immagine fornita per l'album %s non esiste."
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:291
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:316
+#: ../lazygal/genmedia.py:320
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODIFICA %s"
 
-#: ../lazygal/genmedia.py:325
+#: ../lazygal/genmedia.py:329
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  errore nella transcodifica di %s, si ignora"
@@ -510,9 +510,9 @@ msgstr "foto"
 #~ "Il valore predefinito, \"No\", disabilita questa funzione."
 
 #~ msgid ""
-#~ "Size of images, define as <name>=SIZE,..., eg. small=800x600,"
-#~ "medium=1024x768. The special value 0x0 uses original size. See manual "
-#~ "page for SIZE syntax."
+#~ "Size of images, define as <name>=SIZE,..., eg. "
+#~ "small=800x600,medium=1024x768. The special value 0x0 uses original size. "
+#~ "See manual page for SIZE syntax."
 #~ msgstr ""
 #~ "Dimensione delle immagini, si definisce con <nome>=DIMENSIONE,..., ad "
 #~ "esempio small=800x600,medium=1024x768. Il valore speciale 0x0 usa la "
@@ -586,8 +586,8 @@ msgstr "foto"
 #~ msgstr ""
 #~ "Stabilisce il criterio d'ordine per le immagini in una cartella. I valori "
 #~ "possibili sono: nome del file ('filename'), data di modifica del file "
-#~ "('mtime') o dati della macchina fotografica ('exif'). Aggiungere ':"
-#~ "reverse' per invertire l'ordine scelto."
+#~ "('mtime') o dati della macchina fotografica ('exif'). Aggiungere "
+#~ "':reverse' per invertire l'ordine scelto."
 
 #, fuzzy
 #~ msgid ""
@@ -596,8 +596,8 @@ msgstr "foto"
 #~ msgstr ""
 #~ "Stabilisce il criterio d'ordine per le sottogallerie in una cartella. I "
 #~ "possibili valori sono: nome della cartella (\"dirname\"), ora di scatto "
-#~ "(\"exif\") e data di modifica del file (\"mtime\"). Aggiungendo \":"
-#~ "reverse\" si inverte l'ordine scelto."
+#~ "(\"exif\") e data di modifica del file (\"mtime\"). Aggiungendo "
+#~ "\":reverse\" si inverte l'ordine scelto."
 
 #~ msgid "TAG"
 #~ msgstr "ETICHETTA"

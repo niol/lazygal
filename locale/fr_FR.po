@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazygal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 11:33+0200\n"
+"POT-Creation-Date: 2025-02-28 10:32+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Rossi <alexandre.rossi@gmail.com>\n"
 "Language-Team: français <LL@li.org>\n"
@@ -222,8 +222,8 @@ msgstr ""
 "Thème %s : erreur de référence %s: fichiers non trouvés :\n"
 "%s\n"
 "\n"
-"L'une des actions suivantes devrait résoudre le problème :\t- Lancer ./setup."
-"py dl_assets\n"
+"L'une des actions suivantes devrait résoudre le problème :\t- Lancer ./"
+"setup.py dl_assets\n"
 "\t- Installés les dépendances selon la méthode de votre distribution"
 
 #: ../lazygal/theme.py:160
@@ -250,41 +250,41 @@ msgstr "CP %%SHAREDDIR%%/%s"
 msgid "RESIZE"
 msgstr "REDIMENSIONNE"
 
-#: ../lazygal/genmedia.py:184
+#: ../lazygal/genmedia.py:188
 #, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Impossible de copier le champ de métadonnées %s"
 
-#: ../lazygal/genmedia.py:207
+#: ../lazygal/genmedia.py:211
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Impossible de recopier les méta-données dans l'image réduite: %s"
 
-#: ../lazygal/genmedia.py:227
+#: ../lazygal/genmedia.py:231
 msgid "VIDEOTHUMB"
 msgstr "VIDEOTHUMB"
 
-#: ../lazygal/genmedia.py:235
+#: ../lazygal/genmedia.py:239
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  la construction de l'aperçu de la vidéo %s a échoué"
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:271
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "L'image fournie pour représenter la gallerie %s n'existe pas."
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:291
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  DIRPIC %s"
 
-#: ../lazygal/genmedia.py:316
+#: ../lazygal/genmedia.py:320
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  TRANSCODAGE %s"
 
-#: ../lazygal/genmedia.py:325
+#: ../lazygal/genmedia.py:329
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  le transcodage de la vidéo %s a échoué"
@@ -521,9 +521,9 @@ msgstr "photos"
 #~ "fonctionnalité."
 
 #~ msgid ""
-#~ "Size of images, define as <name>=SIZE,..., eg. small=800x600,"
-#~ "medium=1024x768. The special value 0x0 uses original size. See manual "
-#~ "page for SIZE syntax."
+#~ "Size of images, define as <name>=SIZE,..., eg. "
+#~ "small=800x600,medium=1024x768. The special value 0x0 uses original size. "
+#~ "See manual page for SIZE syntax."
 #~ msgstr ""
 #~ "Taille des images, à définir comme suit <name>=TAILLE,..., eg. "
 #~ "small=800x600,medium=1024x768. La valeur spéciale 0x0 conserve la taille "

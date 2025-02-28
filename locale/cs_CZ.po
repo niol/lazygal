@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-07-29 11:33+0200\n"
+"POT-Creation-Date: 2025-02-28 10:32+0100\n"
 "PO-Revision-Date: 2014-02-10 11:26+0100\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -238,41 +238,41 @@ msgstr "CP %%SHAREDDIR%%/%s"
 msgid "RESIZE"
 msgstr "ZMENŠIT"
 
-#: ../lazygal/genmedia.py:184
+#: ../lazygal/genmedia.py:188
 #, fuzzy, python-format
 msgid "Could not copy metadata tag '%s'"
 msgstr "Nepodařilo se otevřít soubor s popisky %s"
 
-#: ../lazygal/genmedia.py:207
+#: ../lazygal/genmedia.py:211
 #, python-format
 msgid "Could not copy metadata in reduced picture: %s"
 msgstr "Nepodařilo se zkopírovat metadata do zmenšeného obrázku: %s"
 
-#: ../lazygal/genmedia.py:227
+#: ../lazygal/genmedia.py:231
 msgid "VIDEOTHUMB"
 msgstr "VIDEONÁHLED"
 
-#: ../lazygal/genmedia.py:235
+#: ../lazygal/genmedia.py:239
 #, python-format
 msgid "  creating %s thumbnail failed, skipped"
 msgstr "  vytváření náhledu pro %s selhalo, přeskakuji"
 
-#: ../lazygal/genmedia.py:267
+#: ../lazygal/genmedia.py:271
 #, python-format
 msgid "Supplied album picture %s does not exist."
 msgstr "Zadaný obrázek alba %s neexistuje."
 
-#: ../lazygal/genmedia.py:287
+#: ../lazygal/genmedia.py:291
 #, python-format
 msgid "  DIRPIC %s"
 msgstr "  ADROBR %s"
 
-#: ../lazygal/genmedia.py:316
+#: ../lazygal/genmedia.py:320
 #, python-format
 msgid "  TRANSCODE %s"
 msgstr "  PŘEVÉST %s"
 
-#: ../lazygal/genmedia.py:325
+#: ../lazygal/genmedia.py:329
 #, python-format
 msgid "  transcoding %s failed, skipped"
 msgstr "  převedení %s selhalo, přeskakuji"
@@ -494,9 +494,9 @@ msgstr "fotografie"
 #~ "znamená neomezené vytváření podadresářů."
 
 #~ msgid ""
-#~ "Size of images, define as <name>=SIZE,..., eg. small=800x600,"
-#~ "medium=1024x768. The special value 0x0 uses original size. See manual "
-#~ "page for SIZE syntax."
+#~ "Size of images, define as <name>=SIZE,..., eg. "
+#~ "small=800x600,medium=1024x768. The special value 0x0 uses original size. "
+#~ "See manual page for SIZE syntax."
 #~ msgstr ""
 #~ "Velikost obrázků, zadejte v podobě <jméno>=<x>x<y>,..., např. "
 #~ "male=800x600,stredni=1024x768. Při zadání 0x0 bude použit původní obrázek "
@@ -569,16 +569,16 @@ msgstr "fotografie"
 #~ "Sort order for images in a folder: filename, numeric, mtime, or exif. Add "
 #~ "':reverse' to reverse the chosen order."
 #~ msgstr ""
-#~ "Pořadí obrázků v adresáři: filename, mtime nebo exif. Přidejte \":"
-#~ "reverse\" pro otočení pořadí."
+#~ "Pořadí obrázků v adresáři: filename, mtime nebo exif. Přidejte "
+#~ "\":reverse\" pro otočení pořadí."
 
 #, fuzzy
 #~ msgid ""
 #~ "Sort order for sub galleries in a folder: dirname, numeric, exif or "
 #~ "mtime. Add ':reverse' to reverse the chosen order."
 #~ msgstr ""
-#~ "Pořadí alb v adresáři: dirname, filename nebo mtime. Přidejte \":"
-#~ "reverse\" pro otočení pořadí."
+#~ "Pořadí alb v adresáři: dirname, filename nebo mtime. Přidejte "
+#~ "\":reverse\" pro otočení pořadí."
 
 #~ msgid "TAG"
 #~ msgstr "ZNAČKY"
