@@ -633,7 +633,7 @@ class TestGenerators(LazygalTestGen):
 
         # silence a video to make sure it does not crash
         silencer = VideoProcessor(os.path.join(source_subgal.path, 'vid.mov'))
-        silencer.cmd.extend(['-c', 'copy', '-an'])
+        silencer.output_file_opts.extend(['-c', 'copy', '-an'])
         # overwrite the existing file
         silencer.convert(os.path.join(source_subgal.path, 'vid-silent.mov'))
 

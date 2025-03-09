@@ -48,9 +48,6 @@ class VideoProcessor(object):
         self.input_file = input_file
         self.output_file_opts = []
 
-        self.cmd = [FFMPEG, '-nostdin', '-progress', '-',
-                    '-y', # force overwrite existing file
-                    '-i', input_file]
         self.videofilters = []
         self.duration = None
 
