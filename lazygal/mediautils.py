@@ -149,13 +149,20 @@ class VideoFramesExtractor(VideoProcessor):
             self.videofilters.append('select=gt(scene\\,0.4)')
             self.videofilters.append('fps=1/60')
         else: # in case of very short video with one scene
-            self.videofilters.append('fps=1')
+            self.videofilters.append('fps=10')
 
         if resize is not None:
             self.scale(resize)
 
         self.output_file_opts.extend(['-frames:v', str(frames),
                                       '-vsync', 'vfr'])
+
+    def convert(self, outfile):
+        super(VideoFramesExtractor, self).convert(outfile)
+        if not os.path.isfile(outfile % 1):
+            # some ffmpeg version do not extract any frame but do not exit
+            # with return code
+            raise VideoError("no frame extracted")
 
 
 class VideoThumbnailer(object):
@@ -165,6 +172,7 @@ class VideoThumbnailer(object):
 
     def find_most_representative(self, images):
         images = list(images)
+        logging.debug("find_most_reprensentative in %s" % " ".join(images))
         if not images: return None
         if len(images) == 1: return images[0]
 
@@ -187,7 +195,7 @@ class VideoThumbnailer(object):
 
         # Find histogram closest to average histogram
         min_mse = None
-        best_frame_no = None
+        best_frame_no = 0
         for hist_index in range(len(histograms)):
             hist = histograms[hist_index][1]
             mse = 0.0
@@ -199,7 +207,7 @@ class VideoThumbnailer(object):
                 min_mse = mse
                 best_frame_no = hist_index
 
-        return histograms[hist_index][0]
+        return histograms[best_frame_no][0]
 
     def convert(self, outfile, resize=None):
         tmpdir = tempfile.mkdtemp(prefix='lazygal-')
@@ -207,9 +215,14 @@ class VideoThumbnailer(object):
         try:
             tmpimg_name = os.path.join(tmpdir,
                 '%s_%%s_%%%%d.jpg' % os.path.basename(self.video))
-            VideoFramesExtractor(self.video, resize) \
-                .convert(tmpimg_name % 'scene')
-            VideoFramesExtractor(self.video, resize, scene=False).convert(tmpimg_name % 'noscene')
+
+            try:
+                fextractor = VideoFramesExtractor(self.video, resize)
+                fextractor.convert(tmpimg_name % 'scene')
+            except VideoError as e:
+                fextractor = VideoFramesExtractor(self.video, resize, scene=False)
+                fextractor.convert(tmpimg_name % 'noscene')
+
             best = self.find_most_representative(map(lambda fn:
                                                      os.path.join(tmpdir, fn),
                                                  os.listdir(tmpdir)))
