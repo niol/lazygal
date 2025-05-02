@@ -40,81 +40,93 @@ class TestConf(LazygalTestGen):
         directories.
         """
 
-        os.makedirs(os.path.join(self.source_dir, 'gal', 'subgal'))
+        os.makedirs(os.path.join(self.source_dir, "gal", "subgal"))
 
         # src_dir/.lazygal
         config = configparser.RawConfigParser()
-        config.add_section('template-vars')
-        config.set('template-vars', 'foo', 'root')
-        config.set('template-vars', 'root', 'root')
-        config.add_section('webgal')
-        config.set('webgal', 'image-size', 'normal=800x600')
-        with open(os.path.join(self.source_dir, '.lazygal'), 'a') as f:
+        config.add_section("template-vars")
+        config.set("template-vars", "foo", "root")
+        config.set("template-vars", "root", "root")
+        config.add_section("webgal")
+        config.set("webgal", "image-size", "normal=800x600")
+        with open(os.path.join(self.source_dir, ".lazygal"), "a") as f:
             config.write(f)
 
         # src_dir/gal/.lazygal
         config = configparser.RawConfigParser()
-        config.add_section('template-vars')
-        config.set('template-vars', 'foo', 'gal')
-        config.set('template-vars', 'gal', 'gal')
-        with open(os.path.join(self.source_dir, 'gal', '.lazygal'), 'a') as f:
+        config.add_section("template-vars")
+        config.set("template-vars", "foo", "gal")
+        config.set("template-vars", "gal", "gal")
+        with open(os.path.join(self.source_dir, "gal", ".lazygal"), "a") as f:
             config.write(f)
 
         # src_dir/gal/subgal/.lazygal
         config = configparser.RawConfigParser()
-        config.add_section('template-vars')
-        config.set('template-vars', 'foo', 'subgal')
-        config.set('template-vars', 'subgal', 'subgal')
-        with open(os.path.join(self.source_dir, 'gal', 'subgal', '.lazygal'), 'a') as f:
+        config.add_section("template-vars")
+        config.set("template-vars", "foo", "subgal")
+        config.set("template-vars", "subgal", "subgal")
+        with open(os.path.join(self.source_dir, "gal", "subgal", ".lazygal"), "a") as f:
             config.write(f)
 
         config = lazygal.config.LazygalConfig()
-        config.set('global', 'puburl', 'http://example.com/album/')
+        config.set("global", "puburl", "http://example.com/album/")
         self.setup_album(config)
 
-        source_gal = self.setup_subgal('gal', ['gal_img.jpg'])
-        source_subgal = self.setup_subgal(os.path.join('gal', 'subgal'),
-                                          ['subgal_img.jpg'])
+        source_gal = self.setup_subgal("gal", ["gal_img.jpg"])
+        source_subgal = self.setup_subgal(
+            os.path.join("gal", "subgal"), ["subgal_img.jpg"]
+        )
         source_root = Directory(self.source_dir, [source_gal], [], self.album)
 
         dest_path = self.get_working_path()
 
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
-        self.assertEqual(dest_subgal.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'root'),
-                         'root')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'gal'),
-                         'gal')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'subgal'),
-                         'subgal')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
-                         'subgal')
-        self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
-            [{'name': 'normal', 'defs': '800x600', 'default': True}])
+        self.assertEqual(
+            dest_subgal.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_subgal.config.get("template-vars", "root"), "root")
+        self.assertEqual(dest_subgal.config.get("template-vars", "gal"), "gal")
+        self.assertEqual(dest_subgal.config.get("template-vars", "subgal"), "subgal")
+        self.assertEqual(dest_subgal.config.get("template-vars", "foo"), "subgal")
+        self.assertEqual(
+            dest_subgal.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600", "default": True}],
+        )
 
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
-        self.assertEqual(dest_gal.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_gal.config.get('template-vars', 'root'), 'root')
-        self.assertEqual(dest_gal.config.get('template-vars', 'gal'), 'gal')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_gal.config.get, 'template-vars', 'subgal')
-        self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
-        self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
-            [{'name': 'normal', 'defs': '800x600', 'default': True}])
+        self.assertEqual(
+            dest_gal.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_gal.config.get("template-vars", "root"), "root")
+        self.assertEqual(dest_gal.config.get("template-vars", "gal"), "gal")
+        self.assertRaises(
+            lazygal.config.NoOptionError, dest_gal.config.get, "template-vars", "subgal"
+        )
+        self.assertEqual(dest_gal.config.get("template-vars", "foo"), "gal")
+        self.assertEqual(
+            dest_gal.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600", "default": True}],
+        )
 
         dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
-        self.assertEqual(dest_root.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_root.config.get('template-vars', 'root'), 'root')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_root.config.get, 'template-vars', 'gal')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_root.config.get, 'template-vars', 'subgal')
-        self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
-        self.assertEqual(dest_root.config.get('webgal', 'image-size'),
-            [{'name': 'normal', 'defs': '800x600', 'default': True}])
+        self.assertEqual(
+            dest_root.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_root.config.get("template-vars", "root"), "root")
+        self.assertRaises(
+            lazygal.config.NoOptionError, dest_root.config.get, "template-vars", "gal"
+        )
+        self.assertRaises(
+            lazygal.config.NoOptionError,
+            dest_root.config.get,
+            "template-vars",
+            "subgal",
+        )
+        self.assertEqual(dest_root.config.get("template-vars", "foo"), "root")
+        self.assertEqual(
+            dest_root.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600", "default": True}],
+        )
 
     def test_perdir_conf(self):
         """
@@ -122,151 +134,176 @@ class TestConf(LazygalTestGen):
         the parent directory configuration shall apply to child directories.
         """
 
-        os.makedirs(os.path.join(self.source_dir, 'gal', 'subgal'))
+        os.makedirs(os.path.join(self.source_dir, "gal", "subgal"))
 
         # src_dir/.lazygal
-        with open(os.path.join(self.source_dir, '.lazygal'), 'a') as f:
-            json.dump({
-                'template-vars': {
-                    'foo':  'root',
-                    'root': 'root',
+        with open(os.path.join(self.source_dir, ".lazygal"), "a") as f:
+            json.dump(
+                {
+                    "template-vars": {
+                        "foo": "root",
+                        "root": "root",
+                    },
+                    "webgal": {
+                        "image-size": [
+                            {"name": "normal", "defs": "800x600"},
+                        ],
+                    },
                 },
-                'webgal': {
-                    'image-size': [
-                        {'name': 'normal', 'defs': '800x600'},
-                    ],
-                },
-            }, f)
+                f,
+            )
 
         # src_dir/gal/.lazygal
-        with open(os.path.join(self.source_dir, 'gal', '.lazygal'), 'a') as f:
-            json.dump({
-                'template-vars': {
-                    'foo': 'gal',
-                    'gal': 'gal',
+        with open(os.path.join(self.source_dir, "gal", ".lazygal"), "a") as f:
+            json.dump(
+                {
+                    "template-vars": {
+                        "foo": "gal",
+                        "gal": "gal",
+                    },
                 },
-            }, f)
+                f,
+            )
 
         # src_dir/gal/subgal/.lazygal
-        with open(os.path.join(self.source_dir, 'gal', 'subgal', '.lazygal'), 'a') as f:
-            json.dump({
-                'template-vars': {
-                    'foo':    'subgal',
-                    'subgal': 'subgal',
+        with open(os.path.join(self.source_dir, "gal", "subgal", ".lazygal"), "a") as f:
+            json.dump(
+                {
+                    "template-vars": {
+                        "foo": "subgal",
+                        "subgal": "subgal",
+                    },
                 },
-            }, f)
+                f,
+            )
 
         config = lazygal.config.LazygalConfig()
-        config.set('global', 'puburl', 'http://example.com/album/')
+        config.set("global", "puburl", "http://example.com/album/")
         self.setup_album(config)
 
-        source_gal = self.setup_subgal('gal', ['gal_img.jpg'])
-        source_subgal = self.setup_subgal(os.path.join('gal', 'subgal'),
-                                          ['subgal_img.jpg'])
+        source_gal = self.setup_subgal("gal", ["gal_img.jpg"])
+        source_subgal = self.setup_subgal(
+            os.path.join("gal", "subgal"), ["subgal_img.jpg"]
+        )
         source_root = Directory(self.source_dir, [source_gal], [], self.album)
 
         dest_path = self.get_working_path()
 
         dest_subgal = WebalbumDir(source_subgal, [], self.album, dest_path)
-        self.assertEqual(dest_subgal.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'root'),
-                         'root')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'gal'),
-                         'gal')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'subgal'),
-                         'subgal')
-        self.assertEqual(dest_subgal.config.get('template-vars', 'foo'),
-                         'subgal')
-        self.assertEqual(dest_subgal.config.get('webgal', 'image-size'),
-                         [{'name': 'normal', 'defs': '800x600'}])
+        self.assertEqual(
+            dest_subgal.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_subgal.config.get("template-vars", "root"), "root")
+        self.assertEqual(dest_subgal.config.get("template-vars", "gal"), "gal")
+        self.assertEqual(dest_subgal.config.get("template-vars", "subgal"), "subgal")
+        self.assertEqual(dest_subgal.config.get("template-vars", "foo"), "subgal")
+        self.assertEqual(
+            dest_subgal.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600"}],
+        )
 
         dest_gal = WebalbumDir(source_gal, [dest_subgal], self.album, dest_path)
-        self.assertEqual(dest_gal.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_gal.config.get('template-vars', 'root'), 'root')
-        self.assertEqual(dest_gal.config.get('template-vars', 'gal'), 'gal')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_gal.config.get, 'template-vars', 'subgal')
-        self.assertEqual(dest_gal.config.get('template-vars', 'foo'), 'gal')
-        self.assertEqual(dest_gal.config.get('webgal', 'image-size'),
-                         [{'name': 'normal', 'defs': '800x600'}])
+        self.assertEqual(
+            dest_gal.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_gal.config.get("template-vars", "root"), "root")
+        self.assertEqual(dest_gal.config.get("template-vars", "gal"), "gal")
+        self.assertRaises(
+            lazygal.config.NoOptionError, dest_gal.config.get, "template-vars", "subgal"
+        )
+        self.assertEqual(dest_gal.config.get("template-vars", "foo"), "gal")
+        self.assertEqual(
+            dest_gal.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600"}],
+        )
 
         dest_root = WebalbumDir(source_root, [dest_gal], self.album, dest_path)
-        self.assertEqual(dest_root.config.get('global', 'puburl'),
-                         'http://example.com/album/')
-        self.assertEqual(dest_root.config.get('template-vars', 'root'), 'root')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_root.config.get, 'template-vars', 'gal')
-        self.assertRaises(lazygal.config.NoOptionError,
-                          dest_root.config.get, 'template-vars', 'subgal')
-        self.assertEqual(dest_root.config.get('template-vars', 'foo'), 'root')
-        self.assertEqual(dest_root.config.get('webgal', 'image-size'),
-                         [{'name': 'normal', 'defs': '800x600'}])
+        self.assertEqual(
+            dest_root.config.get("global", "puburl"), "http://example.com/album/"
+        )
+        self.assertEqual(dest_root.config.get("template-vars", "root"), "root")
+        self.assertRaises(
+            lazygal.config.NoOptionError, dest_root.config.get, "template-vars", "gal"
+        )
+        self.assertRaises(
+            lazygal.config.NoOptionError,
+            dest_root.config.get,
+            "template-vars",
+            "subgal",
+        )
+        self.assertEqual(dest_root.config.get("template-vars", "foo"), "root")
+        self.assertEqual(
+            dest_root.config.get("webgal", "image-size"),
+            [{"name": "normal", "defs": "800x600"}],
+        )
 
     def test_types(self):
         config = lazygal.config.LazygalConfig()
 
         # bool
-        for true in ('1', 'yes', 'true', 'on'):
-            config.set('runtime', 'quiet', true)
-            self.assertTrue(config.get('runtime', 'quiet') is True, true)
-        for false in ('0', 'no', 'false', 'off'):
-            config.set('runtime', 'quiet', false)
-            self.assertTrue(config.get('runtime', 'quiet') is False, false)
+        for true in ("1", "yes", "true", "on"):
+            config.set("runtime", "quiet", true)
+            self.assertTrue(config.get("runtime", "quiet") is True, true)
+        for false in ("0", "no", "false", "off"):
+            config.set("runtime", "quiet", false)
+            self.assertTrue(config.get("runtime", "quiet") is False, false)
 
         # int
-        config.set('webgal', 'thumbs-per-page', '2')
-        self.assertEqual(config.get('webgal', 'thumbs-per-page'), 2)
+        config.set("webgal", "thumbs-per-page", "2")
+        self.assertEqual(config.get("webgal", "thumbs-per-page"), 2)
 
         # int or false
-        config.set('global', 'dir-flattening-depth', 'False')
-        self.assertTrue(config.get('global', 'dir-flattening-depth') is False)
-        config.set('global', 'dir-flattening-depth', '2')
-        self.assertEqual(config.get('global', 'dir-flattening-depth'), 2)
+        config.set("global", "dir-flattening-depth", "False")
+        self.assertTrue(config.get("global", "dir-flattening-depth") is False)
+        config.set("global", "dir-flattening-depth", "2")
+        self.assertEqual(config.get("global", "dir-flattening-depth"), 2)
 
         # list
-        config.set('webgal', 'filter-by-tag', 'foo, bar')
-        self.assertEqual(config.get('webgal', 'filter-by-tag'), ['foo', 'bar'])
+        config.set("webgal", "filter-by-tag", "foo, bar")
+        self.assertEqual(config.get("webgal", "filter-by-tag"), ["foo", "bar"])
 
         # dict
-        config.set('webgal', 'image-size', 'medium=foo, normal=bar')
-        self.assertEqual(config.get('webgal', 'image-size'),
-                         [{'name': 'medium', 'defs': 'foo', 'default': True},
-                          {'name': 'normal', 'defs': 'bar', 'default': False},
-                         ])
+        config.set("webgal", "image-size", "medium=foo, normal=bar")
+        self.assertEqual(
+            config.get("webgal", "image-size"),
+            [
+                {"name": "medium", "defs": "foo", "default": True},
+                {"name": "normal", "defs": "bar", "default": False},
+            ],
+        )
 
         # order
-        config.set('webgal', 'sort-medias', 'dirname:reverse')
-        self.assertEqual(config.get('webgal', 'sort-medias'),
-                         {'order': 'dirname', 'reverse': True})
+        config.set("webgal", "sort-medias", "dirname:reverse")
+        self.assertEqual(
+            config.get("webgal", "sort-medias"), {"order": "dirname", "reverse": True}
+        )
 
         # false or string
-        config.set('webgal', 'original-baseurl', 'False')
-        self.assertTrue(config.get('webgal', 'original-baseurl') is False)
-        config.set('webgal', 'original-baseurl', './foo')
-        self.assertEqual(config.get('webgal', 'original-baseurl'), './foo')
+        config.set("webgal", "original-baseurl", "False")
+        self.assertTrue(config.get("webgal", "original-baseurl") is False)
+        config.set("webgal", "original-baseurl", "./foo")
+        self.assertEqual(config.get("webgal", "original-baseurl"), "./foo")
 
     def test_syntax(self):
         config = lazygal.config.LazygalConfig()
         configw = lazygal.config.LazygalWebgalConfig()
 
         # not a valid section
-        self.assertRaises(ValueError, config.set, 'foo', 'bar', 'baz')
-        self.assertRaises(ValueError, configw.set, 'runtime', 'quiet', 'false')
+        self.assertRaises(ValueError, config.set, "foo", "bar", "baz")
+        self.assertRaises(ValueError, configw.set, "runtime", "quiet", "false")
 
         # not a valid option
-        self.assertRaises(ValueError, config.set, 'webgal', 'foo', 'bar')
+        self.assertRaises(ValueError, config.set, "webgal", "foo", "bar")
 
         # basic option content parsing error
-        self.assertRaises(ValueError, config.set,
-                                      'webgal', 'dir-flattening-depth', 'foo')
-        self.assertRaises(ValueError, config.set,
-                                      'webgal', 'image-size', 'crappy')
-        self.assertRaises(ValueError, config.set, 'runtime', 'quiet', 'foo')
+        self.assertRaises(
+            ValueError, config.set, "webgal", "dir-flattening-depth", "foo"
+        )
+        self.assertRaises(ValueError, config.set, "webgal", "image-size", "crappy")
+        self.assertRaises(ValueError, config.set, "runtime", "quiet", "foo")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
 

@@ -35,32 +35,38 @@ class RSS20(object):
         self.__maxitems = maxitems
 
     def __get_root_and_channel(self, feed_filename):
-        root = ET.Element('rss', {'version'   : '2.0',
-                                  'xmlns:atom': 'http://www.w3.org/2005/Atom'})
+        root = ET.Element(
+            "rss", {"version": "2.0", "xmlns:atom": "http://www.w3.org/2005/Atom"}
+        )
 
-        channel = ET.SubElement(root, 'channel')
-        ET.SubElement(channel, 'title').text = self.title
-        ET.SubElement(channel, 'link').text = pathutils.url_quote(self.link)
-        ET.SubElement(channel, 'description').text = self.description
-        ET.SubElement(channel, 'atom:link', {'href': self.link + feed_filename,
-                                             'rel' : 'self',
-                                             'type': 'application/rss+xml'})
+        channel = ET.SubElement(root, "channel")
+        ET.SubElement(channel, "title").text = self.title
+        ET.SubElement(channel, "link").text = pathutils.url_quote(self.link)
+        ET.SubElement(channel, "description").text = self.description
+        ET.SubElement(
+            channel,
+            "atom:link",
+            {
+                "href": self.link + feed_filename,
+                "rel": "self",
+                "type": "application/rss+xml",
+            },
+        )
 
         return root, channel
 
     def __item_older(self, x, y):
-        return int(y['timestamp'] - x['timestamp'])
+        return int(y["timestamp"] - x["timestamp"])
 
     def push_item(self, title, link, contents, timestamp):
         item = {}
-        item['title'] = title
-        item['link'] = link
-        item['contents'] = contents
-        item['timestamp'] = timestamp
+        item["title"] = title
+        item["link"] = link
+        item["contents"] = contents
+        item["timestamp"] = timestamp
 
         i = 0
-        while i < len(self.items)\
-                and self.__item_older(item, self.items[i]) > 0:
+        while i < len(self.items) and self.__item_older(item, self.items[i]) > 0:
             i = i + 1
 
         if i < self.__maxitems:
@@ -73,22 +79,22 @@ class RSS20(object):
     def dump(self, path):
         (root, channel) = self.__get_root_and_channel(os.path.basename(path))
 
-        pubdate = ET.SubElement(channel, 'pubDate')
+        pubdate = ET.SubElement(channel, "pubDate")
 
-        self.items.sort(key=lambda x: int(x['timestamp']))
+        self.items.sort(key=lambda x: int(x["timestamp"]))
         for item in self.items:
-            rssitem = ET.SubElement(channel, 'item')
-            ET.SubElement(rssitem, 'title').text = item['title']
-            ET.SubElement(rssitem, 'link').text = pathutils.url_quote(item['link'])
-            ET.SubElement(rssitem, 'guid').text = pathutils.url_quote(item['link'])
-            date = email.utils.formatdate(item['timestamp'], localtime=True)
-            ET.SubElement(rssitem, 'pubDate').text = date
-            ET.SubElement(rssitem, 'description').text = item['contents']
+            rssitem = ET.SubElement(channel, "item")
+            ET.SubElement(rssitem, "title").text = item["title"]
+            ET.SubElement(rssitem, "link").text = pathutils.url_quote(item["link"])
+            ET.SubElement(rssitem, "guid").text = pathutils.url_quote(item["link"])
+            date = email.utils.formatdate(item["timestamp"], localtime=True)
+            ET.SubElement(rssitem, "pubDate").text = date
+            ET.SubElement(rssitem, "description").text = item["contents"]
 
         pubdate.text = email.utils.formatdate(localtime=True)
 
         feedtree = ET.ElementTree(root)
-        feedtree.write(path, 'utf-8')
+        feedtree.write(path, "utf-8")
 
 
 # vim: ts=4 sw=4 expandtab

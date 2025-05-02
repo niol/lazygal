@@ -25,14 +25,14 @@ import urllib.parse as urlparse
 
 
 def is_root_posix(path):
-    return path == '/'
+    return path == "/"
 
 
 def is_root_win32(path):
-    return path[1:] == ':\\'  # strip drive letter in comparison
+    return path[1:] == ":\\"  # strip drive letter in comparison
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     is_root = is_root_win32
 else:
     is_root = is_root_posix
@@ -47,8 +47,8 @@ def is_subdir_of(dir_path, path):
     test_path = path
     while test_path != dir_path and not is_root(test_path):
         test_path, tail = os.path.split(test_path)
-        if test_path == '':
-            raise RuntimeError('subdir test failure: please report a bug')
+        if test_path == "":
+            raise RuntimeError("subdir test failure: please report a bug")
 
     if test_path == dir_path:
         return True
@@ -62,40 +62,41 @@ def url_path(physical_path, input_pathmodule=os.path):
     i.e. using forward slashes. This can only be used for relative paths
     because while converting, the root (either '/' or 'C:\\') is irrelevant.
     """
-    if input_pathmodule == posixpath: return physical_path
+    if input_pathmodule == posixpath:
+        return physical_path
 
     head = physical_path
     path_list = []
-    while head != '' and not is_root_posix(head) and not is_root_win32(head):
+    while head != "" and not is_root_posix(head) and not is_root_win32(head):
         head, tail = input_pathmodule.split(head)
         path_list.append(tail)
 
-    if path_list == []: return ''
+    if path_list == []:
+        return ""
 
     path_list.reverse()
     return posixpath.join(*path_list)
 
 
-def url_quote(url, anchor=''):
+def url_quote(url, anchor=""):
     tokens = []
-    if url.startswith('http://') or url.startswith('https://'):
+    if url.startswith("http://") or url.startswith("https://"):
         parsed = urlparse.urlparse(url)
         if parsed.scheme:
             tokens.append(parsed.scheme)
-            tokens.append('://')
+            tokens.append("://")
             tokens.append(parsed.netloc)
         toquote = parsed.path
     else:
         toquote = url
 
-    tokens.append(urlparse.quote(toquote.encode(sys.getfilesystemencoding()),
-                                 '/~'))
+    tokens.append(urlparse.quote(toquote.encode(sys.getfilesystemencoding()), "/~"))
 
     if anchor:
-        tokens.append('#')
+        tokens.append("#")
         tokens.append(urlparse.quote(anchor.encode(sys.getfilesystemencoding())))
 
-    return ''.join(tokens)
+    return "".join(tokens)
 
 
 def walk(top, walked=None, topdown=False):
@@ -106,7 +107,8 @@ def walk(top, walked=None, topdown=False):
       which may happen when two directory trees have symbolic links to
       each other's contents.
     """
-    if walked is None: walked = []
+    if walked is None:
+        walked = []
 
     for root, dirs, files in os.walk(top, topdown=topdown):
         walked.append(os.path.realpath(root))
@@ -119,7 +121,10 @@ def walk(top, walked=None, topdown=False):
                     for x in walk(d_path, walked):
                         yield x
                 else:
-                    logging.error("Not following symlink '%s' because directory has already been processed.", d_path)
+                    logging.error(
+                        "Not following symlink '%s' because directory has already been processed.",
+                        d_path,
+                    )
 
         yield root, dirs, files
 

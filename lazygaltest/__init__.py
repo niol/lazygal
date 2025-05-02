@@ -27,24 +27,25 @@ from lazygal.generators import Album
 
 
 SAMPLES_DIR = os.path.dirname(__file__)
-SAMPLE_IMG = os.path.join(SAMPLES_DIR, 'sample.jpg')
-SAMPLE_VIDEO_MOV = os.path.join(SAMPLES_DIR, 'vid.mov')
+SAMPLE_IMG = os.path.join(SAMPLES_DIR, "sample.jpg")
+SAMPLE_VIDEO_MOV = os.path.join(SAMPLES_DIR, "vid.mov")
 
 
 # Init i18n
 import gettext
-LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                             'build', 'mo'))
-gettext.install('lazygal', LOCALES_PATH)
+
+LOCALES_PATH = os.path.normpath(os.path.join(os.path.dirname(__file__), "build", "mo"))
+gettext.install("lazygal", LOCALES_PATH)
 
 
 # Init logging
 import logging
-logging.basicConfig(format='%(message)s', level=logging.ERROR)
+
+logging.basicConfig(format="%(message)s", level=logging.ERROR)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 try:
-    debug = os.environ['DEBUG']
+    debug = os.environ["DEBUG"]
 except KeyError:
     logger.setLevel(logging.ERROR)
 else:
@@ -83,8 +84,8 @@ class LazygalTest(unittest.TestCase):
         shutil.copy(SAMPLE_VIDEO_MOV, vid_path)
         return vid_path
 
-    def create_file(self, path, contents=''):
-        with codecs.open(path, 'w', 'utf-8') as f:
+    def create_file(self, path, contents=""):
+        with codecs.open(path, "w", "utf-8") as f:
             f.write(contents)
 
     def tearDown(self):
@@ -98,7 +99,7 @@ class LazygalTestGen(LazygalTest):
         super().setUp()
 
         self.tmpdir = self.get_working_path()
-        self.source_dir = os.path.join(self.tmpdir, 'src')
+        self.source_dir = os.path.join(self.tmpdir, "src")
         os.mkdir(self.source_dir)
 
         if album:
@@ -124,7 +125,7 @@ class LazygalTestGen(LazygalTest):
 # http://docs.python.org/lib/built-in-funcs.html
 def my_import(name):
     mod = __import__(name)
-    components = name.split('.')
+    components = name.split(".")
     for comp in components[1:]:
         mod = getattr(mod, comp)
     return mod
@@ -134,26 +135,26 @@ def sample_album(outdir):
     d = os.path.normpath(outdir)
     os.makedirs(d, exist_ok=True)
     sample = LazygalTest()
-    sample.add_img(d, 'root.jpg')
+    sample.add_img(d, "root.jpg")
 
-    flowers = os.path.join(d, 'flower')
+    flowers = os.path.join(d, "flower")
     os.makedirs(flowers, exist_ok=True)
-    sample.add_img(flowers, 'coquelicot.jpg')
-    sample.add_img(flowers, 'rose.jpg')
-    sample.add_video(flowers, 'nature.mov')
+    sample.add_img(flowers, "coquelicot.jpg")
+    sample.add_img(flowers, "rose.jpg")
+    sample.add_video(flowers, "nature.mov")
 
-    beers = os.path.join(d, 'beers')
+    beers = os.path.join(d, "beers")
     os.makedirs(beers, exist_ok=True)
-    sample.add_img(beers, 'guinness.jpg')
-    sample.add_img(beers, 'kilkenny.jpg')
+    sample.add_img(beers, "guinness.jpg")
+    sample.add_img(beers, "kilkenny.jpg")
 
 
 def run():
     import glob
+
     suitelist = []
-    for fn in glob.glob(os.path.join(os.path.dirname(__file__),
-                                     "test_*.py")):
-        module_path = '.'.join(['lazygaltest', os.path.basename(fn[:-3])])
+    for fn in glob.glob(os.path.join(os.path.dirname(__file__), "test_*.py")):
+        module_path = ".".join(["lazygaltest", os.path.basename(fn[:-3])])
         m = my_import(module_path)
         suitelist.append(unittest.defaultTestLoader.loadTestsFromModule(m))
     runner = unittest.TextTestRunner(verbosity=2)

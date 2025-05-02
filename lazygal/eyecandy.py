@@ -31,8 +31,16 @@ class PictureMess:
     THUMB_MAX_ROTATE_ANGLE = 40
     THUMB_WHITE_WIDTH = 5
 
-    def __init__(self, images_paths, top_image_path=None, bg='transparent',
-                 result_size=(200, 150, )):
+    def __init__(
+        self,
+        images_paths,
+        top_image_path=None,
+        bg="transparent",
+        result_size=(
+            200,
+            150,
+        ),
+    ):
         if len(images_paths) > self.THUMB_HOW_MANY:
             self.images_paths = random.sample(images_paths, self.THUMB_HOW_MANY)
         else:
@@ -47,7 +55,7 @@ class PictureMess:
                 self.images_paths.pop()
             self.images_paths.append(top_image_path)
 
-        self.bg = bg != 'transparent' and bg or Color.TRANSPARENT
+        self.bg = bg != "transparent" and bg or Color.TRANSPARENT
 
         self.result_size = result_size
         self.thumb_size = [3 * max(self.result_size) // 5 for i in range(2)]
@@ -56,22 +64,22 @@ class PictureMess:
 
     def __build_mess_thumb(self, image_path):
         white = maxi = None
-        with open(image_path, 'rb') as img_fp:
+        with open(image_path, "rb") as img_fp:
             img = Image.open(img_fp)
             img.thumbnail(self.thumb_size, Image.LANCZOS)
             white_size = [x + 2 * self.THUMB_WHITE_WIDTH for x in img.size]
-            white = Image.new('RGB', white_size, 'white')
+            white = Image.new("RGB", white_size, "white")
             white.paste(img, (self.THUMB_WHITE_WIDTH, self.THUMB_WHITE_WIDTH))
 
         maxi = 2 * max(white_size)
 
-        thumb = Image.new('RGBA', (maxi, maxi))
+        thumb = Image.new("RGBA", (maxi, maxi))
 
-        thumb.paste(white, ((maxi - white_size[0]) // 2,
-                            (maxi - white_size[1]) // 2))
+        thumb.paste(white, ((maxi - white_size[0]) // 2, (maxi - white_size[1]) // 2))
 
-        rotation = random.randint(-self.THUMB_MAX_ROTATE_ANGLE,
-                                  self.THUMB_MAX_ROTATE_ANGLE)
+        rotation = random.randint(
+            -self.THUMB_MAX_ROTATE_ANGLE, self.THUMB_MAX_ROTATE_ANGLE
+        )
         thumb = thumb.rotate(rotation, resample=Image.BILINEAR)
 
         thumb = thumb.crop(thumb.getbbox())
@@ -82,19 +90,18 @@ class PictureMess:
         return random.randint(0 + self.STEP, holding_coord - coord - self.STEP)
 
     def __place_thumb_box(self, thumb):
-        x_to_fit = self.__rand_coord_with_step(thumb.size[0],
-                                               self.picture_mess.size[0])
-        y_to_fit = self.__rand_coord_with_step(thumb.size[1],
-                                               self.picture_mess.size[1])
+        x_to_fit = self.__rand_coord_with_step(thumb.size[0], self.picture_mess.size[0])
+        y_to_fit = self.__rand_coord_with_step(thumb.size[1], self.picture_mess.size[1])
         return (x_to_fit, y_to_fit)
 
     def __paste_img_to_mess_top(self, img, pos):
         # http://www.mail-archive.com/image-sig@python.org/msg03387.html
-        img_without_alpha = img.convert('RGB')
+        img_without_alpha = img.convert("RGB")
 
-        if self.picture_mess.mode == 'RGBA':
+        if self.picture_mess.mode == "RGBA":
             invert_alpha = ImageChops.invert(
-                Image.merge('L', self.picture_mess.split()[3:]))
+                Image.merge("L", self.picture_mess.split()[3:])
+            )
             if invert_alpha.size != img.size:
                 w, h = img.size
                 box = pos + (pos[0] + w, pos[1] + h)
@@ -105,7 +112,7 @@ class PictureMess:
         self.picture_mess.paste(img_without_alpha, pos, img)
 
         if invert_alpha:
-            dest_alpha = Image.merge('L', self.picture_mess.split()[3:])
+            dest_alpha = Image.merge("L", self.picture_mess.split()[3:])
             self.picture_mess.paste(img_without_alpha, pos, invert_alpha)
             self.picture_mess.putalpha(dest_alpha)
 
@@ -130,10 +137,10 @@ class PictureMess:
     def write(self, output_file):
         self.__build_picture_mess()
 
-        mode = self.bg == Color.TRANSPARENT and 'RGBA' or 'RGB'
+        mode = self.bg == Color.TRANSPARENT and "RGBA" or "RGB"
         shadow = Image.new(mode, self.picture_mess.size, self.bg)
 
-        shadow.paste('black', None, self.picture_mess)
+        shadow.paste("black", None, self.picture_mess)
         shadow = shadow.filter(ImageFilter.BLUR)
 
         tmp = self.picture_mess
@@ -149,20 +156,20 @@ class PictureTidy(PictureMess):
 
 
 WEBALBUMPIC_TYPES = {
-    'messy': PictureMess,
-    'tidy' : PictureTidy,
+    "messy": PictureMess,
+    "tidy": PictureTidy,
 }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from optparse import OptionParser
 
     parser = OptionParser()
     parser.add_option("-s", "--seed", type="int", dest="seed")
-    parser.add_option("-t", "--type", dest="type",
-                      action="store_true", default=False)
-    parser.add_option("-b", "--background", type="string",
-                      dest="color", default="transparent")
+    parser.add_option("-t", "--type", dest="type", action="store_true", default=False)
+    parser.add_option(
+        "-b", "--background", type="string", dest="color", default="transparent"
+    )
     (options, args) = parser.parse_args()
 
     if options.seed:
@@ -171,7 +178,7 @@ if __name__ == '__main__':
     MultipicRepr = PictureMess
     if options.type:
         MultipicRepr = WEBALBUMPIC_TYPES[options.type]
-    MultipicRepr(args[0:], bg=options.color).write('test.png')
+    MultipicRepr(args[0:], bg=options.color).write("test.png")
 
 
 # vim: ts=4 sw=4 expandtab

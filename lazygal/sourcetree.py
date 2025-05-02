@@ -30,7 +30,7 @@ from . import pathutils, make, metadata
 from . import mediautils
 
 
-SOURCEDIR_CONFIGFILE = '.lazygal'
+SOURCEDIR_CONFIGFILE = ".lazygal"
 
 
 class File(make.FileSimpleDependency):
@@ -48,8 +48,8 @@ class File(make.FileSimpleDependency):
             path = self.path
 
         relative_path = os.path.relpath(path, self.album.source_dir)
-        if relative_path == '.':
-            return ''
+        if relative_path == ".":
+            return ""
         else:
             return relative_path
 
@@ -79,7 +79,8 @@ class File(make.FileSimpleDependency):
         return pathutils.is_subdir_of(dir_path, path)
 
     def get_album_level(self, path=None):
-        if path is None: path = self.path
+        if path is None:
+            path = self.path
 
         if os.path.isdir(path):
             cur_path = path
@@ -91,12 +92,12 @@ class File(make.FileSimpleDependency):
             cur_path, tail = os.path.split(cur_path)
             album_level += 1
             if pathutils.is_root(cur_path):
-                raise RuntimeError(_('Root not found'))
+                raise RuntimeError(_("Root not found"))
         return album_level
 
     def should_be_skipped(self):
         head = self.strip_root()
-        while head != '':
+        while head != "":
             head, tail = os.path.split(head)
             for pattern in self.album.excludes:
                 if fnmatch.fnmatch(tail, pattern):
@@ -107,7 +108,7 @@ class File(make.FileSimpleDependency):
         return datetime.datetime.fromtimestamp(self.get_mtime())
 
     def name_numeric(self):
-        numeric_part = re.sub(r'\D', '', self.filename)
+        numeric_part = re.sub(r"\D", "", self.filename)
         return numeric_part and int(numeric_part) or 0
 
 
@@ -117,10 +118,10 @@ class MediaFile(File):
         super().__init__(path, album)
         self.broken = False
         self.md = {
-            'type'    : self.type,
-            'date'    : None,
-            'metadata': {
-                'comment': None,
+            "type": self.type,
+            "date": None,
+            "metadata": {
+                "comment": None,
             },
         }
         self.__md_loaded = False
@@ -135,7 +136,7 @@ class MediaFile(File):
         try:
             mdloader = self.mdloader(self.path)
         except ValueError as e:
-            logging.debug('Cannot load metadata for %s: %s' % (self.path, e))
+            logging.debug("Cannot load metadata for %s: %s" % (self.path, e))
             mdloader = None
         self._parse_metadata(mdloader)
 
@@ -143,16 +144,18 @@ class MediaFile(File):
         if not self.__md_loaded:
             if not pindex:
                 self.load_metadata_from_mediafile()
-            elif self.get_mtime() < pindex.get_mtime() \
-            and self.filename in pindex.data['medias']:
+            elif (
+                self.get_mtime() < pindex.get_mtime()
+                and self.filename in pindex.data["medias"]
+            ):
                 # load metadata from persistent index
-                self.md = pindex.data['medias'][self.filename]
+                self.md = pindex.data["medias"][self.filename]
             else:
                 # load metadata from file
                 self.load_metadata_from_mediafile()
                 pindex.load_media(self)
 
-            assert self.md['date'].__class__ == datetime.datetime
+            assert self.md["date"].__class__ == datetime.datetime
             self.__md_loaded = True
 
     def _parse_metadata(self, mdloader):
@@ -160,27 +163,27 @@ class MediaFile(File):
         if mdloader:
             md_date = mdloader.get_date()
             if md_date:
-                self.md['metadata']['date'] = md_date
-                self.md['date'] = md_date
+                self.md["metadata"]["date"] = md_date
+                self.md["date"] = md_date
 
         if not md_date:
             # No date available in md, or bad format, use file mtime
-            self.md['date'] = self.get_datetime()
+            self.md["date"] = self.get_datetime()
 
     def set_broken(self):
         self.broken = True
 
     def has_reliable_date(self):
-        return 'date' in self.md['metadata'] and self.md['metadata']['date']
+        return "date" in self.md["metadata"] and self.md["metadata"]["date"]
 
     def get_date_taken(self):
-        return self.md['date']
+        return self.md["date"]
 
     def get_size(self):
         try:
             if self.broken:
                 raise KeyError()
-            return (self.md['width'], self.md['height'])
+            return (self.md["width"], self.md["height"])
         except KeyError:
             self.broken = True
             return (0, 0)
@@ -195,11 +198,11 @@ class MediaFile(File):
 
 
 class ImageFile(MediaFile):
-    type = 'image'
+    type = "image"
     mdloader = metadata.ImageInfoTags
 
     def probe(self):
-        with open(self.path, 'rb') as im_fp:
+        with open(self.path, "rb") as im_fp:
             try:
                 im = PILImage.open(im_fp)
             except IOError:
@@ -207,9 +210,9 @@ class ImageFile(MediaFile):
                 return (None, None)
             else:
                 return {
-                    'width'       : im.size[0],
-                    'height'      : im.size[1],
-                    'alphachannel': im.mode in ('RGBA', 'LA'),
+                    "width": im.size[0],
+                    "height": im.size[1],
+                    "alphachannel": im.mode in ("RGBA", "LA"),
                 }
 
     def _parse_metadata(self, mdloader):
@@ -222,52 +225,57 @@ class ImageFile(MediaFile):
         self.md.update(i)
 
         if mdloader:
-            self.md['metadata'].update({
-                'comment'     : mdloader.get_comment() or None,
-                'rotation'    : mdloader.get_required_rotation(),
-                'camera_name' : mdloader.get_camera_name(),
-                'lens_name'   : mdloader.get_lens_name(),
-                'flash'       : mdloader.get_flash(),
-                'exposure'    : mdloader.get_exposure(),
-                'iso'         : mdloader.get_iso(),
-                'fnumber'     : mdloader.get_fnumber(),
-                'focal_length': mdloader.get_focal_length(),
-                'authorship'  : mdloader.get_authorship(),
-                'keywords'    : list(mdloader.get_keywords()),
-                'location'    : mdloader.get_location(),
-            })
+            self.md["metadata"].update(
+                {
+                    "comment": mdloader.get_comment() or None,
+                    "rotation": mdloader.get_required_rotation(),
+                    "camera_name": mdloader.get_camera_name(),
+                    "lens_name": mdloader.get_lens_name(),
+                    "flash": mdloader.get_flash(),
+                    "exposure": mdloader.get_exposure(),
+                    "iso": mdloader.get_iso(),
+                    "fnumber": mdloader.get_fnumber(),
+                    "focal_length": mdloader.get_focal_length(),
+                    "authorship": mdloader.get_authorship(),
+                    "keywords": list(mdloader.get_keywords()),
+                    "location": mdloader.get_location(),
+                }
+            )
 
 
 class VideoFile(MediaFile):
-    type = 'video'
+    type = "video"
     mdloader = metadata.VideoInfoTags
 
     def _parse_metadata(self, mdloader):
         super()._parse_metadata(mdloader)
 
         if mdloader:
-            self.md.update({
-                'width':  mdloader.size[0],
-                'height': mdloader.size[1],
-            })
+            self.md.update(
+                {
+                    "width": mdloader.size[0],
+                    "height": mdloader.size[1],
+                }
+            )
         else:
             self.set_broken()
 
 
 class MediaHandler(object):
 
-    FORMATS = {'.jpeg': ImageFile,
-               '.jpg' : ImageFile,
-               '.png' : ImageFile,
-               '.mov' : VideoFile,
-               '.avi' : VideoFile,
-               '.mp4' : VideoFile,
-               '.3gp' : VideoFile,
-               '.webm': VideoFile,
-               '.mpeg': VideoFile,
-               '.gif' : VideoFile,
-               '.mpg' : VideoFile,
-               '.mts' : VideoFile,
+    FORMATS = {
+        ".jpeg": ImageFile,
+        ".jpg": ImageFile,
+        ".png": ImageFile,
+        ".mov": VideoFile,
+        ".avi": VideoFile,
+        ".mp4": VideoFile,
+        ".3gp": VideoFile,
+        ".webm": VideoFile,
+        ".mpeg": VideoFile,
+        ".gif": VideoFile,
+        ".mpg": VideoFile,
+        ".mts": VideoFile,
     }
 
     def __init__(self, album):
@@ -288,7 +296,7 @@ class MediaHandler(object):
     @staticmethod
     def warn_no_video_support():
         if not MediaHandler.NO_VIDEO_SUPPORT_WARNING_ISSUED:
-            logging.warning(_('Video support is disabled: could not find ffmpeg'))
+            logging.warning(_("Video support is disabled: could not find ffmpeg"))
 
     def get_media(self, path):
         tail = os.path.basename(path)
@@ -328,8 +336,9 @@ class Directory(File):
             media_path = os.path.join(self.path, filename)
 
             if not os.path.isfile(media_path):
-                logging.info(_("  Ignoring %s, cannot open file (broken symlink?)."),
-                             filename)
+                logging.info(
+                    _("  Ignoring %s, cannot open file (broken symlink?)."), filename
+                )
                 logging.debug("(%s)", os.path.join(self.path, filename))
                 continue
 
@@ -341,25 +350,23 @@ class Directory(File):
 
                 self.medias_names.append(filename)
                 self.medias.append(media)
-            elif not self.is_metadata(filename) and\
-                    filename != SOURCEDIR_CONFIGFILE:
-                logging.info(_("  Ignoring %s, format not supported."),
-                             filename)
+            elif not self.is_metadata(filename) and filename != SOURCEDIR_CONFIGFILE:
+                logging.info(_("  Ignoring %s, format not supported."), filename)
                 logging.debug("(%s)", os.path.join(self.path, filename))
 
         self.metadata = metadata.DirectoryMetadata(self.path)
         md = self.metadata.get(None, self)
-        if 'album_name' in md.keys():
-            self.title = md['album_name']
+        if "album_name" in md.keys():
+            self.title = md["album_name"]
         else:
             self.title = self.human_name
-        if 'album_description' in md.keys():
-            self.desc = md['album_description']
+        if "album_description" in md.keys():
+            self.desc = md["album_description"]
         else:
             self.desc = None
 
-        if 'album_picture' in md.keys():
-            self.album_picture = md['album_picture']
+        if "album_picture" in md.keys():
+            self.album_picture = md["album_picture"]
         else:
             self.album_picture = None
 
@@ -387,16 +394,19 @@ class Directory(File):
         return map(metadata.DirectoryMetadata, self.parent_paths())
 
     def is_metadata(self, filename):
-        if filename == metadata.MATEW_METADATA: return True
-        if filename in metadata.FILE_METADATA: return True
+        if filename == metadata.MATEW_METADATA:
+            return True
+        if filename in metadata.FILE_METADATA:
+            return True
 
         # Check for media metadata
-        related_media = filename[:-len(metadata.FILE_METADATA_MEDIA_SUFFIX)]
+        related_media = filename[: -len(metadata.FILE_METADATA_MEDIA_SUFFIX)]
         # As the list self.medias_names is being constructed while this
         # check takes place, the following is only reliable if the filenames
         # list is sorted (thus t.jpg.comment is after t.jpg, and t.jpg is
         # already in self.medias_names), which is the case.
-        if related_media in self.medias_names: return True
+        if related_media in self.medias_names:
+            return True
 
         return False
 

@@ -20,8 +20,10 @@ import os
 import logging
 
 from PIL import Image as PILImage
+
 # lazygal has her own ImageFile class, so avoid trouble
 from PIL import ImageFile as PILImageFile
+
 PILImageFile.MAXBLOCK = 1024 * 1024  # default is 64k, not enough for big pics
 
 from . import make
@@ -31,8 +33,8 @@ from . import mediautils
 from .metadata import GExiv2
 
 
-THUMB_SIZE_NAME = 'thumb'
-VIDEO_SIZE_NAME = 'video'
+THUMB_SIZE_NAME = "thumb"
+VIDEO_SIZE_NAME = "video"
 
 
 class ResizedMedia(genfile.WebalbumFile):
@@ -42,9 +44,9 @@ class ResizedMedia(genfile.WebalbumFile):
     def __init__(self, webgal, source_media, size_name):
         self.webgal = webgal
         self.source_media = source_media
-        self.filename = self.webgal._add_size_qualifier(self.source_media.filename,
-                                                        size_name,
-                                                        self.force_extension)
+        self.filename = self.webgal._add_size_qualifier(
+            self.source_media.filename, size_name, self.force_extension
+        )
         path = os.path.join(self.webgal.path, self.filename)
         super().__init__(path, webgal)
 
@@ -60,6 +62,7 @@ class ResizedMedia(genfile.WebalbumFile):
 
     def get_verb(self):
         raise NotImplementedError
+
     VERB = property(get_verb)
 
     def build(self):
@@ -74,16 +77,17 @@ class ResizedMedia(genfile.WebalbumFile):
 class ImageOtherSize(ResizedMedia):
 
     def __init__(self, webgal, source_image, size_name):
-        if 'alphachannel' in source_image.md \
-        and source_image.md['alphachannel']:
-            self.force_extension = '.png'
+        if "alphachannel" in source_image.md and source_image.md["alphachannel"]:
+            self.force_extension = ".png"
         else:
-            self.force_extension = '.jpg'
+            self.force_extension = ".jpg"
         super().__init__(webgal, source_image, size_name)
 
         self.rotation = None
 
-    def get_verb(self): return _('RESIZE')
+    def get_verb(self):
+        return _("RESIZE")
+
     VERB = property(get_verb)
 
     def resize(self, im):
@@ -93,30 +97,37 @@ class ImageOtherSize(ResizedMedia):
         return im.resize(new_size, PILImage.LANCZOS)
 
     def save(self, im):
-        if 'alphachannel' in self.source_media.md \
-        and self.source_media.md['alphachannel']:
+        if (
+            "alphachannel" in self.source_media.md
+            and self.source_media.md["alphachannel"]
+        ):
             self.save_png(im)
         else:
             self.save_jpeg(im)
 
     def save_png(self, im):
-        with open(self.path, 'w+b') as im_fp:
-            im.save(im_fp, 'png', quality=self.webgal.quality,
-                    **self.webgal.save_options)
+        with open(self.path, "w+b") as im_fp:
+            im.save(
+                im_fp, "png", quality=self.webgal.quality, **self.webgal.save_options
+            )
 
     def save_jpeg(self, im):
         calibrated = False
         while not calibrated:
-            with open(self.path, 'w+b') as im_fp:
+            with open(self.path, "w+b") as im_fp:
                 try:
-                    if im.mode != 'RGB':
+                    if im.mode != "RGB":
                         # convert indexed images into RGB mode, usefull
                         # for PNG indexed images
-                        im = im.convert('RGB')
-                    im.save(im_fp, 'jpeg', quality=self.webgal.quality,
-                            **self.webgal.save_options)
+                        im = im.convert("RGB")
+                    im.save(
+                        im_fp,
+                        "jpeg",
+                        quality=self.webgal.quality,
+                        **self.webgal.save_options
+                    )
                 except IOError as e:
-                    if str(e).startswith('encoder error'):
+                    if str(e).startswith("encoder error"):
                         PILImageFile.MAXBLOCK = 2 * PILImageFile.MAXBLOCK
                         continue
                     else:
@@ -125,8 +136,8 @@ class ImageOtherSize(ResizedMedia):
 
     def get_rotation(self):
         if self.rotation is None:
-            if 'rotation' in self.source_media.md['metadata']:
-                self.rotation = self.source_media.md['metadata']['rotation']
+            if "rotation" in self.source_media.md["metadata"]:
+                self.rotation = self.source_media.md["metadata"]["rotation"]
             else:
                 self.rotation = 0
         return self.rotation
@@ -134,26 +145,38 @@ class ImageOtherSize(ResizedMedia):
     def get_size(self):
         if self.size is None:
             orig_size = self.source_media.get_size()
-            if orig_size == (0, 0, ): # broken pic
+            if orig_size == (
+                0,
+                0,
+            ):  # broken pic
                 self.size = orig_size
-            elif self.get_rotation() in (90, 270, ):
+            elif self.get_rotation() in (
+                90,
+                270,
+            ):
                 # swap coords
-                orig_size = (orig_size[1], orig_size[0], )
+                orig_size = (
+                    orig_size[1],
+                    orig_size[0],
+                )
                 self.size = self.newsizer.dest_size(orig_size)
-                self.unrotated_size = (self.size[1], self.size[0], )
+                self.unrotated_size = (
+                    self.size[1],
+                    self.size[0],
+                )
             else:
                 self.size = self.newsizer.dest_size(orig_size)
                 self.unrotated_size = self.size
         return self.size
 
     def get_image(self):
-        with open(self.source_media.path, 'rb') as im_fp:
+        with open(self.source_media.path, "rb") as im_fp:
             im = PILImage.open(im_fp)
             im.load()
             return im
 
     TRANSPOSE_METHODS = {
-        90 : PILImage.ROTATE_90,
+        90: PILImage.ROTATE_90,
         180: PILImage.ROTATE_180,
         270: PILImage.ROTATE_270,
     }
@@ -172,10 +195,10 @@ class ImageOtherSize(ResizedMedia):
         return im
 
     PRIVATE_IMAGE_TAGS = (
-        'Exif.GPSInfo.GPSLongitude',
-        'Exif.GPSInfo.GPSLatitude',
-        'Exif.GPSInfo.GPSDestLongitude',
-        'Exif.GPSInfo.GPSDestLatitude',
+        "Exif.GPSInfo.GPSLongitude",
+        "Exif.GPSInfo.GPSLatitude",
+        "Exif.GPSInfo.GPSDestLongitude",
+        "Exif.GPSInfo.GPSDestLatitude",
     )
 
     def copy_metadata(self):
@@ -188,13 +211,13 @@ class ImageOtherSize(ResizedMedia):
                 logging.warning(_("Could not copy metadata tag '%s'"), tag)
 
         new_size = self.get_size()
-        dest_imgtags['Exif.Photo.PixelXDimension'] = str(new_size[0])
-        dest_imgtags['Exif.Photo.PixelYDimension'] = str(new_size[1])
+        dest_imgtags["Exif.Photo.PixelXDimension"] = str(new_size[0])
+        dest_imgtags["Exif.Photo.PixelYDimension"] = str(new_size[1])
 
         if self.get_rotation() != 0:
             # Smaller image has been rotated in order to be displayed correctly
             # in a web browser. Fix orientation tag accordingly.
-            dest_imgtags['Exif.Image.Orientation'] = '1'
+            dest_imgtags["Exif.Image.Orientation"] = "1"
 
         # Those are removed from published pics due to pivacy concerns,
         # unless explicitly told to keep them in. Option to retain GPS
@@ -220,59 +243,66 @@ class ImageOtherSize(ResizedMedia):
             self.clean_output()
         else:
             self.save(im)
-            if self.webgal.config.get('webgal', 'publish-metadata'):
+            if self.webgal.config.get("webgal", "publish-metadata"):
                 self.copy_metadata()
 
 
 class VideoThumb(ResizedMedia):
 
-    force_extension = '.jpg'
+    force_extension = ".jpg"
 
-    def get_verb(self): return _('VIDEOTHUMB')
+    def get_verb(self):
+        return _("VIDEOTHUMB")
+
     VERB = property(get_verb)
 
     def do_build(self):
         try:
-            mediautils.VideoThumbnailer(self.source_media.path) \
-                .convert(self.path, self.get_size())
+            mediautils.VideoThumbnailer(self.source_media.path).convert(
+                self.path, self.get_size()
+            )
         except mediautils.VideoError as e:
-            logging.error(_("  creating %s thumbnail failed, skipped"),
-                          self.source_media.filename)
+            logging.error(
+                _("  creating %s thumbnail failed, skipped"), self.source_media.filename
+            )
             logging.info(str(e))
             self.clean_output()
 
 
 class WebalbumPicture(make.FileMakeObject):
 
-    BASEFILENAME = 'index'
+    BASEFILENAME = "index"
 
     def __init__(self, webgal_dir):
-        self.path = os.path.join(webgal_dir.path,
-                                 webgal_dir.get_webalbumpic_filename())
+        self.path = os.path.join(webgal_dir.path, webgal_dir.get_webalbumpic_filename())
         super().__init__(self.path)
 
         self.add_dependency(webgal_dir.source_dir)
 
-        medias = [m for m in webgal_dir.source_dir.get_all_medias()
-                  if m.type == 'image']
+        medias = [
+            m for m in webgal_dir.source_dir.get_all_medias() if m.type == "image"
+        ]
 
         # Add video thumbs
         for m in webgal_dir.medias:
-            if m.media.type == 'video':
+            if m.media.type == "video":
                 medias.append(m.thumb)
 
         for m in medias:
             self.add_dependency(m)
 
         if webgal_dir.source_dir.album_picture:
-            albumpic_path = os.path.join(webgal_dir.source_dir.path,
-                                         webgal_dir.source_dir.album_picture)
+            albumpic_path = os.path.join(
+                webgal_dir.source_dir.path, webgal_dir.source_dir.album_picture
+            )
             if not os.path.isfile(albumpic_path):
-                logging.error(_("Supplied album picture %s does not exist."),
-                              albumpic_path)
+                logging.error(
+                    _("Supplied album picture %s does not exist."), albumpic_path
+                )
 
             md_dirpic_thumb = webgal_dir._add_size_qualifier(
-                webgal_dir.source_dir.album_picture, THUMB_SIZE_NAME)
+                webgal_dir.source_dir.album_picture, THUMB_SIZE_NAME
+            )
             md_dirpic_thumb = os.path.join(webgal_dir.path, md_dirpic_thumb)
         else:
             md_dirpic_thumb = None
@@ -283,9 +313,12 @@ class WebalbumPicture(make.FileMakeObject):
 
         # Use 800x600 as a random value to obtain a 4:3 aspect ratio (if
         # thumb size preserves aspect ratio)
-        self.dirpic = multipic_repr(pic_paths, md_dirpic_thumb,
-                                    bg=webgal_dir.webalbumpic_bg,
-                                    result_size=webgal_dir.webalbumpic_size)
+        self.dirpic = multipic_repr(
+            pic_paths,
+            md_dirpic_thumb,
+            bg=webgal_dir.webalbumpic_bg,
+            result_size=webgal_dir.webalbumpic_size,
+        )
 
     def build(self):
         logging.info(_("  DIRPIC %s"), os.path.basename(self.path))
@@ -302,16 +335,19 @@ class WebVideo(genfile.WebalbumFile):
         self.progress = progress
         self.webgal = webgal
         self.source_video = source_video
-        self.filename = self.webgal._add_size_qualifier(self.source_video.filename,
-                                                        size_name, '.webm')
+        self.filename = self.webgal._add_size_qualifier(
+            self.source_video.filename, size_name, ".webm"
+        )
         path = os.path.join(self.webgal.path, self.filename)
         super().__init__(path, webgal)
 
         newsizer = self.webgal.newsizers[size_name]
-        if newsizer == 'original':
+        if newsizer == "original":
             self.new_width, self.new_height = (None, None)
         else:
-            self.new_width, self.new_height = newsizer.dest_size(self.source_video.get_size())
+            self.new_width, self.new_height = newsizer.dest_size(
+                self.source_video.get_size()
+            )
 
         self.add_dependency(self.source_video)
 
@@ -326,8 +362,9 @@ class WebVideo(genfile.WebalbumFile):
             transcoder.set_progress(self.progress)
             transcoder.convert(self.path)
         except mediautils.VideoError as e:
-            logging.error(_("  transcoding %s failed, skipped"),
-                          self.source_video.filename)
+            logging.error(
+                _("  transcoding %s failed, skipped"), self.source_video.filename
+            )
             logging.info(str(e))
             self.source_video.set_broken()
             self.clean_output()

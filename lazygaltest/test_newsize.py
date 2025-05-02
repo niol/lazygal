@@ -53,13 +53,13 @@ class TestSizeParser(unittest.TestCase):
     def test_scale(self):
         orig_size = self.get_random_size()
         scale = self.get_random_percentage()
-        size_string = '%d%%' % scale
+        size_string = "%d%%" % scale
         real_dest_size = tuple(map(lambda x: x * scale // 100, orig_size))
 
         self.check(orig_size, size_string, real_dest_size)
 
         orig_size = (1600, 1200)
-        size_string = '50%'
+        size_string = "50%"
         real_dest_size = (800, 600)
 
         self.check(orig_size, size_string, real_dest_size)
@@ -68,7 +68,7 @@ class TestSizeParser(unittest.TestCase):
         orig_size = self.get_random_size()
         xscale = self.get_random_percentage()
         yscale = self.get_random_percentage()
-        size_string = '%d%%%d%%' % (xscale, yscale)
+        size_string = "%d%%%d%%" % (xscale, yscale)
         x = orig_size[0]
         y = orig_size[1]
         real_dest_size = (x * xscale // 100, y * yscale // 100)
@@ -76,53 +76,54 @@ class TestSizeParser(unittest.TestCase):
         self.check(orig_size, size_string, real_dest_size, ratiocheck=False)
 
         orig_size = (1600, 1200)
-        size_string = '50%75%'
+        size_string = "50%75%"
         real_dest_size = (800, 900)
 
         self.check(orig_size, size_string, real_dest_size, ratiocheck=False)
 
     def test_width(self):
         orig_size = (1024, 768)
-        size_string = '640'
+        size_string = "640"
         real_dest_size = (640, 480)
 
         self.check(orig_size, size_string, real_dest_size)
 
     def test_height(self):
         orig_size = (1024, 768)
-        size_string = 'x1200'
+        size_string = "x1200"
         real_dest_size = (1600, 1200)
 
         self.check(orig_size, size_string, real_dest_size)
 
     def test_maxwidthheight(self):
-        self.check((1024, 768), '800x600', (800, 600))
-        self.check((768, 1024), '800x600', (450, 600))
+        self.check((1024, 768), "800x600", (800, 600))
+        self.check((768, 1024), "800x600", (450, 600))
 
     def test_minwidthheight(self):
-        self.check((1024, 768), '800x600^', (800, 600))
-        self.check((768, 1024), '800x600^', (800, 1066))
+        self.check((1024, 768), "800x600^", (800, 600))
+        self.check((768, 1024), "800x600^", (800, 1066))
 
     def test_mandatorywidthheight(self):
-        self.check((1024, 768), '800x600!', (800, 600), ratiocheck=False)
-        self.check((768, 1024), '800x600!', (800, 600), ratiocheck=False)
+        self.check((1024, 768), "800x600!", (800, 600), ratiocheck=False)
+        self.check((768, 1024), "800x600!", (800, 600), ratiocheck=False)
 
     def test_widthheightiflarger(self):
-        self.check((1024, 768), '800x600>', (800, 600))
-        self.check((768, 1024), '800x600>', (450, 600))
-        self.check((420, 200), '800x600>', (420, 200))
+        self.check((1024, 768), "800x600>", (800, 600))
+        self.check((768, 1024), "800x600>", (450, 600))
+        self.check((420, 200), "800x600>", (420, 200))
 
     def test_widthheightifsmaller(self):
-        self.check((1024, 768), '800x600<', (1024, 768))
-        self.check((768, 1024), '800x600<', (768, 1024))
-        self.check((420, 200), '800x600<', (1260, 600))
-        self.check((420, 700), '800x600<', (420, 700))
+        self.check((1024, 768), "800x600<", (1024, 768))
+        self.check((768, 1024), "800x600<", (768, 1024))
+        self.check((420, 200), "800x600<", (1260, 600))
+        self.check((420, 700), "800x600<", (420, 700))
 
     def test_area(self):
-        self.check((1024, 768), '480000@', (800, 600))
-        self.check((768, 1024), '480000@', (600, 800))
+        self.check((1024, 768), "480000@", (800, 600))
+        self.check((768, 1024), "480000@", (600, 800))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
 
 

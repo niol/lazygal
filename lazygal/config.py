@@ -25,9 +25,8 @@ import json
 import copy
 
 
-USER_CONFIG_PATH = os.path.expanduser('~/.lazygal/config')
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__),
-                                   'defaults.json')
+USER_CONFIG_PATH = os.path.expanduser("~/.lazygal/config")
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), "defaults.json")
 
 
 class BetterConfigParser(configparser.RawConfigParser):
@@ -53,16 +52,16 @@ class BetterConfigParser(configparser.RawConfigParser):
     def getlist(self, section, option):
         str_vlist = self.get(section, option)
 
-        if str_vlist == '':
+        if str_vlist == "":
             return []
 
         if type(str_vlist) is not list:
-            str_vlist = str_vlist.split(',')
+            str_vlist = str_vlist.split(",")
 
         # handle the case several vals were given at once (separated by comas)
         vlist = []
         for v in str_vlist:
-            multiple_v = v.split(',')
+            multiple_v = v.split(",")
             for mv in multiple_v:
                 vlist.append(mv)
 
@@ -96,17 +95,25 @@ class BetterConfigParser(configparser.RawConfigParser):
         pass
 
 
-class LazygalConfigDeprecated(BaseException): pass
-class NoSectionError(BaseException): pass
-class NoOptionError(BaseException): pass
+class LazygalConfigDeprecated(BaseException):
+    pass
+
+
+class NoSectionError(BaseException):
+    pass
+
+
+class NoOptionError(BaseException):
+    pass
 
 
 class LazygalIniConfig(BetterConfigParser):
 
     def check_deprecation(self, config=None):
-        if config is None: config = self
+        if config is None:
+            config = self
 
-        if config.has_section('lazygal'):
+        if config.has_section("lazygal"):
             raise LazygalConfigDeprecated("'lazygal' section is deprecated")
 
     def read(self, filenames):
@@ -120,17 +127,18 @@ class LazygalIniConfig(BetterConfigParser):
         BetterConfigParser.load(self, other_config, init, sections)
 
     def new_section_cb(self, section):
-        if section != 'template-vars':
+        if section != "template-vars":
             logging.warning(_("  Ignoring unknown section '%s'."), section)
 
     def new_option_cb(self, section, option):
-        if section != 'template-vars':
-            logging.warning(_("  Ignoring unknown option '%s' in section '%s'."),
-                            option, section)
+        if section != "template-vars":
+            logging.warning(
+                _("  Ignoring unknown option '%s' in section '%s'."), option, section
+            )
 
 
 def false_or(s, f=None):
-    if s.lower() in ('no', 'false'):
+    if s.lower() in ("no", "false"):
         return False
     elif f:
         return f(s)
@@ -139,23 +147,23 @@ def false_or(s, f=None):
 
 
 def get_bool(s):
-    if s.lower() in ('true', 'yes', 'on', '1') or s == 1:
+    if s.lower() in ("true", "yes", "on", "1") or s == 1:
         return True
-    if s.lower() in ('false', 'no', 'off', '0') or s == 0:
+    if s.lower() in ("false", "no", "off", "0") or s == 0:
         return False
     raise ValueError(_("Unknown boolean value '%s'") % s)
 
 
 def get_list(s):
     if s:
-        return [i.strip() for i in s.split(',')]
+        return [i.strip() for i in s.split(",")]
     return []
 
 
 def get_dict(s):
     d = {}
-    for i in s.split(','):
-        key, value = i.split('=')
+    for i in s.split(","):
+        key, value = i.split("=")
         d[key.strip()] = value.strip()
     return d
 
@@ -166,10 +174,11 @@ def get_int(s):
 
 def get_order(s):
     try:
-        order, reverse = s.split(':')
+        order, reverse = s.split(":")
     except ValueError:
         order, reverse = s, False
-    return {'order': order, 'reverse': reverse == 'reverse'}
+    return {"order": order, "reverse": reverse == "reverse"}
+
 
 def get_image_size(s):
     sizes_defs_str = get_list(s)
@@ -177,59 +186,71 @@ def get_image_size(s):
     first = True
     for size_defs in sizes_defs_str:
         try:
-            name, defs = size_defs.split('=')
+            name, defs = size_defs.split("=")
         except ValueError:
-            raise ValueError(_("Sizes is a comma-separated list of size names and specs:\n\t e.g. \"small=640x480,medium=1024x768\"."))
+            raise ValueError(
+                _(
+                    'Sizes is a comma-separated list of size names and specs:\n\t e.g. "small=640x480,medium=1024x768".'
+                )
+            )
 
-        sizes_defs.append({'name': name, 'defs': defs, 'default': first})
+        sizes_defs.append({"name": name, "defs": defs, "default": first})
         first = False
     return sizes_defs
 
 
-STRING_TO_JSON = collections.OrderedDict({
-    'runtime': {
-        'quiet'               : get_bool,
-        'debug'               : get_bool,
-        'check-all-dirs'      : get_bool,
-    },
-    'global': {
-        'force-gen-pages'     : get_bool,
-        'clean-destination'   : get_bool,
-        'preserve'            : get_list,
-        'dir-flattening-depth': functools.partial(false_or, f=get_int),
-        'puburl'              : false_or,
-        'exclude'             : get_list,
-        'preserve_args'       : get_list,
-        'exclude_args'        : get_list,
-    },
-    'webgal': {
-        'image-size'          : get_image_size,
-        'thumbs-per-page'     : get_int,
-        'filter-by-tag'       : get_list,
-        'sort-medias'         : get_order,
-        'sort-subgals'        : get_order,
-        'original'            : get_bool,
-        'original-baseurl'    : false_or,
-        'original-symlink'    : get_bool,
-        'dirzip'              : get_bool,
-        'jpeg-quality'        : get_int,
-        'jpeg-optimize'       : get_bool,
-        'jpeg-progressive'    : get_bool,
-        'publish-metadata'    : get_bool,
-        'keep-gps'            : get_bool,
-    },
-})
+STRING_TO_JSON = collections.OrderedDict(
+    {
+        "runtime": {
+            "quiet": get_bool,
+            "debug": get_bool,
+            "check-all-dirs": get_bool,
+        },
+        "global": {
+            "force-gen-pages": get_bool,
+            "clean-destination": get_bool,
+            "preserve": get_list,
+            "dir-flattening-depth": functools.partial(false_or, f=get_int),
+            "puburl": false_or,
+            "exclude": get_list,
+            "preserve_args": get_list,
+            "exclude_args": get_list,
+        },
+        "webgal": {
+            "image-size": get_image_size,
+            "thumbs-per-page": get_int,
+            "filter-by-tag": get_list,
+            "sort-medias": get_order,
+            "sort-subgals": get_order,
+            "original": get_bool,
+            "original-baseurl": false_or,
+            "original-symlink": get_bool,
+            "dirzip": get_bool,
+            "jpeg-quality": get_int,
+            "jpeg-optimize": get_bool,
+            "jpeg-progressive": get_bool,
+            "publish-metadata": get_bool,
+            "keep-gps": get_bool,
+        },
+    }
+)
 
 
 class LazygalConfig(object):
-    valid_sections = ('runtime', 'global', 'webgal', 'template-vars', )
+    valid_sections = (
+        "runtime",
+        "global",
+        "webgal",
+        "template-vars",
+    )
 
     def __init__(self, load_defaults=False):
         self.c = collections.OrderedDict()
-        self.valid_options = {s:[] for s in self.valid_sections}
+        self.valid_options = {s: [] for s in self.valid_sections}
 
-        self.load(self.load_file(DEFAULT_CONFIG_PATH),
-                  defaults=True, setvalue=load_defaults)
+        self.load(
+            self.load_file(DEFAULT_CONFIG_PATH), defaults=True, setvalue=load_defaults
+        )
         self.files = [DEFAULT_CONFIG_PATH]
 
     def has_section(self, section):
@@ -240,8 +261,7 @@ class LazygalConfig(object):
             if section in self.valid_sections:
                 self.c[section] = collections.OrderedDict()
             else:
-                raise ValueError("section '%s' is not a valid section name"
-                                 % section)
+                raise ValueError("section '%s' is not a valid section name" % section)
 
     def options(self, section):
         return self.c[section].keys()
@@ -252,25 +272,28 @@ class LazygalConfig(object):
         if option in self.c[section]:
             return self.c[section][option]
         else:
-            raise NoOptionError(_('%s in section %s') % (option, section))
+            raise NoOptionError(_("%s in section %s") % (option, section))
 
     def set(self, section, option, value):
         self.add_section(section)
 
-        if option in self.valid_options[section] or section == 'template-vars':
-            if type(value) is str\
-            and section in STRING_TO_JSON\
-            and option in STRING_TO_JSON[section]:
+        if option in self.valid_options[section] or section == "template-vars":
+            if (
+                type(value) is str
+                and section in STRING_TO_JSON
+                and option in STRING_TO_JSON[section]
+            ):
                 value = STRING_TO_JSON[section][option](value)
             self.c[section][option] = copy.deepcopy(value)
         else:
-            raise ValueError(_("option '%s' is not valid in section '%s'")
-                                % (option, section))
+            raise ValueError(
+                _("option '%s' is not valid in section '%s'") % (option, section)
+            )
 
     def load(self, newconf, setvalue=True, defaults=False):
         for section, s in newconf.items():
             if defaults and section not in self.valid_sections:
-                continue # ignore default section loading
+                continue  # ignore default section loading
 
             for k, v in s.items():
                 if defaults:
@@ -279,11 +302,11 @@ class LazygalConfig(object):
                     try:
                         self.set(section, k, v)
                     except ValueError as e:
-                        logging.warning(_('Ignoring option: %s') % e.args[0])
+                        logging.warning(_("Ignoring option: %s") % e.args[0])
 
     def load_file(self, path):
         newconf = None
-        with open(path, 'r') as json_fp:
+        with open(path, "r") as json_fp:
             newconf = json.load(json_fp)
         return newconf
 
@@ -297,11 +320,11 @@ class LazygalConfig(object):
                 try:
                     self.set(s, key, value)
                 except ValueError as e:
-                    logging.warning(_('Ignoring option: %s') % e.args[0])
+                    logging.warning(_("Ignoring option: %s") % e.args[0])
 
     def load_any(self, path):
         if not os.path.isfile(path):
-            logging.debug(_('Cannot load non-existent config %s.') % path)
+            logging.debug(_("Cannot load non-existent config %s.") % path)
             return
 
         try:
@@ -312,7 +335,7 @@ class LazygalConfig(object):
             except Exception:
                 raise
             else:
-                logging.warning(_('INI-style config file format is deprecated.'))
+                logging.warning(_("INI-style config file format is deprecated."))
         else:
             self.files.append(path)
 
@@ -327,7 +350,10 @@ class LazygalConfig(object):
 
 
 class LazygalWebgalConfig(LazygalConfig):
-    valid_sections = ('webgal', 'template-vars', )
+    valid_sections = (
+        "webgal",
+        "template-vars",
+    )
 
 
 # vim: ts=4 sw=4 expandtab

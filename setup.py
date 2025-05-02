@@ -38,7 +38,7 @@ import setuptools.command.build_py
 import lazygal
 
 
-gettext.install('lazygal')
+gettext.install("lazygal")
 
 
 def newer(fpath1, fpath2):
@@ -50,7 +50,7 @@ def newer(fpath1, fpath2):
 
 class test_lazygal(setuptools.Command):
 
-    description = 'Run the test suite'
+    description = "Run the test suite"
     user_options = []
 
     def initialize_options(self):
@@ -61,12 +61,13 @@ class test_lazygal(setuptools.Command):
 
     def run(self):
         import lazygaltest
+
         lazygaltest.run()
 
 
 class dl_assets(setuptools.Command):
 
-    description = 'Download extra assets if not provided by the system'
+    description = "Download extra assets if not provided by the system"
     user_options = []
 
     def initialize_options(self):
@@ -77,71 +78,75 @@ class dl_assets(setuptools.Command):
 
     def run(self):
         import lazygal.theme
+
         for t in lazygal.theme.get_themes():
             for a in t.get_missing_external_assets():
-                asset_file = urllib.request.urlopen(a['url'])
-                setuptools.log.info('downloading %s into %s' \
-                                   % (a['url'], a['abs_dest']))
-                with open(a['abs_dest'], 'wb') as output:
+                asset_file = urllib.request.urlopen(a["url"])
+                setuptools.log.info(
+                    "downloading %s into %s" % (a["url"], a["abs_dest"])
+                )
+                with open(a["abs_dest"], "wb") as output:
                     output.write(asset_file.read())
 
 
 class sample_album(setuptools.Command):
 
-    description = 'Generate a sample album for testing purposes'
-    user_options = [
-        ('outdir=', None, 'Output directory')
-    ]
+    description = "Generate a sample album for testing purposes"
+    user_options = [("outdir=", None, "Output directory")]
 
     def initialize_options(self):
         self.outdir = None
 
     def finalize_options(self):
-        assert self.outdir is not None, 'Output directory is mandatory'
+        assert self.outdir is not None, "Output directory is mandatory"
 
     def run(self):
         import lazygaltest
+
         lazygaltest.sample_album(self.outdir)
 
 
 class build_manpages(setuptools.Command):
 
-    description = 'Build manpages'
+    description = "Build manpages"
     user_options = []
 
     manpages = None
-    mandir = os.path.join(os.path.dirname(__file__), 'man')
-    executable = shutil.which('pandoc')
+    mandir = os.path.join(os.path.dirname(__file__), "man")
+    executable = shutil.which("pandoc")
 
     def initialize_options(self):
         pass
 
     def finalize_options(self):
-        self.manpages = glob.glob(os.path.join(self.mandir, '*.md'))
+        self.manpages = glob.glob(os.path.join(self.mandir, "*.md"))
 
     def __get_man_section(self, filename):
         # filename should be file.mansection.md
-        return filename.split('.')[-2]
+        return filename.split(".")[-2]
 
     def run(self):
         data_files = self.distribution.data_files
 
         for manpagesrc in self.manpages:
-            manpage = os.path.splitext(manpagesrc)[0] # remove '.md' at the end
+            manpage = os.path.splitext(manpagesrc)[0]  # remove '.md' at the end
             section = manpage[-1:]
             if newer(manpagesrc, manpage):
-                cmd = [self.executable, '-s', '-t', 'man',
-                       '-o', manpage,
-                       manpagesrc]
+                cmd = [self.executable, "-s", "-t", "man", "-o", manpage, manpagesrc]
                 self.spawn(cmd)
 
-            targetpath = os.path.join("share", "man", 'man%s' % section)
-            data_files.append((targetpath, (manpage, ), ))
+            targetpath = os.path.join("share", "man", "man%s" % section)
+            data_files.append(
+                (
+                    targetpath,
+                    (manpage,),
+                )
+            )
 
 
 class build_i18n_lazygal(setuptools.Command):
 
-    description = 'Build i18n files'
+    description = "Build i18n files"
     user_options = []
     po_package = None
     po_directory = None
@@ -175,73 +180,80 @@ class build_i18n_lazygal(setuptools.Command):
 class build_lazygal(setuptools.command.build_py.build_py):
 
     def __has_manpages(self, command):
-        return 'build_manpages' in self.distribution.cmdclass\
+        return (
+            "build_manpages" in self.distribution.cmdclass
             and build_manpages.executable is not None
+        )
 
     def __has_i18n(self, command):
-        return 'build_i18n' in self.distribution.cmdclass
+        return "build_i18n" in self.distribution.cmdclass
 
     def run(self):
         if build_manpages.executable is not None:
-            self.run_command('build_manpages')
-        self.run_command('build_i18n')
+            self.run_command("build_manpages")
+        self.run_command("build_i18n")
         super(build_lazygal, self).run()
 
 
 # list themes to install
 theme_data = []
-themes = glob.glob(os.path.join('themes', '*'))
+themes = glob.glob(os.path.join("themes", "*"))
 for theme in themes:
     themename = os.path.basename(theme)
     theme_data.append(
-        (os.path.join('share', 'lazygal', 'themes', themename),
-         glob.glob(os.path.join('themes', themename, '*'))))
+        (
+            os.path.join("share", "lazygal", "themes", themename),
+            glob.glob(os.path.join("themes", themename, "*")),
+        )
+    )
 
 
 setuptools.setup(
-    name = 'lazygal',
-    version = lazygal.__version__,
-    description = 'Static web gallery generator',
-    long_description = '',
-    author = 'Alexandre Rossi',
-    author_email = 'alexandre.rossi@gmail.com',
-    maintainer = 'Alexandre Rossi',
-    maintainer_email = 'alexandre.rossi@gmail.com',
-    platforms = ['Linux', 'Mac OSX', 'Windows XP/2000/NT', 'Windows 95/98/ME'],
-    keywords = ['gallery', 'exif', 'photo', 'image'],
-    url = 'https://sml.zincube.net/~niol/repositories.git/lazygal/about/',
-    download_url = 'https://sml.zincube.net/~niol/repositories.git/lazygal/',
-    license = 'GPL',
-    classifiers = [
-        'Development Status :: 5 - Production/Stable',
-        'Environment :: Win32 (MS Windows)',
-        'Environment :: X11 Applications :: GTK',
-        'Intended Audience :: End Users/Desktop',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
-        'Operating System :: Microsoft :: Windows :: Windows 95/98/2000',
-        'Operating System :: Microsoft :: Windows :: Windows NT/2000',
-        'Operating System :: POSIX',
-        'Operating System :: Unix',
-        'Programming Language :: Python',
-        'Topic :: Utilities',
-        'Natural Language :: English',
+    name="lazygal",
+    version=lazygal.__version__,
+    description="Static web gallery generator",
+    long_description="",
+    author="Alexandre Rossi",
+    author_email="alexandre.rossi@gmail.com",
+    maintainer="Alexandre Rossi",
+    maintainer_email="alexandre.rossi@gmail.com",
+    platforms=["Linux", "Mac OSX", "Windows XP/2000/NT", "Windows 95/98/ME"],
+    keywords=["gallery", "exif", "photo", "image"],
+    url="https://sml.zincube.net/~niol/repositories.git/lazygal/about/",
+    download_url="https://sml.zincube.net/~niol/repositories.git/lazygal/",
+    license="GPL",
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Win32 (MS Windows)",
+        "Environment :: X11 Applications :: GTK",
+        "Intended Audience :: End Users/Desktop",
+        "License :: OSI Approved :: GNU General Public License (GPL)",
+        "Operating System :: Microsoft :: Windows :: Windows 95/98/2000",
+        "Operating System :: Microsoft :: Windows :: Windows NT/2000",
+        "Operating System :: POSIX",
+        "Operating System :: Unix",
+        "Programming Language :: Python",
+        "Topic :: Utilities",
+        "Natural Language :: English",
     ],
-    packages = ['lazygal'],
-    package_data = {'lazygal': ['defaults.json'], },
-    entry_points = {
-        'console_scripts': [
-            'lazygal = lazygal.cmdline:main',
+    packages=["lazygal"],
+    package_data={
+        "lazygal": ["defaults.json"],
+    },
+    entry_points={
+        "console_scripts": [
+            "lazygal = lazygal.cmdline:main",
         ]
     },
-    cmdclass = {
-        'build_py'      : build_lazygal,
-        'build_i18n'    : build_i18n_lazygal,
-        'build_manpages': build_manpages,
-        'dl_assets'     : dl_assets,
-        'test'          : test_lazygal,
-        'sample_album'  : sample_album,
+    cmdclass={
+        "build_py": build_lazygal,
+        "build_i18n": build_i18n_lazygal,
+        "build_manpages": build_manpages,
+        "dl_assets": dl_assets,
+        "test": test_lazygal,
+        "sample_album": sample_album,
     },
-    data_files = theme_data
+    data_files=theme_data,
 )
 
 # vim: ts=4 sw=4 expandtab

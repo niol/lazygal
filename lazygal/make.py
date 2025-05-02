@@ -54,7 +54,7 @@ class MakeTask(object):
         if self in dependency.deps:
             raise CircularDependency("%s <-> %s" % (self, dependency))
         if dependency in self.deps:
-            raise RuntimeError('adding same dep twice')
+            raise RuntimeError("adding same dep twice")
         else:
             self.deps.append(dependency)
             for output_item in dependency.output_items:
@@ -108,12 +108,17 @@ class MakeTask(object):
             if not dependency.is_dep_only():
                 mtime_gap = dependency.get_mtime() - self.get_mtime()
                 if mtime_gap > 0 or dependency.needs_build():
-                    logging.debug("%s build needed: dep %s newer by %ss",
-                                  self, dependency, mtime_gap)
+                    logging.debug(
+                        "%s build needed: dep %s newer by %ss",
+                        self,
+                        dependency,
+                        mtime_gap,
+                    )
                     return True
                 else:
-                    logging.debug("%s build: dep %s older by %ss",
-                                  self, dependency, mtime_gap)
+                    logging.debug(
+                        "%s build: dep %s older by %ss", self, dependency, mtime_gap
+                    )
         return False
 
     def make(self, force=False):
@@ -157,15 +162,16 @@ class MakeTask(object):
         pass
 
     def print_dep_entry(self, level=0):
-        indent = ''
+        indent = ""
         for index in range(0, level):
-            indent = indent + '\t'
+            indent = indent + "\t"
 
         print(indent, self, self.get_mtime())
 
     def print_dep_tree(self, depth=1, parent_level=-1):
         level = parent_level + 1
-        if level > depth: return
+        if level > depth:
+            return
 
         self.print_dep_entry(level)
 
@@ -229,7 +235,7 @@ class FileMakeObject(MakeTask):
             os.unlink(self._path)
 
     def __repr__(self):
-        return '%s(%s)' % (self.__class__.__name__, self._path.encode('utf-8'))
+        return "%s(%s)" % (self.__class__.__name__, self._path.encode("utf-8"))
 
 
 class FileSimpleDependency(FileMakeObject):

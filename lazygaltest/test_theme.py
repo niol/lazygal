@@ -28,9 +28,9 @@ class TestTheme(LazygalTest):
         super().setUp()
 
         self.themes_dir = self.get_working_path()
-        self.theme_name = 'test_theme'
+        self.theme_name = "test_theme"
         self.theme_dir = os.path.join(self.themes_dir, self.theme_name)
-        self.theme_manifest = os.path.join(self.theme_dir, 'manifest.json')
+        self.theme_manifest = os.path.join(self.theme_dir, "manifest.json")
         os.makedirs(self.theme_dir)
 
     def test_sharedfiles_prefixed(self):
@@ -38,24 +38,26 @@ class TestTheme(LazygalTest):
         File prefixed with SHARED_ in theme dir are copied in shared files
         directory.
         """
-        prefixed = os.path.join(self.theme_dir, 'SHARED_prefixed.txt')
+        prefixed = os.path.join(self.theme_dir, "SHARED_prefixed.txt")
         self.create_file(prefixed)
         theme = t.Theme(self.themes_dir, self.theme_name)
 
         self.assertEqual(len(theme.shared_files), 1)
-        self.assertEqual(theme.shared_files[0]['source'], prefixed)
-        self.assertEqual(theme.shared_files[0]['dest'], 'prefixed.txt')
+        self.assertEqual(theme.shared_files[0]["source"], prefixed)
+        self.assertEqual(theme.shared_files[0]["dest"], "prefixed.txt")
 
     def test_shared_file_manifest(self):
         """
         The manifest makes it possible to include files from other directories
         in shared files.
         """
-        prefixed = os.path.join(self.theme_dir, 'SHARED_prefixed.txt')
+        prefixed = os.path.join(self.theme_dir, "SHARED_prefixed.txt")
         self.create_file(prefixed)
-        jslib = os.path.join(self.themes_dir, 'lib-2.1.js')
+        jslib = os.path.join(self.themes_dir, "lib-2.1.js")
         self.create_file(jslib)
-        self.create_file(self.theme_manifest, """
+        self.create_file(
+            self.theme_manifest,
+            """
 {
     "shared": [
         {
@@ -68,17 +70,19 @@ class TestTheme(LazygalTest):
         }
     ]
 }
-""")
+""",
+        )
 
         theme = t.Theme(self.themes_dir, self.theme_name)
 
-        shared_files = [(s['source'], s['dest']) for s in theme.shared_files]
-        self.assertEqual(shared_files, [(jslib, 'lib.js'),
-                                        (jslib, 'js/lib-2.1.js'),
-                                        (prefixed, 'prefixed.txt')])
+        shared_files = [(s["source"], s["dest"]) for s in theme.shared_files]
+        self.assertEqual(
+            shared_files,
+            [(jslib, "lib.js"), (jslib, "js/lib-2.1.js"), (prefixed, "prefixed.txt")],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
 

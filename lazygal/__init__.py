@@ -20,76 +20,93 @@ import sys
 import os
 
 
-__all__ = ['generators', ]
+__all__ = [
+    "generators",
+]
 
 
 # Compute installation prefix
-if os.path.isfile(os.path.join(os.path.dirname(__file__), '..', 'setup.py')):
-    INSTALL_MODE = 'source'
-    INSTALL_PREFIX = ''
+if os.path.isfile(os.path.join(os.path.dirname(__file__), "..", "setup.py")):
+    INSTALL_MODE = "source"
+    INSTALL_PREFIX = ""
 else:
     # Lazygal is installed, assume we are in
     # $prefix/lib/pythonX/dist-packages/lazygal
-    INSTALL_MODE = 'installed'
-    INSTALL_PREFIX = os.path.join(os.path.dirname(__file__),
-                                  '..', '..', '..', '..')
+    INSTALL_MODE = "installed"
+    INSTALL_PREFIX = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")
     INSTALL_PREFIX = os.path.normpath(INSTALL_PREFIX)
 
 
 def query_git_for_tag(gitdir):
     import subprocess
-    o = subprocess.check_output(('git','-C', os.path.dirname(__file__),
-                                 'describe', '--tags', )) \
-        .decode(sys.stdout.encoding).strip()
-    tokens = o.split('-')
+
+    o = (
+        subprocess.check_output(
+            (
+                "git",
+                "-C",
+                os.path.dirname(__file__),
+                "describe",
+                "--tags",
+            )
+        )
+        .decode(sys.stdout.encoding)
+        .strip()
+    )
+    tokens = o.split("-")
     if len(tokens[-1]) != 8:
         # this is not a hash
         return None
-    elif tokens[0].startswith('debian/'):
+    elif tokens[0].startswith("debian/"):
         return None
     else:
-        return '%s+%s.%s' % tuple(tokens)
+        return "%s+%s.%s" % tuple(tokens)
 
 
 def git_repo_mtime(gitdir):
-    return max([
-        os.path.getmtime(os.path.join(gitdir, 'index')),
-        os.path.getmtime(os.path.join(gitdir, 'HEAD')),
-        os.path.getmtime(os.path.join(gitdir, 'refs', 'tags')),
-    ])
+    return max(
+        [
+            os.path.getmtime(os.path.join(gitdir, "index")),
+            os.path.getmtime(os.path.join(gitdir, "HEAD")),
+            os.path.getmtime(os.path.join(gitdir, "refs", "tags")),
+        ]
+    )
 
 
 def get_git_rev():
-    gitdir = os.path.join(os.path.dirname(__file__), '..', '.git')
+    gitdir = os.path.join(os.path.dirname(__file__), "..", ".git")
     if os.path.isdir(gitdir):
-        last_revision_cache = os.path.join(gitdir, 'last_revision')
+        last_revision_cache = os.path.join(gitdir, "last_revision")
 
-        if os.path.isfile(last_revision_cache)\
-        and os.path.getmtime(last_revision_cache) > git_repo_mtime(gitdir):
-            with open(last_revision_cache, 'r') as fp:
+        if os.path.isfile(last_revision_cache) and os.path.getmtime(
+            last_revision_cache
+        ) > git_repo_mtime(gitdir):
+            with open(last_revision_cache, "r") as fp:
                 return fp.read()
         else:
             import subprocess
+
             try:
                 lastrev = query_git_for_tag(gitdir)
             except subprocess.CalledProcessError:
                 if os.path.isfile(last_revision_cache):
                     os.unlink(last_revision_cache)
-                return ''
+                return ""
             else:
                 if lastrev:
-                    with open(last_revision_cache, 'w') as fp:
+                    with open(last_revision_cache, "w") as fp:
                         fp.write(lastrev)
                     return lastrev
                 else:
-                    return ''
+                    return ""
     else:
-        return ''
+        return ""
 
 
-__version__ = '0.10.11'
+__version__ = "0.10.11"
 
 rev = get_git_rev()
-if rev: __version__ = rev
+if rev:
+    __version__ = rev
 
 # vim: ts=4 sw=4 expandtab

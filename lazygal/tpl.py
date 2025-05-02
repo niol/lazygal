@@ -36,14 +36,14 @@ class LazygalTemplate(object):
         self.genshi_tpl = genshi_tpl
 
     def __complement_values(self, values):
-        values['gen_datetime'] = datetime.datetime.now()
+        values["gen_datetime"] = datetime.datetime.now()
 
         # using time.strftime() here instead of datetime.strftime() because
         # the latter does not carry the current timezone info, and '%c' in some
         # locales needs to display tzname.
-        values['gen_date'] = time.strftime('%c')
+        values["gen_date"] = time.strftime("%c")
 
-        values['lazygal_version'] = lazygal.__version__
+        values["lazygal_version"] = lazygal.__version__
 
         return values
 
@@ -51,25 +51,25 @@ class LazygalTemplate(object):
         # The cryptic values['_'] = _ is the way to pass the gettext
         # translation function to the templates : the _() callable is assigned
         # to the '_' keyword arg.
-        values['_'] = _
+        values["_"] = _
         return self.genshi_tpl.generate(**values)
 
     def instanciate(self, values):
         self.__complement_values(values)
         # encoding=None gives us a unicode string instead of an utf-8 encoded
         # string. This is because we are not out of lazygal yet.
-        return self.__generate(values).render(self.serialization_method,
-                                              encoding=None)
+        return self.__generate(values).render(self.serialization_method, encoding=None)
 
     def dump(self, values, dest):
         self.__complement_values(values)
 
-        page = open(dest, 'wb')
+        page = open(dest, "wb")
         try:
-            self.__generate(values).render(method=self.serialization_method,
-                                           out=page, encoding='utf-8')
+            self.__generate(values).render(
+                method=self.serialization_method, out=page, encoding="utf-8"
+            )
         except UndefinedError as e:
-            print('W: %s' % e)
+            print("W: %s" % e)
             raise
         finally:
             page.close()
@@ -77,7 +77,7 @@ class LazygalTemplate(object):
 
 class XmlTemplate(LazygalTemplate):
 
-    serialization_method = 'xhtml'
+    serialization_method = "xhtml"
     genshi_tpl_class = MarkupTemplate
 
     def subtemplates(self, tpl=None):
@@ -85,14 +85,16 @@ class XmlTemplate(LazygalTemplate):
             tpl = self
 
         subtemplates = []
-        f = open(tpl.path, 'r')
+        f = open(tpl.path, "r")
         try:
             for kind, data, pos in XMLParser(f, filename=tpl.path):
                 if kind is START:
                     tag, attrib = data
-                    if tag.namespace == 'http://www.w3.org/2001/XInclude'\
-                            and tag.localname == 'include':
-                        subtpl_ident = attrib.get('href')
+                    if (
+                        tag.namespace == "http://www.w3.org/2001/XInclude"
+                        and tag.localname == "include"
+                    ):
+                        subtpl_ident = attrib.get("href")
                         try:
                             subtpl = self.loader.load(subtpl_ident)
                         except TemplateNotFound:
@@ -114,24 +116,25 @@ class XmlTemplate(LazygalTemplate):
 
 class PlainTemplate(LazygalTemplate):
 
-    serialization_method = 'text'
+    serialization_method = "text"
     genshi_tpl_class = NewTextTemplate
 
 
 class TplFactory(object):
 
     known_exts = {
-        '.thtml': XmlTemplate,
-        '.tcss' : PlainTemplate,
-        '.tjs'  : PlainTemplate,
+        ".thtml": XmlTemplate,
+        ".tcss": PlainTemplate,
+        ".tjs": PlainTemplate,
     }
 
     def __init__(self, default_tpl_dir, tpl_dir):
         # We use lenient mode here because we want an easy way to check whether
         # a template variable is defined, or the empty string, thus defined()
         # will only work for the 'whether it is defined' part of the test.
-        self.loader = TemplateLoader([tpl_dir, default_tpl_dir],
-                                     variable_lookup='lenient')
+        self.loader = TemplateLoader(
+            [tpl_dir, default_tpl_dir], variable_lookup="lenient"
+        )
 
     def is_known_template_type(self, file):
         filename, ext = os.path.splitext(os.path.basename(file))
@@ -144,7 +147,7 @@ class TplFactory(object):
             tpl = self.loader.load(tpl_ident, cls=tpl_class.genshi_tpl_class)
             return tpl_class(self, tpl)
         else:
-            raise ValueError(_('Unknown template type for %s' % tpl_ident))
+            raise ValueError(_("Unknown template type for %s" % tpl_ident))
 
 
 # vim: ts=4 sw=4 expandtab

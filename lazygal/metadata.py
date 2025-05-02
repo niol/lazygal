@@ -24,7 +24,8 @@ import codecs
 import datetime
 
 import gi
-gi.require_version('GExiv2', '0.10')
+
+gi.require_version("GExiv2", "0.10")
 from gi.repository import GExiv2, GLib
 
 from . import make
@@ -36,40 +37,44 @@ FILE_METADATA_ENCODING = locale.getpreferredencoding()
 
 
 MATEW_TAGS = {
-    'album_name': 'Album name',
-    'album_description': 'Album description',
-    'album_picture': 'Album image identifier',
+    "album_name": "Album name",
+    "album_description": "Album description",
+    "album_picture": "Album image identifier",
 }
-MATEW_METADATA = 'album_description'
+MATEW_METADATA = "album_description"
 
-FILE_METADATA = ('album-name', 'album-description', 'album-picture', )
-FILE_METADATA_MEDIA_SUFFIX = '.comment'
+FILE_METADATA = (
+    "album-name",
+    "album-description",
+    "album-picture",
+)
+FILE_METADATA_MEDIA_SUFFIX = ".comment"
 
-FALLBACK_ENCODING = 'utf-8' # encoding used when guessing
+FALLBACK_ENCODING = "utf-8"  # encoding used when guessing
 
 # As per http://www.exiv2.org/tags.html
 VENDOR_EXIF_CODES = (
-    'Exif.Canon.LensModel',
-    'Exif.Minolta.LensID',
-    'Exif.Nikon3.Lens',
-    'Exif.Nikon3.LensType',
-    'Exif.OlympusEq.LensModel',
-    'Exif.OlympusEq.LensType',
-    'Exif.Panasonic.LensType',
-    'Exif.Pentax.LensType',
-    'Exif.Samsung2.LensType',
-    'Exif.Sigma.LensRange',
-    'Exif.Sony1.LensID',
-    )
+    "Exif.Canon.LensModel",
+    "Exif.Minolta.LensID",
+    "Exif.Nikon3.Lens",
+    "Exif.Nikon3.LensType",
+    "Exif.OlympusEq.LensModel",
+    "Exif.OlympusEq.LensType",
+    "Exif.Panasonic.LensType",
+    "Exif.Pentax.LensType",
+    "Exif.Samsung2.LensType",
+    "Exif.Sigma.LensRange",
+    "Exif.Sony1.LensID",
+)
 
-GEXIV2_DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
-GExiv2.log_set_level(GExiv2.LogLevel.MUTE) # hide exiv2 errors
+GEXIV2_DATE_FORMAT = "%Y:%m:%d %H:%M:%S"
+GExiv2.log_set_level(GExiv2.LogLevel.MUTE)  # hide exiv2 errors
 
 
 TAGS_OF_INTEREST = (
-    'Exif.Photo.DateTimeOriginal',
-    'Exif.Photo.DateTimeDigitized',
-    'Exif.Image.DateTime',
+    "Exif.Photo.DateTimeOriginal",
+    "Exif.Photo.DateTimeDigitized",
+    "Exif.Image.DateTime",
 )
 
 
@@ -78,11 +83,11 @@ def decode_exif_user_comment(raw, imgpath):
     GExiv2 does not decode EXIF user comment.
     """
     # This field can contain charset information
-    if raw.startswith('charset='):
-        tokens = raw.split(' ')
+    if raw.startswith("charset="):
+        tokens = raw.split(" ")
         csetfield = tokens[0]
-        text = ' '.join(tokens[1:])
-        ignore, cset = csetfield.split('=')
+        text = " ".join(tokens[1:])
+        ignore, cset = csetfield.split("=")
         cset = cset.strip('"')
     else:
         cset = None
@@ -94,17 +99,18 @@ def decode_exif_user_comment(raw, imgpath):
 def parse_date(s):
     d = None
     last_e = None
-    for f in ('%Y-%m-%dT%H:%M:%S.%f%z',
-              '%Y-%m-%dT%H:%M:%S%z',
-              '%Y-%m-%dT%H:%M:%S.%f',
-              '%Y-%m-%dT%H:%M:%S',
-             ):
+    for f in (
+        "%Y-%m-%dT%H:%M:%S.%f%z",
+        "%Y-%m-%dT%H:%M:%S%z",
+        "%Y-%m-%dT%H:%M:%S.%f",
+        "%Y-%m-%dT%H:%M:%S",
+    ):
         try:
             d = datetime.datetime.strptime(s, f)
         except ValueError as e:
-            last_e = e # try next format
+            last_e = e  # try next format
         else:
-            break # parsing successful
+            break  # parsing successful
 
     if d:
         return d
@@ -119,7 +125,7 @@ class FileMetadata(object):
 
     def contents(self, splitter=None, firstline=False):
         try:
-            with codecs.open(self.path, 'r', FILE_METADATA_ENCODING) as f:
+            with codecs.open(self.path, "r", FILE_METADATA_ENCODING) as f:
                 if firstline:
                     c = f.readline()
                 else:
@@ -127,7 +133,7 @@ class FileMetadata(object):
         except IOError:
             return None
 
-        if splitter is None or (firstline and splitter == '\n'):
+        if splitter is None or (firstline and splitter == "\n"):
             return c.strip()
         else:
             return map(lambda s: s.strip(), c.split(splitter))
@@ -140,7 +146,7 @@ class ImageInfoTags(object):
         try:
             self._metadata = GExiv2.Metadata(self.image_path)
         except GLib.Error as e:
-            raise ValueError('cannot load metadata: %s' % e)
+            raise ValueError("cannot load metadata: %s" % e)
 
     def get_date(self):
         """
@@ -148,9 +154,10 @@ class ImageInfoTags(object):
         as those were filled by camera, Image DateTime can be updated by
         software when editing photos later.
         """
-        for tag in ('Exif.Photo.DateTimeOriginal',
-                    'Exif.Photo.DateTimeDigitized',
-                   ):
+        for tag in (
+            "Exif.Photo.DateTimeOriginal",
+            "Exif.Photo.DateTimeDigitized",
+        ):
             try:
                 dt_str = self._metadata[tag]
                 dt = datetime.datetime.strptime(dt_str, GEXIV2_DATE_FORMAT)
@@ -163,7 +170,7 @@ class ImageInfoTags(object):
 
     def get_required_rotation(self):
         try:
-            orientation_code = int(self._metadata['Exif.Image.Orientation'])
+            orientation_code = int(self._metadata["Exif.Image.Orientation"])
             if orientation_code == 8:
                 return 90
             elif orientation_code == 3:
@@ -182,13 +189,13 @@ class ImageInfoTags(object):
         vendors put different information to both tags.
         """
         try:
-            model = self._metadata['Exif.Image.Model'].strip()
+            model = self._metadata["Exif.Image.Model"].strip()
             # Terminate string at \x00
-            pos = model.find('\x00')
+            pos = model.find("\x00")
             if pos != -1:
                 model = model[:14]
             try:
-                vendor = self._metadata['Exif.Image.Make'].strip()
+                vendor = self._metadata["Exif.Image.Make"].strip()
                 vendor_l = vendor.lower()
                 model_l = model.lower()
                 # Split vendor to words and check whether they are
@@ -196,14 +203,14 @@ class ImageInfoTags(object):
                 # Canon/Canon A40
                 # PENTAX Corporation/PENTAX K10D
                 # Eastman Kodak Company/KODAK DIGITAL SCIENCE DC260 (V01.00)
-                for word in vendor_l.split(' '):
+                for word in vendor_l.split(" "):
                     if model_l.find(word) != -1:
                         return model
-                return ' '.join([vendor, model])
+                return " ".join([vendor, model])
             except KeyError:
                 return model
         except KeyError:
-            return ''
+            return ""
 
     def get_lens_name(self):
         """
@@ -220,13 +227,13 @@ class ImageInfoTags(object):
                 pass
             else:
                 vendor_values.append(v.strip())
-        return ' '.join([s for s in vendor_values if s])
+        return " ".join([s for s in vendor_values if s])
 
     def get_exif_string(self, name):
         """
         Reads string from EXIF information.
         """
-        return self._metadata[name].strip(' ')
+        return self._metadata[name].strip(" ")
 
     def get_exif_float(self, name):
         """
@@ -245,30 +252,32 @@ class ImageInfoTags(object):
         return val.numerator / val.denominator
 
     def _fallback_to_encoding(self, encoded_string, encoding=FALLBACK_ENCODING):
-        if encoded_string is None: raise ValueError
-        if type(encoded_string) is str: return encoded_string
+        if encoded_string is None:
+            raise ValueError
+        if type(encoded_string) is str:
+            return encoded_string
         try:
             return encoded_string.decode(encoding)
         except UnicodeDecodeError:
-            return encoded_string.decode(encoding, 'replace')
+            return encoded_string.decode(encoding, "replace")
 
     def _tag_fallback_to_encoding(self, tag, encoding=FALLBACK_ENCODING):
         try:
             v = self._metadata[tag]
         except UnicodeDecodeError:
             try:
-                v = self._metadata.get_raw(tag)[:-1] # remove null byte
-            except AttributeError: # GExiv2 < 0.10.3
+                v = self._metadata.get_raw(tag)[:-1]  # remove null byte
+            except AttributeError:  # GExiv2 < 0.10.3
                 logging.warning(_("Encoding for '%s' is bad, ignoring"), tag)
-                v = ''
+                v = ""
         return self._fallback_to_encoding(v, encoding)
 
     def get_exif_usercomment(self):
-        ret = self._metadata['Exif.Photo.UserComment'].strip(' \0\x00\n')
+        ret = self._metadata["Exif.Photo.UserComment"].strip(" \0\x00\n")
         ret = decode_exif_user_comment(ret, self.image_path)
         # exiv2 may spit out some useless strings sometimes
-        if ret in ('User comments', 'binary comment'):
-            return ''
+        if ret in ("User comments", "binary comment"):
+            return ""
         return ret
 
     def get_file_comment(self):
@@ -280,15 +289,15 @@ class ImageInfoTags(object):
             ret = self.get_file_comment()
             if ret is None:
                 ret = self.get_exif_usercomment()
-                if ret == '':
+                if ret == "":
                     raise ValueError
         except (ValueError, KeyError):
             try:
-                ret = self._metadata['Exif.Image.ImageDescription']
+                ret = self._metadata["Exif.Image.ImageDescription"]
                 ret = self._fallback_to_encoding(ret)
             except (ValueError, KeyError):
                 try:
-                    ret = self._metadata['Iptc.Application2.ObjectName']
+                    ret = self._metadata["Iptc.Application2.ObjectName"]
                     ret = self._fallback_to_encoding(ret)
                 except (ValueError, KeyError):
                     ret = self.get_jpeg_comment()
@@ -296,78 +305,81 @@ class ImageInfoTags(object):
 
     def get_flash(self):
         try:
-            flash_info = self._metadata.try_get_tag_interpreted_string('Exif.Photo.Flash')
+            flash_info = self._metadata.try_get_tag_interpreted_string(
+                "Exif.Photo.Flash"
+            )
             return self._fallback_to_encoding(flash_info)
         except (ValueError, KeyError):
-            return ''
+            return ""
 
     def get_exposure(self):
         try:
-            return str(
-                self._metadata.get_exif_tag_rational('Exif.Photo.ExposureTime'))
+            return str(self._metadata.get_exif_tag_rational("Exif.Photo.ExposureTime"))
         except (ValueError, KeyError):
-            return ''
+            return ""
 
     def get_iso(self):
         try:
-            return self._metadata['Exif.Photo.ISOSpeedRatings']
+            return self._metadata["Exif.Photo.ISOSpeedRatings"]
         except KeyError:
-            return ''
+            return ""
 
     def get_fnumber(self):
         try:
-            val = float(self._metadata.get_exif_tag_rational('Exif.Photo.FNumber'))
+            val = float(self._metadata.get_exif_tag_rational("Exif.Photo.FNumber"))
         except (KeyError, TypeError):
-            return ''
+            return ""
         else:
-            return 'f/{}'.format(val)
+            return "f/{}".format(val)
 
     def get_focal_length(self):
         try:
-            flen = self._metadata.get_exif_tag_rational('Exif.Photo.FocalLength')
+            flen = self._metadata.get_exif_tag_rational("Exif.Photo.FocalLength")
             if not flen:
                 raise KeyError
         except KeyError:
-            return ''
+            return ""
         else:
-            flen = '%s mm' % flen
+            flen = "%s mm" % flen
 
         try:
-            flen35 = self._metadata.get_exif_tag_rational('Exif.Photo.FocalLengthIn35mmFilm')
+            flen35 = self._metadata.get_exif_tag_rational(
+                "Exif.Photo.FocalLengthIn35mmFilm"
+            )
         except KeyError:
             pass
         else:
             if flen35 != flen:
-                flen += _(' (35 mm equivalent: %s mm)') % flen35
+                flen += _(" (35 mm equivalent: %s mm)") % flen35
             return flen
 
         try:
             try:
-                iwidth = self.get_exif_float_value('Exif.Photo.ImageWidth')
+                iwidth = self.get_exif_float_value("Exif.Photo.ImageWidth")
             except (IndexError, KeyError):
-                iwidth = self.get_exif_float_value('Exif.Photo.PixelXDimension')
+                iwidth = self.get_exif_float_value("Exif.Photo.PixelXDimension")
 
-            fresunit = self._metadata['Exif.Photo.FocalPlaneResolutionUnit']
-            factors = {'1': 25.4, '2': 25.4, '3': 10, '4': 1, '5': 0.001}
+            fresunit = self._metadata["Exif.Photo.FocalPlaneResolutionUnit"]
+            factors = {"1": 25.4, "2": 25.4, "3": 10, "4": 1, "5": 0.001}
             try:
                 fresfactor = factors[fresunit]
             except IndexError:
                 fresfactor = 0
 
-            fxres = self.get_exif_float_value('Exif.Photo.FocalPlaneXResolution')
+            fxres = self.get_exif_float_value("Exif.Photo.FocalPlaneXResolution")
             try:
                 ccdwidth = float(iwidth * fresfactor / fxres)
             except ZeroDivisionError:
-                return ''
+                return ""
 
-            foclength = self.get_exif_float_value('Exif.Photo.FocalLength')
+            foclength = self.get_exif_float_value("Exif.Photo.FocalLength")
             try:
-                lenstr = '%.01f' % (foclength / ccdwidth * 36 + 0.5)
+                lenstr = "%.01f" % (foclength / ccdwidth * 36 + 0.5)
             except ZeroDivisionError:
                 raise ValueError
 
             if lenstr != flen:
-                flen += _(' (35 mm equivalent: %s mm)') % lenstr
+                flen += _(" (35 mm equivalent: %s mm)") % lenstr
         except (IndexError, KeyError, ValueError):
             return flen
 
@@ -376,17 +388,17 @@ class ImageInfoTags(object):
     def get_jpeg_comment(self):
         try:
             comment = self._metadata.try_get_comment()
-            if comment is None or '\x00' in comment:
+            if comment is None or "\x00" in comment:
                 raise ValueError  # ignore missing or broken JPEG comments
-            return self._fallback_to_encoding(comment.strip(' '))
+            return self._fallback_to_encoding(comment.strip(" "))
         except ValueError:
-            return ''
+            return ""
 
     def get_authorship(self):
         try:
-            return self._tag_fallback_to_encoding('Exif.Image.Artist')
+            return self._tag_fallback_to_encoding("Exif.Image.Artist")
         except KeyError:
-            return ''
+            return ""
 
     def get_keywords(self):
         """
@@ -397,16 +409,18 @@ class ImageInfoTags(object):
         http://redmine.yorba.org/projects/shotwell/wiki/PhotoTags
         """
         kw = list()
-        for key in ('Iptc.Application2.Keywords',
-                    'Xmp.MicrosoftPhoto.LastKeywordXMP',
-                    'Xmp.dc.subject',
-                    'Xmp.digiKam.TagsList', ):
+        for key in (
+            "Iptc.Application2.Keywords",
+            "Xmp.MicrosoftPhoto.LastKeywordXMP",
+            "Xmp.dc.subject",
+            "Xmp.digiKam.TagsList",
+        ):
             try:
                 values = self._metadata.try_get_tag_multiple(key)
             except KeyError:
                 pass
             except UnicodeDecodeError:
-                values = self._metadata.get_raw(key).split(b'\x1c')
+                values = self._metadata.get_raw(key).split(b"\x1c")
             else:
                 for value in values:
                     if value:
@@ -415,9 +429,9 @@ class ImageInfoTags(object):
         # Reading the metadata Xmp.lr.hierarchicalSubject produces error
         # messages:
         #   "No namespace info available for XMP prefix `lr'"
-        #kw += self._metadata.try_get_tag_multiple('Xmp.lr.hierarchicalSubject')
+        # kw += self._metadata.try_get_tag_multiple('Xmp.lr.hierarchicalSubject')
 
-        #remove duplicates
+        # remove duplicates
         kw = set(kw)
 
         return kw
@@ -429,16 +443,19 @@ class ImageInfoTags(object):
         else:
             return {
                 # https://xkcd.com/2170/
-                'latitude': round(loc.latitude, 4),
-                'latitudeRef': self._metadata['Exif.GPSInfo.GPSLatitudeRef'],
-                'longitude': round(loc.longitude, 4),
-                'longitudeRef': self._metadata['Exif.GPSInfo.GPSLongitudeRef'],
-                'altitude': round(loc.altitude),
+                "latitude": round(loc.latitude, 4),
+                "latitudeRef": self._metadata["Exif.GPSInfo.GPSLatitudeRef"],
+                "longitude": round(loc.longitude, 4),
+                "longitudeRef": self._metadata["Exif.GPSInfo.GPSLongitudeRef"],
+                "altitude": round(loc.altitude),
             }
 
     def of_interest(self):
-        return { tag: self._metadata[tag]
-                 for tag in TAGS_OF_INTEREST if tag in self._metadata }
+        return {
+            tag: self._metadata[tag]
+            for tag in TAGS_OF_INTEREST
+            if tag in self._metadata
+        }
 
 
 class VideoInfoTags(object):
@@ -449,16 +466,16 @@ class VideoInfoTags(object):
 
     def __parse(self, videoinfo):
         # size
-        for s in videoinfo['streams']:
-            if s['codec_type'] == 'video':
-                self.size = (s['width'], s['height'])
+        for s in videoinfo["streams"]:
+            if s["codec_type"] == "video":
+                self.size = (s["width"], s["height"])
                 break
-        if self.size is None: # no video stream
+        if self.size is None:  # no video stream
             self.size = (None, None)
 
         # date
         try:
-            raw =  videoinfo['format']['tags']['creation_time']
+            raw = videoinfo["format"]["tags"]["creation_time"]
             self.creation_time = parse_date(raw)
         except (KeyError, ValueError):
             self.creation_time = None
@@ -471,6 +488,7 @@ class NoMetadata(Exception):
     """
     Exception indicating that no meta data has been found.
     """
+
     pass
 
 
@@ -505,9 +523,9 @@ class DirectoryMetadata(make.GroupTask):
             path = os.path.join(self.dir_path, subdir, MATEW_METADATA)
 
         if path is None or not os.path.exists(path):
-            raise NoMetadata(_('Could not open metadata file %s') % path)
+            raise NoMetadata(_("Could not open metadata file %s") % path)
 
-        with open(path, 'rb') as f:
+        with open(path, "rb") as f:
             for line in f:
                 line = line.decode(FILE_METADATA_ENCODING)
                 for tag in MATEW_TAGS.keys():
@@ -522,7 +540,7 @@ class DirectoryMetadata(make.GroupTask):
                         if data[-1] == '"':
                             data = data[:-1]
 
-                        if tag == 'album_picture':
+                        if tag == "album_picture":
                             if subdir is not None:
                                 data = os.path.join(subdir, data)
 
@@ -536,22 +554,25 @@ class DirectoryMetadata(make.GroupTask):
         Returns the file metadata that could be found in the directory.
         """
 
-        if subdir is None: subdir = self.dir_path
+        if subdir is None:
+            subdir = self.dir_path
 
-        if 'album_name' not in metadata.keys():
-            fmd = FileMetadata(os.path.join(subdir, 'album-name')).contents()
+        if "album_name" not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, "album-name")).contents()
             if fmd is not None:
-                metadata['album_name'] = fmd
+                metadata["album_name"] = fmd
 
-        if 'album_description' not in metadata.keys():
-            fmd = FileMetadata(os.path.join(subdir, 'album-description')).contents()
+        if "album_description" not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, "album-description")).contents()
             if fmd is not None:
-                metadata['album_description'] = fmd
+                metadata["album_description"] = fmd
 
-        if 'album_picture' not in metadata.keys():
-            fmd = FileMetadata(os.path.join(subdir, 'album-picture')).contents(splitter='\n', firstline=True)
+        if "album_picture" not in metadata.keys():
+            fmd = FileMetadata(os.path.join(subdir, "album-picture")).contents(
+                splitter="\n", firstline=True
+            )
             if fmd is not None:
-                metadata['album_picture'] = fmd
+                metadata["album_picture"] = fmd
 
         return metadata
 
@@ -571,7 +592,7 @@ class DirectoryMetadata(make.GroupTask):
         result = self.get_file_metadata(result, subdir)
 
         # Add album picture
-        if 'album_picture' not in result:
+        if "album_picture" not in result:
             try:
                 if dir is not None:
                     picture = dir.get_all_medias_paths()[0]
@@ -580,15 +601,15 @@ class DirectoryMetadata(make.GroupTask):
             except IndexError:
                 picture = None
             if picture is not None:
-                result['album_picture'] = os.path.relpath(picture, dir.path)
+                result["album_picture"] = os.path.relpath(picture, dir.path)
 
         return result
 
     def get_title(self):
         try:
-            return self.get()['album_name']
+            return self.get()["album_name"]
         except KeyError:
-            return os.path.basename(self.dir_path).replace('_', ' ')
+            return os.path.basename(self.dir_path).replace("_", " ")
 
 
 class DefaultMetadata(make.FileMakeObject):
@@ -608,8 +629,7 @@ class DefaultMetadata(make.FileMakeObject):
         md = DirectoryMetadata(self.source_dir.path)
 
         md_data = md.get(None, self.source_dir)
-        if 'album_description' in md_data.keys()\
-                or 'album_name' in md_data.keys():
+        if "album_description" in md_data.keys() or "album_name" in md_data.keys():
             logging.debug(_("  SKIPPED because metadata exists."))
         elif self.source_dir.get_all_medias_count() < 1:
             logging.debug(_("  SKIPPED because directory does not contain images."))
@@ -623,11 +643,11 @@ class DefaultMetadata(make.FileMakeObject):
 
         logging.info(_("GEN %s"), self._path)
 
-        with codecs.open(self._path, 'w', FILE_METADATA_ENCODING) as f:
-            f.write('# Directory metadata for lazygal, Matew format\n')
+        with codecs.open(self._path, "w", FILE_METADATA_ENCODING) as f:
+            f.write("# Directory metadata for lazygal, Matew format\n")
             f.write('Album name "%s"\n' % self.source_dir.human_name)
             f.write('Album description ""\n')
-            f.write('Album image identifier "%s"\n' % md['album_picture'])
+            f.write('Album image identifier "%s"\n' % md["album_picture"])
 
 
 # vim: ts=4 sw=4 expandtab

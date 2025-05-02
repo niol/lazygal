@@ -21,7 +21,8 @@ import re
 import math
 
 
-class NewsizeStringParseError(Exception): pass
+class NewsizeStringParseError(Exception):
+    pass
 
 
 class _Newsize(object):
@@ -46,7 +47,7 @@ class Scale(_Newsize):
 
     def dest_size(self, orig_size):
         match = self.matches()
-        scale = int(match.group('scale'))
+        scale = int(match.group("scale"))
         return tuple(map(lambda x: x * scale // 100, orig_size))
 
 
@@ -56,8 +57,8 @@ class XYScale(_Newsize):
 
     def dest_size(self, orig_size):
         match = self.matches()
-        xscale = int(match.group('xscale'))
-        yscale = int(match.group('yscale'))
+        xscale = int(match.group("xscale"))
+        yscale = int(match.group("yscale"))
         x, y = orig_size
         return (x * xscale // 100, y * yscale // 100)
 
@@ -68,7 +69,7 @@ class Width(_Newsize):
 
     def dest_size(self, orig_size):
         match = self.matches()
-        width = int(match.group('width'))
+        width = int(match.group("width"))
         x, y = orig_size
         height = y * width // x
         return (width, height)
@@ -80,7 +81,7 @@ class Height(_Newsize):
 
     def dest_size(self, orig_size):
         match = self.matches()
-        height = int(match.group('height'))
+        height = int(match.group("height"))
         x, y = orig_size
         width = x * height // y
         return (width, height)
@@ -90,8 +91,8 @@ class _WidthHeight(_Newsize):
 
     def requested_widthheight(self):
         match = self.matches()
-        width = int(match.group('width'))
-        height = int(match.group('height'))
+        width = int(match.group("width"))
+        height = int(match.group("height"))
         return width, height
 
     def appropriate_widthheight(self, orig_size, width, height, constraint):
@@ -114,8 +115,9 @@ class MaximumWidthHeight(_WidthHeight):
 
     def dest_size(self, orig_size):
         width, height = self.requested_widthheight()
-        return self.appropriate_widthheight(orig_size, width, height,
-                                            lambda x, y: x <= y)
+        return self.appropriate_widthheight(
+            orig_size, width, height, lambda x, y: x <= y
+        )
 
 
 class MinimumWidthHeight(_WidthHeight):
@@ -124,8 +126,9 @@ class MinimumWidthHeight(_WidthHeight):
 
     def dest_size(self, orig_size):
         width, height = self.requested_widthheight()
-        return self.appropriate_widthheight(orig_size, width, height,
-                                            lambda x, y: x >= y)
+        return self.appropriate_widthheight(
+            orig_size, width, height, lambda x, y: x >= y
+        )
 
 
 class MandatoryWidthHeight(_WidthHeight):
@@ -145,8 +148,9 @@ class WidthHeightIfLarger(_WidthHeight):
         width, height = self.requested_widthheight()
         x, y = orig_size
         if x > width or y > height:
-            return self.appropriate_widthheight(orig_size, width, height,
-                                                lambda x, y: x <= y)
+            return self.appropriate_widthheight(
+                orig_size, width, height, lambda x, y: x <= y
+            )
         else:
             return orig_size
 
@@ -159,8 +163,9 @@ class WidthHeightIfSmaller(_WidthHeight):
         width, height = self.requested_widthheight()
         x, y = orig_size
         if x < width and y < height:
-            return self.appropriate_widthheight(orig_size, width, height,
-                                                lambda x, y: x >= y)
+            return self.appropriate_widthheight(
+                orig_size, width, height, lambda x, y: x >= y
+            )
         else:
             return orig_size
 
@@ -171,7 +176,7 @@ class Area(_Newsize):
 
     def dest_size(self, orig_size):
         match = self.matches()
-        area = int(match.group('area'))
+        area = int(match.group("area"))
         x, y = orig_size
         # { x0 * y0 = area
         # { x / x0 = y / y0
@@ -183,8 +188,7 @@ class Area(_Newsize):
 
 resize_patterns = []
 for name, obj in list(globals().items()):
-    if not name.startswith('_')\
-    and isinstance(obj, type) and issubclass(obj, _Newsize):
+    if not name.startswith("_") and isinstance(obj, type) and issubclass(obj, _Newsize):
         resize_patterns.append(obj)
 
 

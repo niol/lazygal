@@ -28,11 +28,12 @@ import tempfile
 from PIL import Image as PILImage
 
 
-class VideoError(Exception): pass
+class VideoError(Exception):
+    pass
 
 
-FFMPEG = shutil.which('ffmpeg')
-FFPROBE = shutil.which('ffprobe')
+FFMPEG = shutil.which("ffmpeg")
+FFPROBE = shutil.which("ffprobe")
 HAVE_VIDEO = FFMPEG and FFPROBE
 
 
@@ -41,10 +42,13 @@ class VideoProcessor(object):
     def __init__(self, input_file):
         self.progress = None
 
-        self.global_opts = ['-nostdin', '-progress', '-',
-                            '-y', # force overwrite existing file
-                           ]
-        self.input_file_opts = ['-hwaccel', 'auto']
+        self.global_opts = [
+            "-nostdin",
+            "-progress",
+            "-",
+            "-y",  # force overwrite existing file
+        ]
+        self.input_file_opts = ["-hwaccel", "auto"]
         self.input_file = input_file
         self.output_file_opts = []
 
@@ -55,45 +59,49 @@ class VideoProcessor(object):
         self.progress = progress
 
     def scale(self, newsize):
-        self.videofilters.append('scale=%d:%d' % (newsize[0], newsize[1]))
+        self.videofilters.append("scale=%d:%d" % (newsize[0], newsize[1]))
 
     def parse_time(self, time_str):
-        h, m, s = time_str.split(':')
+        h, m, s = time_str.split(":")
         return 3600 * int(h) + 60 * int(m) + float(s)
 
     def parse_output(self, line):
-        if line.startswith('Duration:'):
-            self.duration = self.parse_time(line.split(' ')[1].strip(','))
-        elif self.duration and line.startswith('out_time='):
+        if line.startswith("Duration:"):
+            self.duration = self.parse_time(line.split(" ")[1].strip(","))
+        elif self.duration and line.startswith("out_time="):
             try:
-                position = self.parse_time(line.split('=')[1])
+                position = self.parse_time(line.split("=")[1])
             except ValueError:
                 position = 0
             percent = math.floor(100 * position / self.duration)
             if self.progress:
                 self.progress.set_task_progress(percent)
             else:
-                logging.info('progress: %d%%' % percent)
+                logging.info("progress: %d%%" % percent)
 
     def convert(self, outfile):
         runcmd = [FFMPEG]
         runcmd.extend(self.global_opts)
         runcmd.extend(self.input_file_opts)
-        runcmd.extend(['-i', self.input_file])
+        runcmd.extend(["-i", self.input_file])
         if self.videofilters:
-            runcmd.extend(['-vf', ','.join(self.videofilters)])
+            runcmd.extend(["-vf", ",".join(self.videofilters)])
         runcmd.extend(self.output_file_opts)
         runcmd.append(outfile)
-        logging.debug('RUNNING %s' % ' '.join(runcmd))
-        with subprocess.Popen(runcmd, text=True, errors='replace',
-                              stdout=subprocess.PIPE,
-                              stderr=subprocess.STDOUT) as p:
+        logging.debug("RUNNING %s" % " ".join(runcmd))
+        with subprocess.Popen(
+            runcmd,
+            text=True,
+            errors="replace",
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+        ) as p:
             for line in p.stdout:
                 line = line.strip()
                 logging.debug(line)
                 self.parse_output(line)
         if p.returncode != 0:
-            raise VideoError('%s failed' % ' '.join(runcmd))
+            raise VideoError("%s failed" % " ".join(runcmd))
 
 
 class VideoInfo(object):
@@ -103,13 +111,21 @@ class VideoInfo(object):
 
     def inspect(self):
         try:
-            info = subprocess.check_output([FFPROBE, '-v', 'error',
-                                            '-print_format', 'json',
-                                            '-show_format', '-show_streams',
-                                            self.path],
-                                            stderr=subprocess.DEVNULL)
+            info = subprocess.check_output(
+                [
+                    FFPROBE,
+                    "-v",
+                    "error",
+                    "-print_format",
+                    "json",
+                    "-show_format",
+                    "-show_streams",
+                    self.path,
+                ],
+                stderr=subprocess.DEVNULL,
+            )
         except subprocess.CalledProcessError:
-            raise ValueError('cannot load metadata')
+            raise ValueError("cannot load metadata")
         return json.loads(info)
 
 
@@ -117,27 +133,31 @@ class VideoTranscoder(VideoProcessor):
 
     def __init__(self, mediapath, videocodec, audiocodec):
         super().__init__(mediapath)
-        self.output_file_opts.extend(['-c:v', videocodec,
-                                      '-c:a', audiocodec])
-        self.videofilters.append('format=yuv420p')
+        self.output_file_opts.extend(["-c:v", videocodec, "-c:a", audiocodec])
+        self.videofilters.append("format=yuv420p")
 
 
 class WebMTranscoder(VideoTranscoder):
 
     def __init__(self, mediapath):
-        super().__init__(mediapath, 'libvpx-vp9', 'libopus')
-        self.output_file_opts.extend(['-crf', '22', '-b:v', '2000k',
-                                     ])
+        super().__init__(mediapath, "libvpx-vp9", "libopus")
+        self.output_file_opts.extend(
+            [
+                "-crf",
+                "22",
+                "-b:v",
+                "2000k",
+            ]
+        )
 
 
 class MP4Transcoder(VideoTranscoder):
 
     def __init__(self, mediapath):
-        super().__init__(mediapath, 'libx264', 'aac')
-        self.output_file_opts.extend(['-movflags', 'faststart',
-                                      '-preset', 'slow',
-                                      '-crf', '22'
-                                     ])
+        super().__init__(mediapath, "libx264", "aac")
+        self.output_file_opts.extend(
+            ["-movflags", "faststart", "-preset", "slow", "-crf", "22"]
+        )
 
 
 class VideoFramesExtractor(VideoProcessor):
@@ -146,16 +166,15 @@ class VideoFramesExtractor(VideoProcessor):
         super().__init__(input_file)
 
         if scene:
-            self.videofilters.append('select=gt(scene\\,0.4)')
-            self.videofilters.append('fps=1/60')
-        else: # in case of very short video with one scene
-            self.videofilters.append('fps=10')
+            self.videofilters.append("select=gt(scene\\,0.4)")
+            self.videofilters.append("fps=1/60")
+        else:  # in case of very short video with one scene
+            self.videofilters.append("fps=10")
 
         if resize is not None:
             self.scale(resize)
 
-        self.output_file_opts.extend(['-frames:v', str(frames),
-                                      '-vsync', 'vfr'])
+        self.output_file_opts.extend(["-frames:v", str(frames), "-vsync", "vfr"])
 
     def convert(self, outfile):
         super(VideoFramesExtractor, self).convert(outfile)
@@ -173,12 +192,14 @@ class VideoThumbnailer(object):
     def find_most_representative(self, images):
         images = list(images)
         logging.debug("find_most_reprensentative in %s" % " ".join(images))
-        if not images: return None
-        if len(images) == 1: return images[0]
+        if not images:
+            return None
+        if len(images) == 1:
+            return images[0]
 
         histograms = []
         for path in images:
-            with open(path, 'rb') as im_fp:
+            with open(path, "rb") as im_fp:
                 im = PILImage.open(im_fp)
                 histograms.append((path, im.histogram()))
 
@@ -210,24 +231,25 @@ class VideoThumbnailer(object):
         return histograms[best_frame_no][0]
 
     def convert(self, outfile, resize=None):
-        tmpdir = tempfile.mkdtemp(prefix='lazygal-')
+        tmpdir = tempfile.mkdtemp(prefix="lazygal-")
 
         try:
-            tmpimg_name = os.path.join(tmpdir,
-                '%s_%%s_%%%%d.jpg' % os.path.basename(self.video))
+            tmpimg_name = os.path.join(
+                tmpdir, "%s_%%s_%%%%d.jpg" % os.path.basename(self.video)
+            )
 
             try:
                 fextractor = VideoFramesExtractor(self.video, resize)
-                fextractor.convert(tmpimg_name % 'scene')
+                fextractor.convert(tmpimg_name % "scene")
             except VideoError as e:
                 fextractor = VideoFramesExtractor(self.video, resize, scene=False)
-                fextractor.convert(tmpimg_name % 'noscene')
+                fextractor.convert(tmpimg_name % "noscene")
 
-            best = self.find_most_representative(map(lambda fn:
-                                                     os.path.join(tmpdir, fn),
-                                                 os.listdir(tmpdir)))
+            best = self.find_most_representative(
+                map(lambda fn: os.path.join(tmpdir, fn), os.listdir(tmpdir))
+            )
             if not best:
-                raise VideoError('no best frame found')
+                raise VideoError("no best frame found")
             shutil.copyfile(best, outfile)
         except VideoError:
             raise
@@ -235,46 +257,48 @@ class VideoThumbnailer(object):
             shutil.rmtree(tmpdir)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
     import os
 
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    converter_types = sys.argv[1].split(',')
+    converter_types = sys.argv[1].split(",")
     converters = {}
     for converter_type in converter_types:
-        if converter_type == 'webm':
+        if converter_type == "webm":
             converter = WebMTranscoder
-        elif converter_type == 'mp4':
+        elif converter_type == "mp4":
             converter = MP4Transcoder
-        elif converter_type == 'jpeg':
+        elif converter_type == "jpeg":
             converter = VideoThumbnailer
         else:
-            raise ValueError('unknwon converter type %s' % converter_type)
+            raise ValueError("unknwon converter type %s" % converter_type)
         converters[converter_type] = converter
 
     for file_path in sys.argv[2:]:
         videoinfo = VideoInfo(file_path)
         i = videoinfo.inspect()
-        for s in i['streams']:
-            if s['codec_type'] == 'video':
-                print('Video is %dx%d, %ds' % (s['width'], s['height'],
-                                               round(float(s['duration']))))
-                break # search only first video stream
+        for s in i["streams"]:
+            if s["codec_type"] == "video":
+                print(
+                    "Video is %dx%d, %ds"
+                    % (s["width"], s["height"], round(float(s["duration"])))
+                )
+                break  # search only first video stream
 
         fn, ext = os.path.splitext(os.path.basename(file_path))
         for converter_type, converter in converters.items():
 
-            counter_str = ''
+            counter_str = ""
             counter = 0
             filename_free = False
             while not filename_free:
-                target_path = fn + counter_str + '.' + converter_type
+                target_path = fn + counter_str + "." + converter_type
                 if os.path.isfile(target_path):
                     counter = counter + 1
-                    counter_str = '_%d' % counter
+                    counter_str = "_%d" % counter
                 else:
                     filename_free = True
 

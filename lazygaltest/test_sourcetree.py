@@ -46,85 +46,91 @@ class TestSourceTree(LazygalTest):
         return Directory(dpath, [], [], self.album)
 
     def test_skipped(self):
-        d = self.get_dir('joe/young')
+        d = self.get_dir("joe/young")
         self.assertEqual(d.should_be_skipped(), False, d.path)
 
-        d = self.get_dir('.svn/young')
+        d = self.get_dir(".svn/young")
         self.assertEqual(d.should_be_skipped(), True, d.path)
 
-        d = self.get_dir('joe/young/.git')
+        d = self.get_dir("joe/young/.git")
         self.assertEqual(d.should_be_skipped(), True, d.path)
 
     def test_dir_parent_paths(self):
-        d = self.get_dir('joe/young/early_years')
+        d = self.get_dir("joe/young/early_years")
 
         expected = [
-            os.path.join(self.source_dir, 'joe/young/early_years'),
-            os.path.join(self.source_dir, 'joe/young'),
-            os.path.join(self.source_dir, 'joe'),
+            os.path.join(self.source_dir, "joe/young/early_years"),
+            os.path.join(self.source_dir, "joe/young"),
+            os.path.join(self.source_dir, "joe"),
             self.source_dir,
         ]
         self.assertEqual(d.parent_paths(), expected)
 
     def test_latest_media_stamp(self):
-        dpath = os.path.join(self.source_dir, 'srcdir')
+        dpath = os.path.join(self.source_dir, "srcdir")
         os.makedirs(dpath)
 
-        pics = ['pic1.jpg', 'pic2.jpg', 'pic3.jpg']
+        pics = ["pic1.jpg", "pic2.jpg", "pic3.jpg"]
 
         for fn in pics:
             self.add_img(dpath, fn)
 
         # no exif test
-        imgpath = os.path.join(dpath, 'pic1.jpg')
+        imgpath = os.path.join(dpath, "pic1.jpg")
         img = GExiv2.Metadata(imgpath)
-        del img['Exif.Photo.DateTimeDigitized']
-        del img['Exif.Photo.DateTimeOriginal']
+        del img["Exif.Photo.DateTimeDigitized"]
+        del img["Exif.Photo.DateTimeOriginal"]
         img.save_file()
         os.utime(imgpath, (0, datetime(2011, 7, 3).timestamp()))
-        imgpath = os.path.join(dpath, 'pic2.jpg')
+        imgpath = os.path.join(dpath, "pic2.jpg")
         img = GExiv2.Metadata(imgpath)
-        del img['Exif.Photo.DateTimeDigitized']
-        del img['Exif.Photo.DateTimeOriginal']
+        del img["Exif.Photo.DateTimeDigitized"]
+        del img["Exif.Photo.DateTimeOriginal"]
         img.save_file()
         os.utime(imgpath, (0, datetime(2011, 7, 4).timestamp()))
-        imgpath = os.path.join(dpath, 'pic3.jpg')
+        imgpath = os.path.join(dpath, "pic3.jpg")
         img = GExiv2.Metadata(imgpath)
-        del img['Exif.Photo.DateTimeDigitized']
-        del img['Exif.Photo.DateTimeOriginal']
+        del img["Exif.Photo.DateTimeDigitized"]
+        del img["Exif.Photo.DateTimeOriginal"]
         img.save_file()
         os.utime(imgpath, (0, datetime(2011, 7, 2).timestamp()))
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(from_media=True),
-                         datetime(2011, 7, 4).timestamp())
+        self.assertEqual(
+            d.latest_media_stamp(from_media=True), datetime(2011, 7, 4).timestamp()
+        )
 
         # mixed exif and no exif test
-        imgpath = os.path.join(dpath, 'pic2.jpg')
+        imgpath = os.path.join(dpath, "pic2.jpg")
         img = GExiv2.Metadata(imgpath)
-        img['Exif.Photo.DateTimeOriginal'] =\
-            datetime(2015, 7, 4).strftime('%Y:%m:%d %H:%M:%S')
+        img["Exif.Photo.DateTimeOriginal"] = datetime(2015, 7, 4).strftime(
+            "%Y:%m:%d %H:%M:%S"
+        )
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(from_media=True),
-                         datetime(2015, 7, 4).timestamp())
+        self.assertEqual(
+            d.latest_media_stamp(from_media=True), datetime(2015, 7, 4).timestamp()
+        )
 
         # full exif
-        imgpath = os.path.join(dpath, 'pic1.jpg')
+        imgpath = os.path.join(dpath, "pic1.jpg")
         img = GExiv2.Metadata(imgpath)
-        img['Exif.Photo.DateTimeOriginal'] =\
-            datetime(2015, 8, 1).strftime('%Y:%m:%d %H:%M:%S')
+        img["Exif.Photo.DateTimeOriginal"] = datetime(2015, 8, 1).strftime(
+            "%Y:%m:%d %H:%M:%S"
+        )
         img.save_file()
-        imgpath = os.path.join(dpath, 'pic3.jpg')
+        imgpath = os.path.join(dpath, "pic3.jpg")
         img = GExiv2.Metadata(imgpath)
-        img['Exif.Photo.DateTimeOriginal'] =\
-            datetime(2015, 8, 20).strftime('%Y:%m:%d %H:%M:%S')
+        img["Exif.Photo.DateTimeOriginal"] = datetime(2015, 8, 20).strftime(
+            "%Y:%m:%d %H:%M:%S"
+        )
         img.save_file()
         d = Directory(dpath, [], pics, self.album)
-        self.assertEqual(d.latest_media_stamp(from_media=True),
-                         datetime(2015, 8, 20).timestamp())
+        self.assertEqual(
+            d.latest_media_stamp(from_media=True), datetime(2015, 8, 20).timestamp()
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
 
 

@@ -45,16 +45,17 @@ from . import theme
 
 
 from lazygal import INSTALL_MODE, INSTALL_PREFIX
-if INSTALL_MODE == 'source':
-    DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
-elif INSTALL_MODE == 'installed':
-    DATAPATH = os.path.join(INSTALL_PREFIX, 'share', 'lazygal')
-    if not os.path.exists(os.path.join(DATAPATH, 'themes')):
-        print(_('Could not find themes dir, check your installation!'))
+
+if INSTALL_MODE == "source":
+    DATAPATH = os.path.normpath(os.path.join(os.path.dirname(__file__), ".."))
+elif INSTALL_MODE == "installed":
+    DATAPATH = os.path.join(INSTALL_PREFIX, "share", "lazygal")
+    if not os.path.exists(os.path.join(DATAPATH, "themes")):
+        print(_("Could not find themes dir, check your installation!"))
         sys.exit(1)
 
 
-DEST_SHARED_DIRECTORY_NAME = 'shared'
+DEST_SHARED_DIRECTORY_NAME = "shared"
 
 
 class SubgalSort(make.MakeTask):
@@ -70,35 +71,39 @@ class SubgalSort(make.MakeTask):
     def build(self):
         logging.info(_("  SORTING pics and subdirs"))
 
-        order = self.webgal_dir.subgal_sort_by['order']
-        if order == 'exif':
+        order = self.webgal_dir.subgal_sort_by["order"]
+        if order == "exif":
             subgal_sortkey = lambda x: x.source_dir.latest_media_stamp()
-        elif order == 'mtime':
+        elif order == "mtime":
             subgal_sortkey = lambda x: x.source_dir.get_mtime()
-        elif order == 'numeric':
+        elif order == "numeric":
             subgal_sortkey = lambda x: x.source_dir.name_numeric()
-        elif order == 'dirname' or order == 'filename':  # Backward compat
+        elif order == "dirname" or order == "filename":  # Backward compat
             subgal_sortkey = lambda x: x.source_dir.filename
         else:
-            raise ValueError(_("Unknown sorting criterion '%s'")
-                             % self.webgal_dir.subgal_sort_by[0])
-        self.webgal_dir.subgals.sort(key=subgal_sortkey,
-            reverse=self.webgal_dir.subgal_sort_by['reverse'])
+            raise ValueError(
+                _("Unknown sorting criterion '%s'") % self.webgal_dir.subgal_sort_by[0]
+            )
+        self.webgal_dir.subgals.sort(
+            key=subgal_sortkey, reverse=self.webgal_dir.subgal_sort_by["reverse"]
+        )
 
-        order = self.webgal_dir.pic_sort_by['order']
-        if order == 'exif':
+        order = self.webgal_dir.pic_sort_by["order"]
+        if order == "exif":
             sortkey = lambda x: x.media.sortkey()
-        elif order == 'mtime':
+        elif order == "mtime":
             sortkey = lambda x: x.media.get_mtime()
-        elif order == 'numeric':
+        elif order == "numeric":
             sortkey = lambda x: x.media.name_numeric()
-        elif order == 'filename':
+        elif order == "filename":
             sortkey = lambda x: x.media.filename
         else:
-            raise ValueError(_("Unknown sorting criterion '%s'")
-                             % self.webgal_dir.pic_sort_by[0])
-        self.webgal_dir.medias.sort(key=sortkey,
-            reverse=self.webgal_dir.pic_sort_by['reverse'])
+            raise ValueError(
+                _("Unknown sorting criterion '%s'") % self.webgal_dir.pic_sort_by[0]
+            )
+        self.webgal_dir.medias.sort(
+            key=sortkey, reverse=self.webgal_dir.pic_sort_by["reverse"]
+        )
 
         # chain medias
         previous = None
@@ -173,8 +178,7 @@ class SubgalBreak(make.MakeTask):
     def __fill_real_pagination(self):
         medias_amount = len(self.webgal_dir.medias)
         how_many_pages = medias_amount // self.webgal_dir.thumbs_per_page
-        if medias_amount == 0\
-                or medias_amount % self.webgal_dir.thumbs_per_page > 0:
+        if medias_amount == 0 or medias_amount % self.webgal_dir.thumbs_per_page > 0:
             how_many_pages = how_many_pages + 1
 
         for page_number in range(0, how_many_pages):
@@ -215,7 +219,7 @@ class WebalbumMediaTask(make.GroupTask):
             if self.resized[size_name] not in self.deps:
                 self.add_dependency(self.resized[size_name])
 
-            if self.webgal.album.theme.kind == 'static':
+            if self.webgal.album.theme.kind == "static":
                 self.browse_pages[size_name] = self.get_browse_page(size_name)
                 if self.webgal.album.force_gen_pages:
                     self.browse_pages[size_name].stamp_delete()
@@ -224,13 +228,15 @@ class WebalbumMediaTask(make.GroupTask):
         self.next = media
         if media:
             for bpage in self.browse_pages.values():
-                if media.thumb: bpage.add_dependency(media.thumb)
+                if media.thumb:
+                    bpage.add_dependency(media.thumb)
 
     def set_previous(self, media):
         self.previous = media
         if media:
             for bpage in self.browse_pages.values():
-                if media.thumb: bpage.add_dependency(media.thumb)
+                if media.thumb:
+                    bpage.add_dependency(media.thumb)
 
     def get_original_or_symlink(self):
         if not self.webgal.orig_symlink:
@@ -259,12 +265,13 @@ class WebalbumImageTask(WebalbumMediaTask):
     def __init__(self, webgal, image):
         super().__init__(webgal, image)
 
-        self.thumb = genmedia.ImageOtherSize(self.webgal, self.media,
-                                             genmedia.THUMB_SIZE_NAME)
+        self.thumb = genmedia.ImageOtherSize(
+            self.webgal, self.media, genmedia.THUMB_SIZE_NAME
+        )
         self.add_dependency(self.thumb)
 
     def get_resized(self, size_name):
-        if self.webgal.newsizers[size_name] == 'original':
+        if self.webgal.newsizers[size_name] == "original":
             return self.get_original_or_symlink()
         else:
             sized = genmedia.ImageOtherSize(self.webgal, self.media, size_name)
@@ -285,15 +292,16 @@ class WebalbumVideoTask(WebalbumMediaTask):
 
         super().__init__(webgal, video)
 
-        self.thumb = genmedia.VideoThumb(self.webgal, self.media,
-                                         genmedia.THUMB_SIZE_NAME)
+        self.thumb = genmedia.VideoThumb(
+            self.webgal, self.media, genmedia.THUMB_SIZE_NAME
+        )
         self.add_dependency(self.thumb)
 
     def get_resized(self, size_name):
         if not self.webvideo:
-            self.webvideo = genmedia.WebVideo(self.webgal, self.media,
-                                              genmedia.VIDEO_SIZE_NAME,
-                                              self.webgal.progress)
+            self.webvideo = genmedia.WebVideo(
+                self.webgal, self.media, genmedia.VIDEO_SIZE_NAME, self.webgal.progress
+            )
 
         return self.webvideo
 
@@ -306,7 +314,8 @@ class WebalbumDir(make.GroupTask):
     def __init__(self, dir, subgals, album, album_dest_dir, progress=None):
         self.source_dir = dir
         self.path = os.path.join(album_dest_dir, self.source_dir.strip_root())
-        if self.path.endswith(os.sep): self.path = os.path.dirname(self.path)
+        if self.path.endswith(os.sep):
+            self.path = os.path.dirname(self.path)
 
         super().__init__()
 
@@ -351,7 +360,7 @@ class WebalbumDir(make.GroupTask):
                     # we look for tag words, partial matches are not wanted
                     regex = re.compile(r"\b" + tagf + r"\b")
 
-                    kwlist = ' '.join(media.md['metadata']['keywords'])
+                    kwlist = " ".join(media.md["metadata"]["keywords"])
                     if re.search(regex, kwlist) is None:
                         res = False
                         break
@@ -363,17 +372,17 @@ class WebalbumDir(make.GroupTask):
             self.sort_task.add_dependency(media)
 
             media_task = None
-            if media.type == 'image':
+            if media.type == "image":
                 media_task = WebalbumImageTask(self, media)
-            elif media.type == 'video':
-                if not self.config.get('webgal', 'novideo'):
+            elif media.type == "video":
+                if not self.config.get("webgal", "novideo"):
                     media_task = WebalbumVideoTask(self, media)
                 else:
-                    logging.warning(_('Video support disabled: ignoring %s.')
-                                    % media.filename)
+                    logging.warning(
+                        _("Video support disabled: ignoring %s.") % media.filename
+                    )
             else:
-                raise NotImplementedError("Unknown media type '%s'"
-                                          % media.type)
+                raise NotImplementedError("Unknown media type '%s'" % media.type)
 
             if media_task:
                 self.medias.append(media_task)
@@ -398,7 +407,7 @@ class WebalbumDir(make.GroupTask):
             self.break_task = None
 
         self.dirzip = None
-        if self.config.get('webgal', 'dirzip') and len(self.medias) > 1:
+        if self.config.get("webgal", "dirzip") and len(self.medias) > 1:
             self.dirzip = genfile.WebalbumArchive(self)
             self.add_dependency(self.dirzip)
             self.webassets.add_dependency(self.dirzip)
@@ -410,40 +419,51 @@ class WebalbumDir(make.GroupTask):
             fixed_sizes_defs = []
             first = True
             for name, defs in sizes_defs.items():
-                fixed_sizes_defs.append({
-                    "name" : name,
-                    "defs" : defs,
-                    "default" : first,
-                })
+                fixed_sizes_defs.append(
+                    {
+                        "name": name,
+                        "defs": defs,
+                        "default": first,
+                    }
+                )
                 first = False
 
         for size_defs in fixed_sizes_defs:
-            name = size_defs['name']
+            name = size_defs["name"]
             if name == genmedia.THUMB_SIZE_NAME:
-                raise ValueError(_("Size name '%s' is reserved for internal processing.") % genmedia.THUMB_SIZE_NAME)
-            self.__parse_size(name, size_defs['defs'])
+                raise ValueError(
+                    _("Size name '%s' is reserved for internal processing.")
+                    % genmedia.THUMB_SIZE_NAME
+                )
+            self.__parse_size(name, size_defs["defs"])
             self.browse_sizes.append(name)
-            if 'default' in size_defs and size_defs['default']:
+            if "default" in size_defs and size_defs["default"]:
                 self.default_size_name = name
 
     def __parse_size(self, size_name, size_string):
-        if size_string == '0x0':
-            self.newsizers[size_name] = 'original'
+        if size_string == "0x0":
+            self.newsizers[size_name] = "original"
         elif size_string in self.newsizers:
-            pass # size reference, do nothing
+            pass  # size reference, do nothing
         else:
             try:
                 self.newsizers[size_name] = newsize.get_newsizer(size_string)
             except newsize.NewsizeStringParseError:
-                raise ValueError(_("'%s' for size '%s' does not describe a known size syntax.") % (size_string, size_name, ))
+                raise ValueError(
+                    _("'%s' for size '%s' does not describe a known size syntax.")
+                    % (
+                        size_string,
+                        size_name,
+                    )
+                )
 
     def __load_tpl_vars(self):
         # Load tpl vars from config
         tpl_vars = {}
-        if self.config.has_section('template-vars'):
+        if self.config.has_section("template-vars"):
             tpl_vars = {}
-            for option in self.config.options('template-vars'):
-                value = self.config.get('template-vars', option)
+            for option in self.config.options("template-vars"):
+                value = self.config.get("template-vars", option)
                 tpl_vars[option] = genshi.core.Markup(value)
 
         return tpl_vars
@@ -451,54 +471,63 @@ class WebalbumDir(make.GroupTask):
     def __configure(self):
         config_dirs = self.source_dir.parent_paths()[:-1]  # strip root dir
         config_dirs.reverse()  # from root to deepest
-        config_files = list(map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE),
-                                config_dirs))
-        logging.debug(_("  Trying loading gallery configs: %s"),
-                      ', '.join(map(self.source_dir.strip_root,
-                                    config_files)))
+        config_files = list(
+            map(lambda d: os.path.join(d, SOURCEDIR_CONFIGFILE), config_dirs)
+        )
+        logging.debug(
+            _("  Trying loading gallery configs: %s"),
+            ", ".join(map(self.source_dir.strip_root, config_files)),
+        )
         for c in config_files:
             self.config.load_any(c)
 
         self.browse_sizes = []
         self.newsizers = {}
-        self.__parse_browse_sizes(self.config.get('webgal', 'image-size'))
-        self.__parse_size(genmedia.THUMB_SIZE_NAME,
-                          self.config.get('webgal', 'thumbnail-size'))
-        self.__parse_size(genmedia.VIDEO_SIZE_NAME,
-                          self.config.get('webgal', 'video-size'))
+        self.__parse_browse_sizes(self.config.get("webgal", "image-size"))
+        self.__parse_size(
+            genmedia.THUMB_SIZE_NAME, self.config.get("webgal", "thumbnail-size")
+        )
+        self.__parse_size(
+            genmedia.VIDEO_SIZE_NAME, self.config.get("webgal", "video-size")
+        )
 
         self.tpl_vars = self.__load_tpl_vars()
         styles = self.album.theme.get_avail_styles(
-            self.config.get('webgal', 'default-style'))
-        self.tpl_vars.update({'styles': styles})
+            self.config.get("webgal", "default-style")
+        )
+        self.tpl_vars.update({"styles": styles})
 
-        self.set_original(self.config.get('webgal', 'original'),
-                          self.config.get('webgal', 'original-baseurl'),
-                          self.config.get('webgal', 'original-symlink'))
+        self.set_original(
+            self.config.get("webgal", "original"),
+            self.config.get("webgal", "original-baseurl"),
+            self.config.get("webgal", "original-symlink"),
+        )
 
-        self.thumbs_per_page = self.config.get('webgal', 'thumbs-per-page')
+        self.thumbs_per_page = self.config.get("webgal", "thumbs-per-page")
 
-        self.quality = self.config.get('webgal', 'jpeg-quality')
+        self.quality = self.config.get("webgal", "jpeg-quality")
         self.save_options = {}
-        if self.config.get('webgal', 'jpeg-optimize'):
-            self.save_options['optimize'] = True
-        if self.config.get('webgal', 'jpeg-progressive'):
-            self.save_options['progressive'] = True
+        if self.config.get("webgal", "jpeg-optimize"):
+            self.save_options["optimize"] = True
+        if self.config.get("webgal", "jpeg-progressive"):
+            self.save_options["progressive"] = True
 
-        self.pic_sort_by = self.config.get('webgal', 'sort-medias')
-        self.subgal_sort_by = self.config.get('webgal', 'sort-subgals')
-        self.tagfilters = self.config.get('webgal', 'filter-by-tag')
+        self.pic_sort_by = self.config.get("webgal", "sort-medias")
+        self.subgal_sort_by = self.config.get("webgal", "sort-subgals")
+        self.tagfilters = self.config.get("webgal", "filter-by-tag")
 
-        self.webalbumpic_bg = self.config.get('webgal', 'webalbumpic-bg')
-        self.webalbumpic_type = self.config.get('webgal', 'webalbumpic-type')
+        self.webalbumpic_bg = self.config.get("webgal", "webalbumpic-bg")
+        self.webalbumpic_type = self.config.get("webgal", "webalbumpic-type")
         try:
-            self.webalbumpic_size = list(map(int, self.config.get('webgal', 'webalbumpic-size').split('x')))
+            self.webalbumpic_size = list(
+                map(int, self.config.get("webgal", "webalbumpic-size").split("x"))
+            )
             if len(self.webalbumpic_size) != 2:
                 raise ValueError
         except ValueError:
-            logging.error(_('Bad syntax for webalbumpic-size.'))
+            logging.error(_("Bad syntax for webalbumpic-size."))
             sys.exit(1)
-        self.keep_gps = self.config.get('webgal', 'keep-gps')
+        self.keep_gps = self.config.get("webgal", "keep-gps")
 
     def set_original(self, original=False, orig_base=None, orig_symlink=False):
         self.original = original or orig_symlink
@@ -509,10 +538,10 @@ class WebalbumDir(make.GroupTask):
             self.orig_base = None
 
     def get_webalbumpic_filename(self):
-        if self.webalbumpic_bg == 'transparent':
-            ext = '.png'  # JPEG does not have an alpha channel
+        if self.webalbumpic_bg == "transparent":
+            ext = ".png"  # JPEG does not have an alpha channel
         else:
-            ext = '.jpg'
+            ext = ".jpg"
         return genmedia.WebalbumPicture.BASEFILENAME + ext
 
     def _add_size_qualifier(self, path, size_name, force_extension=None):
@@ -520,12 +549,14 @@ class WebalbumDir(make.GroupTask):
         if force_extension is not None:
             extension = force_extension
 
-        if size_name == self.default_size_name and extension == '.html':
+        if size_name == self.default_size_name and extension == ".html":
             # Do not append default size name to HTML page filename
             return path
-        elif size_name in self.browse_sizes\
-                and self.newsizers[size_name] == 'original'\
-                and extension != '.html':
+        elif (
+            size_name in self.browse_sizes
+            and self.newsizers[size_name] == "original"
+            and extension != ".html"
+        ):
             # Do not append size_name to unresized images.
             return path
         else:
@@ -535,8 +566,9 @@ class WebalbumDir(make.GroupTask):
         page_number = self.break_task.next_page_number()
         pages = []
         for size_name in self.browse_sizes:
-            page = genpage.WebalbumIndexPage(self, size_name, page_number,
-                                             subgals, galleries)
+            page = genpage.WebalbumIndexPage(
+                self, size_name, page_number, subgals, galleries
+            )
             if self.album.force_gen_pages:
                 page.stamp_delete()
             self.add_dependency(page)
@@ -578,9 +610,12 @@ class WebalbumDir(make.GroupTask):
         return False
 
     def should_be_flattened(self, path=None):
-        if path is None: path = self.source_dir.path
-        return self.album.dir_flattening_depth is not False\
+        if path is None:
+            path = self.source_dir.path
+        return (
+            self.album.dir_flattening_depth is not False
             and self.source_dir.get_album_level(path) > self.album.dir_flattening_depth
+        )
 
     def flatten_below(self):
         if self.album.dir_flattening_depth is False:
@@ -597,8 +632,7 @@ class WebalbumDir(make.GroupTask):
         Returns the relative path to go from this directory to
         target_srcdir_path.
         """
-        return self.source_dir.rel_path(self.source_dir.path,
-                                        target_srcdir_path)
+        return self.source_dir.rel_path(self.source_dir.path, target_srcdir_path)
 
     def rel_path(self, path):
         """
@@ -619,7 +653,7 @@ class WebalbumDir(make.GroupTask):
                 cur_path, dummy = os.path.split(cur_path)
             return cur_path
         else:
-            return ''
+            return ""
 
     def list_foreign_files(self):
         self.call_populate_deps()
@@ -632,17 +666,17 @@ class WebalbumDir(make.GroupTask):
         # Check dest for junk files
         extra_files = []
         if self.source_dir.is_album_root():
-            extra_files.append(os.path.join(self.path,
-                                            DEST_SHARED_DIRECTORY_NAME))
+            extra_files.append(os.path.join(self.path, DEST_SHARED_DIRECTORY_NAME))
 
         dirnames = [d.source_dir.name for d in self.subgals]
-        expected_dirs = list(map(lambda dn: os.path.join(self.path, dn),
-                             dirnames))
+        expected_dirs = list(map(lambda dn: os.path.join(self.path, dn), dirnames))
         for dest_file in os.listdir(self.path):
             dest_file = os.path.join(self.path, dest_file)
-            if dest_file not in self.output_items and\
-                dest_file not in expected_dirs and\
-                    dest_file not in extra_files:
+            if (
+                dest_file not in self.output_items
+                and dest_file not in expected_dirs
+                and dest_file not in extra_files
+            ):
                 foreign_files.append(dest_file)
 
         return foreign_files
@@ -688,16 +722,16 @@ class SharedFiles(make.FileMakeObject):
 
         self.expected_shared_files = []
         for shared in self.album.theme.shared_files:
-            shared_file_dest = os.path.join(self.path, shared['dest'])
+            shared_file_dest = os.path.join(self.path, shared["dest"])
 
-            if self.album.theme.tpl_loader.is_known_template_type(shared['source']):
-                sf = genpage.SharedFileTemplate(album, shared['source'],
-                                                shared_file_dest,
-                                                tpl_vars)
+            if self.album.theme.tpl_loader.is_known_template_type(shared["source"]):
+                sf = genpage.SharedFileTemplate(
+                    album, shared["source"], shared_file_dest, tpl_vars
+                )
                 if self.album.force_gen_pages:
                     sf.stamp_delete()
             else:
-                sf = genfile.SharedFileCopy(shared['source'], shared_file_dest)
+                sf = genfile.SharedFileCopy(shared["source"], shared_file_dest)
             self.expected_shared_files.append(sf.path)
 
             self.add_dependency(sf)
@@ -712,11 +746,20 @@ class SharedFiles(make.FileMakeObject):
 
 class DummyProgress(object):
 
-    def dir_done(self):                   pass
-    def media_done(self, how_many=1):     pass
-    def set_task_progress(self, percent): pass
-    def set_task_done(self):              pass
-    def updated(self):                    pass
+    def dir_done(self):
+        pass
+
+    def media_done(self, how_many=1):
+        pass
+
+    def set_task_progress(self, percent):
+        pass
+
+    def set_task_done(self):
+        pass
+
+    def updated(self):
+        pass
 
 
 class AlbumGenProgress(object):
@@ -750,21 +793,29 @@ class AlbumGenProgress(object):
         msg = []
 
         if self._dirs_total > 0:
-            msg.append("dir %d/%d (%d%%)" \
-                  % (self._dirs_done, self._dirs_total,
-                     100 * self._dirs_done // self._dirs_total,
-                    ))
+            msg.append(
+                "dir %d/%d (%d%%)"
+                % (
+                    self._dirs_done,
+                    self._dirs_total,
+                    100 * self._dirs_done // self._dirs_total,
+                )
+            )
 
         if self._medias_total > 0:
-            msg.append("media %d/%d (%d%%)" \
-                       % (self._medias_done, self._medias_total,
-                          100 * self._medias_done // self._medias_total,
-                         ))
+            msg.append(
+                "media %d/%d (%d%%)"
+                % (
+                    self._medias_done,
+                    self._medias_total,
+                    100 * self._medias_done // self._medias_total,
+                )
+            )
 
         if self._task_percent is not None:
             msg.append(_("current task %d%%") % self._task_percent)
 
-        return _("Progress: %s") % ', '.join(msg)
+        return _("Progress: %s") % ", ".join(msg)
 
     def updated(self):
         pass
@@ -786,37 +837,44 @@ class Album(object):
             try:
                 self.config.load_any(sourcedir_configfile)
             except LazygalConfigDeprecated:
-                logging.error(_("'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."), sourcedir_configfile)
+                logging.error(
+                    _(
+                        "'%s' uses a deprecated syntax: please refer to lazygal.conf(5) manual page."
+                    ),
+                    sourcedir_configfile,
+                )
                 sys.exit(1)
         if config is not None:  # Supplied config
             self.config.load(config)
 
-        if self.config.get('runtime', 'quiet'):
+        if self.config.get("runtime", "quiet"):
             logging.getLogger().setLevel(logging.ERROR)
-        if self.config.get('runtime', 'debug'):
+        if self.config.get("runtime", "debug"):
             logging.getLogger().setLevel(logging.DEBUG)
             GExiv2.log_set_level(GExiv2.LogLevel.INFO)
 
-        self.clean_dest = self.config.get('global', 'clean-destination')
-        self.preserves = (self.config.get('global', 'preserve') +
-			 self.config.get('global', 'preserve_args'))
-        self.force_gen_pages = self.config.get('global', 'force-gen-pages')
+        self.clean_dest = self.config.get("global", "clean-destination")
+        self.preserves = self.config.get("global", "preserve") + self.config.get(
+            "global", "preserve_args"
+        )
+        self.force_gen_pages = self.config.get("global", "force-gen-pages")
 
-        self.set_theme(self.config.get('global', 'theme'))
-        self.excludes = (self.config.get('global', 'exclude') +
-                        self.config.get('global', 'exclude_args'))
+        self.set_theme(self.config.get("global", "theme"))
+        self.excludes = self.config.get("global", "exclude") + self.config.get(
+            "global", "exclude_args"
+        )
 
-        self.dir_flattening_depth = self.config.get('global', 'dir-flattening-depth')
+        self.dir_flattening_depth = self.config.get("global", "dir-flattening-depth")
 
         self.__statistics = None
 
     def set_theme(self, theme_name=theme.DEFAULT_THEME):
-        self.theme = theme.Theme(os.path.join(DATAPATH, 'themes'), theme_name)
+        self.theme = theme.Theme(os.path.join(DATAPATH, "themes"), theme_name)
         self.theme.prepare_tpl_loader(tpl.TplFactory)
         self.theme.check_shared_files()
 
     def _str_humanize(self, text):
-        dash_replaced = text.replace('_', ' ')
+        dash_replaced = text.replace("_", " ")
         return dash_replaced
 
     def is_in_sourcetree(self, path):
@@ -830,13 +888,13 @@ class Album(object):
             for pattern in self.preserves:
                 # Do not delete something the user wants to keep.
                 if fnmatch.fnmatch(tail, pattern):
-                    logging.info('  PRESERVE %s', tail)
+                    logging.info("  PRESERVE %s", tail)
                     return
             if os.path.isdir(file_path):
                 shutil.rmtree(file_path)
             else:
                 os.unlink(file_path)
-            logging.info('  RM %s', file_path)
+            logging.info("  RM %s", file_path)
 
     def generate_default_metadata(self):
         """
@@ -846,7 +904,7 @@ class Album(object):
 
         for root, dirnames, filenames in pathutils.walk(self.source_dir):
             filenames.sort()  # This is required for the ignored files
-                              # checks to be reliable.
+            # checks to be reliable.
             source_dir = sourcetree.Directory(root, [], filenames, self)
             logging.info(_("[Entering %%ALBUMROOT%%/%s]"), source_dir.strip_root())
             logging.debug("(%s)", source_dir.path)
@@ -855,31 +913,34 @@ class Album(object):
 
     def stats(self):
         if self.__statistics is None:
-            self.__statistics = {
-                'total' : 0,
-                'bydir' : {}
-            }
+            self.__statistics = {"total": 0, "bydir": {}}
             for root, dirnames, filenames in pathutils.walk(self.source_dir):
-                dir_medias = len([f for f in filenames\
-                                  if sourcetree.MediaHandler.is_known_media(f, self)])
-                self.__statistics['total'] = self.__statistics['total']\
-                                             + dir_medias
-                self.__statistics['bydir'][root] = dir_medias
+                dir_medias = len(
+                    [
+                        f
+                        for f in filenames
+                        if sourcetree.MediaHandler.is_known_media(f, self)
+                    ]
+                )
+                self.__statistics["total"] = self.__statistics["total"] + dir_medias
+                self.__statistics["bydir"][root] = dir_medias
         return self.__statistics
 
     def generate(self, dest_dir=None, progress=None):
         if dest_dir is None:
-            dest_dir = self.config.get('global', 'output-directory')
+            dest_dir = self.config.get("global", "output-directory")
         sane_dest_dir = os.path.abspath(os.path.expanduser(dest_dir))
 
         if not progress:
             progress = DummyProgress()
 
-        pub_url = self.config.get('global', 'puburl')
-        check_all_dirs = self.config.get('runtime', 'check-all-dirs')
+        pub_url = self.config.get("global", "puburl")
+        check_all_dirs = self.config.get("runtime", "check-all-dirs")
 
         if self.is_in_sourcetree(sane_dest_dir):
-            raise ValueError(_("Fatal error, web gallery directory is within source tree."))
+            raise ValueError(
+                _("Fatal error, web gallery directory is within source tree.")
+            )
 
         logging.debug(_("Generating to %s"), sane_dest_dir)
 
@@ -903,9 +964,15 @@ class Album(object):
             if checked_dir.should_be_skipped():
                 logging.debug(_("(%s) has been skipped"), checked_dir.path)
                 continue
-            if checked_dir.path == os.path.join(sane_dest_dir,
-                                                DEST_SHARED_DIRECTORY_NAME):
-                logging.error(_("(%s) has been skipped because its name collides with the shared material directory name"), checked_dir.path)
+            if checked_dir.path == os.path.join(
+                sane_dest_dir, DEST_SHARED_DIRECTORY_NAME
+            ):
+                logging.error(
+                    _(
+                        "(%s) has been skipped because its name collides with the shared material directory name"
+                    ),
+                    checked_dir.path,
+                )
                 continue
 
             logging.info(_("[Entering %%ALBUMROOT%%/%s]"), checked_dir.strip_root())
@@ -913,8 +980,7 @@ class Album(object):
 
             source_dir = sourcetree.Directory(root, subdirs, filenames, self)
 
-            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir,
-                                  progress)
+            destgal = WebalbumDir(source_dir, subgals, self, sane_dest_dir, progress)
 
             if source_dir.is_album_root():
                 # Use root config tpl vars for shared files
@@ -931,8 +997,8 @@ class Album(object):
             if feed and source_dir.is_album_root():
                 feed.set_title(source_dir.human_name)
                 md = destgal.source_dir.metadata.get()
-                if 'album_description' in md.keys():
-                    feed.set_description(md['album_description'])
+                if "album_description" in md.keys():
+                    feed.set_description(md["album_description"])
                 destgal.register_output(feed.path)
 
             if feed:
@@ -942,8 +1008,12 @@ class Album(object):
             if check_all_dirs or destgal.needs_build_quick():
                 destgal.make()
             else:
-                progress.media_done(self.stats()['bydir'][destgal.source_dir.path])
-                logging.info(_("  SKIPPED because of mtime, touch source or use --check-all-dirs to override."))
+                progress.media_done(self.stats()["bydir"][destgal.source_dir.path])
+                logging.info(
+                    _(
+                        "  SKIPPED because of mtime, touch source or use --check-all-dirs to override."
+                    )
+                )
 
             # Force some memory cleanups, this is usefull for big albums.
             del destgal

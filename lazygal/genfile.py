@@ -89,14 +89,17 @@ class SymlinkMediaOriginal(MediaOriginal):
 class WebalbumArchive(WebalbumFile):
 
     def __init__(self, webgal_dir):
-        self.filename = webgal_dir.source_dir.name + '.zip'
+        self.filename = webgal_dir.source_dir.name + ".zip"
         self.path = os.path.join(webgal_dir.path, self.filename)
         super().__init__(self.path, webgal_dir)
 
         self.add_dependency(self.dir.source_dir)
-        self.pics = list(map(lambda x: os.path.join(self.dir.source_dir.path,
-                                                    x.media.filename),
-                             self.dir.medias))
+        self.pics = list(
+            map(
+                lambda x: os.path.join(self.dir.source_dir.path, x.media.filename),
+                self.dir.medias,
+            )
+        )
         for pic in self.pics:
             self.add_file_dependency(pic)
 
@@ -105,10 +108,9 @@ class WebalbumArchive(WebalbumFile):
         logging.info(_("  ZIP %s"), zip_rel_path)
         logging.debug("(%s)", self.path)
 
-        with zipfile.ZipFile(self.path, 'w') as archive:
+        with zipfile.ZipFile(self.path, "w") as archive:
             for pic in self.pics:
-                inzip_fn = os.path.join(self.dir.source_dir.name,
-                                        os.path.basename(pic))
+                inzip_fn = os.path.join(self.dir.source_dir.name, os.path.basename(pic))
                 archive.write(pic, inzip_fn)
 
     def size(self):

@@ -22,16 +22,16 @@ import logging
 class ProgressConsoleHandler(logging.StreamHandler):
 
     last_progress_lengh = 0
-    progress_msg = ''
+    progress_msg = ""
 
     def clear_last_progress(self):
-        self.stream.write('\r' + ' '*self.last_progress_lengh + '\r')
+        self.stream.write("\r" + " " * self.last_progress_lengh + "\r")
 
     def emit(self, record=None):
         try:
             self.clear_last_progress()
             if record is not None:
-                self.stream.write(self.format(record) + '\n')
+                self.stream.write(self.format(record) + "\n")
             self.stream.write(self.progress_msg)
             self.last_progress_lengh = len(self.progress_msg)
             self.flush()

@@ -29,16 +29,16 @@ from . import tplvars
 def json_serializer(obj):
     if isinstance(obj, datetime.datetime):
         return obj.isoformat()
-    raise TypeError('Type %s is not JSON serializable', type(obj))
+    raise TypeError("Type %s is not JSON serializable", type(obj))
 
 
 def datetime_hook(json_dict):
-    for (key, value) in json_dict.items():
+    for key, value in json_dict.items():
         if type(value) is str:
             try:
                 json_dict[key] = datetime.datetime.fromisoformat(value)
             except ValueError:
-                pass # not a datetime in ISO8601 format
+                pass  # not a datetime in ISO8601 format
     return json_dict
 
 
@@ -50,12 +50,11 @@ class JSONWebFile(make.FileMakeObject):
 
         self.data = None
         try:
-            with open(self._path, 'r') as json_fp:
+            with open(self._path, "r") as json_fp:
                 self.data = json.load(json_fp, object_hook=datetime_hook)
 
-            if 'version' not in self.data \
-            or self.data['version'] != self.version:
-                raise ValueError('persistent json data version mismatch')
+            if "version" not in self.data or self.data["version"] != self.version:
+                raise ValueError("persistent json data version mismatch")
         except FileNotFoundError:
             self._init_data()
         except ValueError as ve:
@@ -66,21 +65,20 @@ class JSONWebFile(make.FileMakeObject):
 
     def _init_data(self):
         self.data = collections.OrderedDict()
-        self.data['version'] = self.version
+        self.data["version"] = self.version
 
     def dump(self):
-        with open(self._path, 'w') as json_fp:
-            if self.webgal.config.get('runtime', 'debug'):
+        with open(self._path, "w") as json_fp:
+            if self.webgal.config.get("runtime", "debug"):
                 indent = 4
             else:
                 indent = None
-            json.dump(self.data, json_fp,
-                      indent=indent, default=json_serializer)
+            json.dump(self.data, json_fp, indent=indent, default=json_serializer)
 
 
 class PersistentIndex(JSONWebFile):
 
-    json_filename = 'index.json'
+    json_filename = "index.json"
     version = 1
 
     def __init__(self, webgal):
@@ -97,89 +95,93 @@ class PersistentIndex(JSONWebFile):
     def _init_data(self):
         super()._init_data()
 
-        self.data['config'] = {
-            'webgal': dict(self.webgal.config['webgal']),
+        self.data["config"] = {
+            "webgal": dict(self.webgal.config["webgal"]),
         }
 
-        self.data['count'] = {
-            'media' : 0,
-            'image' : 0,
-            'video' : 0,
-            'subgal': 0,
+        self.data["count"] = {
+            "media": 0,
+            "image": 0,
+            "video": 0,
+            "subgal": 0,
         }
 
-        self.data['all_count'] = {
-            'media' : 0,
-            'image' : 0,
-            'video' : 0,
+        self.data["all_count"] = {
+            "media": 0,
+            "image": 0,
+            "video": 0,
         }
 
-        self.data['medias'] = {}
+        self.data["medias"] = {}
 
     def __populate_data(self):
         # reset counts
-        for t in ('media', 'image', 'video', 'subgal'):
-            self.data['count'][t] = 0
+        for t in ("media", "image", "video", "subgal"):
+            self.data["count"][t] = 0
 
         for media in self.webgal.source_dir.medias:
-            for t in ('media', media.type):
-                self.data['count'][t] = self.data['count'][t] + 1
+            for t in ("media", media.type):
+                self.data["count"][t] = self.data["count"][t] + 1
 
         to_delete = []
-        for media_filename, media_info in self.data['medias'].items():
+        for media_filename, media_info in self.data["medias"].items():
             if media_filename not in self.webgal.source_dir.medias_names:
                 to_delete.append(media_filename)
 
         for media_filename in to_delete:
-            del(self.data['medias'][media_filename])
+            del self.data["medias"][media_filename]
 
-        self.data['all_count'] = {
-            'media' : self.data['count']['media'],
-            'image' : self.data['count']['image'],
-            'video' : self.data['count']['video'],
+        self.data["all_count"] = {
+            "media": self.data["count"]["media"],
+            "image": self.data["count"]["image"],
+            "video": self.data["count"]["video"],
         }
 
-        self.data['count']['subgal'] = len(self.webgal.subgals)
-        self.data['subgals'] = []
+        self.data["count"]["subgal"] = len(self.webgal.subgals)
+        self.data["subgals"] = []
         for subgal in self.webgal.subgals:
-            for count_type in self.data['all_count']:
-                self.data['all_count'][count_type] =\
-                    self.data['all_count'][count_type] +\
-                    subgal.pindex.data['all_count'][count_type]
+            for count_type in self.data["all_count"]:
+                self.data["all_count"][count_type] = (
+                    self.data["all_count"][count_type]
+                    + subgal.pindex.data["all_count"][count_type]
+                )
 
-            self.data['subgals'].append(subgal.source_dir.name)
+            self.data["subgals"].append(subgal.source_dir.name)
 
     def load_media(self, src_media):
         if self.webgal.skip_media(src_media):
             return
 
-        self.data['medias'][src_media.filename] = {}
+        self.data["medias"][src_media.filename] = {}
 
         for key, value in src_media.md.items():
-            if not self.webgal.config.get('webgal', 'publish-metadata') \
-            and key == 'metadata':
+            if (
+                not self.webgal.config.get("webgal", "publish-metadata")
+                and key == "metadata"
+            ):
                 v = {}
             else:
                 v = value
-            self.data['medias'][src_media.filename][key] = v
+            self.data["medias"][src_media.filename][key] = v
 
-        i = self.data['medias'][src_media.filename]
-        if 'location' in i['metadata'] \
-        and not self.webgal.config.get('webgal', 'keep-gps'):
-            i['metadata']['location'] = None
+        i = self.data["medias"][src_media.filename]
+        if "location" in i["metadata"] and not self.webgal.config.get(
+            "webgal", "keep-gps"
+        ):
+            i["metadata"]["location"] = None
 
     def unpublish_media(self, src_media):
-        del self.data['medias'][src_media.filename]
-        for t in ('media', src_media.type):
-            self.data['count'][t] = self.data['count'][t] - 1
+        del self.data["medias"][src_media.filename]
+        for t in ("media", src_media.type):
+            self.data["count"][t] = self.data["count"][t] - 1
 
     def webgal_info(self):
         dir_info = {}
         if self.webgal.source_dir.metadata:
             dir_info.update(self.webgal.source_dir.metadata.get())
 
-        if 'album_name' not in dir_info:
-            dir_info['album_name'] = self.webgal.source_dir.human_name
+        if "album_name" not in dir_info:
+            dir_info["album_name"] = self.webgal.source_dir.human_name
 
         return dir_info
 
@@ -191,27 +193,27 @@ class PersistentIndex(JSONWebFile):
         self.__populate_data()
 
         # Create the webgal directory if it does not exist
-        if not os.path.isdir(self.webgal.path) \
-        and self.webgal.has_media_below():
-            logging.info(_("  MKDIR %%WEBALBUMROOT%%/%s"),
-                         self.webgal.source_dir.strip_root())
+        if not os.path.isdir(self.webgal.path) and self.webgal.has_media_below():
+            logging.info(
+                _("  MKDIR %%WEBALBUMROOT%%/%s"), self.webgal.source_dir.strip_root()
+            )
             logging.debug("(%s)", self.webgal.path)
             os.makedirs(self.webgal.path)
 
         self.dump()
 
-    def get_media_count(self, media_type='media'):
-        return self.data['count'][media_type]
+    def get_media_count(self, media_type="media"):
+        return self.data["count"][media_type]
 
 
 class WebAssets(JSONWebFile):
 
-    json_filename = 'webassets.json'
+    json_filename = "webassets.json"
     version = 1
 
     def _init_data(self):
         super()._init_data()
-        self.data['dirzip'] = None
+        self.data["dirzip"] = None
         self.dirzip = None
 
     def build(self):
@@ -220,10 +222,10 @@ class WebAssets(JSONWebFile):
 
             if self.webgal.dirzip:
                 dirzip_size = self.webgal.dirzip.size()
-                self.data['dirzip'] = {
-                    'filename': self.webgal.dirzip.filename,
-                    'size'    : dirzip_size,
-                    'sizestr' : tplvars.format_filesize(dirzip_size),
+                self.data["dirzip"] = {
+                    "filename": self.webgal.dirzip.filename,
+                    "size": dirzip_size,
+                    "sizestr": tplvars.format_filesize(dirzip_size),
                 }
 
             self.dump()
