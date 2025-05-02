@@ -1,4 +1,10 @@
-Lazygal 0.10.11 (2025-01-23)
+Lazygal 0.11 (2025-05-02)
+  * lint python
+  * make thumbnail gen more robust
+  * mediautils: remove duplicated code
+
+Lazygal 0.10.11 (2025-02-28)
+  * set version to 0.10.11
   * fix failure with PNG indexed images (Debian Closes: #1092599)
   * update GExiv2 link in README (Fix #19)
 

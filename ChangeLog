@@ -1,3 +1,7 @@
+Lazygal 0.11 (2025-05-02)
+  * lint python
+  * make thumbnail gen more robust
+
 Lazygal 0.10.11 (2025-01-23)
   * fix failure with PNG indexed images (Debian Closes: #1092599)
 
