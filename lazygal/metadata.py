@@ -437,7 +437,12 @@ class ImageInfoTags(object):
         return kw
 
     def get_location(self):
-        loc = self._metadata.try_get_gps_info()
+        try:
+            loc = self._metadata.try_get_gps_info()
+        except GLib.GError:
+            # Broken GPS data, set to zero
+            loc = (0, 0, 0)
+
         if loc == (0, 0, 0):
             return None
         else:

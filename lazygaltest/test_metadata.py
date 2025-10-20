@@ -17,17 +17,19 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-import unittest
-import os
-import locale
-import datetime
-import time
 import codecs
+import datetime
+import locale
+import os
+import shutil
+import time
+import unittest
 
 
 from . import LazygalTest
 from lazygal import mediautils
 from lazygal import metadata
+from lazygal.metadata import GExiv2
 
 metadata.FILE_METADATA_ENCODING = "utf-8"  # force for these tests
 from lazygal.generators import Album
@@ -298,6 +300,14 @@ Album image identifier "first\xe3.jpg"
                 "altitude": 1527,
             },
         )
+
+        gps_sample_path = os.path.join(self.get_working_path(), "sample.jpg")
+        shutil.copy(self.get_sample_path("sample-with-gps.jpg"), gps_sample_path)
+        gps_sample_path_md = GExiv2.Metadata(gps_sample_path)
+        del gps_sample_path_md["Exif.GPSInfo.GPSAltitude"]
+        gps_sample_path_md.save_file()
+        gps_sample_path_md = metadata.ImageInfoTags(gps_sample_path)
+        self.assertEqual(gps_sample_path_md.get_location(), None)
 
     @unittest.skipIf(not mediautils.HAVE_VIDEO, "video support not available")
     def test_video(self):
