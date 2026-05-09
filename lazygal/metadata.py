@@ -25,7 +25,10 @@ import datetime
 
 import gi
 
-gi.require_version("GExiv2", "0.10")
+try:
+    gi.require_version("GExiv2", "0.16")
+except ValueError:
+    gi.require_version("GExiv2", "0.10")
 from gi.repository import GExiv2, GLib
 
 from . import make
