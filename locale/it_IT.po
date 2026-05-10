@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazygal 0.8.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-02 11:55+0200\n"
+"POT-Creation-Date: 2026-05-10 09:33+0200\n"
 "PO-Revision-Date: 2015-01-07 08:39+0100\n"
 "Last-Translator: Federico Bruni <fedelogy@gmail.com>\n"
 "Language-Team: Federico Bruni <fedelogy@gmail.com>\n"
@@ -171,30 +171,30 @@ msgstr "[Uscita da  %%ALBUMROOT%%/%s]"
 
 #. remove null byte
 #. GExiv2 < 0.10.3
-#: ../lazygal/metadata.py:271
+#: ../lazygal/metadata.py:274
 #, python-format
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:353 ../lazygal/metadata.py:382
+#: ../lazygal/metadata.py:356 ../lazygal/metadata.py:385
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr " (equivalente a 35 mm: %s mm)"
 
-#: ../lazygal/metadata.py:526
+#: ../lazygal/metadata.py:534
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr "Impossibile aprire il file dei metadati %s"
 
-#: ../lazygal/metadata.py:633
+#: ../lazygal/metadata.py:641
 msgid "  SKIPPED because metadata exists."
 msgstr "  IGNORATO perché i metadati esistono già."
 
-#: ../lazygal/metadata.py:635
+#: ../lazygal/metadata.py:643
 msgid "  SKIPPED because directory does not contain images."
 msgstr "  IGNORATO perché la directory non contiene immagini."
 
-#: ../lazygal/metadata.py:644
+#: ../lazygal/metadata.py:652
 #, python-format
 msgid "GEN %s"
 msgstr "GEN %s"

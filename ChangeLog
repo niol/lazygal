@@ -1,3 +1,7 @@
+Lazygal 0.12 (2026-05-09)
+  * add compatibility with libgexiv2-0.15+ (Fix #23)
+  * fix crash with bad GPS metadata (Fixes #21)
+
 Lazygal 0.11 (2025-05-02)
   * lint python
   * make thumbnail gen more robust

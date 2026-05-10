@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-02 11:55+0200\n"
+"POT-Creation-Date: 2026-05-10 09:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,30 +154,30 @@ msgstr ""
 
 #. remove null byte
 #. GExiv2 < 0.10.3
-#: ../lazygal/metadata.py:271
+#: ../lazygal/metadata.py:274
 #, python-format
 msgid "Encoding for '%s' is bad, ignoring"
 msgstr ""
 
-#: ../lazygal/metadata.py:353 ../lazygal/metadata.py:382
+#: ../lazygal/metadata.py:356 ../lazygal/metadata.py:385
 #, python-format
 msgid " (35 mm equivalent: %s mm)"
 msgstr ""
 
-#: ../lazygal/metadata.py:526
+#: ../lazygal/metadata.py:534
 #, python-format
 msgid "Could not open metadata file %s"
 msgstr ""
 
-#: ../lazygal/metadata.py:633
+#: ../lazygal/metadata.py:641
 msgid "  SKIPPED because metadata exists."
 msgstr ""
 
-#: ../lazygal/metadata.py:635
+#: ../lazygal/metadata.py:643
 msgid "  SKIPPED because directory does not contain images."
 msgstr ""
 
-#: ../lazygal/metadata.py:644
+#: ../lazygal/metadata.py:652
 #, python-format
 msgid "GEN %s"
 msgstr ""
